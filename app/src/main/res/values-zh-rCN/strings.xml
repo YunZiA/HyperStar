@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="is_cover_scale_background_title">启用封面背景图缩放</string>
+    <string name="cover_scale_background_value_title">封面背景图缩放值</string>
+    <string name="is_cover_blur_background_title">启用模糊封面背景</string>
+    <string name="cover_blur_background_value_title">封面背景图模糊半径</string>
+    <string name="is_cover_dim_background_title">启用压暗封面背景</string>
+    <string name="cover_dim_background_value_title">封面背景图压暗值</string>
+    <string name="is_cover_background_title">启用歌曲封面背景</string>
+    <string name="is_hide_icon_title">隐藏桌面图标</string>
+    <string name="color_mode_title">颜色模式</string>
+    <string name="show_FPS_Monitor_title">帧率显示</string>
+    <string name="page_user_scroll_title">页面滑动切换</string>
+    <string name="top_Bar_blur_title">标题栏模糊</string>
+    <string name="bottom_Bar_blur_title">底部导航栏模糊</string>
+    <string name="over_scroll_title">滑动越界回弹</string>
+    <string name="controlcenter">控制中心</string>
+    <string name="sound_settings">音量条</string>
+    <string name="main_page_title">首页</string>
+    <string name="settings_page_title">设置</string>
+    <string name="about_page_title">关于</string>
+    <string name="developer_title">开发者</string>
+    <string name="discussion_title">交流</string>
+    <string name="qq_group_title">QQ 群</string>
+    <string name="references_title">引用</string>
+    <string name="xposed_desc">信hyper，得永生！</string>
+    <string name="show_title">显示</string>
+    <string name="systemui">系统界面</string>
+</resources>

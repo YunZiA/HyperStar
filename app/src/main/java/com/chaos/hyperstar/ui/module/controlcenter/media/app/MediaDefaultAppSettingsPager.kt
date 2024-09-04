@@ -22,6 +22,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,10 +39,13 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -51,6 +55,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.SubMiuixTopAppBar
@@ -65,6 +70,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
+import top.yukonga.miuix.kmp.MiuixSuperCheckbox
+import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
 import top.yukonga.miuix.kmp.basic.MiuixCard
 import top.yukonga.miuix.kmp.basic.MiuixCheckbox
 import top.yukonga.miuix.kmp.basic.MiuixLazyColumn
@@ -74,6 +81,7 @@ import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.rememberMiuixTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
+import top.yukonga.miuix.kmp.utils.createRipple
 
 
 @Composable
@@ -153,6 +161,7 @@ fun AppHorizontalPager(
         enter = fadeIn(),
         exit = fadeOut()
     ){
+
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -198,18 +207,18 @@ fun AppHorizontalPager(
                             .fillMaxWidth()
                             .padding(horizontal = 28.dp)
                             .padding(top = 10.dp)
-                            .pointerInput(Unit) { // 如果不需要处理指针输入，可以省略这部分
-                                detectTapGestures(
-                                    onTap = {
-                                        isApp.value = if (isSelect) "" else packageName
-                                        isSelect = !isSelect
-                                        SPUtils.setString("media_default_app_package",isApp.value)
-                                        //Toast.makeText(activity,isApp.value,Toast.LENGTH_SHORT).show()
-                                    }
-                                )
+                            .clickable(
+                                interactionSource = null,
+                                indication = createRipple()
+                            ) {
+                                isApp.value = if (isSelect) "" else packageName
+                                isSelect = !isSelect
+                                SPUtils.setString("media_default_app_package",isApp.value)
                             },
+
                         color = if (isSelect) colorScheme.dropdownSelect  else colorScheme.primaryContainer
                     ) {
+
                         Row(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -237,7 +246,11 @@ fun AppHorizontalPager(
                                     .align(Alignment.CenterVertically),
                                 enabled = true,
                                 checked = isSelect,
-                                onCheckedChange = {} // 如果需要处理选中变化，可以在这里添加逻辑
+                                onCheckedChange = {
+                                    isApp.value = if (isSelect) "" else packageName
+                                    isSelect = !isSelect
+                                    SPUtils.setString("media_default_app_package",isApp.value)
+                                } // 如果需要处理选中变化，可以在这里添加逻辑
                             )
                         }
                     }

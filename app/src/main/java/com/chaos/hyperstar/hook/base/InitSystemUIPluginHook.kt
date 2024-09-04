@@ -6,6 +6,7 @@ import com.chaos.hyperstar.hook.app.plugin.QsHeaderView
 import com.chaos.hyperstar.hook.app.plugin.QsMediaCoverBackground
 import com.chaos.hyperstar.hook.app.plugin.QsMediaDefaultApp
 import com.chaos.hyperstar.hook.app.plugin.QsMediaDeviceName
+import com.chaos.hyperstar.hook.app.plugin.QsMediaView
 import com.chaos.hyperstar.hook.app.plugin.QsTileRadius
 import com.chaos.hyperstar.hook.app.plugin.SuperBlurVolumeManager
 import com.chaos.hyperstar.hook.app.plugin.SuperBlurWidgetManager
@@ -87,6 +88,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         qsMediaCoverBackground.doMethods(classLoader)
         QsMediaDeviceName().doMethods(classLoader)
         QsMediaDefaultApp().doMethods(classLoader)
+        QsMediaView().doMethods(classLoader)
         //QsHeaderView().doMethods(classLoader)
     }
 

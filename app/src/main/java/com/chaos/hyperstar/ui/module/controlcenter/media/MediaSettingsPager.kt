@@ -121,6 +121,7 @@ fun AppHorizontalPager(
 
         item {
             val isCoverBackground = remember { mutableStateOf(SPUtils.getBoolean("is_cover_background",false)) }
+            val isHideCover = remember { mutableStateOf(SPUtils.getBoolean("is_hide_cover",false)) }
             MiuixCard(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -161,6 +162,30 @@ fun AppHorizontalPager(
                     color = colorResource(R.color.class_name_color),
                     fontWeight = FontWeight.Medium
                 )
+                XMiuixSuperSwitch(
+                    title = "隐藏歌曲封面显示",
+                    key = "is_hide_cover",
+                    state = isHideCover
+                )
+                AnimatedVisibility(isHideCover.value) {
+                    XMiuixSuperSwitch(
+                        title = "标题&歌手居中显示",
+                        key = "is_title_center"
+                    )
+                }
+                XMiuixSuperSwitch(
+                    title = "标题过长滚动显示",
+                    key = "is_title_marquee"
+                )
+                XMiuixSuperSwitch(
+                    title = "歌手过长滚动显示",
+                    key = "is_artist_marquee"
+                )
+                XMiuixSuperSwitch(
+                    title = "暂无播放过长滚动显示",
+                    key = "is_emptyState_marquee"
+                )
+
                 XMiuixSuperSwitch(
                     title = stringResource(R.string.is_cover_background_title),
                     key = "is_cover_background",

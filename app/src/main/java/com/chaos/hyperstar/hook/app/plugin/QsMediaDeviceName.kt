@@ -26,7 +26,6 @@ class QsMediaDeviceName :BaseHooker() {
         if (p0Var != null) {
             cc = p0Var
         } else if (v != null) {
-            // 如果p0Var不存在但v存在，则使用v
             cc = v
         }else{
             starLog.log("getFullName not getName!!")
@@ -43,7 +42,6 @@ class QsMediaDeviceName :BaseHooker() {
                 }
 
                 override fun after(param: XC_MethodHook.MethodHookParam?) {
-
                     val p0Vars = param?.args?.get(0)
                     val parameterTypes = arrayOf<Class<*>>(
                         cc

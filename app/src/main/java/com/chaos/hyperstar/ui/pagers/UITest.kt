@@ -92,6 +92,9 @@ fun UITest(
     }
 
     var TopAppBar_title by remember { mutableStateOf(items[0].label) }
+    var largeTitle by remember {
+        mutableStateOf(TopAppBar_title)
+    }
 
     val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
     val enablePageUserScroll = remember { mutableStateOf(PreferencesUtil.getBoolean("page_user_scroll",false)) }
@@ -113,6 +116,7 @@ fun UITest(
                 MiuixTopAppBar(
                     color = if (enableTopBarBlur.value) Color.Transparent else colorScheme.background,
                     title = TopAppBar_title,
+                    largeTitle = largeTitle,
                     scrollBehavior = currentScrollBehavior,
                     actions = {
                         IconButton(
@@ -143,6 +147,12 @@ fun UITest(
                     onClick = { index ->
                         targetPage = index
                         TopAppBar_title = items.get(index).label
+                        if (index != 2){
+                            largeTitle = items.get(index).label
+                        }else{
+                            largeTitle = ""
+
+                        }
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(index)
                         }

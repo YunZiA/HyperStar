@@ -1,5 +1,7 @@
 package com.chaos.hyperstar.hook.app.plugin
 
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
@@ -14,6 +16,7 @@ import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedHelpers
+import java.lang.reflect.Field
 import java.util.Objects
 
 class QsListView : BaseHooker() {
@@ -21,6 +24,7 @@ class QsListView : BaseHooker() {
     val labelInside = XSPUtils.getBoolean("list_tile_label_inside",false)
     val labelSize = XSPUtils.getFloat("list_label_size",13f)
     val labelMarquee = XSPUtils.getBoolean("list_tile_label_marquee",false)
+    val tileColorForIcon = XSPUtils.getBoolean("qs_list_tile_color_for_icon",false)
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
@@ -111,18 +115,76 @@ class QsListView : BaseHooker() {
             }
         })
 
-        if (labelSize != 13f){
+        XposedHelpers.findAndHookMethod(QSTileItemView, "updateTextAppearance", object : XC_MethodReplacement() {
 
-            XposedHelpers.findAndHookMethod(QSTileItemView, "updateTextAppearance", object : XC_MethodReplacement() {
+            override fun replaceHookedMethod(param: MethodHookParam?): Any? {
+                super.beforeHookedMethod(param)
 
-                override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-                    super.beforeHookedMethod(param)
+                return null
+            }
+        })
 
-                    return null
-                }
-            })
+        if (tileColorForIcon){
+            XposedHelpers.findAndHookMethod(QSTileItemView, "onStateUpdated",
+                Boolean::class.java, object : XC_MethodHook(){
+                    override fun beforeHookedMethod(param: MethodHookParam?) {
+                        super.beforeHookedMethod(param)
+                        val thisObj = param?.thisObject  as FrameLayout
+                        val mode = XposedHelpers.getObjectField(thisObj,"mode") as Enum<*>
+
+                        val copy :Any
+
+                        val Companion = XposedHelpers.getStaticObjectField(QSItemView,"Companion")
+                        val sta = XposedHelpers.getObjectField(thisObj,"state")
+
+                        if (mode.ordinal == 0){
+                            if (sta == null){
+                                return
+                            }
+                            copy = sta
+
+                        }else{
+                            var customizeState = XposedHelpers.getObjectField(thisObj,"customizeState")
+                            if (customizeState == null){
+                                customizeState = sta
+                                if (customizeState == null){
+                                    return
+                                }
+                                return
+                            }
+                            copy = XposedHelpers.callMethod(customizeState,"copy")
+                            XposedHelpers.setIntField(copy,"state",1)
+                            XposedHelpers.callMethod(Companion,"setRestrictedCompat", copy,false)
+
+
+                        }
+
+                        val state:Int = XposedHelpers.getIntField(copy,"state")
+                        val states = XposedHelpers.callMethod(Companion,"isRestrictedCompat",copy) as Boolean
+                        //starLog.log("onStateUpdated at ${mode.ordinal}  in ${ state} is ${states}")
+
+                        val label = thisObj.findViewByIdName("tile_label") as TextView
+                        val icon = XposedHelpers.callMethod(thisObj,"getIcon")
+
+                        val enable = XposedHelpers.getIntField(icon,"iconColor")
+                        val off = XposedHelpers.getIntField(icon,"iconColorOff")
+                        val unavailable = XposedHelpers.getIntField(icon,"iconColorUnavailable")
+                        val restrict = XposedHelpers.getIntField(icon,"iconColorRestrict")
+
+                        if (state == 0) {
+                            label.setTextColor(unavailable)
+                        } else if (state == 1 && states) {
+                            label.setTextColor(restrict)
+                        } else if (state != 2) {
+                            label.setTextColor(off)
+                        } else {
+                            label.setTextColor(enable)
+                        }
+
+                    }
+                })
+
         }
-
 
 
 

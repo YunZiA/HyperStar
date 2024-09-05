@@ -37,17 +37,6 @@ android {
         }
     }
 
-//    android.applicationVariants.all { variant ->
-//        variant.outputs.all { output ->
-//            val fileName = "HyperStar-${variant.name}-v${variant.versionName}.apk"
-//
-//            output.outputFile.renameTo(File(output.outputFile.parent, fileName))
-//            output.outputFile.renameTo("HyperStar-${variant.name}-v${variant.versionName}.apk")
-//        }
-//    }
-
-
-
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -60,7 +49,7 @@ android {
         }
 
         debug {
-            // 对于debug版本，可以不使用混淆和资源压缩
+            // 对于debug版本，可以不使用混和资源压缩
             isMinifyEnabled = false
             isShrinkResources = false
 

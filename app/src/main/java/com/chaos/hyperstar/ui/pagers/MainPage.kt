@@ -59,8 +59,8 @@ fun MainPage(
                 MiuixText(
                     text = stringResource(R.string.systemui),
                     modifier = Modifier
-                        .padding(horizontal = 28.dp)
-                        .padding(top = 14.dp, bottom = 8.dp),
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 10.dp, bottom = 8.dp),
                     fontSize = 15.sp,
                     color = colorResource(R.color.class_name_color),
                     fontWeight = FontWeight.Medium

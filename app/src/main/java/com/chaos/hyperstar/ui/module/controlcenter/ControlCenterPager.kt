@@ -125,16 +125,20 @@ fun AppHorizontalPager(
                 MiuixText(
                     text = "普通磁贴",
                     modifier = Modifier
-                        .padding(horizontal = 28.dp)
-                        .padding(top = 14.dp, bottom = 8.dp),
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 10.dp, bottom = 8.dp),
                     fontSize = 15.sp,
                     color = colorResource(R.color.class_name_color),
                     fontWeight = FontWeight.Medium
                 )
 
                 XMiuixSuperSwitch(
-                    title = "普通磁贴圆角矩形",
+                    title = "背景圆角矩形",
                     key = "is_qs_tile_radius"
+                )
+                XMiuixSuperSwitch(
+                    title = "标题颜色跟随图标",
+                    key = "qs_list_tile_color_for_icon"
                 )
                 XMiuixSuperSwitch(
                     title = "标题内显",

@@ -132,8 +132,8 @@ fun AppHorizontalPager(
                 MiuixText(
                     text = "基础设置",
                     modifier = Modifier
-                        .padding(horizontal = 28.dp)
-                        .padding(top = 14.dp, bottom = 8.dp),
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 10.dp, bottom = 6.dp),
                     fontSize = 15.sp,
                     color = colorResource(R.color.class_name_color),
                     fontWeight = FontWeight.Medium
@@ -156,8 +156,8 @@ fun AppHorizontalPager(
                 MiuixText(
                     text = "常规播放页",
                     modifier = Modifier
-                        .padding(horizontal = 28.dp)
-                        .padding(top = 14.dp, bottom = 8.dp),
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 10.dp, bottom = 8.dp),
                     fontSize = 15.sp,
                     color = colorResource(R.color.class_name_color),
                     fontWeight = FontWeight.Medium
@@ -242,8 +242,8 @@ fun AppHorizontalPager(
                 MiuixText(
                     text = "扩展详情页",
                     modifier = Modifier
-                        .padding(horizontal = 28.dp)
-                        .padding(top = 14.dp, bottom = 8.dp),
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 10.dp, bottom = 8.dp),
                     fontSize = 15.sp,
                     color = colorResource(R.color.class_name_color),
                     fontWeight = FontWeight.Medium

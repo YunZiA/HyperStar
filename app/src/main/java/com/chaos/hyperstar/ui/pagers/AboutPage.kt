@@ -59,7 +59,7 @@ fun ThirdPage(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 70.dp),
+                    .padding(top = 60.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 MiuixText(
@@ -82,7 +82,7 @@ fun ThirdPage(
                 fontSize = 14.sp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 10.dp, bottom = 110.dp),
+                    .padding(top = 10.dp, bottom = 140.dp),
                 fontWeight = FontWeight.Medium,
                 color = MiuixTheme.colorScheme.subTextBase,
                 textAlign = TextAlign.Center
@@ -102,8 +102,8 @@ fun ThirdPage(
                 MiuixText(
                     text = stringResource(R.string.developer_title),
                     modifier = Modifier
-                        .padding(horizontal = 28.dp)
-                        .padding(top = 14.dp, bottom = 8.dp),
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 10.dp, bottom = 8.dp),
                     fontSize = 15.sp,
                     color = colorResource(R.color.class_name_color),
                     fontWeight = FontWeight.Medium
@@ -129,8 +129,8 @@ fun ThirdPage(
                 MiuixText(
                     text = stringResource(R.string.discussion_title),
                     modifier = Modifier
-                        .padding(horizontal = 28.dp)
-                        .padding(top = 14.dp, bottom = 8.dp),
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 10.dp, bottom = 8.dp),
                     fontSize = 15.sp,
                     color = colorResource(R.color.class_name_color),
                     fontWeight = FontWeight.Medium
@@ -158,8 +158,8 @@ fun ThirdPage(
                 MiuixText(
                     text = stringResource(R.string.references_title),
                     modifier = Modifier
-                        .padding(horizontal = 28.dp)
-                        .padding(top = 14.dp, bottom = 8.dp),
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 10.dp, bottom = 8.dp),
                     fontSize = 15.sp,
                     color = colorResource(R.color.class_name_color),
                     fontWeight = FontWeight.Medium

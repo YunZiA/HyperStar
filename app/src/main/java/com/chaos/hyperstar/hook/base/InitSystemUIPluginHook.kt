@@ -3,6 +3,7 @@ package com.chaos.hyperstar.hook.base
 import android.content.Context
 import android.content.res.Resources
 import com.chaos.hyperstar.hook.app.plugin.QsHeaderView
+import com.chaos.hyperstar.hook.app.plugin.QsListView
 import com.chaos.hyperstar.hook.app.plugin.QsMediaCoverBackground
 import com.chaos.hyperstar.hook.app.plugin.QsMediaDefaultApp
 import com.chaos.hyperstar.hook.app.plugin.QsMediaDeviceName
@@ -89,6 +90,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         QsMediaDeviceName().doMethods(classLoader)
         QsMediaDefaultApp().doMethods(classLoader)
         QsMediaView().doMethods(classLoader)
+        QsListView().doMethods(classLoader)
         //QsHeaderView().doMethods(classLoader)
     }
 

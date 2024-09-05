@@ -7,7 +7,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.view.View;
 
 //import com.github.kyuubiran.ezxhelper.EzXHelper;
 //import com.github.kyuubiran.ezxhelper.ObjectHelper.Companion.objectHelper;
@@ -16,11 +15,11 @@ import com.chaos.hyperstar.hook.base.BaseHooker;
 import com.chaos.hyperstar.hook.tool.starLog;
 import com.github.kyuubiran.ezxhelper.ObjectHelper;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import com.chaos.hyperstar.utils.XSPUtils;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedHelpers;
 //import miui.systemui.controlcenter.media.MediaPlayerMetaData;
 
 public class InitSystemUIPluginHooks extends BaseHooker {
@@ -36,13 +35,19 @@ public class InitSystemUIPluginHooks extends BaseHooker {
 
 
     private void startSystemUIPluginHook(ClassLoader classLoader){
+
+        Class<?> CommonUtils = XposedHelpers.findClass("miui.systemui.util.CommonUtils", classLoader);
+
+
         hookAllMethods(classLoader, "com.android.systemui.shared.plugins.PluginInstance$Factory", "create",new MethodHook(){
 
             @Override
             public void before(XC_MethodHook.MethodHookParam param) {
                 if (mContext != null){
                     mContext = (Context) param.args[0];
-
+//                    Object thisObj = param.thisObject;
+//                    XposedHelpers.callMethod(CommonUtils,"setLayoutHeight$default",CommonUtils,thisObj,0f,false,2, (Object) null);
+//                    starLog.log("changeExpand is find")
                 }
 
             }

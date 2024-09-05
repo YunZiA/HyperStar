@@ -3,6 +3,7 @@ package com.chaos.hyperstar.ui.module.controlcenter
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -12,11 +13,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.MiuixActivitySuperArrow
 import com.chaos.hyperstar.ui.base.SubMiuixTopAppBar
+import com.chaos.hyperstar.ui.base.XMiuixSlider
 import com.chaos.hyperstar.ui.base.XMiuixSuperDropdown
 import com.chaos.hyperstar.ui.base.XMiuixSuperSwitch
 import com.chaos.hyperstar.ui.module.controlcenter.media.MediaSettingsActivity
@@ -25,9 +31,11 @@ import com.chaos.hyperstar.utils.PreferencesUtil
 import com.chaos.hyperstar.utils.Utils
 import getWindowSize
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
+import top.yukonga.miuix.kmp.basic.MiuixCard
 import top.yukonga.miuix.kmp.basic.MiuixLazyColumn
 import top.yukonga.miuix.kmp.basic.MiuixScaffold
 import top.yukonga.miuix.kmp.basic.MiuixSurface
+import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.rememberMiuixTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
@@ -99,16 +107,54 @@ fun AppHorizontalPager(
                 context = activity,
                 activity = MediaSettingsActivity::class.java
             )
-            XMiuixSuperSwitch(
-                title = "普通磁贴圆角矩形",
-                key = "is_qs_tile_radius"
-            )
             XMiuixSuperDropdown(
                 title = "控件·高级材质",
                 key = "is_super_blur_Widget",
                 option = R.array.is_super_blur_entire,
                 activity = activity
             )
+
+            MiuixCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 12.dp),
+                insideMargin = DpSize(0.dp,14.dp)
+            ) {
+
+                MiuixText(
+                    text = "普通磁贴",
+                    modifier = Modifier
+                        .padding(horizontal = 28.dp)
+                        .padding(top = 14.dp, bottom = 8.dp),
+                    fontSize = 15.sp,
+                    color = colorResource(R.color.class_name_color),
+                    fontWeight = FontWeight.Medium
+                )
+
+                XMiuixSuperSwitch(
+                    title = "普通磁贴圆角矩形",
+                    key = "is_qs_tile_radius"
+                )
+                XMiuixSuperSwitch(
+                    title = "标题内显",
+                    key = "list_tile_label_inside"
+                )
+                XMiuixSuperSwitch(
+                    title = "标题超出跑马灯特效显示",
+                    key = "list_tile_label_marquee"
+                )
+                XMiuixSlider(
+                    title = "标题大小",
+                    key = "list_label_size",
+                    maxValue = 25f,
+                    minValue = 0f,
+                    progress = 13f
+                )
+
+
+
+            }
 
 
         }

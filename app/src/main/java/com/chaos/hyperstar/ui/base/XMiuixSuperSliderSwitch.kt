@@ -5,6 +5,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +45,35 @@ fun XMiuixSuperSliderSwitch(
             maxValue = maxValue,
             minValue = minValue
         )
+    }
+
+
+}
+
+@Composable
+fun XMiuixContentSwitch(
+    switchTitle : String,
+    switchKey : String,
+    content: @Composable (() -> Unit),
+) {
+    var MiuixSuperSwitchState by remember { mutableStateOf(SPUtils.getBoolean(switchKey,false)) }
+    MiuixSuperSwitch(
+        title = switchTitle,
+        checked = MiuixSuperSwitchState,
+        onCheckedChange = {
+            MiuixSuperSwitchState = it
+            SPUtils.setBoolean(switchKey,MiuixSuperSwitchState)
+        },
+    )
+    AnimatedVisibility (
+        MiuixSuperSwitchState,
+        enter = fadeIn() + expandVertically(),
+        exit = fadeOut() + shrinkVertically()
+    ) {
+        Column{
+            content()
+
+        }
     }
 
 

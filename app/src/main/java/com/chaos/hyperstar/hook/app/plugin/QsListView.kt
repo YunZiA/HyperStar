@@ -154,7 +154,6 @@ class QsListView : BaseHooker() {
                                 if (customizeState == null){
                                     return
                                 }
-                                return
                             }
                             copy = XposedHelpers.callMethod(customizeState,"copy")
                             XposedHelpers.setIntField(copy,"state",1)

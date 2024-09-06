@@ -3,6 +3,10 @@ package com.chaos.hyperstar.ui.module.controlcenter.media
 import android.widget.Space
 import androidx.activity.ComponentActivity
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -31,6 +35,8 @@ import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.MiuixActivitySuperArrow
 import com.chaos.hyperstar.ui.base.SubMiuixTopAppBar
 import com.chaos.hyperstar.ui.base.XMiuixClass
+import com.chaos.hyperstar.ui.base.XMiuixClasser
+import com.chaos.hyperstar.ui.base.XMiuixContentSwitch
 import com.chaos.hyperstar.ui.base.XMiuixSlider
 import com.chaos.hyperstar.ui.base.XMiuixSuperDropdown
 import com.chaos.hyperstar.ui.base.XMiuixSuperSliderSwitch
@@ -122,140 +128,98 @@ fun AppHorizontalPager(
         item {
             val isCoverBackground = remember { mutableStateOf(SPUtils.getBoolean("is_cover_background",false)) }
             val isHideCover = remember { mutableStateOf(SPUtils.getBoolean("is_hide_cover",false)) }
-            MiuixCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                insideMargin = DpSize(0.dp,14.dp)
-            ) {
 
-                MiuixText(
-                    text = "基础设置",
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 10.dp, bottom = 6.dp),
-                    fontSize = 15.sp,
-                    color = colorResource(R.color.class_name_color),
-                    fontWeight = FontWeight.Medium
-                )
-                MiuixActivitySuperArrow(
-                    title = "默认播放应用选择",
-                    context = activity,
-                    activity = MediaDefaultAppSettingsActivity::class.java
-                )
-            }
-
-            MiuixCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 12.dp),
-                insideMargin = DpSize(0.dp,14.dp)
-            ) {
-
-                MiuixText(
-                    text = "常规播放页",
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 10.dp, bottom = 8.dp),
-                    fontSize = 15.sp,
-                    color = colorResource(R.color.class_name_color),
-                    fontWeight = FontWeight.Medium
-                )
-                XMiuixSuperSwitch(
-                    title = "隐藏歌曲封面显示",
-                    key = "is_hide_cover",
-                    state = isHideCover
-                )
-                AnimatedVisibility(isHideCover.value) {
-                    XMiuixSuperSwitch(
-                        title = "标题&歌手居中显示",
-                        key = "is_title_center"
+            XMiuixClasser(
+                title = "基础设置",
+                content = {
+                    MiuixActivitySuperArrow(
+                        title = "默认播放应用选择",
+                        context = activity,
+                        activity = MediaDefaultAppSettingsActivity::class.java
                     )
                 }
-                XMiuixSuperSwitch(
-                    title = "标题过长滚动显示",
-                    key = "is_title_marquee"
-                )
-                XMiuixSuperSwitch(
-                    title = "歌手过长滚动显示",
-                    key = "is_artist_marquee"
-                )
-                XMiuixSuperSwitch(
-                    title = "暂无播放过长滚动显示",
-                    key = "is_emptyState_marquee"
-                )
+            )
+            XMiuixClasser(
+                title = "常规播放页",
+                top = 12.dp,
+                content = {
 
-                XMiuixSuperSwitch(
-                    title = stringResource(R.string.is_cover_background_title),
-                    key = "is_cover_background",
-                    state = isCoverBackground
-                )
-                AnimatedVisibility(isCoverBackground.value) {
-                    Column {
-                        XMiuixSuperSliderSwitch(
-                            switchTitle = stringResource(R.string.is_cover_scale_background_title),
-                            switchKey = "is_cover_scale_background",
-                            title = stringResource(R.string.cover_scale_background_value_title),
-                            key = "cover_scale_background_value",
-                            progress = 1.5f,
-                            maxValue = 2f,
-                            minValue = 1.1f
-                        )
-                        XMiuixSuperSliderSwitch(
-                            switchTitle = stringResource(R.string.is_cover_blur_background_title),
-                            switchKey = "is_cover_blur_background",
-                            title = stringResource(R.string.cover_blur_background_value_title),
-                            key = "cover_blur_background_value",
-                            progress = 50f,
-                            maxValue = 60f,
-                            minValue = 0f
-                        )
-                        XMiuixSuperSliderSwitch(
-                            switchTitle = stringResource(R.string.is_cover_dim_background_title),
-                            switchKey = "is_cover_dim_background",
-                            title = stringResource(R.string.cover_dim_background_value_title),
-                            key = "cover_dim_background_value",
-                            progress = 50f,
-                            maxValue = 255f,
-                            minValue = 0f
-                        )
+                    XMiuixContentSwitch(
+                        switchTitle = "隐藏歌曲封面显示",
+                        switchKey = "is_hide_cover",
+                        content = {
+                            XMiuixSuperSwitch(
+                                title = "标题&歌手居中显示",
+                                key = "is_title_center"
+                            )
 
-                        XMiuixSuperSwitch(
-                            title = "启用封面背景暗边",
-                            key = "cover_anciently"
-                        )
-                    }
+                        }
+                    )
+                    XMiuixSuperSwitch(
+                        title = "标题过长滚动显示",
+                        key = "is_title_marquee"
+                    )
+                    XMiuixSuperSwitch(
+                        title = "歌手过长滚动显示",
+                        key = "is_artist_marquee"
+                    )
+                    XMiuixSuperSwitch(
+                        title = "暂无播放过长滚动显示",
+                        key = "is_emptyState_marquee"
+                    )
+                    XMiuixContentSwitch(
+                        switchTitle = stringResource(R.string.is_cover_background_title),
+                        switchKey = "is_cover_background",
+                        content = {
+                            XMiuixSuperSliderSwitch(
+                                switchTitle = stringResource(R.string.is_cover_scale_background_title),
+                                switchKey = "is_cover_scale_background",
+                                title = stringResource(R.string.cover_scale_background_value_title),
+                                key = "cover_scale_background_value",
+                                progress = 1.5f,
+                                maxValue = 2f,
+                                minValue = 1.1f
+                            )
+                            XMiuixSuperSliderSwitch(
+                                switchTitle = stringResource(R.string.is_cover_blur_background_title),
+                                switchKey = "is_cover_blur_background",
+                                title = stringResource(R.string.cover_blur_background_value_title),
+                                key = "cover_blur_background_value",
+                                progress = 50f,
+                                maxValue = 60f,
+                                minValue = 0f
+                            )
+                            XMiuixSuperSliderSwitch(
+                                switchTitle = stringResource(R.string.is_cover_dim_background_title),
+                                switchKey = "is_cover_dim_background",
+                                title = stringResource(R.string.cover_dim_background_value_title),
+                                key = "cover_dim_background_value",
+                                progress = 50f,
+                                maxValue = 255f,
+                                minValue = 0f
+                            )
+
+                            XMiuixSuperSwitch(
+                                title = "启用封面背景暗边",
+                                key = "cover_anciently"
+                            )
+                        }
+                    )
 
                 }
-
-            }
-
-            MiuixCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 12.dp),
-                insideMargin = DpSize(0.dp,14.dp)
-            ) {
-
-                MiuixText(
-                    text = "扩展详情页",
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 10.dp, bottom = 8.dp),
-                    fontSize = 15.sp,
-                    color = colorResource(R.color.class_name_color),
-                    fontWeight = FontWeight.Medium
-                )
-
-                XMiuixSuperDropdown(
-                    title = "设备名显示模式",
-                    key = "is_local_speaker",
-                    activity = activity,
-                    option = R.array.is_local_speaker_entire,
-                )
-            }
+            )
+            XMiuixClasser(
+                title = "扩展详情页",
+                top = 12.dp,
+                content = {
+                    XMiuixSuperDropdown(
+                        title = "设备名显示模式",
+                        key = "is_local_speaker",
+                        activity = activity,
+                        option = R.array.is_local_speaker_entire,
+                    )
+                }
+            )
 
 
         }

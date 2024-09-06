@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.MiuixActivitySuperArrow
+import com.chaos.hyperstar.ui.base.XMiuixClasser
 import com.chaos.hyperstar.ui.module.controlcenter.ControlCenterSettings
 import com.chaos.hyperstar.ui.module.volume.VolumeSettings
 import getWindowSize
@@ -50,36 +51,25 @@ fun MainPage(
         topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {
         item {
-            MiuixCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                insideMargin = DpSize(0.dp,14.dp)
-            ) {
-                MiuixText(
-                    text = stringResource(R.string.systemui),
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 10.dp, bottom = 8.dp),
-                    fontSize = 15.sp,
-                    color = colorResource(R.color.class_name_color),
-                    fontWeight = FontWeight.Medium
-                )
-                MiuixActivitySuperArrow(
-                    leftIcon = R.drawable.icon_controlcenter,
-                    title = stringResource(R.string.controlcenter),
-                    context = activity,
-                    activity = ControlCenterSettings::class.java
+            XMiuixClasser(
+                title = stringResource(R.string.systemui),
+                content = {
+                    MiuixActivitySuperArrow(
+                        leftIcon = R.drawable.icon_controlcenter,
+                        title = stringResource(R.string.controlcenter),
+                        context = activity,
+                        activity = ControlCenterSettings::class.java
 
-                )
-                MiuixActivitySuperArrow(
-                    leftIcon = R.drawable.ic_sound_settings,
-                    title = stringResource(R.string.sound_settings),
-                    context = activity,
-                    activity = VolumeSettings::class.java
+                    )
+                    MiuixActivitySuperArrow(
+                        leftIcon = R.drawable.ic_sound_settings,
+                        title = stringResource(R.string.sound_settings),
+                        context = activity,
+                        activity = VolumeSettings::class.java
 
-                )
-            }
+                    )
+                }
+            )
 
         }
 

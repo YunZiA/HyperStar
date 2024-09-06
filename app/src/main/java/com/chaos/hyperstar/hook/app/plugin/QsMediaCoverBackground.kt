@@ -28,6 +28,7 @@ import de.robv.android.xposed.XposedHelpers
 class QsMediaCoverBackground: BaseHooker() {
 
     var vin: Bitmap? = null;
+    val coverBackground = XSPUtils.getBoolean("is_cover_background",false)
     val isScale:Boolean = XSPUtils.getBoolean("is_cover_scale_background",false)
     val isHideCover:Boolean = XSPUtils.getBoolean("is_hide_cover",false)
     val isTitleCenter:Boolean = XSPUtils.getBoolean("is_title_center",false)
@@ -69,63 +70,61 @@ class QsMediaCoverBackground: BaseHooker() {
 
                 if (mediaPlayerMetaData == null) {
 
-                    if (!XSPUtils.getBoolean("is_cover_background",false)){
-                        return
-                    }
-
-                    XposedHelpers.callMethod(thisObj,"updateResources")
-                }else{
-
-                    if (isHideCover){
-                        if (isTitleCenter){
-                            cover.visibility = View.GONE
-
-                        }else{
-                            cover.visibility = View.INVISIBLE
-
-                        }
-
-
-                    }
-                    if (!XSPUtils.getBoolean("is_cover_background",false)){
-                        return
-                    }
-
-                    val _cornerRadius : Float = XposedHelpers.getObjectField(thisObj,"_cornerRadius") as Float
-
-                    var art = XposedHelpers.callMethod(mediaPlayerMetaData,"getArt")
-
-                    if (art !is Bitmap){
-                        starLog.log("mediaPlayerMetaData:art is not get!!!")
+                    if (coverBackground){
                         XposedHelpers.callMethod(thisObj,"updateResources")
-                        return
-
                     }
 
-                    art = BitmapUtils.doBitmap(art,isScale,scaleFactor,isBlur,blurRadius,isDim,alpha)
+                    return
+                }
 
-                    val roundedArtDrawable = RoundedBitmapDrawableFactory.create(itemView.resources, art).apply {
-                        cornerRadius = _cornerRadius
-                        setAntiAlias(true)
+                if (isHideCover){
+                    if (isTitleCenter){
+                        cover.visibility = View.GONE
+
+                    }else{
+                        cover.visibility = View.INVISIBLE
+
                     }
-
-                    if (coverAnciently && foreground == null) {
-                        foreground = RoundedBitmapDrawableFactory.create(itemView.resources, vin).apply {
-                            cornerRadius = _cornerRadius
-                            setAntiAlias(true)
-                        }
-                    }
-
-                    itemView.background = if (coverAnciently) {
-                        val layerDrawable = LayerDrawable(arrayOf(roundedArtDrawable, foreground))
-                        layerDrawable
-                    } else {
-                        roundedArtDrawable
-                    }
-
 
 
                 }
+                if (!coverBackground){
+                    return
+                }
+
+                val _cornerRadius : Float = XposedHelpers.getObjectField(thisObj,"_cornerRadius") as Float
+
+                var art = XposedHelpers.callMethod(mediaPlayerMetaData,"getArt")
+
+                if (art !is Bitmap){
+                    starLog.log("mediaPlayerMetaData:art is not get!!!")
+                    XposedHelpers.callMethod(thisObj,"updateResources")
+                    return
+
+                }
+
+                art = BitmapUtils.doBitmap(art,isScale,scaleFactor,isBlur,blurRadius,isDim,alpha)
+
+                val roundedArtDrawable = RoundedBitmapDrawableFactory.create(itemView.resources, art).apply {
+                    cornerRadius = _cornerRadius
+                    setAntiAlias(true)
+                }
+
+                if (coverAnciently && foreground == null) {
+                    foreground = RoundedBitmapDrawableFactory.create(itemView.resources, vin).apply {
+                        cornerRadius = _cornerRadius
+                        setAntiAlias(true)
+                    }
+                }
+
+                itemView.background = if (coverAnciently) {
+                    val layerDrawable = LayerDrawable(arrayOf(roundedArtDrawable, foreground))
+                    layerDrawable
+                } else {
+                    roundedArtDrawable
+                }
+
+
             }
         }
         )

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.MiuixActivitySuperArrow
 import com.chaos.hyperstar.ui.base.SubMiuixTopAppBar
+import com.chaos.hyperstar.ui.base.XMiuixClasser
 import com.chaos.hyperstar.ui.base.XMiuixSlider
 import com.chaos.hyperstar.ui.base.XMiuixSuperDropdown
 import com.chaos.hyperstar.ui.base.XMiuixSuperSwitch
@@ -113,52 +114,37 @@ fun AppHorizontalPager(
                 option = R.array.is_super_blur_entire,
                 activity = activity
             )
-
-            MiuixCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 12.dp),
-                insideMargin = DpSize(0.dp,14.dp)
-            ) {
-
-                MiuixText(
-                    text = "普通磁贴",
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 10.dp, bottom = 8.dp),
-                    fontSize = 15.sp,
-                    color = colorResource(R.color.class_name_color),
-                    fontWeight = FontWeight.Medium
-                )
-
-                XMiuixSuperSwitch(
-                    title = "背景圆角矩形",
-                    key = "is_qs_tile_radius"
-                )
-                XMiuixSuperSwitch(
-                    title = "标题颜色跟随图标",
-                    key = "qs_list_tile_color_for_icon"
-                )
-                XMiuixSuperSwitch(
-                    title = "标题内显",
-                    key = "list_tile_label_inside"
-                )
-                XMiuixSuperSwitch(
-                    title = "标题超出跑马灯特效显示",
-                    key = "list_tile_label_marquee"
-                )
-                XMiuixSlider(
-                    title = "标题大小",
-                    key = "list_label_size",
-                    maxValue = 25f,
-                    minValue = 0f,
-                    progress = 13f
-                )
+            XMiuixClasser(
+                title = "普通磁贴",
+                top = 12.dp,
+                content = {
+                    XMiuixSuperSwitch(
+                        title = "背景圆角矩形",
+                        key = "is_qs_tile_radius"
+                    )
+                    XMiuixSuperSwitch(
+                        title = "标题颜色跟随图标",
+                        key = "qs_list_tile_color_for_icon"
+                    )
+                    XMiuixSuperSwitch(
+                        title = "标题内显",
+                        key = "list_tile_label_inside"
+                    )
+                    XMiuixSuperSwitch(
+                        title = "标题超出跑马灯特效显示",
+                        key = "list_tile_label_marquee"
+                    )
+                    XMiuixSlider(
+                        title = "标题大小",
+                        key = "list_label_size",
+                        maxValue = 25f,
+                        minValue = 0f,
+                        progress = 13f
+                    )
+                }
+            )
 
 
-
-            }
 
 
         }

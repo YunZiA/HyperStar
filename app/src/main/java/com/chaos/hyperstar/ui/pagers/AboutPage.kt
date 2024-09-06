@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.MiuixIntentSuperArrow
 import com.chaos.hyperstar.ui.base.XMiuixClass
+import com.chaos.hyperstar.ui.base.XMiuixClasser
 import getWindowSize
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.MiuixSuperSwitch
@@ -91,99 +92,63 @@ fun ThirdPage(
         }
         item {
             Spacer(modifier = Modifier.height(40.dp))
-            MiuixCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 12.dp),
-                insideMargin = DpSize(0.dp,14.dp)
-            ) {
-
-                MiuixText(
-                    text = stringResource(R.string.developer_title),
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 10.dp, bottom = 8.dp),
-                    fontSize = 15.sp,
-                    color = colorResource(R.color.class_name_color),
-                    fontWeight = FontWeight.Medium
-                )
-                MiuixIntentSuperArrow(
-                    leftIcon = R.drawable.dd,
-                    title = "东东说他舍不得",
-                    summary = "@GG Chaos | Hook",
-                    activity = activity,
-                    url = "coolmarket://u/8555749"
-                )
-            }
+            XMiuixClasser(
+                title = stringResource(R.string.developer_title),
+                bottom = 12.dp,
+                content = {
+                    MiuixIntentSuperArrow(
+                        leftIcon = R.drawable.dd,
+                        title = "东东说他舍不得",
+                        summary = "@GG Chaos | Hook",
+                        activity = activity,
+                        url = "coolmarket://u/8555749"
+                    )
+                }
+            )
 
         }
         item {
-            MiuixCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 12.dp),
-                insideMargin = DpSize(0.dp,14.dp)
-            ) {
-                MiuixText(
-                    text = stringResource(R.string.discussion_title),
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 10.dp, bottom = 8.dp),
-                    fontSize = 15.sp,
-                    color = colorResource(R.color.class_name_color),
-                    fontWeight = FontWeight.Medium
-                )
-                MiuixIntentSuperArrow(
-                    title = stringResource(R.string.qq_group_title),
-                    activity = activity,
-                    url = "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&amp;k=5ONF7LuaoQS6RWEOUYBuA0x4X8ssvHJp&amp;authKey=Pic4VQJxKBJwSjFzsIzbJ50ILs0vAEPjdC8Nat4zmiuJRlftqz9%2FKjrBwZPQTc4I&amp;noverify=0&amp;group_code=810317966"
-                )
-                MiuixIntentSuperArrow(
-                    title = "Telegram",
-                    activity = activity,
-                    url = "https://t.me/+QQWVM0ToHyEyZmRl"
-                )
-            }
+            XMiuixClasser(
+                title = stringResource(R.string.discussion_title),
+                bottom = 12.dp,
+                content = {
+                    MiuixIntentSuperArrow(
+                        title = stringResource(R.string.qq_group_title),
+                        activity = activity,
+                        url = "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&amp;k=5ONF7LuaoQS6RWEOUYBuA0x4X8ssvHJp&amp;authKey=Pic4VQJxKBJwSjFzsIzbJ50ILs0vAEPjdC8Nat4zmiuJRlftqz9%2FKjrBwZPQTc4I&amp;noverify=0&amp;group_code=810317966"
+                    )
+                    MiuixIntentSuperArrow(
+                        title = "Telegram",
+                        activity = activity,
+                        url = "https://t.me/+QQWVM0ToHyEyZmRl"
+                    )
+                }
+            )
 
-
-
-            MiuixCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                    insideMargin = DpSize(0.dp,14.dp),
-            ) {
-                MiuixText(
-                    text = stringResource(R.string.references_title),
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 10.dp, bottom = 8.dp),
-                    fontSize = 15.sp,
-                    color = colorResource(R.color.class_name_color),
-                    fontWeight = FontWeight.Medium
-                )
-                MiuixIntentSuperArrow(
-                    title = "miuix-kotlin-multiplatform",
-                    summary = "YuKongA | Apache-2.0",
-                    activity = activity,
-                    url = "https://github.com/miuix-kotlin-multiplatform/miuix"
-                )
-                MiuixIntentSuperArrow(
-                    title = "Xposed",
-                    summary = "rovo89,Tungstwenty | Apache-2.0",
-                    activity = activity,
-                    url = "https://github.com/rovo89/XposedBridge"
-                )
-                MiuixIntentSuperArrow(
-                    title = "HyperCeiler",
-                    summary = "ReChronoRain | AGPL-3.0",
-                    activity = activity,
-                    url = "https://github.com/ReChronoRain/HyperCeiler"
-                )
-            }
-
+            XMiuixClasser(
+                title = stringResource(R.string.references_title),
+                bottom = 12.dp,
+                content = {
+                    MiuixIntentSuperArrow(
+                        title = "miuix-kotlin-multiplatform",
+                        summary = "YuKongA | Apache-2.0",
+                        activity = activity,
+                        url = "https://github.com/miuix-kotlin-multiplatform/miuix"
+                    )
+                    MiuixIntentSuperArrow(
+                        title = "Xposed",
+                        summary = "rovo89,Tungstwenty | Apache-2.0",
+                        activity = activity,
+                        url = "https://github.com/rovo89/XposedBridge"
+                    )
+                    MiuixIntentSuperArrow(
+                        title = "HyperCeiler",
+                        summary = "ReChronoRain | AGPL-3.0",
+                        activity = activity,
+                        url = "https://github.com/ReChronoRain/HyperCeiler"
+                    )
+                }
+            )
 
 
         }

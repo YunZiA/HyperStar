@@ -126,8 +126,6 @@ fun AppHorizontalPager(
 
 
         item {
-            val isCoverBackground = remember { mutableStateOf(SPUtils.getBoolean("is_cover_background",false)) }
-            val isHideCover = remember { mutableStateOf(SPUtils.getBoolean("is_hide_cover",false)) }
 
             XMiuixClasser(
                 title = "基础设置",

@@ -137,6 +137,7 @@ fun AppHorizontalPager(
                     XMiuixSlider(
                         title = "标题大小",
                         key = "list_label_size",
+                        unit = "dp",
                         maxValue = 25f,
                         minValue = 0f,
                         progress = 13f

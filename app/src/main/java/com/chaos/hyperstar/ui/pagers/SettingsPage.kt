@@ -105,6 +105,10 @@ fun SettingsPage(
                         },
                         enabled = enableOverscroll(),
                     )
+                    PMiuixSuperSwitch(
+                        title = stringResource(R.string.progress_effect_title),
+                        key = "is_progress_effect"
+                    )
                 }
             )
 

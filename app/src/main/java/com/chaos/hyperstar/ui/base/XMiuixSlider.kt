@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.chaos.hyperstar.utils.PreferencesUtil
 import com.chaos.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.basic.MiuixSlider
 import top.yukonga.miuix.kmp.basic.MiuixText
@@ -22,11 +23,13 @@ import top.yukonga.miuix.kmp.basic.MiuixText
 fun XMiuixSlider(
     title : String,
     key : String,
+    unit : String = "",
     minValue: Float = 0f,
     maxValue: Float = 1f,
     progress: Float = 0.5f
 
 ) {
+    val effect = PreferencesUtil.getBoolean("is_progress_effect",false)
     Column(
         modifier = Modifier.fillMaxWidth().padding(vertical = 15.dp)
     ){
@@ -41,7 +44,7 @@ fun XMiuixSlider(
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp)
             MiuixText(
-                text = x_progress.toString(),
+                text = x_progress.toString()+unit,
                 textAlign = TextAlign.End,
                 fontSize = 14.sp)
         }
@@ -51,6 +54,7 @@ fun XMiuixSlider(
                     newProgress -> x_progress = newProgress
                 SPUtils.setFloat(key,x_progress)
             },
+            effect = effect,
             maxValue = maxValue,
             minValue = minValue,
             //dragShow = true,

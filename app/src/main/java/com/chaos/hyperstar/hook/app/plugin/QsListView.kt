@@ -47,6 +47,12 @@ class QsListView : BaseHooker() {
                 val label = qSItemView.findViewByIdName("tile_label") as TextView
                 val icon = qSItemView.findViewByIdName("icon_frame") as FrameLayout
 
+                if (labelInside){
+                    label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 8f)
+                } else if (labelSize != 13f){
+                    label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
+                }
+
                 if(labelMarquee){
                     label.ellipsize = TextUtils.TruncateAt.MARQUEE
                     label.focusable = View.NOT_FOCUSABLE
@@ -104,25 +110,25 @@ class QsListView : BaseHooker() {
 
         })
 
-        XposedHelpers.findAndHookMethod(QSTileItemView, "onFinishInflate", object : XC_MethodHook(){
-            override fun beforeHookedMethod(param: MethodHookParam?) {
-                super.beforeHookedMethod(param)
-                val thisObj = param?.thisObject as FrameLayout
-                val label = thisObj.findViewByIdName("tile_label") as TextView
-                if(labelSize != 13f){
-                    
-                    label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, if (labelInside) 8f else labelSize)
-
-                }
-
-
-            }
-        })
+//        XposedHelpers.findAndHookMethod(QSTileItemView, "onFinishInflate", object : XC_MethodHook(){
+//            override fun beforeHookedMethod(param: MethodHookParam?) {
+//                super.beforeHookedMethod(param)
+//                val thisObj = param?.thisObject as FrameLayout
+//                val label = thisObj.findViewByIdName("tile_label") as TextView
+//
+//                if (labelInside){
+//                    label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 8f)
+//                } else if (labelSize != 13f){
+//                    label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
+//                }
+//
+//
+//            }
+//        })
 
         XposedHelpers.findAndHookMethod(QSTileItemView, "updateTextAppearance", object : XC_MethodReplacement() {
 
             override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-                super.beforeHookedMethod(param)
 
                 return null
             }

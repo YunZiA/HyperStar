@@ -31,4 +31,5 @@
     <string name="references_title">REFERENCES</string>
     <string name="show_title">SHOW</string>
     <string name="systemui">SYSTEM UI</string>
+    <string name="progress_effect_title">Rounded Progress Bar</string>
 </resources>

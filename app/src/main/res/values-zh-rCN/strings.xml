@@ -26,4 +26,5 @@
     <string name="xposed_desc">信hyper，得永生！</string>
     <string name="show_title">显示</string>
     <string name="systemui">系统界面</string>
+    <string name="progress_effect_title">进度条圆角</string>
 </resources>

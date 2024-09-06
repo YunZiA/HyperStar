@@ -109,7 +109,11 @@ class QsListView : BaseHooker() {
                 super.beforeHookedMethod(param)
                 val thisObj = param?.thisObject as FrameLayout
                 val label = thisObj.findViewByIdName("tile_label") as TextView
-                label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, if (labelInside) 8f else labelSize)
+                if(labelSize != 13f){
+                    
+                    label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, if (labelInside) 8f else labelSize)
+
+                }
 
 
             }

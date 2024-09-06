@@ -61,16 +61,20 @@ class QsMediaCoverBackground: BaseHooker() {
 
             override fun afterHookedMethod(param: MethodHookParam?) {
                 if (param == null) return
-                starLog.log("updateMetaData:hook")
 
                 val mediaPlayerMetaData = param.args[0]
                 val thisObj = param.thisObject
                 val itemView : View = XposedHelpers.getObjectField(thisObj,"itemView") as View
                 val cover = itemView.findViewByIdName("cover") as ImageView
 
-                if (mediaPlayerMetaData != null) {
-                    starLog.log("mediaPlayerMetaData:is get!!!")
+                if (mediaPlayerMetaData == null) {
 
+                    if (!XSPUtils.getBoolean("is_cover_background",false)){
+                        return
+                    }
+
+                    XposedHelpers.callMethod(thisObj,"updateResources")
+                }else{
 
                     if (isHideCover){
                         if (isTitleCenter){
@@ -88,9 +92,15 @@ class QsMediaCoverBackground: BaseHooker() {
                     }
 
                     val _cornerRadius : Float = XposedHelpers.getObjectField(thisObj,"_cornerRadius") as Float
-                    val getArtMethod = MediaPlayerMetaData.getDeclaredMethod("getArt")
 
-                    var art: Bitmap = getArtMethod.invoke(mediaPlayerMetaData) as Bitmap
+                    var art = XposedHelpers.callMethod(mediaPlayerMetaData,"getArt")
+
+                    if (art !is Bitmap){
+                        starLog.log("mediaPlayerMetaData:art is not get!!!")
+                        XposedHelpers.callMethod(thisObj,"updateResources")
+                        return
+
+                    }
 
                     art = BitmapUtils.doBitmap(art,isScale,scaleFactor,isBlur,blurRadius,isDim,alpha)
 
@@ -113,13 +123,6 @@ class QsMediaCoverBackground: BaseHooker() {
                         roundedArtDrawable
                     }
 
-
-                }else{
-                    if (!XSPUtils.getBoolean("is_cover_background",false)){
-                        return
-                    }
-
-                    XposedHelpers.callMethod(thisObj,"updateResources")
 
 
                 }

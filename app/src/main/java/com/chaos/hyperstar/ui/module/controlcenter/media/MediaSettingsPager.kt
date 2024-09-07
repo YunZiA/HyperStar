@@ -176,7 +176,8 @@ fun AppHorizontalPager(
                                 key = "cover_scale_background_value",
                                 progress = 1.5f,
                                 maxValue = 2f,
-                                minValue = 1.1f
+                                minValue = 1.1f,
+                                decimalPlaces = 2
                             )
                             XMiuixSuperSliderSwitch(
                                 switchTitle = stringResource(R.string.is_cover_blur_background_title),
@@ -185,7 +186,8 @@ fun AppHorizontalPager(
                                 key = "cover_blur_background_value",
                                 progress = 50f,
                                 maxValue = 60f,
-                                minValue = 0f
+                                minValue = 0f,
+                                decimalPlaces = 2
                             )
                             XMiuixSuperSliderSwitch(
                                 switchTitle = stringResource(R.string.is_cover_dim_background_title),

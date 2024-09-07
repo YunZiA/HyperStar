@@ -26,7 +26,8 @@ fun XMiuixSlider(
     unit : String = "",
     minValue: Float = 0f,
     maxValue: Float = 1f,
-    progress: Float = 0.5f
+    progress: Float = 0.5f,
+    decimalPlaces : Int = 0
 
 ) {
     val effect = PreferencesUtil.getBoolean("is_progress_effect",false)
@@ -34,6 +35,7 @@ fun XMiuixSlider(
         modifier = Modifier.fillMaxWidth().padding(vertical = 15.dp)
     ){
         var x_progress by remember { mutableStateOf(progress) }
+
         Row(
             modifier = Modifier.fillMaxWidth()
                 .padding(horizontal = 28.dp)
@@ -44,7 +46,7 @@ fun XMiuixSlider(
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp)
             MiuixText(
-                text = x_progress.toString()+unit,
+                text = if (decimalPlaces == 0) x_progress.toInt().toString()+unit else x_progress.toString()+unit,
                 textAlign = TextAlign.End,
                 fontSize = 14.sp)
         }
@@ -58,6 +60,7 @@ fun XMiuixSlider(
             maxValue = maxValue,
             minValue = minValue,
             //dragShow = true,
+            decimalPlaces = decimalPlaces,
             modifier = Modifier
                 .padding(horizontal = 28.dp)
                 .padding(top = 10.dp)

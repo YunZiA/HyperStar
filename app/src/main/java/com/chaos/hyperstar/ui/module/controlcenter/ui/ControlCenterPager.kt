@@ -1,42 +1,37 @@
-package com.chaos.hyperstar.ui.module.controlcenter
+package com.chaos.hyperstar.ui.module.controlcenter.ui
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.MiuixActivitySuperArrow
+import com.chaos.hyperstar.ui.base.MiuixIntentSuperArrow
 import com.chaos.hyperstar.ui.base.SubMiuixTopAppBar
 import com.chaos.hyperstar.ui.base.XMiuixClasser
+import com.chaos.hyperstar.ui.base.XMiuixContentDropdown
 import com.chaos.hyperstar.ui.base.XMiuixSlider
 import com.chaos.hyperstar.ui.base.XMiuixSuperDropdown
 import com.chaos.hyperstar.ui.base.XMiuixSuperSwitch
+import com.chaos.hyperstar.ui.module.controlcenter.list.QsListViewSettings
 import com.chaos.hyperstar.ui.module.controlcenter.media.MediaSettingsActivity
 import com.chaos.hyperstar.ui.pagers.FPSMonitor
 import com.chaos.hyperstar.utils.PreferencesUtil
 import com.chaos.hyperstar.utils.Utils
 import getWindowSize
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
-import top.yukonga.miuix.kmp.basic.MiuixCard
 import top.yukonga.miuix.kmp.basic.MiuixLazyColumn
 import top.yukonga.miuix.kmp.basic.MiuixScaffold
 import top.yukonga.miuix.kmp.basic.MiuixSurface
-import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.rememberMiuixTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
@@ -127,20 +122,23 @@ fun AppHorizontalPager(
                         key = "qs_list_tile_color_for_icon"
                     )
                     XMiuixSuperSwitch(
-                        title = "标题内显",
-                        key = "list_tile_label_inside"
-                    )
-                    XMiuixSuperSwitch(
                         title = "标题超出跑马灯特效显示",
                         key = "list_tile_label_marquee"
                     )
-                    XMiuixSlider(
-                        title = "标题大小",
-                        key = "list_label_size",
-                        unit = "dp",
-                        maxValue = 25f,
-                        minValue = 0f,
-                        progress = 13f
+                    XMiuixContentDropdown(
+                        title = "标题显示样式",
+                        key = "is_list_label_mode",
+                        option = R.array.is_list_label_mode_entire,
+                        showOption = 2,
+                        activity = activity,
+                        content = {
+                            MiuixActivitySuperArrow(
+                                title = "磁铁布局",
+                                context = activity,
+                                activity = QsListViewSettings::class.java
+                            )
+
+                        }
                     )
                 }
             )

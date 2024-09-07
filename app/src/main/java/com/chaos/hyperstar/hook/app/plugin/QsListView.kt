@@ -1,12 +1,17 @@
 package com.chaos.hyperstar.hook.app.plugin
 
-import android.graphics.Bitmap
-import android.graphics.Color
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
 import android.text.TextUtils
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.get
 import com.chaos.hyperstar.hook.base.BaseHooker
 import com.chaos.hyperstar.hook.tool.starLog
@@ -21,14 +26,20 @@ import java.util.Objects
 
 class QsListView : BaseHooker() {
 
-    val labelInside = XSPUtils.getBoolean("list_tile_label_inside",false)
+    val labelMode = XSPUtils.getInt("is_list_label_mode",0)
     val labelSize = XSPUtils.getFloat("list_label_size",13f)
+    val labelWidth = XSPUtils.getFloat("list_label_width",100f)/100
     val labelMarquee = XSPUtils.getBoolean("list_tile_label_marquee",false)
     val tileColorForIcon = XSPUtils.getBoolean("qs_list_tile_color_for_icon",false)
+    val listSpacingY = XSPUtils.getFloat("list_spacing_y",100f)/100
+    val listLabelSpacingY = XSPUtils.getFloat("list_label_spacing_y",100f)/100
+    val qsTileRadius = XSPUtils.getBoolean("is_qs_tile_radius",false)
+    val listIconTop = if (labelMode == 2) XSPUtils.getFloat("list_icon_top", 0F)/100 else 8f
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
         startMethodsHook(classLoader)
+        qsTileRadius(classLoader)
     }
 
     private fun startMethodsHook(classLoader: ClassLoader?) {
@@ -37,102 +48,139 @@ class QsListView : BaseHooker() {
         val QSItemView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSItemView", classLoader)
         val QSTileItemView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemView", classLoader)
 
-        XposedHelpers.findAndHookConstructor(QSItemViewHolder,QSItemView,object : XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
-                starLog.log("QSItemViewHolder is find")
-                val qSItemView = XposedHelpers.callMethod(thisObj,"getQsItemView") as FrameLayout
+        if (labelMarquee || labelMode!=0 ){
 
-                val label = qSItemView.findViewByIdName("tile_label") as TextView
-                val icon = qSItemView.findViewByIdName("icon_frame") as FrameLayout
+            XposedHelpers.findAndHookConstructor(QSItemViewHolder,QSItemView,object : XC_MethodHook(){
+                override fun afterHookedMethod(param: MethodHookParam?) {
+                    super.afterHookedMethod(param)
+                    val thisObj = param?.thisObject
+                    starLog.log("QSItemViewHolder is find")
+                    val qSItemView = XposedHelpers.callMethod(thisObj,"getQsItemView") as FrameLayout
 
-                if (labelInside){
-                    label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 8f)
-                } else if (labelSize != 13f){
-                    label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
+                    val label = qSItemView.findViewByIdName("tile_label") as TextView
+                    val icon = qSItemView.findViewByIdName("icon_frame") as FrameLayout
+
+                    if (labelMode == 1){
+                        label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 8f)
+                        qSItemView.removeView(label)
+                        qSItemView.removeView(icon)
+                        qSItemView.addView(icon,0)
+                        qSItemView.addView(label,1)
+                        val layoutParam =  label.layoutParams
+                        layoutParam.width = icon.layoutParams.width/10*9
+                        label.layoutParams = layoutParam
+                    } else if (labelMode == 2){
+                        label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
+                        val layoutParam =  label.layoutParams
+                        layoutParam.width = (label.layoutParams.width*labelWidth).toInt()
+                        label.layoutParams = layoutParam
+                    }
+
+                    if(labelMarquee){
+                        label.ellipsize = TextUtils.TruncateAt.MARQUEE
+                        label.focusable = View.NOT_FOCUSABLE
+                        label.isSelected = true
+                        label.setSingleLine()
+                    }
+
+
+
                 }
+            })
+        }
 
-                if(labelMarquee){
-                    label.ellipsize = TextUtils.TruncateAt.MARQUEE
-                    label.focusable = View.NOT_FOCUSABLE
-                    label.isSelected = true
-                    label.setSingleLine()
-                }
-                if (labelInside){
-                    qSItemView.removeView(label)
-                    qSItemView.removeView(icon)
-                    qSItemView.addView(icon,0)
-                    qSItemView.addView(label,1)
-                    val layoutParam =  label.layoutParams
-                    layoutParam.width = icon.layoutParams.width
-                    label.layoutParams = layoutParam
-                }
-
-
-
-            }
-        })
 
         val CommonUtils = XposedHelpers.findClass("miui.systemui.util.CommonUtils", classLoader)
 
-        XposedHelpers.findAndHookMethod(QSTileItemView, "changeExpand", object : XC_MethodReplacement() {
+        if ( labelMode != 0 ){
+            val DrawableUtils = XposedHelpers.findClass("miui.systemui.util.DrawableUtils",classLoader)
 
-            override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-                val thisObj = param?.thisObject as FrameLayout
-                val label = thisObj.findViewByIdName("tile_label") as TextView
-                val isShowLabel = XposedHelpers.callMethod(thisObj,"getShowLabel") as Boolean
-                val y : Float
-                var space : Int = XposedHelpers.getIntField(thisObj,"containerHeight")
-                val labelHeight = XposedHelpers.getIntField(thisObj,"labelHeight")
-                if (isShowLabel){
-                    if (!labelInside){
-                        y = 0f
-                        space += labelHeight
+            XposedHelpers.findAndHookMethod(QSTileItemView, "changeExpand", object : XC_MethodReplacement() {
 
+                override fun replaceHookedMethod(param: MethodHookParam?): Any? {
+                    val thisObj = param?.thisObject as FrameLayout
+                    val label = thisObj.findViewByIdName("tile_label") as TextView
+                    val isShowLabel = XposedHelpers.callMethod(thisObj,"getShowLabel") as Boolean
+                    val y : Float
+                    var space : Int = XposedHelpers.getIntField(thisObj,"containerHeight")
+                    val labelHeight = XposedHelpers.getIntField(thisObj,"labelHeight")
+                    if (isShowLabel){
+                        if (labelMode == 2){
+                            y = 0f
+                            space += labelHeight
+                            space *= (space*listLabelSpacingY).toInt()
+
+                        }else if (labelMode == 1){
+
+                            y = 2f
+
+                        }
+                        else{
+                            return null
+                        }
                     }else{
-                        y = labelHeight.toFloat()/11.25f
+                        y = labelHeight.toFloat()
+                        space *= (space*listSpacingY).toInt()
+                    }
+                    label.translationY = y
+                    val setLayoutHeight = XposedHelpers.findMethodBestMatch(
+                        CommonUtils,"setLayoutHeight\$default",
+                        CommonUtils,Class.forName("android.view.View"), Int::class.java, Boolean::class.java,Int::class.java,Object::class.java
+                    )
+
+                    setLayoutHeight.invoke(CommonUtils.newInstance(),CommonUtils.newInstance(), thisObj, space, false, 2, null)
+
+                    return null;
+                }
+
+            })
+
+            val QSTileItemIconView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",classLoader)
+
+            var height :Int = 0
+
+
+            XposedHelpers.findAndHookMethod(QSTileItemIconView,"getProperIconSize",Drawable::class.java,object : XC_MethodHook(){
+                override fun afterHookedMethod(param: MethodHookParam?) {
+                    super.afterHookedMethod(param)
+                    height = param?.result as Int
+                }
+            })
+            XposedHelpers.findAndHookMethod(DrawableUtils, "combine",Drawable::class.java,Drawable::class.java,Int::class.java, object : XC_MethodReplacement() {
+                override fun replaceHookedMethod(param: MethodHookParam?): Any {
+                    val args: Array<Any>? = param?.args
+                    val dra = args?.get(0) as Drawable
+                    val dra2 = args.get(1) as Drawable
+                    val i = args.get(2) as Int
+
+                    val icon = LayerDrawable(arrayOf(dra, dra2))
+                    icon.setLayerGravity(1,i)
+
+                    if (height == 0) return icon
+                    icon.setLayerInsetBottom(1, (height/listIconTop).toInt())
+
+
+                    return icon
 
                     }
-                }else{
-                    y = labelHeight.toFloat()
+
+                })
+
+
+        }
+
+        if (tileColorForIcon || labelMode != 0){
+            XposedHelpers.findAndHookMethod(QSTileItemView, "updateTextAppearance", object : XC_MethodReplacement() {
+
+                override fun replaceHookedMethod(param: MethodHookParam?): Any? {
+
+                    return null
                 }
-                label.translationY = y
-                val setLayoutHeight = XposedHelpers.findMethodBestMatch(
-                    CommonUtils,"setLayoutHeight\$default",
-                    CommonUtils,Class.forName("android.view.View"), Int::class.java, Boolean::class.java,Int::class.java,Object::class.java
-                )
+            })
 
-                setLayoutHeight.invoke(CommonUtils.newInstance(),CommonUtils.newInstance(), thisObj, space, false, 2, null)
-                
-                return null;
-            }
+        }
 
-        })
 
-//        XposedHelpers.findAndHookMethod(QSTileItemView, "onFinishInflate", object : XC_MethodHook(){
-//            override fun beforeHookedMethod(param: MethodHookParam?) {
-//                super.beforeHookedMethod(param)
-//                val thisObj = param?.thisObject as FrameLayout
-//                val label = thisObj.findViewByIdName("tile_label") as TextView
-//
-//                if (labelInside){
-//                    label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 8f)
-//                } else if (labelSize != 13f){
-//                    label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
-//                }
-//
-//
-//            }
-//        })
-
-        XposedHelpers.findAndHookMethod(QSTileItemView, "updateTextAppearance", object : XC_MethodReplacement() {
-
-            override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-
-                return null
-            }
-        })
 
         if (tileColorForIcon){
             XposedHelpers.findAndHookMethod(QSTileItemView, "onStateUpdated",
@@ -190,14 +238,164 @@ class QsListView : BaseHooker() {
                             label.setTextColor(enable)
                         }
 
+                        //val ic = XposedHelpers.callMethod(thisObj,"getIcon")
+
+
+
                     }
+
+
                 })
+
+
 
         }
 
 
 
+
+    }
+
+    private fun qsTileRadius(classLoader: ClassLoader?) {
+
+        val radius: Int = XSPUtils.getInt("control_center_universal_corner_radius", 70)
+        val classTile = XposedHelpers.findClass(
+            "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
+            classLoader
+        )
+        if (qsTileRadius){
+            XposedHelpers.findAndHookMethod(
+                classTile,
+                "setCornerRadius",
+                Float::class.java,
+                object : XC_MethodHook() {
+                    override fun beforeHookedMethod(param: MethodHookParam) {
+
+                        param.args[0] = radius
+                    }
+
+                    override fun afterHookedMethod(param: MethodHookParam) {
+                    }
+                })
+
+        }
+
+        hookAllMethods(classLoader, "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
+            "updateIcon",
+            object : MethodHook {
+
+                override fun before(param: XC_MethodHook.MethodHookParam?) {
+                    if (qsTileRadius){
+                        val pluginContext: Context =
+                            XposedHelpers.getObjectField(param?.thisObject, "pluginContext") as Context;
+                        val warning: Int = pluginContext.getResources()
+                            .getIdentifier("qs_background_warning", "drawable", "miui.systemui.plugin");
+                        val enabled: Int = pluginContext.getResources()
+                            .getIdentifier("qs_background_enabled", "drawable", "miui.systemui.plugin");
+                        val restricted: Int = pluginContext.getResources().getIdentifier(
+                            "qs_background_restricted",
+                            "drawable",
+                            "miui.systemui.plugin"
+                        );
+                        val disabled: Int = pluginContext.getResources().getIdentifier(
+                            "qs_background_disabled",
+                            "drawable",
+                            "miui.systemui.plugin"
+                        );
+                        val unavailable: Int = pluginContext.getResources().getIdentifier(
+                            "qs_background_unavailable",
+                            "drawable",
+                            "miui.systemui.plugin"
+                        );
+                        val warningD: Drawable = pluginContext.getTheme().getDrawable(warning);
+                        val enabledD: Drawable = pluginContext.getTheme().getDrawable(enabled);
+                        val restrictedD: Drawable = pluginContext.getTheme().getDrawable(restricted);
+                        val disabledD: Drawable = pluginContext.getTheme().getDrawable(disabled);
+                        val unavailableD: Drawable = pluginContext.getTheme().getDrawable(unavailable);
+                        if (warningD is GradientDrawable) {
+                            warningD.cornerRadius = radius.toFloat()
+                        }
+                        if (enabledD is GradientDrawable) {
+                            enabledD.cornerRadius = radius.toFloat()
+                        }
+                        if (restrictedD is GradientDrawable) {
+                            restrictedD.cornerRadius = radius.toFloat()
+                        }
+                        if (disabledD is GradientDrawable) {
+                            disabledD.cornerRadius = radius.toFloat()
+                        }
+                        if (unavailableD is GradientDrawable) {
+                            unavailableD.cornerRadius = radius.toFloat()
+                        }
+
+                    }
+
+                }
+
+                override fun after(param: XC_MethodHook.MethodHookParam?) {
+                    if (labelMode == 0){
+                        return
+                    }
+                    val thisObj = param?.thisObject
+                    val Icon: ImageView =
+                        XposedHelpers.getObjectField(thisObj, "icon") as ImageView;
+
+                    val z = param?.args?.get(1) as Boolean
+
+                    if (z) {
+                        val combine = Icon.drawable
+
+                        if (combine !is LayerDrawable) {
+                            return
+                        }
+
+                        val num = combine.numberOfLayers
+
+                        val index = num - 1
+
+                        val invisibleDrawableCompat = combine.getDrawable(index)
+
+                        val icons: LayerDrawable
+
+                        if (num == 2) {
+                            val disabledBg = combine.getDrawable(0)
+                            icons = LayerDrawable(arrayOf(disabledBg, invisibleDrawableCompat))
+
+
+                        } else if (num == 3) {
+                            val disabledBg = combine.getDrawable(0)
+                            val enabledBg = combine.getDrawable(1)
+                            icons = LayerDrawable(
+                                arrayOf(
+                                    disabledBg,
+                                    enabledBg,
+                                    invisibleDrawableCompat
+                                )
+                            )
+
+                        } else {
+                            return
+                        }
+
+                        icons.setLayerGravity(index, Gravity.CENTER)
+                        icons.setLayerInsetBottom(index,
+                            (combine.getLayerHeight(index)/listIconTop).toInt()
+                        )
+                        icons.setLayerSize(
+                            index,
+                            combine.getLayerWidth(index),
+                            combine.getLayerHeight(index)
+                        )
+
+                        starLog.log("updateIcon do++${combine.getLayerHeight(index)/2/20}")
+                        Icon.setImageDrawable(icons)
+
+                    }
+
+
+                }
+            })
     }
 
 
-}
+    }

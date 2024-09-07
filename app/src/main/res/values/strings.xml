@@ -32,4 +32,5 @@
     <string name="show_title">SHOW</string>
     <string name="systemui">SYSTEM UI</string>
     <string name="progress_effect_title">Rounded Progress Bar</string>
+    <string name="title_activity_qs_list_view_settings">QsListViewSettings</string>
 </resources>

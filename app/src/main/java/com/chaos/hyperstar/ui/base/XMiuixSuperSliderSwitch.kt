@@ -22,7 +22,8 @@ fun XMiuixSuperSliderSwitch(
     key : String,
     minValue: Float = 0f,
     maxValue: Float = 1f,
-    progress: Float = 0.5f
+    progress: Float = 0.5f,
+    decimalPlaces : Int = 0
 ) {
     var MiuixSuperSwitchState by remember { mutableStateOf(SPUtils.getBoolean(switchKey,false)) }
     MiuixSuperSwitch(
@@ -43,7 +44,8 @@ fun XMiuixSuperSliderSwitch(
             key = key,
             progress = progress,
             maxValue = maxValue,
-            minValue = minValue
+            minValue = minValue,
+            decimalPlaces = decimalPlaces
         )
     }
 

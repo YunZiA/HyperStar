@@ -225,7 +225,6 @@ class QsListView : BaseHooker() {
 
                         val state:Int = XposedHelpers.getIntField(copy,"state")
                         val states = XposedHelpers.callMethod(Companion,"isRestrictedCompat",copy) as Boolean
-                        //starLog.log("onStateUpdated at ${mode.ordinal}  in ${ state} is ${states}")
 
                         val label = thisObj.findViewByIdName("tile_label") as TextView
                         val icon = XposedHelpers.callMethod(thisObj,"getIcon")
@@ -395,7 +394,6 @@ class QsListView : BaseHooker() {
                         }
                         icons.setLayerSize(index, width, height)
 
-                        starLog.log("updateIcon do++${combine.getLayerHeight(index)/2/20}")
                         Icon.setImageDrawable(icons)
 
                     }

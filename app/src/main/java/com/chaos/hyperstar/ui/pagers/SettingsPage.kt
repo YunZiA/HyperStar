@@ -47,70 +47,70 @@ fun SettingsPage(
     ) {
         item {
             XMiuixClasser(
-                title = stringResource(R.string.show_title),
-                content = {
-                    PMiuixSuperSwitch(
-                        title = stringResource(R.string.is_hide_icon_title),
-                        key = "is_hide_icon"
-                    )
+                title = stringResource(R.string.show_title)
+            ){
+                PMiuixSuperSwitch(
+                    title = stringResource(R.string.is_hide_icon_title),
+                    key = "is_hide_icon"
+                )
 
-                    MiuixSuperDropdown(
-                        title = stringResource(R.string.color_mode_title),
-                        items = activity.resources.getStringArray(R.array.color_mode_items).toList(),
-                        selectedIndex = colorMode.value,
-                        onSelectedIndexChange = {
-                            colorMode.value = it
-                            PreferencesUtil.putInt("color_mode",colorMode.value)
-                        }
-                    )
+                MiuixSuperDropdown(
+                    title = stringResource(R.string.color_mode_title),
+                    items = activity.resources.getStringArray(R.array.color_mode_items).toList(),
+                    selectedIndex = colorMode.value,
+                    onSelectedIndexChange = {
+                        colorMode.value = it
+                        PreferencesUtil.putInt("color_mode",colorMode.value)
+                    }
+                )
 
-                    MiuixSuperSwitch(
-                        title = stringResource(R.string.show_FPS_Monitor_title),
-                        checked = showFPSMonitor.value,
-                        onCheckedChange = {
-                            showFPSMonitor.value = it
-                            PreferencesUtil.putBoolean("show_FPS_Monitor",showFPSMonitor.value)
-                        }
-                    )
-                    MiuixSuperSwitch(
-                        title = stringResource(R.string.page_user_scroll_title),
-                        checked = enablePageUserScroll.value,
-                        onCheckedChange = {
-                            enablePageUserScroll.value = it
-                            PreferencesUtil.putBoolean("page_user_scroll",enablePageUserScroll.value)
-                        }
-                    )
-                    MiuixSuperSwitch(
-                        title = stringResource(R.string.top_Bar_blur_title),
-                        checked = enableTopBarBlur.value,
-                        onCheckedChange = {
-                            enableTopBarBlur.value = it
-                            PreferencesUtil.putBoolean("top_Bar_blur",enableTopBarBlur.value)
-                        }
-                    )
-                    MiuixSuperSwitch(
-                        title = stringResource(R.string.bottom_Bar_blur_title),
-                        checked = enableBottomBarBlur.value,
-                        onCheckedChange = {
-                            enableBottomBarBlur.value = it
-                            PreferencesUtil.putBoolean("bottom_Bar_blur",enableBottomBarBlur.value)
-                        }
-                    )
-                    MiuixSuperSwitch(
-                        title = stringResource(R.string.over_scroll_title),
-                        checked = if (enableOverscroll()) enableOverScroll.value else false,
-                        onCheckedChange = {
-                            enableOverScroll.value = it
-                            PreferencesUtil.putBoolean("over_scroll",enableOverScroll.value)
-                        },
-                        enabled = enableOverscroll(),
-                    )
-                    PMiuixSuperSwitch(
-                        title = stringResource(R.string.progress_effect_title),
-                        key = "is_progress_effect"
-                    )
-                }
-            )
+                MiuixSuperSwitch(
+                    title = stringResource(R.string.show_FPS_Monitor_title),
+                    checked = showFPSMonitor.value,
+                    onCheckedChange = {
+                        showFPSMonitor.value = it
+                        PreferencesUtil.putBoolean("show_FPS_Monitor",showFPSMonitor.value)
+                    }
+                )
+                MiuixSuperSwitch(
+                    title = stringResource(R.string.page_user_scroll_title),
+                    checked = enablePageUserScroll.value,
+                    onCheckedChange = {
+                        enablePageUserScroll.value = it
+                        PreferencesUtil.putBoolean("page_user_scroll",enablePageUserScroll.value)
+                    }
+                )
+                MiuixSuperSwitch(
+                    title = stringResource(R.string.top_Bar_blur_title),
+                    checked = enableTopBarBlur.value,
+                    onCheckedChange = {
+                        enableTopBarBlur.value = it
+                        PreferencesUtil.putBoolean("top_Bar_blur",enableTopBarBlur.value)
+                    }
+                )
+                MiuixSuperSwitch(
+                    title = stringResource(R.string.bottom_Bar_blur_title),
+                    checked = enableBottomBarBlur.value,
+                    onCheckedChange = {
+                        enableBottomBarBlur.value = it
+                        PreferencesUtil.putBoolean("bottom_Bar_blur",enableBottomBarBlur.value)
+                    }
+                )
+                MiuixSuperSwitch(
+                    title = stringResource(R.string.over_scroll_title),
+                    checked = if (enableOverscroll()) enableOverScroll.value else false,
+                    onCheckedChange = {
+                        enableOverScroll.value = it
+                        PreferencesUtil.putBoolean("over_scroll",enableOverScroll.value)
+                    },
+                    enabled = enableOverscroll(),
+                )
+                PMiuixSuperSwitch(
+                    title = stringResource(R.string.progress_effect_title),
+                    key = "is_progress_effect"
+                )
+
+            }
 
         }
     }

@@ -42,9 +42,9 @@ fun XMiuixClass(
 @Composable
 fun XMiuixClasser(
     title : String,
-    content: @Composable (() -> Unit),
     top : Dp = 0.dp,
-    bottom : Dp = 0.dp
+    bottom : Dp = 0.dp,
+    content: @Composable (() -> Unit),
 ){
     MiuixCard(
         modifier = Modifier

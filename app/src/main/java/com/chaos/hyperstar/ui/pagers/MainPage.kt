@@ -52,24 +52,24 @@ fun MainPage(
     ) {
         item {
             XMiuixClasser(
-                title = stringResource(R.string.systemui),
-                content = {
-                    MiuixActivitySuperArrow(
-                        leftIcon = R.drawable.icon_controlcenter,
-                        title = stringResource(R.string.controlcenter),
-                        context = activity,
-                        activity = ControlCenterSettings::class.java
+                title = stringResource(R.string.systemui)
+            ){
+                MiuixActivitySuperArrow(
+                    leftIcon = R.drawable.icon_controlcenter,
+                    title = stringResource(R.string.controlcenter),
+                    context = activity,
+                    activity = ControlCenterSettings::class.java
 
-                    )
-                    MiuixActivitySuperArrow(
-                        leftIcon = R.drawable.ic_sound_settings,
-                        title = stringResource(R.string.sound_settings),
-                        context = activity,
-                        activity = VolumeSettings::class.java
+                )
+                MiuixActivitySuperArrow(
+                    leftIcon = R.drawable.ic_sound_settings,
+                    title = stringResource(R.string.sound_settings),
+                    context = activity,
+                    activity = VolumeSettings::class.java
 
-                    )
-                }
-            )
+                )
+
+            }
 
         }
 

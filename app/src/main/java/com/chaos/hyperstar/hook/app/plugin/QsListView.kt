@@ -70,10 +70,12 @@ class QsListView : BaseHooker() {
                         layoutParam.width = icon.layoutParams.width/10*9
                         label.layoutParams = layoutParam
                     } else if (labelMode == 2){
+
                         label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
                         val layoutParam =  label.layoutParams
                         layoutParam.width = (label.layoutParams.width*labelWidth).toInt()
                         label.layoutParams = layoutParam
+
                     }
 
                     if(labelMarquee){
@@ -108,7 +110,7 @@ class QsListView : BaseHooker() {
                         if (labelMode == 2){
                             y = 0f
                             space += labelHeight
-                            space *= (space*listLabelSpacingY).toInt()
+                            space = (space*listLabelSpacingY).toInt()
 
                         }else if (labelMode == 1){
 
@@ -120,7 +122,7 @@ class QsListView : BaseHooker() {
                         }
                     }else{
                         y = labelHeight.toFloat()
-                        space *= (space*listSpacingY).toInt()
+                        space = (space*listSpacingY).toInt()
                     }
                     label.translationY = y
                     val setLayoutHeight = XposedHelpers.findMethodBestMatch(
@@ -157,7 +159,12 @@ class QsListView : BaseHooker() {
                     icon.setLayerGravity(1,i)
 
                     if (height == 0) return icon
-                    icon.setLayerInsetBottom(1, (height/listIconTop).toInt())
+                    if (listIconTop != 0f){
+                        icon.setLayerInsetBottom(1,
+                            (height/listIconTop).toInt()
+                        )
+
+                    }
 
 
                     return icon
@@ -352,18 +359,17 @@ class QsListView : BaseHooker() {
                         val num = combine.numberOfLayers
 
                         val index = num - 1
+                        val disabledBg = combine.getDrawable(0)
 
                         val invisibleDrawableCompat = combine.getDrawable(index)
 
                         val icons: LayerDrawable
 
                         if (num == 2) {
-                            val disabledBg = combine.getDrawable(0)
                             icons = LayerDrawable(arrayOf(disabledBg, invisibleDrawableCompat))
 
 
                         } else if (num == 3) {
-                            val disabledBg = combine.getDrawable(0)
                             val enabledBg = combine.getDrawable(1)
                             icons = LayerDrawable(
                                 arrayOf(
@@ -377,15 +383,17 @@ class QsListView : BaseHooker() {
                             return
                         }
 
+                        val height  = combine.getLayerHeight(index)
+                        val width = combine.getLayerWidth(index)
+
                         icons.setLayerGravity(index, Gravity.CENTER)
-                        icons.setLayerInsetBottom(index,
-                            (combine.getLayerHeight(index)/listIconTop).toInt()
-                        )
-                        icons.setLayerSize(
-                            index,
-                            combine.getLayerWidth(index),
-                            combine.getLayerHeight(index)
-                        )
+                        if (listIconTop != 0f){
+                            icons.setLayerInsetBottom(index,
+                                (height/listIconTop).toInt()
+                            )
+
+                        }
+                        icons.setLayerSize(index, width, height)
 
                         starLog.log("updateIcon do++${combine.getLayerHeight(index)/2/20}")
                         Icon.setImageDrawable(icons)

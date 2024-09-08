@@ -16,25 +16,6 @@ public abstract class BaseHooker {
 
     }
 
-    public enum ClassType{
-        load(false),res(false);
-
-        private boolean value;
-
-        ClassType(boolean value){
-            this.value=value;
-        }
-
-        public boolean getValue() {
-            return this.value;
-        }
-
-        public void setValue(boolean value) {
-            this.value = value;
-        }
-    }
-
-
     public void getLocalRes(Resources res){};
     public void doMethods(ClassLoader classLoader){};
     public void doMethods(XC_LoadPackage.LoadPackageParam lpparam){};

@@ -35,6 +35,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.chaos.hyperstar.ui.base.BaseActivity
+import com.chaos.hyperstar.ui.module.volume.VolumePager
 import com.chaos.hyperstar.utils.PreferencesUtil
 import com.chaos.hyperstar.utils.SPUtils
 import com.chaos.hyperstar.utils.Utils
@@ -43,30 +45,23 @@ import top.yukonga.miuix.kmp.basic.MiuixCard
 import top.yukonga.miuix.kmp.basic.MiuixText
 
 
-class MainActivity : ComponentActivity() {
+class MainActivity : BaseActivity() {
 
-    fun isModuleActive():Boolean{
+    fun isModuleActive() : Boolean{
         return false;
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            val colorMode = remember { mutableIntStateOf(PreferencesUtil.getInt("color_mode",0)) }
-            val darkMode = colorMode.intValue == 2 || (isSystemInDarkTheme() && colorMode.intValue == 0)
-            DisposableEffect(darkMode) {
-                enableEdgeToEdge(
-                    statusBarStyle = SystemBarStyle.auto(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT) { darkMode },
-                    navigationBarStyle = SystemBarStyle.auto(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT) { darkMode },)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    window.isNavigationBarContrastEnforced = false // Xiaomi moment, this code must be here
-                }
-                onDispose {}
-            }
-            Greeting(this,colorMode)
-
+    @Composable
+    override fun InitView(colorMode: MutableState<Int>?) {
+        val isRoot:Boolean = Utils.getRootPermission() == 0
+        RootDialog(!isRoot)
+        Log.d("ggc", "Greeting: "+isRoot)
+        if (colorMode != null) {
+            App(this,colorMode)
         }
+    }
+
+    override fun initData() {
         if (isModuleActive()){
             SPUtils.getInstance().init(this);
             SPUtils.setInt("control_center_universal_corner_radius",resources.getDimensionPixelSize(R.dimen.control_center_universal_corner_radius))
@@ -78,6 +73,7 @@ class MainActivity : ComponentActivity() {
         showLauncherIcon(PreferencesUtil.getBoolean("is_hide_icon",false))
 
     }
+
 
     fun showLauncherIcon(isHide: Boolean) {
         val packageManager = this.packageManager
@@ -97,19 +93,7 @@ class MainActivity : ComponentActivity() {
 
 }
 
-@Composable
-private fun Greeting(
-    activity: ComponentActivity?,
-    colorMode: MutableState<Int>,
-    ) {
-    //MySwitch(modifier = modifier,"你好")
-    val isRoot:Boolean = Utils.getRootPermission() == 0
-    RootDialog(!isRoot)
-    Log.d("ggc", "Greeting: "+isRoot)
-    App(activity,colorMode)
 
-
-}
 
 @Composable
 fun RootDialog(showDialog: Boolean) {
@@ -198,11 +182,5 @@ fun MySwitch(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-private fun GreetingPreview() {
-    val colorMode = remember { mutableIntStateOf(0) }
-    App(null,colorMode)
-}
 
 

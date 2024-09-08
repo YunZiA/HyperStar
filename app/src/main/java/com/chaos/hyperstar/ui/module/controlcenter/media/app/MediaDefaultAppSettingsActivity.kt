@@ -91,10 +91,6 @@ class MediaDefaultAppSettingsActivity : ComponentActivity() {
 
             appBeanList.add(bean)
 
-            //Toast.makeText(this,app_name.toString()+package_name,Toast.LENGTH_SHORT).show()
-            //Log.d("ggc", "processAppInfo: "+app_name+package_name)
-            //appIconlist.put(package_name, packageManager.getApplicationIcon(applicationInfo))
-            //appListDB.add(values)
             values.clear()
         }
     }

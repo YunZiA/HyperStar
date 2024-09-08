@@ -15,11 +15,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.MiuixActivitySuperArrow
-import com.chaos.hyperstar.ui.base.MiuixIntentSuperArrow
 import com.chaos.hyperstar.ui.base.SubMiuixTopAppBar
 import com.chaos.hyperstar.ui.base.XMiuixClasser
 import com.chaos.hyperstar.ui.base.XMiuixContentDropdown
-import com.chaos.hyperstar.ui.base.XMiuixSlider
 import com.chaos.hyperstar.ui.base.XMiuixSuperDropdown
 import com.chaos.hyperstar.ui.base.XMiuixSuperSwitch
 import com.chaos.hyperstar.ui.module.controlcenter.list.QsListViewSettings
@@ -88,7 +86,7 @@ fun AppHorizontalPager(
     activity : ComponentActivity,
     padding: PaddingValues,
     enableOverScroll: Boolean,
-    topAppBarScrollBehavior : MiuixScrollBehavior
+    topAppBarScrollBehavior : MiuixScrollBehavior,
 ) {
     MiuixLazyColumn(
         modifier = Modifier.height(getWindowSize().height.dp),

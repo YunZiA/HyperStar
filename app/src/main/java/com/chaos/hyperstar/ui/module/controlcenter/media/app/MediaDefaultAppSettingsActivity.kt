@@ -5,11 +5,11 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -18,6 +18,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
+import com.chaos.hyperstar.ui.module.controlcenter.media.app.ui.MediaSettingsPager
 import com.chaos.hyperstar.ui.module.ui.theme.HyperStarTheme
 import com.chaos.hyperstar.utils.PreferencesUtil
 
@@ -29,8 +30,11 @@ class MediaDefaultAppSettingsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val colorMode = remember { mutableIntStateOf(PreferencesUtil.getInt("color_mode",0)) }
-            DisposableEffect(isSystemInDarkTheme()) {
-                enableEdgeToEdge()
+            val darkMode = colorMode.intValue == 2 || (isSystemInDarkTheme() && colorMode.intValue == 0)
+            DisposableEffect(darkMode) {
+                enableEdgeToEdge(
+                    statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT) { darkMode },
+                    navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT) { darkMode },)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     window.isNavigationBarContrastEnforced = false // Xiaomi moment, this code must be here
                 }

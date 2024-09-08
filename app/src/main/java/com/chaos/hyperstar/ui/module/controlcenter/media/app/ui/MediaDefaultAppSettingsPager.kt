@@ -1,4 +1,4 @@
-package com.chaos.hyperstar.ui.module.controlcenter.media.app
+package com.chaos.hyperstar.ui.module.controlcenter.media.app.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
@@ -19,9 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -30,36 +28,22 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.ActivityPager
-import com.chaos.hyperstar.ui.base.SubMiuixTopAppBar
+import com.chaos.hyperstar.ui.module.controlcenter.media.app.MediaDefaultAppSettingsActivity
 
-import com.chaos.hyperstar.ui.pagers.FPSMonitor
-import com.chaos.hyperstar.utils.PreferencesUtil
 import com.chaos.hyperstar.utils.SPUtils
 import com.chaos.hyperstar.utils.Utils
 import com.google.accompanist.drawablepainter.DrawablePainter
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import top.yukonga.miuix.kmp.MiuixScrollBehavior
-import top.yukonga.miuix.kmp.basic.MiuixBox
 import top.yukonga.miuix.kmp.basic.MiuixCard
 import top.yukonga.miuix.kmp.basic.MiuixCheckbox
 import top.yukonga.miuix.kmp.basic.MiuixLazyColumn
-import top.yukonga.miuix.kmp.basic.MiuixScaffold
-import top.yukonga.miuix.kmp.basic.MiuixSurface
 import top.yukonga.miuix.kmp.basic.MiuixText
-import top.yukonga.miuix.kmp.rememberMiuixTopAppBarState
-import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.createRipple
 
@@ -74,6 +58,7 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
             Utils.rootShell("killall com.android.systemui")
         },
     ){ topAppBarScrollBehavior,padding,enableOverScroll->
+
         val appLists = remember { mutableStateOf(activity.appList) }
         val isLoading = remember { mutableStateOf(true) }
         val isApp = remember { mutableStateOf(SPUtils.getString("media_default_app_package","")) }
@@ -120,7 +105,6 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
                 contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+28.dp),
                 topAppBarScrollBehavior = topAppBarScrollBehavior
             ) {
-                //Log.d("ggc",""+appLists.value?.size)
 
                 appLists.value?.let { apps ->
                     items(apps.size) { index ->
@@ -203,24 +187,7 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
 
 
 }
-//@Composable
-//fun ActivityPager(activityTitle: String, activity: MediaDefaultAppSettingsActivity, endClick: () -> Unit, contents: () -> Unit, function: @Composable (() -> Unit?)) {
-//
-//}
 
-@Composable
-fun AppHorizontalPager(
-    activity : MediaDefaultAppSettingsActivity,
-    padding: PaddingValues,
-    enableOverScroll: Boolean,
-    topAppBarScrollBehavior : MiuixScrollBehavior,
-) {
-
-
-
-
-//    activity.appList?.get(it)?.label ?: "null"
-}
 
 @Composable
 fun ShowLoading() {

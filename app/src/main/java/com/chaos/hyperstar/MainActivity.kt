@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
@@ -43,8 +44,6 @@ import top.yukonga.miuix.kmp.basic.MiuixText
 
 
 class MainActivity : ComponentActivity() {
-    //var isModuleActive : Boolean = false
-
 
     fun isModuleActive():Boolean{
         return false;
@@ -54,9 +53,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val colorMode = remember { mutableIntStateOf(PreferencesUtil.getInt("color_mode",0))}
-            DisposableEffect(isSystemInDarkTheme()) {
-                enableEdgeToEdge()
+            val colorMode = remember { mutableIntStateOf(PreferencesUtil.getInt("color_mode",0)) }
+            val darkMode = colorMode.intValue == 2 || (isSystemInDarkTheme() && colorMode.intValue == 0)
+            DisposableEffect(darkMode) {
+                enableEdgeToEdge(
+                    statusBarStyle = SystemBarStyle.auto(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT) { darkMode },
+                    navigationBarStyle = SystemBarStyle.auto(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT) { darkMode },)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     window.isNavigationBarContrastEnforced = false // Xiaomi moment, this code must be here
                 }

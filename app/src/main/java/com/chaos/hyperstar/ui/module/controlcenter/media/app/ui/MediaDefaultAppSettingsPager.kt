@@ -7,6 +7,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -14,6 +15,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,7 +45,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
@@ -56,6 +61,7 @@ import com.chaos.hyperstar.ui.base.ActivityPager
 import com.chaos.hyperstar.ui.base.XMiuixTextField
 import com.chaos.hyperstar.ui.module.controlcenter.media.app.AppInfo
 import com.chaos.hyperstar.ui.module.controlcenter.media.app.MediaDefaultAppSettingsActivity
+import com.chaos.hyperstar.utils.EventState
 
 import com.chaos.hyperstar.utils.SPUtils
 import com.chaos.hyperstar.utils.Utils
@@ -101,17 +107,6 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
                 isLoading.value = false
             }
         }
-
-//        LaunchedEffect(isSearch.value) {
-//            coroutineScope.launch {
-//                val result = withContext(Dispatchers.IO) {
-//                    activity.appListDB?.searchAPPlist(activity,text)
-//
-//                }
-//                appLists.value = result
-//                isSearch.value = false
-//            }
-//        }
 
         if (isSearch.value){
             appLists.value = activity.searchApp(text)
@@ -309,7 +304,6 @@ fun ShowLoading() {
     )
 }
 
-
 @Composable
 fun AppItem(
     app: AppInfo,
@@ -319,11 +313,18 @@ fun AppItem(
     val packageName = app.package_name
     var isSelect = packageName == isApp.value // 直接比较，不需要用 mutableStateOf
 
+    var eventState by remember { mutableStateOf(EventState.Idle) }
+    val scale by animateFloatAsState(if (eventState == EventState.Pressed) 0.90f else 1f)
+
     MiuixCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 28.dp)
-            .padding(top = 10.dp),
+            .padding(top = 10.dp)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            },
 
         color = if (isSelect) colorScheme.dropdownSelect  else colorScheme.primaryContainer
     ) {
@@ -341,6 +342,16 @@ fun AppItem(
                     isApp.value = if (isSelect) "" else packageName
                     isSelect = !isSelect
                     SPUtils.setString("media_default_app_package", isApp.value)
+                }.pointerInput(eventState) {
+                    awaitPointerEventScope {
+                        eventState = if (eventState == EventState.Pressed) {
+                            waitForUpOrCancellation()
+                            EventState.Idle
+                        } else {
+                            awaitFirstDown(false)
+                            EventState.Pressed
+                        }
+                    }
                 }
         ) {
             Box(

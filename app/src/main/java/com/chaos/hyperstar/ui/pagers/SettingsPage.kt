@@ -15,14 +15,13 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.chaos.hyperstar.R
+import com.chaos.hyperstar.ui.base.PMiuixSuperDropdown
 import com.chaos.hyperstar.ui.base.PMiuixSuperSwitch
 import com.chaos.hyperstar.ui.base.XMiuixClasser
 import com.chaos.hyperstar.utils.PreferencesUtil
 import getWindowSize
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.MiuixSuperDropdown
-import top.yukonga.miuix.kmp.MiuixSuperSwitch
-import top.yukonga.miuix.kmp.basic.MiuixCard
 import top.yukonga.miuix.kmp.basic.MiuixLazyColumn
 import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.utils.enableOverscroll
@@ -54,9 +53,10 @@ fun SettingsPage(
                     key = "is_hide_icon"
                 )
 
-                MiuixSuperDropdown(
+                PMiuixSuperDropdown(
                     title = stringResource(R.string.color_mode_title),
-                    items = activity.resources.getStringArray(R.array.color_mode_items).toList(),
+                    option = R.array.color_mode_items,
+                    activity = activity,
                     selectedIndex = colorMode.value,
                     onSelectedIndexChange = {
                         colorMode.value = it
@@ -64,7 +64,7 @@ fun SettingsPage(
                     }
                 )
 
-                MiuixSuperSwitch(
+                PMiuixSuperSwitch(
                     title = stringResource(R.string.show_FPS_Monitor_title),
                     checked = showFPSMonitor.value,
                     onCheckedChange = {
@@ -72,7 +72,7 @@ fun SettingsPage(
                         PreferencesUtil.putBoolean("show_FPS_Monitor",showFPSMonitor.value)
                     }
                 )
-                MiuixSuperSwitch(
+                PMiuixSuperSwitch(
                     title = stringResource(R.string.page_user_scroll_title),
                     checked = enablePageUserScroll.value,
                     onCheckedChange = {
@@ -80,7 +80,7 @@ fun SettingsPage(
                         PreferencesUtil.putBoolean("page_user_scroll",enablePageUserScroll.value)
                     }
                 )
-                MiuixSuperSwitch(
+                PMiuixSuperSwitch(
                     title = stringResource(R.string.top_Bar_blur_title),
                     checked = enableTopBarBlur.value,
                     onCheckedChange = {
@@ -88,7 +88,7 @@ fun SettingsPage(
                         PreferencesUtil.putBoolean("top_Bar_blur",enableTopBarBlur.value)
                     }
                 )
-                MiuixSuperSwitch(
+                PMiuixSuperSwitch(
                     title = stringResource(R.string.bottom_Bar_blur_title),
                     checked = enableBottomBarBlur.value,
                     onCheckedChange = {
@@ -96,7 +96,7 @@ fun SettingsPage(
                         PreferencesUtil.putBoolean("bottom_Bar_blur",enableBottomBarBlur.value)
                     }
                 )
-                MiuixSuperSwitch(
+                PMiuixSuperSwitch(
                     title = stringResource(R.string.over_scroll_title),
                     checked = if (enableOverscroll()) enableOverScroll.value else false,
                     onCheckedChange = {
@@ -115,3 +115,8 @@ fun SettingsPage(
         }
     }
 }
+
+
+
+
+

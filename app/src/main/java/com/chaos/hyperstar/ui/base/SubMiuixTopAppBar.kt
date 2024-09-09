@@ -40,10 +40,8 @@ fun SubMiuixTopAppBar(
                 Icon(
                     ImageVector.vectorResource(R.drawable.bar_back__exit),
                     contentDescription = "back",
-        //                               modifier = Modifier.size(20.dp),
                     tint = colorScheme.onPrimary)
-
-                }
+            }
 
         },
         actions = {
@@ -56,7 +54,6 @@ fun SubMiuixTopAppBar(
                     Icon(
                         ImageVector.vectorResource(R.drawable.ic_menu_refresh),
                         contentDescription = "restart",
-        //                                modifier = Modifier.size(20.dp),
                         tint = colorScheme.onPrimary)
 
                 }

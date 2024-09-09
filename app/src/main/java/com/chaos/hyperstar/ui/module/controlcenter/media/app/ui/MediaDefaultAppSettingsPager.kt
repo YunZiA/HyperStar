@@ -1,5 +1,8 @@
+
 package com.chaos.hyperstar.ui.module.controlcenter.media.app.ui
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -9,6 +12,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,18 +24,37 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.wear.compose.material.Icon
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.ActivityPager
+import com.chaos.hyperstar.ui.base.XMiuixTextField
+import com.chaos.hyperstar.ui.module.controlcenter.media.app.AppInfo
 import com.chaos.hyperstar.ui.module.controlcenter.media.app.MediaDefaultAppSettingsActivity
 
 import com.chaos.hyperstar.utils.SPUtils
@@ -62,18 +85,40 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
         val appLists = remember { mutableStateOf(activity.appList) }
         val isLoading = remember { mutableStateOf(true) }
         val isApp = remember { mutableStateOf(SPUtils.getString("media_default_app_package","")) }
+        val isSearch = remember { mutableStateOf(false) }
 
         val coroutineScope = rememberCoroutineScope()
+
+        val focusManager = LocalFocusManager.current
+        var text by remember { mutableStateOf("") }
 
         LaunchedEffect(Unit) {
             coroutineScope.launch {
                 val result = withContext(Dispatchers.IO) {
-                    activity.getAllAppInfo(ctx = activity, isFilterSystem = true)
+                    activity.getAllAppInfo(isFilterSystem = true)
                 }
                 appLists.value = result
                 isLoading.value = false
             }
         }
+
+//        LaunchedEffect(isSearch.value) {
+//            coroutineScope.launch {
+//                val result = withContext(Dispatchers.IO) {
+//                    activity.appListDB?.searchAPPlist(activity,text)
+//
+//                }
+//                appLists.value = result
+//                isSearch.value = false
+//            }
+//        }
+
+        if (isSearch.value){
+            appLists.value = activity.searchApp(text)
+            isSearch.value = false
+        }
+
+
 
         AnimatedVisibility (
             isLoading.value,
@@ -86,11 +131,12 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 ShowLoading()
                 MiuixText(
                     text = "正在加载~",
                 )
-                //Spacer(modifier = Modifier.height(100.dp))
+
             }
 
         }
@@ -100,88 +146,130 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
             enter = fadeIn(),
             exit = fadeOut()
         ){
-            MiuixLazyColumn(
-                enableOverScroll = enableOverScroll,
-                contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+28.dp),
-                topAppBarScrollBehavior = topAppBarScrollBehavior
+            ConstraintLayout(
+                modifier = Modifier
+                    .padding(top = padding.calculateTopPadding() + 14.dp )
+                    .fillMaxSize()
             ) {
+                val (list,search)=createRefs()
 
-                appLists.value?.let { apps ->
-                    items(apps.size) { index ->
-                        val app = apps[index]
-                        val label = app.label
-                        val packageName = app.package_name
-                        var isSelect = packageName == isApp.value // 直接比较，不需要用 mutableStateOf
+                MiuixLazyColumn(
+                    modifier = Modifier.constrainAs(list){
+                        top.linkTo(search.bottom)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
 
-                        MiuixCard(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 28.dp)
-                                .padding(top = 10.dp),
+                    }.fillMaxSize(),
+                    enableOverScroll = enableOverScroll,
+                    contentPadding = PaddingValues(top = 35.dp, bottom = padding.calculateBottomPadding()+68.dp),
+                    topAppBarScrollBehavior = topAppBarScrollBehavior
+                ) {
 
-                            color = if (isSelect) colorScheme.dropdownSelect  else colorScheme.primaryContainer
+                    appLists.value?.forEachIndexed { index, apps->
+
+                        item {
+                            AppItem(apps, isApp)
+                        }
+                    }
+
+                }
+                Box(
+
+                    Modifier.background(colorScheme.background)
+                        .constrainAs(search) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+
+                    },
+                ) {
+                    MiuixCard(
+                        modifier = Modifier
+                            .padding(bottom = 10.dp)
+                            .padding(horizontal = 24.dp),
+                        insideMargin = DpSize(5.dp,5.dp),
+                        cornerRadius = 18.dp
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
                         ) {
-
-                            Row(
-
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween,
+                            XMiuixTextField(
+                                value = text,
+                                cornerRadius = 13.dp,
+                                onValueChange = { text = it },
+                                label = "应用名称",
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable(
-                                        interactionSource = null,
-                                        indication = createRipple()
-                                    ) {
-                                        isApp.value = if (isSelect) "" else packageName
-                                        isSelect = !isSelect
-                                        SPUtils.setString("media_default_app_package",isApp.value)
-                                    }
+                                    .padding(vertical = 0.dp)
+                                    .weight(1f),
+                                keyboardActions = KeyboardActions(onDone = {
+                                    isSearch.value = true
+                                    focusManager.clearFocus()
+                                }),
+                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                                singleLine = true
+                            )
+//                        VerticalDivider(
+//                            modifier = Modifier
+//                                .width(1.dp)
+//                                .height(30.dp)
+//                                .padding(horizontal = 5.dp),
+//                            color = colorScheme.textFieldSub
+//                        )
+                            Button(
+                                modifier = Modifier.padding(end = 2.dp),
+                                onClick = {
+                                    //Toast.makeText(activity,text,Toast.LENGTH_SHORT).show()
+                                    isSearch.value = true
+                                    focusManager.clearFocus()
+                                },
+                                contentPadding = PaddingValues(10.dp,16.dp),
+                                shape = RoundedCornerShape(13.dp),
+                                colors = ButtonColors(Color.Transparent, Color.Transparent,Color.Transparent,Color.Transparent)
                             ) {
-                                Box(
-                                    modifier = Modifier
-                                        .padding(start = 16.dp, top = 16.dp, bottom = 16.dp,end = 8.dp)
-                                ){
-                                    app.icon?.let { icon ->
-                                        Image(
-                                            modifier = Modifier
-                                                .size(40.dp),
-                                            painter = DrawablePainter(icon),
-                                            contentDescription = label
-                                        )
-                                    }
-
-                                }
-                                MiuixText(
-                                    text = label,
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .align(Alignment.CenterVertically),
-                                    color = if (isSelect) colorScheme.primary else colorScheme.onBackground
+                                Icon(
+                                    ImageVector.vectorResource(R.drawable.ic_search_icon),
+                                    contentDescription = "back",
+                                    Modifier.size(25.dp),
+                                    tint = colorScheme.onPrimary
                                 )
-                                Box(
-                                    modifier = Modifier
-                                        .padding(start = 8.dp, top = 16.dp, bottom = 16.dp,end = 16.dp)
-                                ){
-                                    MiuixCheckbox(
-                                        modifier = Modifier
-                                            .padding(start = 8.dp),
-                                        enabled = true,
-                                        checked = isSelect,
-                                        onCheckedChange = {
-                                            isApp.value = if (isSelect) "" else packageName
-                                            isSelect = !isSelect
-                                            SPUtils.setString("media_default_app_package",isApp.value)
-                                        } // 如果需要处理选中变化，可以在这里添加逻辑
-                                    )
-
-                                }
-
+//                            MiuixText(
+//                                text = "搜索",
+//                                textAlign = TextAlign.Center,
+//                                fontWeight = FontWeight.Medium,
+//                                fontSize = 16.sp,
+//                                color = colorScheme.primary
+//                            )
                             }
+//                        BaseButton(
+//                            modifier = Modifier.padding(start =12.dp,end = 20.dp),
+//                            onClick = {
+//                                Toast.makeText(activity,text,Toast.LENGTH_SHORT).show()
+//                                focusManager.clearFocus()
+//                                      },
+//                        ){
+//                            MiuixText(
+//                                text = "搜索",
+//                                textAlign = TextAlign.Center,
+//                                fontWeight = FontWeight.Medium,
+//                                fontSize = 16.sp,
+//                                color = colorScheme.primary
+//                            )
+//                        }
                         }
                     }
                 }
 
+
+
+
             }
+
+
+
+
+
         }
     }
 
@@ -211,6 +299,7 @@ fun ShowLoading() {
 
     // 旋转的图片 - rotate(rotation.value)
     Image(
+        colorFilter = ColorFilter.tint(colorScheme.onPrimary),
         painter = painterResource(id = R.drawable.loading_progress),
         contentDescription = null,
         modifier = Modifier
@@ -218,5 +307,86 @@ fun ShowLoading() {
             .padding(15.dp)
             .rotate(rotation.value)
     )
+}
+
+
+@Composable
+fun AppItem(
+    app: AppInfo,
+    isApp : MutableState<String>
+){
+    val label = app.label
+    val packageName = app.package_name
+    var isSelect = packageName == isApp.value // 直接比较，不需要用 mutableStateOf
+
+    MiuixCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 28.dp)
+            .padding(top = 10.dp),
+
+        color = if (isSelect) colorScheme.dropdownSelect  else colorScheme.primaryContainer
+    ) {
+
+        Row(
+
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(
+                    interactionSource = null,
+                    indication = createRipple()
+                ) {
+                    isApp.value = if (isSelect) "" else packageName
+                    isSelect = !isSelect
+                    SPUtils.setString("media_default_app_package", isApp.value)
+                }
+        ) {
+            Box(
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 16.dp, bottom = 16.dp,end = 8.dp)
+            ){
+                app.icon?.let { icon ->
+                    Image(
+                        modifier = Modifier
+                            .size(40.dp),
+                        painter = DrawablePainter(icon),
+                        contentDescription = label
+                    )
+                }
+                if (app.icon ==  null){
+                    Log.d("ggc","app.icon is null ")
+
+                }
+
+            }
+            MiuixText(
+                text = label,
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically),
+                color = if (isSelect) colorScheme.primary else colorScheme.onBackground
+            )
+            Box(
+                modifier = Modifier
+                    .padding(start = 8.dp, top = 16.dp, bottom = 16.dp,end = 16.dp)
+            ){
+                MiuixCheckbox(
+                    modifier = Modifier
+                        .padding(start = 8.dp),
+                    enabled = true,
+                    checked = isSelect,
+                    onCheckedChange = {
+                        isApp.value = if (isSelect) "" else packageName
+                        isSelect = !isSelect
+                        SPUtils.setString("media_default_app_package",isApp.value)
+                    } // 如果需要处理选中变化，可以在这里添加逻辑
+                )
+
+            }
+
+        }
+    }
 }
 

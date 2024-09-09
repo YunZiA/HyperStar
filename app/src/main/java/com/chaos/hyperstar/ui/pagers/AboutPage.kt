@@ -127,7 +127,7 @@ fun ThirdPage(
 
             XMiuixClasser(
                 title = stringResource(R.string.references_title),
-                bottom = 12.dp
+                bottom = 0.dp
             ){
                 MiuixIntentSuperArrow(
                     title = "miuix-kotlin-multiplatform",

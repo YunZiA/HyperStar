@@ -57,6 +57,7 @@ import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.rememberMiuixTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
+import kotlin.math.log
 
 @OptIn(FlowPreview::class)
 @Composable
@@ -88,15 +89,13 @@ fun UITest(
         NavigationItem(stringResource(R.string.about_page_title), Icons.Default.Info),
     )
 
+    var pagerTitle by remember { mutableStateOf(items[targetPage].label) }
+
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.debounce(150).collectLatest {
             targetPage = pagerState.currentPage
+            pagerTitle = items[pagerState.currentPage].label
         }
-    }
-
-    var TopAppBar_title by remember { mutableStateOf(items[0].label) }
-    var largeTitle by remember {
-        mutableStateOf(TopAppBar_title)
     }
 
     val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
@@ -118,8 +117,8 @@ fun UITest(
             topBar = {
                 MiuixTopAppBar(
                     color = if (enableTopBarBlur.value) Color.Transparent else colorScheme.background,
-                    title = TopAppBar_title,
-                    largeTitle = largeTitle,
+                    title = pagerTitle,
+                    largeTitle = if (targetPage == 2) "" else pagerTitle,
                     scrollBehavior = currentScrollBehavior,
                     actions = {
                         IconButton(
@@ -127,8 +126,6 @@ fun UITest(
                             onClick = {
                                 show.value = !show.value
                                 Log.d("ggc", "IconButton: onClick")
-                                //val res:String = Utils.rootShell("killall com.android.systemui")
-                                //Log.d("ggc",res)
                             }) {
 
 
@@ -149,13 +146,6 @@ fun UITest(
                     selected = targetPage,
                     onClick = { index ->
                         targetPage = index
-                        TopAppBar_title = items.get(index).label
-                        if (index != 2){
-                            largeTitle = items.get(index).label
-                        }else{
-                            largeTitle = ""
-
-                        }
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(index)
                         }
@@ -249,32 +239,43 @@ fun AppHorizontalPager(
         pagerState = pagerState,
         userScrollEnabled = enablePageUserScroll.value,
         pageContent = { page ->
+
             when (page) {
-                0 -> MainPage(
-                    activity = activity,
-                    topAppBarScrollBehavior = topAppBarScrollBehaviorList[0],
-                    padding = padding,
-                    enableOverScroll = enableOverScroll.value,
-                )
 
-                1 -> SettingsPage(
-                    activity = activity,
-                    topAppBarScrollBehavior = topAppBarScrollBehaviorList[1],
-                    padding = padding,
-                    colorMode = colorMode,
-                    showFPSMonitor = showFPSMonitor,
-                    enablePageUserScroll = enablePageUserScroll,
-                    enableTopBarBlur = enableTopBarBlur,
-                    enableBottomBarBlur = enableBottomBarBlur,
-                    enableOverScroll = enableOverScroll,
-                )
+                0 ->{
+                    MainPage(
+                        activity = activity,
+                        topAppBarScrollBehavior = topAppBarScrollBehaviorList[0],
+                        padding = padding,
+                        enableOverScroll = enableOverScroll.value,
+                    )
 
-                else -> ThirdPage(
-                    activity = activity,
-                    topAppBarScrollBehavior = topAppBarScrollBehaviorList[2],
-                    padding = padding,
-                    enableOverScroll = enableOverScroll.value,
-                )
+
+                }
+
+
+                1 -> {
+                    SettingsPage(
+                        activity = activity,
+                        topAppBarScrollBehavior = topAppBarScrollBehaviorList[1],
+                        padding = padding,
+                        colorMode = colorMode,
+                        showFPSMonitor = showFPSMonitor,
+                        enablePageUserScroll = enablePageUserScroll,
+                        enableTopBarBlur = enableTopBarBlur,
+                        enableBottomBarBlur = enableBottomBarBlur,
+                        enableOverScroll = enableOverScroll,
+                    )
+                }
+
+                else -> {
+                    ThirdPage(
+                        activity = activity,
+                        topAppBarScrollBehavior = topAppBarScrollBehaviorList[2],
+                        padding = padding,
+                        enableOverScroll = enableOverScroll.value,
+                    )
+                }
             }
         }
     )

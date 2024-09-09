@@ -80,11 +80,11 @@ fun ControlCenterPager(
                     title = "标题显示样式",
                     key = "is_list_label_mode",
                     option = R.array.is_list_label_mode_entire,
-                    showOption = 0,
+                    showOption = 2,
                     activity = activity,
                 ){
                     MiuixActivitySuperArrow(
-                        title = "磁铁布局",
+                        title = "磁贴布局",
                         context = activity,
                         activity = QsListViewSettings::class.java
                     )

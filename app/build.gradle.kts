@@ -78,6 +78,7 @@ android {
 }
 
 dependencies {
+    implementation (libs.androidx.constraintlayout.compose)
     implementation (libs.accompanist.drawablepainter)
     implementation (libs.androidx.recyclerview)
     implementation(libs.androidx.compose.material)

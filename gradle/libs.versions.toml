@@ -3,6 +3,7 @@ accompanistDrawablepainter = "0.35.2-beta"
 api = "82"
 agp = "8.5.2"
 compilerVersion = "1.5.15"
+constraintlayoutComposeVersion = "1.0.1"
 ezxhelper = "2.0.8"
 foundation = "1.7.0"
 kotlin = "2.0.10"
@@ -21,6 +22,7 @@ constraintlayout = "2.1.4"
 
 [libraries]
 accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanistDrawablepainter" }
+androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutComposeVersion" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
 compiler = { module = "androidx.compose.compiler:compiler", version.ref = "compilerVersion" }
 ezxhelper = { group = "com.github.kyuubiran", name = "ezxhelper", version.ref = "ezxhelpers"}

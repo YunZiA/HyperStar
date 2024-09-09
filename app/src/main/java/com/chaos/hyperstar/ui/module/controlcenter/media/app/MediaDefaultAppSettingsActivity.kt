@@ -5,28 +5,20 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.os.Build
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.isSystemInDarkTheme
+import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.tooling.preview.Preview
 import com.chaos.hyperstar.ui.base.BaseActivity
 import com.chaos.hyperstar.ui.module.controlcenter.media.app.ui.MediaSettingsPager
-import com.chaos.hyperstar.ui.module.ui.theme.HyperStarTheme
-import com.chaos.hyperstar.utils.PreferencesUtil
 
 class MediaDefaultAppSettingsActivity : BaseActivity() {
 
     var appList: ArrayList<AppInfo>? = null
+
+    var appListDB : AppListDB? = null
+
+    var appIconlist = mutableMapOf<String, Drawable>()
 
     @Composable
     override fun InitView(colorMode: MutableState<Int>?) {
@@ -34,16 +26,27 @@ class MediaDefaultAppSettingsActivity : BaseActivity() {
     }
 
     override fun initData() {
-
+        appListDB = AppListDB(this)
     }
 
+
+    fun searchApp(label: String): ArrayList<AppInfo>? {
+        var result: ArrayList<AppInfo>? = null
+        Thread {
+            result = appListDB?.searchAPPlist(label,appIconlist)
+        }.start()
+
+        return appListDB?.searchAPPlist(label,appIconlist)
+    }
+
+
     @SuppressLint("QueryPermissionsNeeded")
-    fun getAllAppInfo(ctx: Context, isFilterSystem: Boolean): ArrayList<AppInfo> {
+    fun getAllAppInfo( isFilterSystem: Boolean): ArrayList<AppInfo> {
         val appBeanList: ArrayList<AppInfo> = ArrayList<AppInfo>()
-        val packageManager = ctx.packageManager
+        val packageManager = this.packageManager
         val list = packageManager.getInstalledPackages(0)
 
-        //appListDB.resetTable()
+        appListDB?.resetTable()
 
         for (p in list) {
             val applicationInfo = p.applicationInfo
@@ -78,7 +81,18 @@ class MediaDefaultAppSettingsActivity : BaseActivity() {
             values.put("package_name", package_name)
             values.put("app_name", app_name)
 
+            appIconlist.plus(package_name to app_icon)
+            if (app_icon != null && package_name != null) {
+                appIconlist.put(package_name,app_icon)
+                if (appIconlist[package_name] == null){
+                    Log.d("ggc","appIconlist[package_name]  == null")
+
+                }
+            }
+
+
             appBeanList.add(bean)
+            appListDB?.add(values)
 
             values.clear()
         }

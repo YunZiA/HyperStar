@@ -2,8 +2,6 @@ package com.chaos.hyperstar.hook.app.plugin
 
 import android.content.Context
 import android.content.res.Resources
-import android.view.View
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.chaos.hyperstar.hook.base.BaseHooker
 import com.chaos.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook

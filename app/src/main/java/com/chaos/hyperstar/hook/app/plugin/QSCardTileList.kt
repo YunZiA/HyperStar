@@ -16,7 +16,7 @@ import de.robv.android.xposed.callbacks.XCallback
 
 class QSCardTileList :BaseHooker() {
 
-    val mCardStyleTiles = XSPUtils.getString("card_tile_list","")
+    val mCardStyleTiles = XSPUtils.getString("card_tile_list","wifi|cell|")
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)

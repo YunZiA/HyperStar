@@ -68,7 +68,6 @@ class QsCardListActivity : BaseActivity() {
                 break
             }
 
-            Log.d("ggc",tag)
             cardLists.add(cardMap.getValue(tag))
         }
 

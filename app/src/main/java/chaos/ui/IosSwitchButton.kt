@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalWearMaterialApi::class)
 
-package com.chaos.hyperstar.ui.theme
+package chaos.ui
 
 //import androidx.compose.material.ExperimentalMaterialApi
 import android.annotation.SuppressLint
@@ -9,7 +9,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier

@@ -2,6 +2,7 @@ package com.chaos.hyperstar.hook.base
 
 import android.content.Context
 import android.content.res.Resources
+import com.chaos.hyperstar.hook.app.plugin.QsCardTileList
 import com.chaos.hyperstar.hook.app.plugin.QsHeaderView
 import com.chaos.hyperstar.hook.app.plugin.QsListView
 import com.chaos.hyperstar.hook.app.plugin.QsMediaCoverBackground
@@ -91,6 +92,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         QsMediaView().doMethods(classLoader)
         QsListView().doMethods(classLoader)
         QsVolumeOrBrightnessValue().doMethods(classLoader)
+        QsCardTileList().doMethods(classLoader)
         //QsHeaderView().doMethods(classLoader)
     }
 

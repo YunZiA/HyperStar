@@ -1,4 +1,4 @@
-package com.chaos.hyperstar.utils
+package com.chaos.hyperstar.ui.base.enums
 
 enum class EventState {
     Pressed, Idle

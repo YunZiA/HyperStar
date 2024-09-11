@@ -81,6 +81,10 @@ public class InitSystemUIPluginHooks extends BaseHooker {
 
     }
 
+    void  cc (){
+
+    }
+
     private void doHook(ClassLoader classLoader){
         if (XSPUtils.INSTANCE.getBoolean("test",false)){
             findAndHookMethod("miui.systemui.controlcenter.panel.main.qs.QSCardsController",
@@ -140,3 +144,5 @@ public class InitSystemUIPluginHooks extends BaseHooker {
 
     }
 }
+
+

@@ -2,7 +2,6 @@
 package com.chaos.hyperstar.ui.module.controlcenter.media.app.ui
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -61,7 +60,7 @@ import com.chaos.hyperstar.ui.base.ActivityPager
 import com.chaos.hyperstar.ui.base.XMiuixTextField
 import com.chaos.hyperstar.ui.module.controlcenter.media.app.AppInfo
 import com.chaos.hyperstar.ui.module.controlcenter.media.app.MediaDefaultAppSettingsActivity
-import com.chaos.hyperstar.utils.EventState
+import com.chaos.hyperstar.ui.base.enums.EventState
 
 import com.chaos.hyperstar.utils.SPUtils
 import com.chaos.hyperstar.utils.Utils
@@ -163,7 +162,7 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
 
                     appLists.value?.forEachIndexed { index, apps->
 
-                        item {
+                        item(index) {
                             AppItem(apps, isApp)
                         }
                     }
@@ -356,7 +355,8 @@ fun AppItem(
         ) {
             Box(
                 modifier = Modifier
-                    .padding(start = 16.dp, top = 16.dp, bottom = 16.dp,end = 8.dp)
+                    .padding(start = 16.dp,end = 8.dp)
+                    .padding(vertical = 16.dp)
             ){
                 app.icon?.let { icon ->
                     Image(
@@ -381,7 +381,8 @@ fun AppItem(
             )
             Box(
                 modifier = Modifier
-                    .padding(start = 8.dp, top = 16.dp, bottom = 16.dp,end = 16.dp)
+                    .padding(vertical = 16.dp)
+                    .padding(start = 8.dp, end = 16.dp)
             ){
                 MiuixCheckbox(
                     modifier = Modifier

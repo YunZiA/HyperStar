@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.ContactsContract.Profile
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -35,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.profileinstaller.ProfileInstaller
 import com.chaos.hyperstar.ui.base.BaseActivity
 import com.chaos.hyperstar.ui.module.volume.VolumePager
 import com.chaos.hyperstar.utils.PreferencesUtil
@@ -62,6 +64,7 @@ class MainActivity : BaseActivity() {
     }
 
     override fun initData() {
+        ProfileInstaller.writeProfile(this)
         if (isModuleActive()){
             SPUtils.getInstance().init(this);
             SPUtils.setInt("control_center_universal_corner_radius",resources.getDimensionPixelSize(R.dimen.control_center_universal_corner_radius))

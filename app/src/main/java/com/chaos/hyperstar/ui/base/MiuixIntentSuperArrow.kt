@@ -18,9 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.chaos.hyperstar.utils.EventState
+import com.chaos.hyperstar.ui.base.enums.EventState
 import top.yukonga.miuix.kmp.MiuixSuperArrow
 
 
@@ -33,24 +32,9 @@ fun MiuixIntentSuperArrow(
     activity: ComponentActivity
 )
 {
-    var eventState by remember { mutableStateOf(EventState.Idle) }
-    val scale by animateFloatAsState(if (eventState == EventState.Pressed) 0.90f else 1f)
 
     MiuixSuperArrow(
-        modifier = Modifier.graphicsLayer {
-            scaleX = scale
-            scaleY = scale
-        }.pointerInput(eventState) {
-            awaitPointerEventScope {
-                eventState = if (eventState == EventState.Pressed) {
-                    waitForUpOrCancellation()
-                    EventState.Idle
-                } else {
-                    awaitFirstDown(false)
-                    EventState.Pressed
-                }
-            }
-        },
+        modifier = Modifier.bounceClick(),
         leftAction = if (leftIcon != null){ {
             Image(
                 painter = painterResource(leftIcon),
@@ -74,24 +58,9 @@ fun MiuixActivitySuperArrow(
     activity: Class<*> ,
     context: Context
 ) {
-    var eventState by remember { mutableStateOf(EventState.Idle) }
-    val scale by animateFloatAsState(if (eventState == EventState.Pressed) 0.90f else 1f)
 
     MiuixSuperArrow(
-        modifier = Modifier.graphicsLayer {
-            scaleX = scale
-            scaleY = scale
-        }.pointerInput(eventState) {
-            awaitPointerEventScope {
-                eventState = if (eventState == EventState.Pressed) {
-                    waitForUpOrCancellation()
-                    EventState.Idle
-                } else {
-                    awaitFirstDown(false)
-                    EventState.Pressed
-                }
-            }
-        },
+        modifier = Modifier.bounceClick(),
         leftAction = if (leftIcon != null){ {
             Image(
                 painter = painterResource(leftIcon),

@@ -4,6 +4,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.chaos.hyperstar.QsCardListActivity
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.ActivityPagers
 import com.chaos.hyperstar.ui.base.MiuixActivitySuperArrow
@@ -41,6 +42,20 @@ fun ControlCenterPager(
                 option = R.array.is_super_blur_entire,
                 activity = activity
             )
+            XMiuixClasser(
+                title = "卡片磁贴",
+                top = 12.dp
+            ){
+                XMiuixContentSwitch(switchTitle = "启用卡片磁贴编辑", switchKey = "use_card_tile_list") {
+                    MiuixActivitySuperArrow(
+                        title = "卡片磁贴编辑",
+                        context = activity,
+                        activity = QsCardListActivity::class.java
+
+                    )
+
+                }
+            }
             XMiuixClasser(
                 title = "亮度条&音量条",
                 top = 12.dp

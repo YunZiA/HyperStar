@@ -13,7 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import com.chaos.hyperstar.utils.EventState
+import com.chaos.hyperstar.ui.base.enums.EventState
 import com.chaos.hyperstar.utils.PreferencesUtil
 import com.chaos.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.MiuixSuperSwitch
@@ -24,23 +24,9 @@ fun XMiuixSuperSwitch(
     key : String,
     state : MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) }
 ) {
-    var eventState by remember { mutableStateOf(EventState.Idle) }
-    val scale by animateFloatAsState(if (eventState == EventState.Pressed) 0.90f else 1f)
+
     MiuixSuperSwitch(
-        modifier = Modifier.graphicsLayer {
-            scaleX = scale
-            scaleY = scale
-        }.pointerInput(eventState) {
-            awaitPointerEventScope {
-                eventState = if (eventState == EventState.Pressed) {
-                    waitForUpOrCancellation()
-                    EventState.Idle
-                } else {
-                    awaitFirstDown(false)
-                    EventState.Pressed
-                }
-            }
-        },
+        modifier = Modifier.bounceClick(),
         title = title,
         checked = state.value,
         onCheckedChange = {
@@ -55,25 +41,10 @@ fun PMiuixSuperSwitch(
     title : String,
     key : String
 ) {
-    var eventState by remember { mutableStateOf(EventState.Idle) }
-    val scale by animateFloatAsState(if (eventState == EventState.Pressed) 0.90f else 1f)
 
     var MiuixSuperSwitchState by remember { mutableStateOf(PreferencesUtil.getBoolean(key,false)) }
     MiuixSuperSwitch(
-        modifier = Modifier.graphicsLayer {
-            scaleX = scale
-            scaleY = scale
-        }.pointerInput(eventState) {
-            awaitPointerEventScope {
-                eventState = if (eventState == EventState.Pressed) {
-                    waitForUpOrCancellation()
-                    EventState.Idle
-                } else {
-                    awaitFirstDown(false)
-                    EventState.Pressed
-                }
-            }
-        },
+        modifier = Modifier.bounceClick(),
         title = title,
         checked = MiuixSuperSwitchState,
         onCheckedChange = {
@@ -90,25 +61,10 @@ fun PMiuixSuperSwitch(
     onCheckedChange: ((Boolean) -> Unit)?,
     enabled: Boolean = true
 ) {
-    var eventState by remember { mutableStateOf(EventState.Idle) }
-    val scale by animateFloatAsState(if (eventState == EventState.Pressed) 0.90f else 1f)
     val updatedOnCheckedChange by rememberUpdatedState(onCheckedChange)
 
     MiuixSuperSwitch(
-        modifier = Modifier.graphicsLayer {
-            scaleX = scale
-            scaleY = scale
-        }.pointerInput(eventState) {
-            awaitPointerEventScope {
-                eventState = if (eventState == EventState.Pressed) {
-                    waitForUpOrCancellation()
-                    EventState.Idle
-                } else {
-                    awaitFirstDown(false)
-                    EventState.Pressed
-                }
-            }
-        },
+        modifier = Modifier.bounceClick(),
         title = title,
         checked = checked,
         onCheckedChange = {

@@ -23,7 +23,8 @@ fun SubMiuixTopAppBar(
     scrollBehavior: MiuixScrollBehavior? = null,
     color : Color,
     activity: ComponentActivity,
-    endClick:(() -> Unit)? = null,
+    endIcon :  @Composable () -> Unit = {},
+    endClick:(() -> Unit) = {},
     ){
 
     MiuixTopAppBar(
@@ -45,19 +46,21 @@ fun SubMiuixTopAppBar(
 
         },
         actions = {
-            endClick?.let {
-                IconButton(
-                    modifier = Modifier.padding(end = 12.dp),
-                    onClick = it
-                ) {
 
-                    Icon(
-                        ImageVector.vectorResource(R.drawable.ic_menu_refresh),
-                        contentDescription = "restart",
-                        tint = colorScheme.onPrimary)
+            endIcon()
 
-                }
+            IconButton(
+                modifier = Modifier.padding(end = 12.dp),
+                onClick = endClick
+            ) {
+
+                Icon(
+                    ImageVector.vectorResource(R.drawable.ic_menu_refresh),
+                    contentDescription = "restart",
+                    tint = colorScheme.onPrimary)
+
             }
+
         }
     )
 

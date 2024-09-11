@@ -28,12 +28,14 @@ fun ActivityPagers(
     activityTitle: String,
     activity: ComponentActivity,
     endClick: () -> Unit,
+    endIcon :  @Composable () -> Unit = {},
     content: LazyListScope.() -> Unit
 ) {
     ActivityPager(
         activityTitle = activityTitle,
         activity = activity,
-        endClick =endClick,
+        endClick = endClick,
+        endIcon = endIcon,
     ){ topAppBarScrollBehavior,padding,enableOverScroll->
         MiuixLazyColumn(
             modifier = Modifier.height(getWindowSize().height.dp),
@@ -51,6 +53,7 @@ fun ActivityPager(
     activityTitle: String,
     activity: ComponentActivity,
     endClick: () -> Unit,
+    endIcon :  @Composable () -> Unit = {},
     contents: @Composable ((MiuixScrollBehavior, PaddingValues, Boolean) -> Unit)? = null
 ) {
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberMiuixTopAppBarState())
@@ -71,6 +74,7 @@ fun ActivityPager(
                     title = activityTitle,
                     scrollBehavior = topAppBarScrollBehavior,
                     activity = activity,
+                    endIcon = endIcon,
                     endClick = {
                         endClick()
                     }

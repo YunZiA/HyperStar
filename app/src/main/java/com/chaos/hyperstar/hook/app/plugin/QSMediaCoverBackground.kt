@@ -1,21 +1,13 @@
 package com.chaos.hyperstar.hook.app.plugin
 
-import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.BlurMaskFilter
-import android.graphics.RenderEffect
-import android.graphics.Shader
 import android.graphics.drawable.LayerDrawable
-import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
 import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
-import androidx.core.view.marginTop
 import chaos.utils.BitmapUtils
 import com.chaos.hyperstar.hook.base.BaseHooker
 import com.chaos.hyperstar.hook.tool.starLog
@@ -25,7 +17,7 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 
 
-class QsMediaCoverBackground: BaseHooker() {
+class QSMediaCoverBackground: BaseHooker() {
 
     var vin: Bitmap? = null;
     val coverBackground = XSPUtils.getBoolean("is_cover_background",false)

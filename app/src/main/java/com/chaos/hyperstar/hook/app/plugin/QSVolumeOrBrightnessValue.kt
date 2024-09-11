@@ -13,7 +13,7 @@ import de.robv.android.xposed.XposedHelpers
 import java.lang.reflect.Method
 
 
-class QsVolumeOrBrightnessValue :BaseHooker() {
+class QSVolumeOrBrightnessValue :BaseHooker() {
 
     val volumeShow = XSPUtils.getBoolean("qs_volume_top_value_show",false)
     val volumeShowStyle = XSPUtils.getInt("qs_volume_top_value",0)

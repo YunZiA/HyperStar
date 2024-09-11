@@ -2,7 +2,7 @@ package com.chaos.hyperstar.hook.app.plugin
 
 import com.chaos.hyperstar.hook.base.BaseHooker
 
-class QsMiplayView : BaseHooker(){
+class QSMiplayView : BaseHooker(){
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
 

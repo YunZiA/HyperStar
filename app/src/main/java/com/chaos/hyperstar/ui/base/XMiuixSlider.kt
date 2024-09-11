@@ -48,7 +48,7 @@ fun XMiuixSlider(
             .fillMaxWidth()
             .padding(vertical = 15.dp)
     ){
-        var x_progress by remember { mutableStateOf(progress) }
+        var x_progress by remember { mutableStateOf(SPUtils.getFloat(key,progress)) }
 
         Row(
             modifier = Modifier

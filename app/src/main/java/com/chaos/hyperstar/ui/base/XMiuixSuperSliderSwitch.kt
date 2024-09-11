@@ -24,9 +24,11 @@ import top.yukonga.miuix.kmp.MiuixSuperSwitch
 @Composable
 fun XMiuixSuperSliderSwitch(
     switchTitle : String,
+    switchSummary: String? = null,
     switchKey : String,
     title : String,
     key : String,
+    unit :String = "",
     minValue: Float = 0f,
     maxValue: Float = 1f,
     progress: Float = 0.5f,
@@ -34,15 +36,19 @@ fun XMiuixSuperSliderSwitch(
 ) {
     var MiuixSuperSwitchState by remember { mutableStateOf(SPUtils.getBoolean(switchKey,false)) }
 
+    //var MiuixSuperProgressState by remember { mutableStateOf(SPUtils.getFloat(key,progress)) }
+
     MiuixSuperSwitch(
         modifier = Modifier.bounceClick(),
         title = switchTitle,
+        summary = switchSummary,
         checked = MiuixSuperSwitchState,
         onCheckedChange = {
             MiuixSuperSwitchState = it
             SPUtils.setBoolean(switchKey,MiuixSuperSwitchState)
         },
     )
+
     AnimatedVisibility (
         MiuixSuperSwitchState,
         enter = fadeIn() + expandVertically(),
@@ -54,6 +60,7 @@ fun XMiuixSuperSliderSwitch(
             progress = progress,
             maxValue = maxValue,
             minValue = minValue,
+            unit = unit,
             decimalPlaces = decimalPlaces
         )
     }

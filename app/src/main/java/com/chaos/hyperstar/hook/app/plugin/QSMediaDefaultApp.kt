@@ -3,10 +3,8 @@ package com.chaos.hyperstar.hook.app.plugin
 import com.chaos.hyperstar.hook.base.BaseHooker
 import com.chaos.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedHelpers
-import java.util.Objects
 
-class QsMediaDefaultApp :BaseHooker() {
+class QSMediaDefaultApp :BaseHooker() {
 
     val apps = XSPUtils.getString("media_default_app_package","")
 

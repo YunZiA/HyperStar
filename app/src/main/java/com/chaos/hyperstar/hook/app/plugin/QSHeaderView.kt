@@ -1,9 +1,6 @@
 package com.chaos.hyperstar.hook.app.plugin
 
-import android.R
 import android.content.Context
-import android.graphics.Bitmap
-import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.chaos.hyperstar.hook.base.BaseHooker
@@ -12,7 +9,7 @@ import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedHelpers
 
 
-class QsHeaderView : BaseHooker() {
+class QSHeaderView : BaseHooker() {
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)

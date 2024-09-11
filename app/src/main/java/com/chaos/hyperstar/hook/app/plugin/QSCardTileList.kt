@@ -1,6 +1,5 @@
 package com.chaos.hyperstar.hook.app.plugin
 
-import android.R.attr
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
@@ -15,7 +14,9 @@ import de.robv.android.xposed.XposedHelpers.findAndHookMethod
 import de.robv.android.xposed.callbacks.XCallback
 
 
-class QsCardTileList :BaseHooker() {
+class QSCardTileList :BaseHooker() {
+
+    val mCardStyleTiles = XSPUtils.getString("card_tile_list","")
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
@@ -118,7 +119,7 @@ class QsCardTileList :BaseHooker() {
 
     fun getList():ArrayList<String> {
 
-        val mCardStyleTiles = XSPUtils.getString("card_tile_list","")
+
 
         if (mCardStyleTiles == null) {
             return ArrayList()

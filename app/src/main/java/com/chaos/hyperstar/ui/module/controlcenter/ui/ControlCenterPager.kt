@@ -13,6 +13,7 @@ import com.chaos.hyperstar.ui.base.XMiuixContentDropdown
 import com.chaos.hyperstar.ui.base.XMiuixContentSwitch
 import com.chaos.hyperstar.ui.base.XMiuixSlider
 import com.chaos.hyperstar.ui.base.XMiuixSuperDropdown
+import com.chaos.hyperstar.ui.base.XMiuixSuperSliderSwitch
 import com.chaos.hyperstar.ui.base.XMiuixSuperSwitch
 import com.chaos.hyperstar.ui.module.controlcenter.list.QsListViewSettings
 import com.chaos.hyperstar.ui.module.controlcenter.media.MediaSettingsActivity
@@ -46,6 +47,11 @@ fun ControlCenterPager(
                 title = "卡片磁贴",
                 top = 12.dp
             ){
+                XMiuixSuperSwitch(
+                    title = "自动收起",
+                    summary = "开启后点击卡片磁贴会自动收起状态栏",
+                    key = "card_tile_click_close"
+                )
                 XMiuixContentSwitch(switchTitle = "启用卡片磁贴编辑", switchKey = "use_card_tile_list") {
                     MiuixActivitySuperArrow(
                         title = "卡片磁贴编辑",
@@ -60,6 +66,17 @@ fun ControlCenterPager(
                 title = "亮度条&音量条",
                 top = 12.dp
             ){
+                XMiuixSuperSliderSwitch(
+                    switchTitle = "进度条圆角自定义",
+                    switchKey = "is_change_qs_progress_radius",
+                    title = "进度条圆角值" ,
+                    key ="qs_progress_radius",
+                    minValue = 0f,
+                    maxValue = 20f,
+                    progress = 2f,
+                    unit = "dp",
+                    decimalPlaces = 1
+                )
                 XMiuixContentSwitch(switchTitle = "亮度条进度值显示", switchKey = "qs_brightness_top_value_show") {
                     XMiuixSuperDropdown(
                         title = "显示样式",
@@ -80,8 +97,21 @@ fun ControlCenterPager(
                 top = 12.dp
             ){
                 XMiuixSuperSwitch(
-                    title = "背景圆角矩形",
-                    key = "is_qs_tile_radius"
+                    title = "自动收起",
+                    summary = "开启后点击普通磁贴会自动收起状态栏",
+                    key = "list_tile_click_close"
+                )
+                XMiuixSuperSliderSwitch(
+                    switchTitle = "背景圆角自定义",
+                    switchSummary = "开启后，默认与其他控件圆角值（官方原版）一致",
+                    switchKey = "is_qs_list_tile_radius",
+                    title = "背景圆角值",
+                    key = "qs_list_tile_radius",
+                    minValue = 0f,
+                    maxValue = 36f,
+                    progress = 20f,
+                    unit = "dp",
+                    decimalPlaces = 1
                 )
                 XMiuixSuperSwitch(
                     title = "标题颜色跟随图标",

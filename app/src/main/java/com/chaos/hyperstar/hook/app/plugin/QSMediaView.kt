@@ -1,14 +1,8 @@
 package com.chaos.hyperstar.hook.app.plugin
 
-import android.graphics.BlurMaskFilter
-import android.graphics.Color
-import android.graphics.RenderEffect
-import android.graphics.Shader
-import android.graphics.Typeface
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.marginTop
 import com.chaos.hyperstar.hook.base.BaseHooker
@@ -18,7 +12,7 @@ import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 
-class QsMediaView : BaseHooker() {
+class QSMediaView : BaseHooker() {
 
     val isHideCover:Boolean = XSPUtils.getBoolean("is_hide_cover",false)
     val isTitleCenter:Boolean = XSPUtils.getBoolean("is_title_center",false)

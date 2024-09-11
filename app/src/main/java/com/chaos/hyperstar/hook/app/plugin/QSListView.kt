@@ -1,9 +1,11 @@
 package com.chaos.hyperstar.hook.app.plugin
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
+import android.os.SystemClock
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
@@ -11,21 +13,18 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.view.get
 import com.chaos.hyperstar.hook.base.BaseHooker
 import com.chaos.hyperstar.hook.tool.starLog
-import com.chaos.hyperstar.utils.SPUtils
 import com.chaos.hyperstar.utils.XSPUtils
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedHelpers
-import java.lang.reflect.Field
-import java.util.Objects
 
-class QsListView : BaseHooker() {
 
+class QSListView : BaseHooker() {
+
+    val clickClose = XSPUtils.getBoolean("list_tile_click_close",false)
     val labelMode = XSPUtils.getInt("is_list_label_mode",0)
     val labelSize = XSPUtils.getFloat("list_label_size",13f)
     val labelWidth = XSPUtils.getFloat("list_label_width",100f)/100
@@ -33,7 +32,10 @@ class QsListView : BaseHooker() {
     val tileColorForIcon = XSPUtils.getBoolean("qs_list_tile_color_for_icon",false)
     val listSpacingY = XSPUtils.getFloat("list_spacing_y",100f)/100
     val listLabelSpacingY = XSPUtils.getFloat("list_label_spacing_y",100f)/100
-    val qsTileRadius = XSPUtils.getBoolean("is_qs_tile_radius",false)
+    val isQSListTileRadius = XSPUtils.getBoolean("is_qs_list_tile_radius",false)
+
+    val qsListTileRadius = XSPUtils.getFloat("qs_list_tile_radius",20f)
+
     val listIconTop = if (labelMode == 2) XSPUtils.getFloat("list_icon_top", 0F)/100 else 8f
 
     override fun doMethods(classLoader: ClassLoader?) {
@@ -42,11 +44,59 @@ class QsListView : BaseHooker() {
         qsTileRadius(classLoader)
     }
 
+    fun collapseStatusBar(context: Context) {
+        try {
+            val systemService = context.getSystemService("statusbar")
+            systemService.javaClass.getMethod("collapsePanels", *arrayOfNulls(0)).invoke(systemService, *arrayOfNulls(0))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     private fun startMethodsHook(classLoader: ClassLoader?) {
 
         val QSItemViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder", classLoader)
         val QSItemView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSItemView", classLoader)
         val QSTileItemView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemView", classLoader)
+
+        val MainPanelModeController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.MainPanelModeController\$MainPanelMode",classLoader)
+
+        if (clickClose){
+            XposedHelpers.findAndHookMethod(QSTileItemView, "onFinishInflate\$lambda-0", QSTileItemView,View::class.java,object : XC_MethodHook() {
+
+                override fun beforeHookedMethod(param: MethodHookParam?) {
+                    super.beforeHookedMethod(param)
+                    val qSTileItemView = param?.args?.get(0) as FrameLayout
+
+                    val lastTriggeredTime = XposedHelpers.getLongField(qSTileItemView,"lastTriggeredTime")
+
+                    val elapsedRealtime = SystemClock.elapsedRealtime()
+                    if (elapsedRealtime > lastTriggeredTime + 200) {
+                        val clickAction = XposedHelpers.getObjectField(qSTileItemView,"clickAction")
+                        if (clickAction == null){
+                            starLog.log("clickAction == null")
+                            return
+                        }
+
+                        val enumConstants: Array<out Any>? = MainPanelModeController.getEnumConstants()
+                        if (enumConstants == null){
+                            starLog.log("enumConstants == null")
+                            return
+                        }
+                        val mainPanelMode = XposedHelpers.getObjectField(qSTileItemView,"mode")
+                        if (mainPanelMode != enumConstants[2]) {
+                            val mContext = qSTileItemView.context
+                            collapseStatusBar(mContext)
+                        }else{
+                            starLog.log("mainPanelMode == edit")
+
+                        }
+                    }
+                }
+
+            })
+
+        }
 
         if (labelMarquee || labelMode!=0 ){
 
@@ -166,7 +216,6 @@ class QsListView : BaseHooker() {
 
                     }
 
-
                     return icon
 
                     }
@@ -264,12 +313,11 @@ class QsListView : BaseHooker() {
 
     private fun qsTileRadius(classLoader: ClassLoader?) {
 
-        val radius: Int = XSPUtils.getInt("control_center_universal_corner_radius", 70)
         val classTile = XposedHelpers.findClass(
             "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
             classLoader
         )
-        if (qsTileRadius){
+        if (isQSListTileRadius){
             XposedHelpers.findAndHookMethod(
                 classTile,
                 "setCornerRadius",
@@ -277,7 +325,10 @@ class QsListView : BaseHooker() {
                 object : XC_MethodHook() {
                     override fun beforeHookedMethod(param: MethodHookParam) {
 
-                        param.args[0] = radius
+                        val pluginContext: Context = XposedHelpers.getObjectField(param.thisObject, "pluginContext") as Context;
+
+
+                        param.args[0] = dpToPx(pluginContext.resources,qsListTileRadius)
                     }
 
                     override fun afterHookedMethod(param: MethodHookParam) {
@@ -291,14 +342,14 @@ class QsListView : BaseHooker() {
             object : MethodHook {
 
                 override fun before(param: XC_MethodHook.MethodHookParam?) {
-                    if (qsTileRadius){
+                    if (isQSListTileRadius){
                         val pluginContext: Context =
                             XposedHelpers.getObjectField(param?.thisObject, "pluginContext") as Context;
-                        val warning: Int = pluginContext.getResources()
+                        val warning: Int = pluginContext.resources
                             .getIdentifier("qs_background_warning", "drawable", "miui.systemui.plugin");
-                        val enabled: Int = pluginContext.getResources()
+                        val enabled: Int = pluginContext.resources
                             .getIdentifier("qs_background_enabled", "drawable", "miui.systemui.plugin");
-                        val restricted: Int = pluginContext.getResources().getIdentifier(
+                        val restricted: Int = pluginContext.resources.getIdentifier(
                             "qs_background_restricted",
                             "drawable",
                             "miui.systemui.plugin"
@@ -319,19 +370,19 @@ class QsListView : BaseHooker() {
                         val disabledD: Drawable = pluginContext.getTheme().getDrawable(disabled);
                         val unavailableD: Drawable = pluginContext.getTheme().getDrawable(unavailable);
                         if (warningD is GradientDrawable) {
-                            warningD.cornerRadius = radius.toFloat()
+                            warningD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
                         }
                         if (enabledD is GradientDrawable) {
-                            enabledD.cornerRadius = radius.toFloat()
+                            enabledD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
                         }
                         if (restrictedD is GradientDrawable) {
-                            restrictedD.cornerRadius = radius.toFloat()
+                            restrictedD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
                         }
                         if (disabledD is GradientDrawable) {
-                            disabledD.cornerRadius = radius.toFloat()
+                            disabledD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
                         }
                         if (unavailableD is GradientDrawable) {
-                            unavailableD.cornerRadius = radius.toFloat()
+                            unavailableD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
                         }
 
                     }
@@ -403,5 +454,13 @@ class QsListView : BaseHooker() {
             })
     }
 
+    fun dpToPx(resources: Resources, dp: Float): Float {
+        // 获取屏幕的密度
+        val density = resources.displayMetrics.density
 
+        // 转换 dp 到 px
+        return dp * density
     }
+
+
+}

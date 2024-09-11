@@ -2,4 +2,10 @@
 <resources>
 
     <style name="Theme.HyperStar" parent="android:Theme.Material.Light.NoActionBar" />
+
+<!--&lt;!&ndash;        <item name="android:windowSplashscreenContent" >@mipmap/ic_launcher</item>&ndash;&gt;-->
+<!--        <item name="android:windowSplashScreenBackground">@android:color/white</item>-->
+<!--        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>-->
+<!--        <item name="android:windowSplashScreenAnimationDuration">1000</item>-->
+<!--    </style>-->
 </resources>

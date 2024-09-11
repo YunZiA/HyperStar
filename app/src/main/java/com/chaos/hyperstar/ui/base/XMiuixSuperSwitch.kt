@@ -21,6 +21,7 @@ import top.yukonga.miuix.kmp.MiuixSuperSwitch
 @Composable
 fun XMiuixSuperSwitch(
     title : String,
+    summary: String? = null,
     key : String,
     state : MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) }
 ) {
@@ -28,6 +29,7 @@ fun XMiuixSuperSwitch(
     MiuixSuperSwitch(
         modifier = Modifier.bounceClick(),
         title = title,
+        summary = summary,
         checked = state.value,
         onCheckedChange = {
             state.value = it

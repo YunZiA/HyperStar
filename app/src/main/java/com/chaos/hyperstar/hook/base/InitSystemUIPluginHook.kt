@@ -2,14 +2,15 @@ package com.chaos.hyperstar.hook.base
 
 import android.content.Context
 import android.content.res.Resources
-import com.chaos.hyperstar.hook.app.plugin.QsCardTileList
-import com.chaos.hyperstar.hook.app.plugin.QsHeaderView
-import com.chaos.hyperstar.hook.app.plugin.QsListView
-import com.chaos.hyperstar.hook.app.plugin.QsMediaCoverBackground
-import com.chaos.hyperstar.hook.app.plugin.QsMediaDefaultApp
-import com.chaos.hyperstar.hook.app.plugin.QsMediaDeviceName
-import com.chaos.hyperstar.hook.app.plugin.QsMediaView
-import com.chaos.hyperstar.hook.app.plugin.QsVolumeOrBrightnessValue
+import com.chaos.hyperstar.hook.app.plugin.QSCardTile
+import com.chaos.hyperstar.hook.app.plugin.QSCardTileList
+import com.chaos.hyperstar.hook.app.plugin.QSListView
+import com.chaos.hyperstar.hook.app.plugin.QSMediaCoverBackground
+import com.chaos.hyperstar.hook.app.plugin.QSMediaDefaultApp
+import com.chaos.hyperstar.hook.app.plugin.QSMediaDeviceName
+import com.chaos.hyperstar.hook.app.plugin.QSMediaView
+import com.chaos.hyperstar.hook.app.plugin.QSToggleSliderRadius
+import com.chaos.hyperstar.hook.app.plugin.QSVolumeOrBrightnessValue
 import com.chaos.hyperstar.hook.app.plugin.SuperBlurVolumeManager
 import com.chaos.hyperstar.hook.app.plugin.SuperBlurWidgetManager
 import com.chaos.hyperstar.hook.tool.starLog
@@ -19,10 +20,10 @@ import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
 class InitSystemUIPluginHook() : BaseHooker() {
 
-    private val qsMediaCoverBackground: QsMediaCoverBackground
+    private val qsMediaCoverBackground: QSMediaCoverBackground
 
     init {
-        qsMediaCoverBackground = QsMediaCoverBackground()
+        qsMediaCoverBackground = QSMediaCoverBackground()
     }
 
     override fun getLocalRes(res: Resources?) {
@@ -87,12 +88,14 @@ class InitSystemUIPluginHook() : BaseHooker() {
         SuperBlurWidgetManager().doMethods(classLoader)
         SuperBlurVolumeManager().doMethods(classLoader)
         qsMediaCoverBackground.doMethods(classLoader)
-        QsMediaDeviceName().doMethods(classLoader)
-        QsMediaDefaultApp().doMethods(classLoader)
-        QsMediaView().doMethods(classLoader)
-        QsListView().doMethods(classLoader)
-        QsVolumeOrBrightnessValue().doMethods(classLoader)
-        QsCardTileList().doMethods(classLoader)
+        QSMediaDeviceName().doMethods(classLoader)
+        QSMediaDefaultApp().doMethods(classLoader)
+        QSMediaView().doMethods(classLoader)
+        QSListView().doMethods(classLoader)
+        QSVolumeOrBrightnessValue().doMethods(classLoader)
+        QSCardTileList().doMethods(classLoader)
+        QSCardTile().doMethods(classLoader)
+        QSToggleSliderRadius().doMethods(classLoader)
         //QsHeaderView().doMethods(classLoader)
     }
 

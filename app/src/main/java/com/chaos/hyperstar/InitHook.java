@@ -3,7 +3,6 @@ package com.chaos.hyperstar;
 import android.content.res.Resources;
 import android.content.res.XModuleResources;
 
-import com.chaos.hyperstar.hook.app.plugin.QsMediaCoverBackground;
 import com.chaos.hyperstar.hook.base.InitSystemUIHook;
 import com.chaos.hyperstar.hook.base.BaseHooker;
 
@@ -11,13 +10,9 @@ import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-
-import com.chaos.hyperstar.hook.tool.starLog;
-import com.chaos.hyperstar.utils.XSPUtils;
 
 public class InitHook extends BaseHooker implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
 

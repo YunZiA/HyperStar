@@ -1,14 +1,12 @@
 package com.chaos.hyperstar.hook.app.plugin
 
-import android.graphics.Bitmap
 import com.chaos.hyperstar.hook.base.BaseHooker
 import com.chaos.hyperstar.hook.tool.starLog
-import com.chaos.hyperstar.utils.SPUtils
 import com.chaos.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 
-class QsMediaDeviceName :BaseHooker() {
+class QSMediaDeviceName :BaseHooker() {
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)

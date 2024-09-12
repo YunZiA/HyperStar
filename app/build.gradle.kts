@@ -78,6 +78,7 @@ android {
 }
 
 dependencies {
+
     implementation(libs.androidx.profileinstaller)
     implementation (libs.androidx.constraintlayout.compose)
     implementation (libs.accompanist.drawablepainter)

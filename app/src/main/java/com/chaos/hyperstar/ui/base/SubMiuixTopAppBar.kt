@@ -1,5 +1,6 @@
 package com.chaos.hyperstar.ui.base
 
+import android.view.HapticFeedbackConstants
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.IconButton
@@ -7,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Icon
@@ -27,6 +29,9 @@ fun SubMiuixTopAppBar(
     endClick:(() -> Unit) = {},
     ){
 
+
+    val view = LocalView.current
+
     MiuixTopAppBar(
         color = color,
         title = title,
@@ -35,6 +40,7 @@ fun SubMiuixTopAppBar(
             IconButton(
                 modifier = Modifier.padding(start = 12.dp),
                 onClick = {
+                    view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     activity.finish()
                 }
             ) {
@@ -47,12 +53,14 @@ fun SubMiuixTopAppBar(
         },
         actions = {
 
+
             endIcon()
 
             IconButton(
                 modifier = Modifier.padding(end = 12.dp),
                 onClick = endClick
             ) {
+                view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
 
                 Icon(
                     ImageVector.vectorResource(R.drawable.ic_menu_refresh),

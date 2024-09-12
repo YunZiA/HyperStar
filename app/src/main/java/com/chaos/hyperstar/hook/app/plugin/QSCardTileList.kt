@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.widget.LinearLayout
 import com.chaos.hyperstar.hook.base.BaseHooker
+import com.chaos.hyperstar.hook.tool.starLog
 import com.chaos.hyperstar.hook.tool.starLog.logE
 import com.chaos.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
@@ -77,17 +78,51 @@ class QSCardTileList :BaseHooker() {
                 }
             }
         )
-
-        findAndHookMethod(QSCardItemView, "updateBackground", object : XC_MethodHook(XCallback.PRIORITY_HIGHEST) {
+//        XCallback.PRIORITY_HIGHEST
+        findAndHookMethod(QSCardItemView, "updateBackground", object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam) {
+                    val linearLayout: LinearLayout = param.thisObject as LinearLayout
                     val state = XposedHelpers.getObjectField(param.thisObject, "state")
                     val cornerRadius = XposedHelpers.getObjectField(param.thisObject, "_cornerRadius")
-                    val spec = XposedHelpers.getObjectField(state, "spec") as String
+                    val spec = XposedHelpers.getObjectField(state, "spec")
                     val i = XposedHelpers.getIntField(state, "state")
-                    when (spec) {
-                        "bt", "cell", "flashlight", "wifi", "vowifi1", "vowifi2" -> {}
+                    if (state == null){
+                        starLog.log("state == null")
+                        return
+
+                    }
+                    if(spec == null){
+                        starLog.log("spec == null")
+                        val id :Int
+                        if (i == 0){
+                            id = idUnavailable
+                        } else if (i == 2) {
+                            id = idEnable
+                        } else if (i == 1) {
+                            id = idDisabled
+                        } else{
+                            return
+                        }
+                        if (id == -1 ) {
+                            logE("updateBackground", "id is -1!!")
+                            return
+                        }
+                        val background: Drawable = linearLayout.getContext().getTheme().getResources().getDrawable(id, linearLayout.getContext().getTheme())
+                        linearLayout.setBackground(background)
+                        XposedHelpers.callMethod(
+                            param.thisObject,
+                            "setCornerRadius",
+                            cornerRadius
+                        )
+                        return
+                    }
+                    starLog.log("spec != null")
+
+                    when (spec.toString()) {
+                        "bt", "cell", "flashlight", "wifi", "vowifi1", "vowifi2" -> {
+                            starLog.log("spec is else!!")}
                         else -> {
-                            val linearLayout: LinearLayout = param.thisObject as LinearLayout
+                            starLog.log("spec is else!!")
                             val id :Int
                             if (i == 0){
                                 id = idUnavailable
@@ -102,8 +137,8 @@ class QSCardTileList :BaseHooker() {
                                 logE("updateBackground", "id is -1!!")
                                 return
                             }
-                            val disabled: Drawable = linearLayout.getContext().getTheme().getResources().getDrawable(id, linearLayout.getContext().getTheme())
-                            linearLayout.setBackground(disabled)
+                            val background: Drawable = linearLayout.getContext().getTheme().getResources().getDrawable(id, linearLayout.getContext().getTheme())
+                            linearLayout.setBackground(background)
                             XposedHelpers.callMethod(
                                 param.thisObject,
                                 "setCornerRadius",

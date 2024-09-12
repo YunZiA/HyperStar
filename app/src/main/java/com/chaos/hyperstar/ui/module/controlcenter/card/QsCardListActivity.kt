@@ -1,9 +1,9 @@
-package com.chaos.hyperstar
+package com.chaos.hyperstar.ui.module.controlcenter.card
 
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import com.chaos.hyperstar.ui.QsCardListPager
+import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.BaseActivity
 import com.chaos.hyperstar.utils.SPUtils
 
@@ -27,7 +27,7 @@ class QsCardListActivity : BaseActivity() {
         for (index in 0 until cardTagList.size) {
 
             val tag = cardTagList[index]
-            cardMap.put(tag,Card(index,tag,cardNameList[index]))
+            cardMap.put(tag, Card(index,tag,cardNameList[index]))
             list.add(Card(index,tag,cardNameList[index]))
 
         }

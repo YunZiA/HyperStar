@@ -1,5 +1,6 @@
-package com.chaos.hyperstar.ui
+package com.chaos.hyperstar.ui.module.controlcenter.card
 
+import android.view.HapticFeedbackConstants
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -22,6 +23,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,17 +33,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.wear.compose.material.Icon
 import chaos.ui.DraggableGrid
-import com.chaos.hyperstar.Card
-import com.chaos.hyperstar.QsCardListActivity
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.ActivityPagers
 import com.chaos.hyperstar.ui.base.XMiuixClasser
@@ -59,6 +63,7 @@ fun QsCardListPager(
     var itemList by remember { mutableStateOf(activity.cardLists) }
     var lastitems by remember { mutableStateOf(activity.cardList) }
 
+    val view = LocalView.current
 
     ActivityPagers(
         activityTitle = "卡片磁贴编辑",
@@ -71,20 +76,20 @@ fun QsCardListPager(
                 exit = fadeOut() + shrinkVertically()
 
             ) {
-                Button(
-                    contentPadding = PaddingValues(14.dp,8.dp),
-                    colors = ButtonColors(Color.Transparent,Color.Transparent,Color.Transparent,Color.Transparent,),
+//                .padding(end = 12.dp)
+                IconButton(
+                    modifier = Modifier,
                     onClick = {
+                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                         activity.saveList(items)
                         lastitems = items
                     }
                 ) {
-                    MiuixText(
-                        text = "保存",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = colorScheme.primary
-                    )
+
+                    Icon(
+                        ImageVector.vectorResource(R.drawable.save2),
+                        contentDescription = "save",
+                        tint = colorScheme.onPrimary)
 
                 }
 
@@ -93,6 +98,7 @@ fun QsCardListPager(
 
         },
         endClick = {
+            view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             Utils.rootShell("killall com.android.systemui")
         },
     ){
@@ -122,25 +128,22 @@ fun QsCardListPager(
                         R.drawable.ic_qs_tile_mark_remove,
                         item
                     ){
+                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                         if (items.size <= 1){
 
                             Toast.makeText(activity,"你们不要再删啦！人家会坏掉的~\n/(ㄒoㄒ)/~~",Toast.LENGTH_SHORT).show()
 
                             return@CardItem
                         }
-                        val lastList = itemList
-                            .toMutableList()
-                            .apply {
-                                add(item)  // 交换位置
-                            }
+                        val lastList = itemList.toMutableList().apply {
+                            add(item)  // 交换位置
+                        }
                         //activity.cardLists.add(item)
                         itemList = lastList
 
-                        val mutableList = items
-                            .toMutableList()
-                            .apply {
-                                removeAt(index)
-                            }
+                        val mutableList = items.toMutableList().apply {
+                            removeAt(index)
+                        }
                         items = mutableList
 
                     }
@@ -165,25 +168,17 @@ fun QsCardListPager(
                     }) { index, item ->
 
                         CardItem(R.drawable.ic_qs_tile_mark_add, item) {
-                            val mutableList = items
-                                .toMutableList()
-                                .apply {
-                                    add(itemList[index])  // 交换位置
-                                }
+                            view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                            val mutableList = items.toMutableList().apply {
+                                add(itemList[index])  // 交换位置
+                            }
                             items = mutableList
-                            val lastList = itemList
-                                .toMutableList()
-                                .apply {
-                                    removeAt(index)  // 交换位置
-                                }
-
-                            //activity.cardLists.removeAt(index)
+                            val lastList = itemList.toMutableList().apply {
+                                removeAt(index)  // 交换位置
+                            }
 
                             itemList = lastList
 
-                            Toast
-                                .makeText(activity, "cccc", Toast.LENGTH_SHORT)
-                                .show()
                         }
                     }
                 }

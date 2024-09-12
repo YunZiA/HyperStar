@@ -2,6 +2,7 @@
 package com.chaos.hyperstar.ui.module.controlcenter.media.app.ui
 
 import android.util.Log
+import android.view.HapticFeedbackConstants
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -15,6 +16,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,6 +50,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
@@ -204,13 +207,7 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                                 singleLine = true
                             )
-//                        VerticalDivider(
-//                            modifier = Modifier
-//                                .width(1.dp)
-//                                .height(30.dp)
-//                                .padding(horizontal = 5.dp),
-//                            color = colorScheme.textFieldSub
-//                        )
+
                             Button(
                                 modifier = Modifier.padding(end = 2.dp),
                                 onClick = {
@@ -236,21 +233,7 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
 //                                color = colorScheme.primary
 //                            )
                             }
-//                        BaseButton(
-//                            modifier = Modifier.padding(start =12.dp,end = 20.dp),
-//                            onClick = {
-//                                Toast.makeText(activity,text,Toast.LENGTH_SHORT).show()
-//                                focusManager.clearFocus()
-//                                      },
-//                        ){
-//                            MiuixText(
-//                                text = "搜索",
-//                                textAlign = TextAlign.Center,
-//                                fontWeight = FontWeight.Medium,
-//                                fontSize = 16.sp,
-//                                color = colorScheme.primary
-//                            )
-//                        }
+
                         }
                     }
                 }
@@ -315,6 +298,11 @@ fun AppItem(
     var eventState by remember { mutableStateOf(EventState.Idle) }
     val scale by animateFloatAsState(if (eventState == EventState.Pressed) 0.90f else 1f)
 
+
+    val view = LocalView.current
+
+    //if (isSelect) view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+
     MiuixCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -338,15 +326,18 @@ fun AppItem(
                     interactionSource = null,
                     indication = createRipple()
                 ) {
+                    EventState.Idle
                     isApp.value = if (isSelect) "" else packageName
                     isSelect = !isSelect
                     SPUtils.setString("media_default_app_package", isApp.value)
                 }.pointerInput(eventState) {
+
                     awaitPointerEventScope {
                         eventState = if (eventState == EventState.Pressed) {
                             waitForUpOrCancellation()
                             EventState.Idle
                         } else {
+                            ///view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                             awaitFirstDown(false)
                             EventState.Pressed
                         }
@@ -390,6 +381,7 @@ fun AppItem(
                     enabled = true,
                     checked = isSelect,
                     onCheckedChange = {
+                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                         isApp.value = if (isSelect) "" else packageName
                         isSelect = !isSelect
                         SPUtils.setString("media_default_app_package",isApp.value)

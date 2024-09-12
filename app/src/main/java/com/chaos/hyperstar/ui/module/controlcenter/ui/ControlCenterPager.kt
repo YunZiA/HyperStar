@@ -4,14 +4,13 @@ import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.chaos.hyperstar.QsCardListActivity
+import com.chaos.hyperstar.ui.module.controlcenter.card.QsCardListActivity
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.ActivityPagers
 import com.chaos.hyperstar.ui.base.MiuixActivitySuperArrow
 import com.chaos.hyperstar.ui.base.XMiuixClasser
 import com.chaos.hyperstar.ui.base.XMiuixContentDropdown
 import com.chaos.hyperstar.ui.base.XMiuixContentSwitch
-import com.chaos.hyperstar.ui.base.XMiuixSlider
 import com.chaos.hyperstar.ui.base.XMiuixSuperDropdown
 import com.chaos.hyperstar.ui.base.XMiuixSuperSliderSwitch
 import com.chaos.hyperstar.ui.base.XMiuixSuperSwitch

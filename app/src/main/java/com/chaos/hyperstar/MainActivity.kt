@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -45,6 +46,7 @@ import com.chaos.hyperstar.utils.Utils
 import top.yukonga.miuix.kmp.basic.MiuixButton
 import top.yukonga.miuix.kmp.basic.MiuixCard
 import top.yukonga.miuix.kmp.basic.MiuixText
+import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 
 class MainActivity : BaseActivity() {
@@ -107,15 +109,17 @@ fun RootDialog(showDialog: Boolean) {
             onDismissRequest = { showDialogs.value = false },
         ) {
             MiuixCard(
+                cornerRadius = 30.dp,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 28.dp)
-                    .padding(bottom = 28.dp)
+                    .padding(bottom = 28.dp),
+                insideMargin = DpSize(20.dp,20.dp)
             ) {
                 MiuixText(
                     text = "提示",
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    color = Color.Black,
+                    color = colorScheme.onPrimary,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp
                 )
@@ -123,7 +127,7 @@ fun RootDialog(showDialog: Boolean) {
                 MiuixText(
                     text = "未获取Root权限",
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    color = Color.Black,
+                    color = colorScheme.onPrimary,
                     fontWeight = FontWeight.Medium,
                     fontSize = 13.sp
                 )

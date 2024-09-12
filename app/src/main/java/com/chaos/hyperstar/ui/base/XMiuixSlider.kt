@@ -61,7 +61,9 @@ fun XMiuixSlider(
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp)
             MiuixText(
-                text = if (decimalPlaces == 0) x_progress.toInt().toString()+unit else x_progress.toString()+unit,
+                text = if (x_progress == progress) "默认"
+                    else if (decimalPlaces == 0) x_progress.toInt().toString()+unit
+                    else x_progress.toString()+unit,
                 textAlign = TextAlign.End,
                 fontSize = 14.sp)
         }

@@ -27,7 +27,7 @@
         </provider>
 
         <activity
-            android:name=".QsCardListActivity"
+            android:name=".ui.module.controlcenter.card.QsCardListActivity"
             android:exported="false"
             android:label="@string/title_activity_qs_card_list"
             android:theme="@style/Theme.HyperStar" />

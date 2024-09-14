@@ -225,13 +225,7 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
                                     Modifier.size(25.dp),
                                     tint = colorScheme.onPrimary
                                 )
-//                            MiuixText(
-//                                text = "搜索",
-//                                textAlign = TextAlign.Center,
-//                                fontWeight = FontWeight.Medium,
-//                                fontSize = 16.sp,
-//                                color = colorScheme.primary
-//                            )
+
                             }
 
                         }

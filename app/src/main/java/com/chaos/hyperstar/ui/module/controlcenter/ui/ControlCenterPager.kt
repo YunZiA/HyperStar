@@ -11,6 +11,8 @@ import com.chaos.hyperstar.ui.base.MiuixActivitySuperArrow
 import com.chaos.hyperstar.ui.base.XMiuixClasser
 import com.chaos.hyperstar.ui.base.XMiuixContentDropdown
 import com.chaos.hyperstar.ui.base.XMiuixContentSwitch
+import com.chaos.hyperstar.ui.base.XMiuixSlider
+import com.chaos.hyperstar.ui.base.XMiuixSliders
 import com.chaos.hyperstar.ui.base.XMiuixSuperDropdown
 import com.chaos.hyperstar.ui.base.XMiuixSuperSliderSwitch
 import com.chaos.hyperstar.ui.base.XMiuixSuperSwitch
@@ -42,6 +44,27 @@ fun ControlCenterPager(
                 option = R.array.is_super_blur_entire,
                 activity = activity
             )
+            XMiuixClasser(
+                title = "头部",
+                top = 12.dp
+            ){
+
+                XMiuixContentSwitch(
+                    switchTitle = "关闭设备状态提示",
+                    switchKey = "close_header_show_message",
+                    contrary = true
+                ){
+                    XMiuixSlider(
+                        title = "设备状态提示持续时长",
+                        key = "header_show_message_millis",
+                        progress = 1f,
+                        maxValue = 5f,
+                        minValue = 0.1f,
+                        unit = "s",
+                        decimalPlaces = 2,
+                    )
+                }
+            }
             XMiuixClasser(
                 title = "卡片磁贴",
                 top = 12.dp

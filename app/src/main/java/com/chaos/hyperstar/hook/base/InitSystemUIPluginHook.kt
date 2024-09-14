@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import com.chaos.hyperstar.hook.app.plugin.QSCardTile
 import com.chaos.hyperstar.hook.app.plugin.QSCardTileList
+import com.chaos.hyperstar.hook.app.plugin.QSHeaderMessage
 import com.chaos.hyperstar.hook.app.plugin.QSListView
 import com.chaos.hyperstar.hook.app.plugin.QSMediaCoverBackground
 import com.chaos.hyperstar.hook.app.plugin.QSMediaDefaultApp
@@ -96,6 +97,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         QSCardTileList().doMethods(classLoader)
         QSCardTile().doMethods(classLoader)
         QSToggleSliderRadius().doMethods(classLoader)
+        QSHeaderMessage().doMethods(classLoader)
         //QsHeaderView().doMethods(classLoader)
     }
 

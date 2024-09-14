@@ -311,6 +311,7 @@ fun  ItemPopu(show: MutableState<Boolean>) {
                     onClick = {
                         view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                         Utils.rootShell("killall com.android.systemui")
+                        show.value=false
                     }
                 ) {
                     Row(

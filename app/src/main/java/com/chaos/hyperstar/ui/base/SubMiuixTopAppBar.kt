@@ -58,9 +58,12 @@ fun SubMiuixTopAppBar(
 
             IconButton(
                 modifier = Modifier.padding(end = 12.dp),
-                onClick = endClick
+                onClick = {
+                    view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                    endClick()
+
+                }
             ) {
-                view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
 
                 Icon(
                     ImageVector.vectorResource(R.drawable.ic_menu_refresh),

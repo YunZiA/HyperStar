@@ -72,6 +72,7 @@ fun XMiuixSuperSliderSwitch(
 fun XMiuixContentSwitch(
     switchTitle : String,
     switchKey : String,
+    contrary : Boolean = false,
     content: @Composable (() -> Unit),
 ) {
     var MiuixSuperSwitchState by remember { mutableStateOf(SPUtils.getBoolean(switchKey,false)) }
@@ -86,7 +87,7 @@ fun XMiuixContentSwitch(
         },
     )
     AnimatedVisibility (
-        MiuixSuperSwitchState,
+        if (contrary)!MiuixSuperSwitchState else MiuixSuperSwitchState,
         enter = fadeIn() + expandVertically(),
         exit = fadeOut() + shrinkVertically()
     ) {

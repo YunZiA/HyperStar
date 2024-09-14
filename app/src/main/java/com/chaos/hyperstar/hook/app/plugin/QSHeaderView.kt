@@ -1,10 +1,16 @@
 package com.chaos.hyperstar.hook.app.plugin
 
 import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.chaos.hyperstar.hook.base.BaseHooker
 import com.chaos.hyperstar.hook.tool.starLog
+import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedHelpers
 
@@ -13,10 +19,41 @@ class QSHeaderView : BaseHooker() {
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
-        startMethodsHook(classLoader)
+        //startMethodsHook(classLoader)
     }
 
     private fun startMethodsHook(classLoader: ClassLoader?) {
+        val MainHeader  = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.header.StatusHeaderController",classLoader)
+        XposedHelpers.findAndHookMethod(MainHeader, "updateConstraint" , object : XC_MethodHook(){
+            override fun afterHookedMethod(param: MethodHookParam?) {
+                super.afterHookedMethod(param)
+
+                val thisObj = param?.thisObject
+
+                val sysUIContext = XposedHelpers.getObjectField(thisObj,"sysUIContext") as Context
+                val view = XposedHelpers.callMethod(thisObj,"getView") as ViewGroup
+
+                val fakeStatusBarViewController = XposedHelpers.getObjectField(thisObj,"fakeStatusBarViewController")
+                if (fakeStatusBarViewController == null){
+                    return
+                }
+                val layout = LayoutInflater.from(sysUIContext)
+
+                val b = TextView(sysUIContext)
+                b.setText("cnm")
+                b.id
+                view.addView(b)
+
+
+
+            }
+        })
+
+
+
+    }
+
+    private fun startMethodsHook1(classLoader: ClassLoader?) {
         val MainHeader  = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.header.StatusHeaderController",classLoader)
         XposedHelpers.findAndHookMethod(MainHeader, "updateConstraint" , object : XC_MethodReplacement(){
             override fun replaceHookedMethod(param: MethodHookParam?): Any? {

@@ -31,6 +31,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -44,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
@@ -81,6 +83,7 @@ import top.yukonga.miuix.kmp.basic.MiuixTextField
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showDialog
+import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import kotlin.math.roundToInt
 
 
@@ -109,11 +112,11 @@ fun XMiuixSlider(
 
     //Dialog(dialog,unit)
 
-    val squareSize = 150
+    val squareSize = 130
 
     val swipeableState = rememberSwipeableState(Status.CLOSE)
     val sizePx = with(LocalDensity.current) { -squareSize.dp.toPx() }
-    val anchors = mapOf(0f to Status.CLOSE, sizePx to Status.OPEN) // Maps anchor points (in px) to states
+    val anchors = mapOf(0f to Status.CLOSE, sizePx to Status.OPEN)
     val scope = rememberCoroutineScope()
     Box(
         Modifier
@@ -125,14 +128,14 @@ fun XMiuixSlider(
                 .align(Alignment.CenterEnd)
                 .width(((swipeableState.offset.value.roundToInt() / sizePx) * squareSize).dp)
                 .fillMaxHeight(),
-            horizontalArrangement = Arrangement.Center,
+            //horizontalAlignment = Alignment.Start,
+            //verticalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
 
             Button(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .fillMaxWidth(0.5f)
+                modifier = Modifier.size(56.dp, 48.5.dp)
                     .align(Alignment.CenterVertically),
                 colors = ButtonColors(
                     MiuixTheme.colorScheme.primary,
@@ -141,20 +144,20 @@ fun XMiuixSlider(
                     MiuixTheme.colorScheme.primary
                 ),
                 contentPadding = PaddingValues(0.dp, 0.dp),
-                shape = RoundedCornerShape(15.dp, 0.dp, 0.dp, 15.dp),
+                shape = SquircleShape(12.dp),
                 onClick = {
+                    view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     scope.launch {
                         swipeableState.animateTo(Status.CLOSE)
                     }
                     x_progress = progress
                     SPUtils.setFloat(key, x_progress)
-                    //swipeableState = SwipeableState(initialValue = 0)
 
                 }
             ) {
 
                 MiuixText(
-                    fontSize = 14.sp,
+                    fontSize = 12.sp,
                     color = MiuixTheme.colorScheme.primaryContainer,
                     fontWeight = FontWeight.SemiBold,
                     text = "默认"
@@ -163,23 +166,28 @@ fun XMiuixSlider(
 
 
             }
+            Spacer(modifier = Modifier.width(8.dp))
             Button(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .fillMaxWidth(1f)
+                modifier = Modifier.size(56.dp, 48.5.dp)
                     .align(Alignment.CenterVertically),
                 onClick = {
+                    view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     scope.launch {
                         swipeableState.animateTo(Status.CLOSE)
                     }
                     //Toast.makeText()
                 },
-                colors = ButtonColors(MiuixTheme.colorScheme.background,MiuixTheme.colorScheme.onPrimary,MiuixTheme.colorScheme.background,MiuixTheme.colorScheme.background),
+                colors = ButtonColors(
+                    MiuixTheme.colorScheme.secondary,
+                    MiuixTheme.colorScheme.onPrimary,
+                    MiuixTheme.colorScheme.background,
+                    MiuixTheme.colorScheme.background
+                ),
                 contentPadding = PaddingValues(0.dp, 0.dp),
-                shape = RoundedCornerShape(0.dp, 0.dp, 0.dp, 0.dp)
+                shape = SquircleShape(12.dp)
             ) {
                 MiuixText(
-                    fontSize = 14.sp,
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
                     text = "取消"
                 )
@@ -242,7 +250,8 @@ fun XMiuixSlider(
                     decimalPlaces = decimalPlaces,
                     modifier = Modifier
                         .padding(horizontal = 28.dp)
-                        .padding(top = 10.dp)
+                        .padding(top = 10.dp),
+                    enabled = if (swipeableState.targetValue == Status.CLOSE) true else false
                 )
             }
 

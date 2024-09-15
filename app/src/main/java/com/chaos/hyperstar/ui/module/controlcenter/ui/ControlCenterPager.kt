@@ -49,6 +49,11 @@ fun ControlCenterPager(
                 top = 12.dp
             ){
 
+                XMiuixSuperSwitch(
+                    title = "向顶栏添加设置&编辑按钮",
+                    key = "is_use_chaos_header"
+                )
+
                 XMiuixContentSwitch(
                     switchTitle = "关闭设备状态提示",
                     switchKey = "close_header_show_message",
@@ -157,6 +162,18 @@ fun ControlCenterPager(
                     )
 
                 }
+
+
+            }
+
+            XMiuixClasser(
+                title = "其他",
+                top = 12.dp
+            ){
+                XMiuixSuperSwitch(
+                    title = "关闭编辑显示",
+                    key = "close_edit_button_show"
+                )
 
 
             }

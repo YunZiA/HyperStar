@@ -1,6 +1,7 @@
 package com.chaos.hyperstar.hook.app.plugin
 
 import android.content.Context
+import android.content.res.XModuleResources
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.Log
@@ -12,7 +13,6 @@ import com.chaos.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.XposedHelpers.findAndHookMethod
-import de.robv.android.xposed.callbacks.XCallback
 
 
 class QSCardTileList :BaseHooker() {

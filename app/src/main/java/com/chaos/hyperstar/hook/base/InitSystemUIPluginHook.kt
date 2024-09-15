@@ -2,8 +2,10 @@ package com.chaos.hyperstar.hook.base
 
 import android.content.Context
 import android.content.res.Resources
+import android.content.res.XModuleResources
 import com.chaos.hyperstar.hook.app.plugin.QSCardTile
 import com.chaos.hyperstar.hook.app.plugin.QSCardTileList
+import com.chaos.hyperstar.hook.app.plugin.QSEditButton
 import com.chaos.hyperstar.hook.app.plugin.QSHeaderMessage
 import com.chaos.hyperstar.hook.app.plugin.QSHeaderView
 import com.chaos.hyperstar.hook.app.plugin.QSListView
@@ -17,6 +19,7 @@ import com.chaos.hyperstar.hook.app.plugin.SuperBlurVolumeManager
 import com.chaos.hyperstar.hook.app.plugin.SuperBlurWidgetManager
 import com.chaos.hyperstar.hook.tool.starLog
 import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
 
@@ -40,6 +43,9 @@ class InitSystemUIPluginHook() : BaseHooker() {
         super.doMethods(classLoader)
         startSystemUIPluginHook(classLoader)
     }
+
+
+
 
     override fun doRes(resparam: XC_InitPackageResources.InitPackageResourcesParam?) {
         super.doRes(resparam)
@@ -87,6 +93,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
     }
 
     private fun doHook(classLoader: ClassLoader) {
+
         SuperBlurWidgetManager().doMethods(classLoader)
         SuperBlurVolumeManager().doMethods(classLoader)
         qsMediaCoverBackground.doMethods(classLoader)
@@ -100,6 +107,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         QSToggleSliderRadius().doMethods(classLoader)
         QSHeaderMessage().doMethods(classLoader)
         QSHeaderView().doMethods(classLoader)
+        QSEditButton().doMethods(classLoader)
     }
 
 }

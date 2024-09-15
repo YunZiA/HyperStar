@@ -1,10 +1,14 @@
 package com.chaos.hyperstar;
 
+import static com.chaos.hyperstar.BuildConfig.APPLICATION_ID;
+
 import android.content.res.Resources;
 import android.content.res.XModuleResources;
+import android.graphics.drawable.Drawable;
 
 import com.chaos.hyperstar.hook.base.InitSystemUIHook;
 import com.chaos.hyperstar.hook.base.BaseHooker;
+import com.chaos.hyperstar.hook.tool.starLog;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -23,27 +27,40 @@ public class InitHook extends BaseHooker implements IXposedHookLoadPackage, IXpo
     }
 
     @Override
-    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-        if (lpparam.packageName.equals(BuildConfig.APPLICATION_ID)){
-            XposedHelpers.findAndHookMethod(BuildConfig.APPLICATION_ID+".MainActivity", lpparam.classLoader, "isModuleActive", XC_MethodReplacement.returnConstant(true));
-        }
-        systemUIHook.doMethods(lpparam);
+    public void initZygote(StartupParam startupParam) throws Throwable {
+        super.initZygote(startupParam);
+        Resources res = XModuleResources.createInstance(startupParam.modulePath, null);
+        systemUIHook.getLocalRes(res);
 
     }
 
 
     @Override
     public void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam resparam) throws Throwable {
+        super.handleInitPackageResources(resparam);
         systemUIHook.doRes(resparam);
+        if (!resparam.packageName.equals("miui.systemui.plugin"))
+            return;
+        starLog.log("替换资源");
+
+        XModuleResources modRes = XModuleResources.createInstance(mPath, resparam.res);
+        resparam.res.setReplacement("miui.systemui.plugin", "drawable", "ic_header_settings", modRes.fwd(R.drawable.ic_header_settings));
+        resparam.res.setReplacement("miui.systemui.plugin", "drawable", "ic_controls_edit", modRes.fwd(R.drawable.ic_controls_edit));
+        //systemUIHook.setmXModuleResources(modRes);
+        //XModuleResources modRes = XModuleResources.createInstance(mPath, resparam.res);
+
     }
 
     @Override
-    public void initZygote(StartupParam startupParam) throws Throwable {
-        Resources res = XModuleResources.createInstance(startupParam.modulePath, null);
-        systemUIHook.getLocalRes(res);
-        //new QsMediaCoverBackground().getLocalRes(res);
+    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+        if (lpparam.packageName.equals(APPLICATION_ID)){
+            XposedHelpers.findAndHookMethod(APPLICATION_ID+".MainActivity", lpparam.classLoader, "isModuleActive", XC_MethodReplacement.returnConstant(true));
+        }
+
+        systemUIHook.doMethods(lpparam);
 
     }
+
 
 
 }

@@ -1,6 +1,7 @@
 package com.chaos.hyperstar.hook.app.plugin
 
 import android.content.res.Resources
+import android.content.res.XModuleResources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.LayerDrawable

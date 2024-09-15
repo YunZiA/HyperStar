@@ -1,6 +1,7 @@
 package com.chaos.hyperstar.hook.app.plugin
 
 import android.content.Context
+import android.content.res.XModuleResources
 import android.graphics.Color
 import android.view.View
 import android.widget.SeekBar

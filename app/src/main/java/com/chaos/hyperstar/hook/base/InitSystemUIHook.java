@@ -4,7 +4,6 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 import android.content.res.Resources;
 
-import com.chaos.hyperstar.utils.XSPUtils;
 import com.chaos.hyperstar.hook.tool.starLog;
 
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;

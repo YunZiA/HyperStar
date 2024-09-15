@@ -2,6 +2,7 @@ package com.chaos.hyperstar.hook.app.plugin
 
 import android.content.Context
 import android.content.res.Resources
+import android.content.res.XModuleResources
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable

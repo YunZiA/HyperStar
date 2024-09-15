@@ -1,5 +1,6 @@
 package com.chaos.hyperstar.hook.app.plugin
 
+import android.content.res.XModuleResources
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View

@@ -1,30 +1,74 @@
 package com.chaos.hyperstar.hook.app.plugin
 
 import android.content.Context
-import android.view.LayoutInflater
+import android.content.Intent
+import android.graphics.Bitmap
+import android.view.Gravity
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.chaos.hyperstar.hook.base.BaseHooker
 import com.chaos.hyperstar.hook.tool.starLog
+import com.chaos.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedHelpers
+import java.util.concurrent.atomic.AtomicInteger
 
 
 class QSHeaderView : BaseHooker() {
+    var viewId : Int = 0
+    val is_use_chaos_header = XSPUtils.getBoolean("is_use_chaos_header",false)
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
-        //startMethodsHook(classLoader)
+        if (!is_use_chaos_header){
+            return
+        }
+
+        startMethodsHook(classLoader)
+        //startMethodsHook1(classLoader)
+        //starLog.log(mPath)
+
+    }
+
+    fun collapseStatusBar(context: Context) {
+        try {
+            val systemService = context.getSystemService("statusbar")
+            systemService.javaClass.getMethod("collapsePanels", *arrayOfNulls(0)).invoke(systemService, *arrayOfNulls(0))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun startMethodsHook(classLoader: ClassLoader?) {
+        var qsListControllerProvider: Any? = null
+
+        val EditButtonController_Factory = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.qs.EditButtonController_Factory",classLoader)
+        val MainPanelModeController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.MainPanelModeController\$MainPanelMode",classLoader)
+
+        XposedHelpers.findAndHookMethod(EditButtonController_Factory,"get",object : XC_MethodHook(){
+            override fun afterHookedMethod(param: MethodHookParam?) {
+                super.afterHookedMethod(param)
+                val thisObj = param?.thisObject
+
+                val qsListControllerProviders = XposedHelpers.getObjectField(thisObj,"qsListControllerProvider")
+                if (qsListControllerProviders == null){
+                    starLog.log("qsListControllerProviders == null")
+                    return
+                }
+                starLog.log("qsListControllerProviders != null")
+                qsListControllerProvider = qsListControllerProviders
+
+            }
+        })
+
+
         val MainHeader  = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.header.StatusHeaderController",classLoader)
-        XposedHelpers.findAndHookMethod(MainHeader, "updateConstraint" , object : XC_MethodHook(){
+        XposedHelpers.findAndHookMethod(MainHeader, "createStatusBarViews" , object : XC_MethodHook(){
             override fun afterHookedMethod(param: MethodHookParam?) {
                 super.afterHookedMethod(param)
 
@@ -32,19 +76,102 @@ class QSHeaderView : BaseHooker() {
 
                 val sysUIContext = XposedHelpers.getObjectField(thisObj,"sysUIContext") as Context
                 val view = XposedHelpers.callMethod(thisObj,"getView") as ViewGroup
+                val mContext = view.context
+                //XposedHelpers.callMethod(sysUIContext.getResources().getAssets(), "addAssetPath", modulePath);
 
-                val fakeStatusBarViewController = XposedHelpers.getObjectField(thisObj,"fakeStatusBarViewController")
-                if (fakeStatusBarViewController == null){
+                val ic_header_settings:Int = view.resources.getIdentifier("ic_header_settings", "drawable", "miui.systemui.plugin");
+                val ic_controls_edit = view.resources.getIdentifier("ic_controls_edit","drawable","miui.systemui.plugin")
+
+
+                //feedbackConstant – One of the constants defined in HapticFeedbackConstants
+                val a = Button(mContext)
+                a.setBackgroundResource(ic_header_settings)
+                val lp = ViewGroup.MarginLayoutParams(60, 60)
+                lp.topMargin = 100
+                //c.gravity = Gravity.START
+                a.layoutParams = lp
+
+                val b = Button(mContext)
+                b.setBackgroundResource(ic_controls_edit)
+                //c.gravity = Gravity.END
+                //lp.marginStart = 15
+                b.layoutParams = lp
+                val c = View(mContext)
+                val c_lp = LinearLayout.LayoutParams(-1,-1)
+                c_lp.weight = 1f
+                c.layoutParams = c_lp
+
+
+
+                val header = LinearLayout(sysUIContext)
+
+                val headerLp = ViewGroup.LayoutParams(-1,-2)
+                header.layoutParams = headerLp
+                //header.top = 200
+                header.id = View.generateViewId()
+                header.gravity = Gravity.END
+                viewId = header.id
+
+                header.orientation = LinearLayout.HORIZONTAL;
+                header.addView(a)
+                header.addView(c)
+                header.addView(b)
+                view.addView(header)
+
+                a.setOnClickListener{
+                    it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                    val intent = Intent()
+                    intent.setClassName("com.android.settings", "com.android.settings.MainSettings")
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    sysUIContext.startActivity(intent)
+                    collapseStatusBar(sysUIContext)
+                }
+
+                b.setOnClickListener{
+                    it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                    if (qsListControllerProvider != null){
+                        starLog.log("qsListControllerProvider != null")
+                        val get = XposedHelpers.callMethod(qsListControllerProvider,"get")
+                        if (get == null){
+                            starLog.log("get == null")
+                        }else{
+                            starLog.log("get != null")
+
+                        }
+
+                        val mainPanelMode: Array<out Any>? = MainPanelModeController.getEnumConstants()
+                        if (mainPanelMode == null){
+                            starLog.log("enumConstants == null")
+                            return@setOnClickListener
+                        }
+
+                        starLog.log(""+mainPanelMode[0])
+                        XposedHelpers.callMethod(get,"startQuery",mainPanelMode[2])
+                    }
+
+                }
+
+                //XposedHelpers.callMethod(constraintSet,"applyTo",view)
+//
+
+
+
+            }
+        })
+
+
+        XposedHelpers.findAndHookMethod(MainHeader, "onExpandChange" ,Float::class.java, object : XC_MethodHook() {
+            override fun afterHookedMethod(param: MethodHookParam?) {
+                super.afterHookedMethod(param)
+                if (viewId == 0){
                     return
                 }
-                val layout = LayoutInflater.from(sysUIContext)
+                val thisObj = param?.thisObject
+                val y = param?.args?.get(0) as Float
+                val view = XposedHelpers.callMethod(thisObj,"getView") as View
 
-                val b = TextView(sysUIContext)
-                b.setText("cnm")
-                b.id
-                view.addView(b)
-
-
+                val textView: View = view.findViewById(viewId) as View
+                textView.translationY = y
 
             }
         })
@@ -55,6 +182,7 @@ class QSHeaderView : BaseHooker() {
 
     private fun startMethodsHook1(classLoader: ClassLoader?) {
         val MainHeader  = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.header.StatusHeaderController",classLoader)
+        val CommonUtils = XposedHelpers.findClass("miui.systemui.util.CommonUtils",classLoader)
         XposedHelpers.findAndHookMethod(MainHeader, "updateConstraint" , object : XC_MethodReplacement(){
             override fun replaceHookedMethod(param: MethodHookParam?): Any? {
 
@@ -62,19 +190,22 @@ class QSHeaderView : BaseHooker() {
 
                 val fakeStatusBarViewController  = XposedHelpers.getObjectField(thisObj,"fakeStatusBarViewController")
                 val sysUIContext : Context  = XposedHelpers.getObjectField(thisObj,"sysUIContext") as Context
-
-
+                val parent = XposedHelpers.callMethod(thisObj,"getView") as ViewGroup
+                val mContext = XposedHelpers.callMethod(thisObj,"getContext") as Context
 
                 if (fakeStatusBarViewController == null) {
                     return null
                 }
-                val constraintSet: ConstraintSet = ConstraintSet()
+
+                val constraintSet = ConstraintSet()
                 //val header_status_bar_icon:Int = sysUIContext.resources.get("header_status_bar_icons", "id", "miui.systemui.plugin");
 
-                val header_status_bar_icons:Int = sysUIContext.resources.getIdentifier("header_status_bar_icons", "id", "miui.systemui.plugin");
-                val header_date:Int = sysUIContext.resources.getIdentifier("header_date", "id", "miui.systemui.plugin");
-                val header_carrier_view:Int = sysUIContext.resources.getIdentifier("header_carrier_view", "id", "miui.systemui.plugin");
-                val privacy_container:Int = sysUIContext.resources.getIdentifier("privacy_container", "id", "miui.systemui.plugin");
+                val header_carrier_vertical_mode_margin_bottom = mContext.resources.getIdentifier("header_carrier_vertical_mode_margin_bottom","dimen","miui.systemui.plugin")
+
+                val header_status_bar_icons:Int = mContext.resources.getIdentifier("header_status_bar_icons", "id", "miui.systemui.plugin");
+                val header_date:Int = mContext.resources.getIdentifier("header_date", "id", "miui.systemui.plugin");
+                val header_carrier_view:Int = mContext.resources.getIdentifier("header_carrier_view", "id", "miui.systemui.plugin");
+                val privacy_container:Int = mContext.resources.getIdentifier("privacy_container", "id", "miui.systemui.plugin");
                 starLog.log(""+header_status_bar_icons+header_date+header_carrier_view+privacy_container)
                 constraintSet.constrainWidth(header_status_bar_icons, -2)
                 constraintSet.constrainHeight(header_status_bar_icons, -2)
@@ -82,93 +213,38 @@ class QSHeaderView : BaseHooker() {
                 constraintSet.constrainHeight(header_date, -2)
                 constraintSet.constrainWidth(header_carrier_view, -2)
                 constraintSet.constrainHeight(header_carrier_view, -2)
-                val header_privacy_container_height:Int = sysUIContext.getResources().getIdentifier("header_privacy_container_height", "dimen", "miui.systemui.plugin");
+                val header_privacy_container_height:Int = mContext.resources.getIdentifier("header_privacy_container_height", "dimen", "miui.systemui.plugin");
 
-////                constraintSet.constrainWidth(0x7f0a04c3, -2)
-////                constraintSet.constrainHeight(0x7f0a04c3, -2)
-//                constraintSet.constrainWidth(privacy_container, -2)
-//                constraintSet.constrainHeight(
-//                    privacy_container,
-//                    thisObj.getResources().getDimensionPixelSize(header_privacy_container_height)
-//                )
-//                constraintSet.applyTo(thisO.getView())
-//                if (CommonUtils.INSTANCE.getInVerticalMode(getContext())) {
-//                    constraintSet.connect(R.id.header_status_bar_icons, 4, 0, 4)
-//                    constraintSet.connect(R.id.header_carrier_view, 4, 0, 4)
-//                    constraintSet.createHorizontalChainRtl(
-//                        0,
-//                        6,
-//                        0,
-//                        7,
-//                        intArrayOf(R.id.header_carrier_view, R.id.header_status_bar_icons),
-//                        null as FloatArray?,
-//                        1
-//                    )
-//                    val i4: Int = R.id.header_status_bar_icons
-//                    val i5: Int = R.id.header_carrier_view
-//                    constraintSet.connect(i5, 3, i4, 3)
-//                    constraintSet.connect(i5, 4, i4, 4)
-//                    val i6: Int = R.id.header_date
-//                    constraintSet.connect(i6, 3, 0x7f0a04c3, 3)
-//                    constraintSet.connect(i6, 4, 0x7f0a04c3, 4)
-//                    constraintSet.createHorizontalChainRtl(
-//                        0,
-//                        6,
-//                        R.id.privacy_container,
-//                        6,
-//                        intArrayOf(R.id.header_date, 2131363011),
-//                        null as FloatArray?,
-//                        1
-//                    )
-//                    constraintSet.connect(
-//                        0x7f0a04c3,
-//                        4,
-//                        R.id.header_status_bar_icons,
-//                        3,
-//                        getResources().getDimensionPixelSize(R.dimen.header_carrier_vertical_mode_margin_bottom)
-//                    )
-//                    constraintSet.connect(R.id.privacy_container, 7, 0, 7)
-//                    constraintSet.connect(R.id.privacy_container, 3, 0x7f0a04c3, 3)
-//                    constraintSet.connect(R.id.privacy_container, 4, 0x7f0a04c3, 4)
-//                } else {
-//                    constraintSet.connect(R.id.header_status_bar_icons, 4, 0, 4)
-//                    val ChangeLandHeaderView: Int =
-//                        SettingManager.ChangeLandHeaderView(R.id.header_carrier_view)
-//                    constraintSet.connect(ChangeLandHeaderView, 3, R.id.header_status_bar_icons, 3)
-//                    constraintSet.connect(ChangeLandHeaderView, 4, R.id.header_status_bar_icons, 4)
-//                    constraintSet.connect(
-//                        R.id.privacy_container,
-//                        3,
-//                        R.id.header_status_bar_icons,
-//                        3
-//                    )
-//                    constraintSet.connect(
-//                        R.id.privacy_container,
-//                        4,
-//                        R.id.header_status_bar_icons,
-//                        4
-//                    )
-//                    constraintSet.connect(R.id.privacy_container, 7, 0, 7)
-//                    constraintSet.createHorizontalChainRtl(
-//                        0,
-//                        6,
-//                        R.id.privacy_container,
-//                        6,
-//                        intArrayOf(
-//                            SettingManager.ChangeLandHeaderView(R.id.header_carrier_view),
-//                            R.id.header_status_bar_icons
-//                        ),
-//                        null as FloatArray?,
-//                        1
-//                    )
-//                }
+                constraintSet.constrainWidth(privacy_container, -2)
+                constraintSet.constrainHeight(
+                    privacy_container,
+                    mContext.resources.getDimensionPixelSize(header_privacy_container_height)
+                )
 
-                val getArtMethod = MainHeader.getDeclaredMethod("getView")
+                val INSTANCE = XposedHelpers.getStaticObjectField(CommonUtils,"INSTANCE")
+                val orientation = XposedHelpers.callMethod(INSTANCE,"getInVerticalMode",mContext) as Boolean
 
-                val view: ConstraintLayout = getArtMethod.invoke(null) as ConstraintLayout
-                constraintSet.applyTo(view)
+                if (orientation) {
+                    constraintSet.connect(header_status_bar_icons, 4, 0, 4);
+                    constraintSet.connect(header_date, 3, header_status_bar_icons, 3);
+                    constraintSet.connect(header_date, 4, header_status_bar_icons, 4);
+                    constraintSet.createHorizontalChainRtl(0, 6, 0, 7, intArrayOf(header_date, header_status_bar_icons), null as FloatArray? , 1);
+                    val dimensionPixelSize = mContext.resources.getDimensionPixelSize(header_carrier_vertical_mode_margin_bottom);
+                    constraintSet.connect(header_carrier_view, 4, header_status_bar_icons, 3, dimensionPixelSize);
+                    constraintSet.connect(header_carrier_view, 7, 0, 7);
+                    constraintSet.connect(privacy_container, 4, header_status_bar_icons, 3, dimensionPixelSize);
+                    constraintSet.connect(privacy_container, 7, 0, 7);
+                } else {
+                    constraintSet.connect(header_status_bar_icons, 4, 0, 4);
+                    constraintSet.connect(header_carrier_view, 3, header_status_bar_icons, 3);
+                    constraintSet.connect(header_carrier_view, 4, header_status_bar_icons, 4);
+                    constraintSet.connect(privacy_container, 3, header_status_bar_icons, 3);
+                    constraintSet.connect(privacy_container, 4, header_status_bar_icons, 4);
+                    constraintSet.connect(privacy_container, 7, 0, 7);
+                    constraintSet.createHorizontalChainRtl(0, 6, privacy_container, 6,intArrayOf(header_carrier_view, header_status_bar_icons) , null as FloatArray? , 1);
+                }
 
-
+                XposedHelpers.callMethod(constraintSet,"applyTo", parent )
 
                 return null;
 
@@ -178,3 +254,5 @@ class QSHeaderView : BaseHooker() {
 
     }
 }
+
+

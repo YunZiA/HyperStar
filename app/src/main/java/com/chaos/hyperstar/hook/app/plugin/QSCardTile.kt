@@ -1,6 +1,7 @@
 package com.chaos.hyperstar.hook.app.plugin
 
 import android.content.Context
+import android.content.res.XModuleResources
 import android.view.View
 import android.widget.LinearLayout
 import com.chaos.hyperstar.hook.base.BaseHooker

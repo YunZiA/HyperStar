@@ -1,5 +1,6 @@
 package com.chaos.hyperstar.hook.app.plugin
 
+import android.content.res.XModuleResources
 import android.os.Handler
 import com.chaos.hyperstar.hook.base.BaseHooker
 import com.chaos.hyperstar.utils.XSPUtils

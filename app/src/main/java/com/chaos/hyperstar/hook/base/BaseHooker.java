@@ -16,15 +16,19 @@ public abstract class BaseHooker {
 
     }
 
+    public String  modulePath;
+
     public void getLocalRes(Resources res){};
-    public void doMethods(ClassLoader classLoader){};
-    public void doMethods(XC_LoadPackage.LoadPackageParam lpparam){};
+    public void doMethods(ClassLoader classLoader){
+    };
+    public void doMethods(XC_LoadPackage.LoadPackageParam XModuleResources){
+    };
     public void doRes(XC_InitPackageResources.InitPackageResourcesParam resparam){}
 
     //public ProviderUtils mProviderUtils;
     public String mPath;
 
-    public XModuleResources mXModuleResources;
+    private XModuleResources mXModuleResources;
     public XC_LoadPackage.LoadPackageParam lpparam;
 
     public void initZygote(IXposedHookZygoteInit.StartupParam startupParam) throws Throwable {
@@ -62,6 +66,25 @@ public abstract class BaseHooker {
 
     }
 
+    public String getModulePath() {
+        return modulePath;
+    }
+
+    public void setModulePath(String modulePath) {
+        this.modulePath = modulePath;
+    }
+
+    protected void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam resparam) throws Throwable {
+        setmXModuleResources(XModuleResources.createInstance(mPath, resparam.res));
+    }
+
+    public XModuleResources getmXModuleResources() {
+        return mXModuleResources;
+    }
+
+    public void setmXModuleResources(XModuleResources mXModuleResources) {
+        this.mXModuleResources = mXModuleResources;
+    }
 
 
     public interface MethodHook{

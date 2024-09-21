@@ -1,6 +1,5 @@
 package com.chaos.hyperstar.hook.app.plugin
 
-import android.content.res.XModuleResources
 import com.chaos.hyperstar.hook.base.BaseHooker
 
 class QSMiplayView : BaseHooker(){

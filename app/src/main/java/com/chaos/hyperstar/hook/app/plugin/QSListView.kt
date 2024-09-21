@@ -25,12 +25,12 @@ import de.robv.android.xposed.XposedHelpers
 
 class QSListView : BaseHooker() {
 
-    val clickClose = XSPUtils.getBoolean("list_tile_click_close",false)
-    val labelMode = XSPUtils.getInt("is_list_label_mode",0)
+    private val clickClose = XSPUtils.getBoolean("list_tile_click_close",false)
+    val labelMode: Int = XSPUtils.getInt("is_list_label_mode",0)
     val labelSize = XSPUtils.getFloat("list_label_size",13f)
     val labelWidth = XSPUtils.getFloat("list_label_width",100f)/100
     val labelMarquee = XSPUtils.getBoolean("list_tile_label_marquee",false)
-    val tileColorForIcon = XSPUtils.getBoolean("qs_list_tile_color_for_icon",false)
+    private val tileColorForIcon = XSPUtils.getBoolean("qs_list_tile_color_for_icon",false)
     val listSpacingY = XSPUtils.getFloat("list_spacing_y",100f)/100
     val listLabelSpacingY = XSPUtils.getFloat("list_label_spacing_y",100f)/100
     val isQSListTileRadius = XSPUtils.getBoolean("is_qs_list_tile_radius",false)

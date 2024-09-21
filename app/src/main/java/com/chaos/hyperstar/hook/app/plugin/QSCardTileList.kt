@@ -17,7 +17,7 @@ import de.robv.android.xposed.XposedHelpers.findAndHookMethod
 
 class QSCardTileList :BaseHooker() {
 
-    val mCardStyleTiles = XSPUtils.getString("card_tile_list","wifi|cell|")
+    private val mCardStyleTiles = XSPUtils.getString("card_tile_list","wifi|cell|")
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)

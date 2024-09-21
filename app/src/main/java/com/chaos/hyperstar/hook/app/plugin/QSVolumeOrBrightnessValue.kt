@@ -16,9 +16,9 @@ import java.lang.reflect.Method
 
 class QSVolumeOrBrightnessValue :BaseHooker() {
 
-    val volumeShow = XSPUtils.getBoolean("qs_volume_top_value_show",false)
+    private val volumeShow = XSPUtils.getBoolean("qs_volume_top_value_show",false)
     val volumeShowStyle = XSPUtils.getInt("qs_volume_top_value",0)
-    val brightnessShow = XSPUtils.getBoolean("qs_brightness_top_value_show",false)
+    private val brightnessShow = XSPUtils.getBoolean("qs_brightness_top_value_show",false)
     val brightnessShowStyle = XSPUtils.getInt("qs_brightness_top_value",0)
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)

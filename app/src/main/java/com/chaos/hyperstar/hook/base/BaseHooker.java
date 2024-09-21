@@ -17,8 +17,10 @@ public abstract class BaseHooker {
     }
 
     public String  modulePath;
+    public String plugin = "miui.systemui.plugin";
 
     public void getLocalRes(Resources res){};
+    public void doResources(XC_InitPackageResources.InitPackageResourcesParam resparam,XModuleResources modRes){}
     public void doMethods(ClassLoader classLoader){
     };
     public void doMethods(XC_LoadPackage.LoadPackageParam XModuleResources){

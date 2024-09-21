@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="miui_standard_btn" type="id" />
+    <item name="bottom_layout" type="id" />
+    <item name="bg_blur" type="id" />
+    <item name="count_down_progress" type="id" />
+    <item name="timer_layout" type="id" />
+    <item name="shadow" type="id" />
+    <item name="blur_frame" type="id" />
+    <item name="miui_super_volume_collapsed" type="id" />
+    <item name="volume_dialog" type="id" />
+    <item name="volume_dialog_container" type="id" />
+    <item name="volume_dialog_content" type="id" />
+    <item name="volume_dialog_columns" type="id" />
+    <item name="volume_dialog_column_collapsed" type="id" />
+    <item name="volume_expand_button" type="id" />
+    <item name="volume_dialog_column_temp" type="id" />
+    <item name="timer_seekbar" type="id" />
+    <item name="volume_timer_view" type="id" />
+    <item name="volume_timer_progress_view" type="id" />
+    <item name="ticking_time_above_progress_view" type="id" />
+    <item name="timer_bg" type="id" />
+    <item name="timer_text" type="id" />
+    <item name="miui_volume_ringer_layout" type="id" />
+    <item name="miui_ringer_state_layout" type="id" />
+    <item name="miui_ringer_btn_layout" type="id" />
+    <item name="ringer_layout" type="id" />
+    <item name="miui_volume_ringer_divider" type="id" />
+    <item name="dnd_layout" type="id" />
+    <item name="miui_volume_timer_progress_normal" type="id" />
+    <item name="miui_volume_timer_progress_dragging" type="id" />
+    <item name="miui_volume_timer_progress_dragging_rect" type="id" />
+</resources>

@@ -3,6 +3,7 @@ package com.chaos.hyperstar.hook.base;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 import android.content.res.Resources;
+import android.content.res.XModuleResources;
 
 import com.chaos.hyperstar.hook.tool.starLog;
 
@@ -44,6 +45,12 @@ public class InitSystemUIHook extends BaseHooker {
         }
     }
 
+    @Override
+    public void doResources(XC_InitPackageResources.InitPackageResourcesParam resparam, XModuleResources modRes) {
+        super.doResources(resparam, modRes);
+        initSystemUIPluginHook.doResources(resparam,modRes);
+
+    }
 
     private void doMethodsHook(ClassLoader classLoader) {
 

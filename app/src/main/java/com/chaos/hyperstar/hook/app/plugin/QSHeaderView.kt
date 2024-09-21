@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class QSHeaderView : BaseHooker() {
     var viewId : Int = 0
-    val is_use_chaos_header = XSPUtils.getBoolean("is_use_chaos_header",false)
+    private val is_use_chaos_header = XSPUtils.getBoolean("is_use_chaos_header",false)
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)

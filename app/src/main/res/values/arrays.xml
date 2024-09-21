@@ -91,4 +91,11 @@
         <item>百分比</item>
         <item>原始值</item>
     </string-array>
+    <integer-array name="miui_volume_timer_segments">
+        <item>0</item>
+        <item>1800</item>
+        <item>3600</item>
+        <item>7200</item>
+        <item>28800</item>
+    </integer-array>
 </resources>

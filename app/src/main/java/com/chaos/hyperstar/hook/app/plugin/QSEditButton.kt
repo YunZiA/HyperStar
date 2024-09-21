@@ -6,10 +6,12 @@ import de.robv.android.xposed.XC_MethodReplacement.returnConstant
 import de.robv.android.xposed.XposedHelpers
 
 class QSEditButton : BaseHooker() {
-    val close_edit_button_show = XSPUtils.getBoolean("close_edit_button_show",false)
+
+    private val closeEditButtonShow = XSPUtils.getBoolean("close_edit_button_show",false)
+
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
-        if (!close_edit_button_show){
+        if (!closeEditButtonShow){
             return
         }
         startMethodsHook(classLoader)

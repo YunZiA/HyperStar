@@ -11,7 +11,7 @@ import de.robv.android.xposed.XposedHelpers
 
 class QSCardTile : BaseHooker() {
 
-    val clickClose = XSPUtils.getBoolean("card_tile_click_close",false)
+    private val clickClose = XSPUtils.getBoolean("card_tile_click_close",false)
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)

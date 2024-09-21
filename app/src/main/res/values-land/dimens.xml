@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="control_center_universal_corner_radius">20dp</dimen>
-    <!--平板音量条-->
     <dimen name="miui_volume_background_height_t">354.0dp</dimen>
     <dimen name="miui_volume_background_margin_top_t">120.0dp</dimen>
     <dimen name="miui_volume_background_padding_t">19.0dp</dimen>
@@ -25,7 +23,7 @@
     <dimen name="miui_volume_countdown_progressbar_height">36.0dp</dimen>
     <dimen name="miui_volume_countdown_progressbar_width">54.0dp</dimen>
     <dimen name="miui_volume_countdown_radius">18.0dp</dimen>
-    <dimen name="miui_volume_dialog_shadow_margin_top">140.0dp</dimen>
+    <dimen name="miui_volume_dialog_shadow_margin_top">112.889984dp</dimen>
     <dimen name="miui_volume_footer_margin_left_expanded">-10.0dp</dimen>
     <dimen name="miui_volume_footer_margin_top">11.0dp</dimen>
     <dimen name="miui_volume_footer_margin_top_expanded">16.299988dp</dimen>
@@ -33,7 +31,7 @@
     <dimen name="miui_volume_margin_top_expanded">-3.75dp</dimen>
     <dimen name="miui_volume_offset_end">24.0dp</dimen>
     <dimen name="miui_volume_offset_end_expanded">@dimen/miui_volume_offset_end</dimen>
-    <dimen name="miui_volume_offset_top_collapsed">183.63dp</dimen>
+    <dimen name="miui_volume_offset_top_collapsed">60.0dp</dimen>
     <dimen name="miui_volume_offset_top_expand">139.79999dp</dimen>
     <dimen name="miui_volume_ringer_btn_height">54.0dp</dimen>
     <dimen name="miui_volume_ringer_btn_layout_width">242.66998dp</dimen>
@@ -55,6 +53,4 @@
     <dimen name="miui_volume_timer_seekbar_width">150.0dp</dimen>
     <dimen name="miui_volume_timer_seekbar_width_4stream">196.0dp</dimen>
     <dimen name="miui_volume_timer_time_text_size">13.0dp</dimen>
-
-
 </resources>

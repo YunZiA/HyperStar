@@ -3,6 +3,7 @@ package com.chaos.hyperstar.hook.base
 import android.content.Context
 import android.content.res.Resources
 import android.content.res.XModuleResources
+import com.chaos.hyperstar.hook.app.plugin.PadVolume
 import com.chaos.hyperstar.hook.app.plugin.QSCardTile
 import com.chaos.hyperstar.hook.app.plugin.QSCardTileList
 import com.chaos.hyperstar.hook.app.plugin.QSEditButton
@@ -26,9 +27,11 @@ import de.robv.android.xposed.callbacks.XC_InitPackageResources
 class InitSystemUIPluginHook() : BaseHooker() {
 
     private val qsMediaCoverBackground: QSMediaCoverBackground
+    private val padVolume: PadVolume
 
     init {
         qsMediaCoverBackground = QSMediaCoverBackground()
+        padVolume = PadVolume()
     }
 
     override fun getLocalRes(res: Resources?) {
@@ -45,7 +48,13 @@ class InitSystemUIPluginHook() : BaseHooker() {
     }
 
 
-
+    override fun doResources(
+        resparam: XC_InitPackageResources.InitPackageResourcesParam?,
+        modRes: XModuleResources?
+    ) {
+        super.doResources(resparam, modRes)
+        padVolume.doResources(resparam,modRes)
+    }
 
     override fun doRes(resparam: XC_InitPackageResources.InitPackageResourcesParam?) {
         super.doRes(resparam)
@@ -108,6 +117,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         QSHeaderMessage().doMethods(classLoader)
         QSHeaderView().doMethods(classLoader)
         QSEditButton().doMethods(classLoader)
+        padVolume.doMethods(classLoader)
     }
 
 }

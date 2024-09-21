@@ -8,8 +8,8 @@ import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedHelpers
 
 class QSHeaderMessage : BaseHooker() {
-    val showMessage= XSPUtils.getBoolean("close_header_show_message",false)
-    val showMessageMillis = XSPUtils.getFloat("header_show_message_millis",1f)*1000
+    private val showMessage= XSPUtils.getBoolean("close_header_show_message",false)
+    val showMessageMillis: Float = XSPUtils.getFloat("header_show_message_millis",1f)*1000
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)

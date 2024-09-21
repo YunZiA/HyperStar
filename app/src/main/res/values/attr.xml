@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="collapsingTransition" format="reference"/>
+    <attr name="expandingTransition" format="reference"/>
+    <attr name="backgroundBoundColor" format="color" />
+    <attr name="pathWidth" format="dimension" />
+    <attr name="progressColor" format="color" />
+    <attr name="radius" format="dimension" />
+    <attr name="progressBoundsStart" format="integer" />
+    <attr name="timeSegments" format="reference" />
+</resources>

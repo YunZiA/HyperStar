@@ -18,6 +18,7 @@ import com.chaos.hyperstar.ui.base.XMiuixSliders
 import com.chaos.hyperstar.ui.base.XMiuixSuperDropdown
 import com.chaos.hyperstar.ui.base.XMiuixSuperSliderSwitch
 import com.chaos.hyperstar.ui.base.XMiuixSuperSwitch
+import com.chaos.hyperstar.ui.module.controlcenter.list.QSListColorActivity
 import com.chaos.hyperstar.ui.module.controlcenter.list.QsListViewSettings
 import com.chaos.hyperstar.ui.module.controlcenter.media.MediaSettingsActivity
 import com.chaos.hyperstar.utils.Utils
@@ -131,10 +132,10 @@ fun ControlCenterPager(
                 title = "普通磁贴",
                 top = 12.dp
             ){
-                XMiuixSuperSwitch(
-                    title = "自动收起",
-                    summary = "开启后点击普通磁贴会自动收起状态栏",
-                    key = "list_tile_click_close"
+                MiuixActivitySuperArrow(
+                    title = "颜色自定义",
+                    context = activity,
+                    activity = QSListColorActivity::class.java
                 )
                 XMiuixSuperSliderSwitch(
                     switchTitle = "背景圆角自定义",
@@ -170,41 +171,12 @@ fun ControlCenterPager(
                     )
 
                 }
-                ColorPickerTool(
-
-                    title = "关闭背景色",
-                    dfColor = Color(0x00000000),
-                    key = "list_disabled_color"
-
+                XMiuixSuperSwitch(
+                    title = "自动收起",
+                    summary = "开启后点击普通磁贴会自动收起状态栏",
+                    key = "list_tile_click_close"
                 )
-                ColorPickerTool(
 
-                    title = "开启背景色",
-                    dfColor = Color(0x00000000),
-                    key = "list_enabled_color"
-
-                )
-                ColorPickerTool(
-
-                    title = "开启背景色（特殊）",
-                    dfColor = Color(0x00000000),
-                    key = "list_warning_color"
-
-                )
-                ColorPickerTool(
-
-                    title = "临时开启背景色",
-                    dfColor = Color(0x00000000),
-                    key = "list_restricted_color"
-
-                )
-                ColorPickerTool(
-
-                    title = "禁用背景色",
-                    dfColor = Color(0x00000000),
-                    key = "list_unavailable_color"
-
-                )
 
 
             }

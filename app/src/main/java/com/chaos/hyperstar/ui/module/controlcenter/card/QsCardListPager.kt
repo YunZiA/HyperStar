@@ -260,7 +260,7 @@ fun CardItem(
             modifier = Modifier.align(Alignment.Center),
             text = item.name,
             fontWeight = FontWeight.ExtraBold,
-            color = colorScheme.onPrimary
+            color = colorScheme.onSurface
         )
         Image(
             modifier = Modifier

@@ -43,4 +43,5 @@
     <string name="Grid">Grid</string>
     <string name="Slider">Slider</string>
     <string name="save">Save</string>
+    <string name="title_activity_qslistcolor">QSListColorActivity</string>
 </resources>

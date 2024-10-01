@@ -1,4 +1,4 @@
-package com.chaos.hyperstar.ui.module.controlcenter.list.ui
+package com.chaos.hyperstar.ui.module.controlcenter.list
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable

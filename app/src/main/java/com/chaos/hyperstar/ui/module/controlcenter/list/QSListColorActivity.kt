@@ -4,10 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import com.chaos.hyperstar.ui.base.BaseActivity
 
-class QsListViewSettings : BaseActivity() {
+class QSListColorActivity : BaseActivity() {
     @Composable
     override fun InitView(colorMode: MutableState<Int>?) {
-        QsListViewPager(this)
+        QSListColorPager(this)
     }
 
     override fun initData() {

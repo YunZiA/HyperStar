@@ -19,26 +19,23 @@ import com.chaos.hyperstar.ui.base.PMiuixSuperDropdown
 import com.chaos.hyperstar.ui.base.PMiuixSuperSwitch
 import com.chaos.hyperstar.ui.base.XMiuixClasser
 import com.chaos.hyperstar.utils.PreferencesUtil
-import getWindowSize
-import top.yukonga.miuix.kmp.MiuixScrollBehavior
-import top.yukonga.miuix.kmp.MiuixSuperDropdown
-import top.yukonga.miuix.kmp.basic.MiuixLazyColumn
-import top.yukonga.miuix.kmp.basic.MiuixText
+import top.yukonga.miuix.kmp.basic.LazyColumn
+import top.yukonga.miuix.kmp.basic.ScrollBehavior
+import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.utils.enableOverscroll
+import top.yukonga.miuix.kmp.utils.getWindowSize
 
 @Composable
 fun SettingsPage(
     activity : ComponentActivity,
-    topAppBarScrollBehavior: MiuixScrollBehavior,
+    topAppBarScrollBehavior: ScrollBehavior,
     padding: PaddingValues,
     colorMode: MutableState<Int>,
     showFPSMonitor: MutableState<Boolean>,
     enablePageUserScroll:MutableState<Boolean>,
-    enableTopBarBlur: MutableState<Boolean>,
-    enableBottomBarBlur: MutableState<Boolean>,
     enableOverScroll: MutableState<Boolean>,
 ) {
-    MiuixLazyColumn(
+    LazyColumn(
         modifier = Modifier.height(getWindowSize().height.dp),
         enableOverScroll = enableOverScroll.value,
         contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+14.dp),
@@ -78,22 +75,6 @@ fun SettingsPage(
                     onCheckedChange = {
                         enablePageUserScroll.value = it
                         PreferencesUtil.putBoolean("page_user_scroll",enablePageUserScroll.value)
-                    }
-                )
-                PMiuixSuperSwitch(
-                    title = stringResource(R.string.top_Bar_blur_title),
-                    checked = enableTopBarBlur.value,
-                    onCheckedChange = {
-                        enableTopBarBlur.value = it
-                        PreferencesUtil.putBoolean("top_Bar_blur",enableTopBarBlur.value)
-                    }
-                )
-                PMiuixSuperSwitch(
-                    title = stringResource(R.string.bottom_Bar_blur_title),
-                    checked = enableBottomBarBlur.value,
-                    onCheckedChange = {
-                        enableBottomBarBlur.value = it
-                        PreferencesUtil.putBoolean("bottom_Bar_blur",enableBottomBarBlur.value)
                     }
                 )
                 PMiuixSuperSwitch(

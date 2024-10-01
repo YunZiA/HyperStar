@@ -2,11 +2,13 @@ package com.chaos.hyperstar.ui.module.controlcenter.ui
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.chaos.hyperstar.ui.module.controlcenter.card.QsCardListActivity
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.ActivityPagers
+import com.chaos.hyperstar.ui.base.ColorPickerTool
 import com.chaos.hyperstar.ui.base.MiuixActivitySuperArrow
 import com.chaos.hyperstar.ui.base.XMiuixClasser
 import com.chaos.hyperstar.ui.base.XMiuixContentDropdown
@@ -33,6 +35,7 @@ fun ControlCenterPager(
         },
     ){
         item {
+
             MiuixActivitySuperArrow(
                 title = "妙播设置",
                 context = activity,
@@ -48,6 +51,11 @@ fun ControlCenterPager(
                 title = "头部",
                 top = 12.dp
             ){
+
+                XMiuixSuperSwitch(
+                    title = "禁用下拉时钟动画",
+                    key = "close_qs_clock_anim"
+                )
 
                 XMiuixSuperSwitch(
                     title = "向顶栏添加设置&编辑按钮",
@@ -162,6 +170,41 @@ fun ControlCenterPager(
                     )
 
                 }
+                ColorPickerTool(
+
+                    title = "关闭背景色",
+                    dfColor = Color(0x00000000),
+                    key = "list_disabled_color"
+
+                )
+                ColorPickerTool(
+
+                    title = "开启背景色",
+                    dfColor = Color(0x00000000),
+                    key = "list_enabled_color"
+
+                )
+                ColorPickerTool(
+
+                    title = "开启背景色（特殊）",
+                    dfColor = Color(0x00000000),
+                    key = "list_warning_color"
+
+                )
+                ColorPickerTool(
+
+                    title = "临时开启背景色",
+                    dfColor = Color(0x00000000),
+                    key = "list_restricted_color"
+
+                )
+                ColorPickerTool(
+
+                    title = "禁用背景色",
+                    dfColor = Color(0x00000000),
+                    key = "list_unavailable_color"
+
+                )
 
 
             }

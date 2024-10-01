@@ -17,9 +17,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import com.chaos.hyperstar.ui.base.enums.EventState
 import com.chaos.hyperstar.utils.SPUtils
-import top.yukonga.miuix.kmp.MiuixSuperSwitch
 
 @Composable
 fun XMiuixSuperSliderSwitch(
@@ -38,11 +39,12 @@ fun XMiuixSuperSliderSwitch(
 
     //var MiuixSuperProgressState by remember { mutableStateOf(SPUtils.getFloat(key,progress)) }
 
-    MiuixSuperSwitch(
-        modifier = Modifier.bounceClick(),
+    SuperSwitch(
+        modifier = Modifier,
         title = switchTitle,
         summary = switchSummary,
         checked = MiuixSuperSwitchState,
+        insideMargin = DpSize(24.dp, 16.dp),
         onCheckedChange = {
             MiuixSuperSwitchState = it
             SPUtils.setBoolean(switchKey,MiuixSuperSwitchState)
@@ -77,10 +79,11 @@ fun XMiuixContentSwitch(
 ) {
     var MiuixSuperSwitchState by remember { mutableStateOf(SPUtils.getBoolean(switchKey,false)) }
 
-    MiuixSuperSwitch(
-        modifier = Modifier.bounceClick(),
+    SuperSwitch(
+        modifier = Modifier,
         title = switchTitle,
         checked = MiuixSuperSwitchState,
+        insideMargin = DpSize(24.dp, 16.dp),
         onCheckedChange = {
             MiuixSuperSwitchState = it
             SPUtils.setBoolean(switchKey,MiuixSuperSwitchState)

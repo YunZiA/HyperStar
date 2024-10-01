@@ -6,9 +6,11 @@ import android.content.res.XModuleResources
 import com.chaos.hyperstar.hook.app.plugin.PadVolume
 import com.chaos.hyperstar.hook.app.plugin.QSCardTile
 import com.chaos.hyperstar.hook.app.plugin.QSCardTileList
+import com.chaos.hyperstar.hook.app.plugin.QSClockAnim
 import com.chaos.hyperstar.hook.app.plugin.QSEditButton
 import com.chaos.hyperstar.hook.app.plugin.QSHeaderMessage
 import com.chaos.hyperstar.hook.app.plugin.QSHeaderView
+import com.chaos.hyperstar.hook.app.plugin.QSListColor
 import com.chaos.hyperstar.hook.app.plugin.QSListView
 import com.chaos.hyperstar.hook.app.plugin.QSMediaCoverBackground
 import com.chaos.hyperstar.hook.app.plugin.QSMediaDefaultApp
@@ -109,6 +111,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         QSMediaDeviceName().doMethods(classLoader)
         QSMediaDefaultApp().doMethods(classLoader)
         QSMediaView().doMethods(classLoader)
+        QSListColor().doMethods(classLoader)
         QSListView().doMethods(classLoader)
         QSVolumeOrBrightnessValue().doMethods(classLoader)
         QSCardTileList().doMethods(classLoader)
@@ -118,6 +121,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         QSHeaderView().doMethods(classLoader)
         QSEditButton().doMethods(classLoader)
         padVolume.doMethods(classLoader)
+        QSClockAnim().doMethods(classLoader)
     }
 
 }

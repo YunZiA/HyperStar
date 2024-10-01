@@ -13,16 +13,15 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Icon
 import com.chaos.hyperstar.R
-import kotlinx.coroutines.launch
-import top.yukonga.miuix.kmp.MiuixNavigationBar
-import top.yukonga.miuix.kmp.MiuixScrollBehavior
-import top.yukonga.miuix.kmp.MiuixTopAppBar
+import top.yukonga.miuix.kmp.basic.ScrollBehavior
+import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 @Composable
 fun SubMiuixTopAppBar(
+    modifier: Modifier,
     title : String,
-    scrollBehavior: MiuixScrollBehavior? = null,
+    scrollBehavior: ScrollBehavior? = null,
     color : Color,
     activity: ComponentActivity,
     endIcon :  @Composable () -> Unit = {},
@@ -32,7 +31,8 @@ fun SubMiuixTopAppBar(
 
     val view = LocalView.current
 
-    MiuixTopAppBar(
+    TopAppBar(
+        modifier = modifier,
         color = color,
         title = title,
         scrollBehavior = scrollBehavior,
@@ -47,7 +47,7 @@ fun SubMiuixTopAppBar(
                 Icon(
                     ImageVector.vectorResource(R.drawable.bar_back__exit),
                     contentDescription = "back",
-                    tint = colorScheme.onPrimary)
+                    tint = colorScheme.onBackground)
             }
 
         },
@@ -68,7 +68,7 @@ fun SubMiuixTopAppBar(
                 Icon(
                     ImageVector.vectorResource(R.drawable.ic_menu_refresh),
                     contentDescription = "restart",
-                    tint = colorScheme.onPrimary)
+                    tint = colorScheme.onBackground)
 
             }
 

@@ -17,8 +17,6 @@
     <string name="color_mode_title">Color Mode</string>
     <string name="show_FPS_Monitor_title">Show FPS Monitor</string>
     <string name="page_user_scroll_title">Enable Page User Scroll</string>
-    <string name="top_Bar_blur_title">Enable Top Bar Blur</string>
-    <string name="bottom_Bar_blur_title">Enable Bottom Bar Blur</string>
     <string name="over_scroll_title">Enable Over Scroll</string>
     <string name="controlcenter">Control Center</string>
     <string name="sound_settings">Volume Dialog</string>
@@ -34,4 +32,15 @@
     <string name="progress_effect_title">Rounded Progress Bar</string>
     <string name="title_activity_qs_list_view_settings">QsListViewSettings</string>
     <string name="title_activity_qs_card_list">QsCardListActivity</string>
+    <string name="other_settings">其他</string>
+    <string name="beta_home">Beta Home</string>
+    <string name="title_activity_beta_home_settings">BetaHomeSettingsActivity</string>
+    <string name="cancel">Cancel</string>
+    <string name="Hue">Hue</string>
+    <string name="Saturation">Saturation</string>
+    <string name="Lightness">Lightness</string>
+    <string name="Opacity">Opacity</string>
+    <string name="Grid">Grid</string>
+    <string name="Slider">Slider</string>
+    <string name="save">Save</string>
 </resources>

@@ -3,6 +3,7 @@ package com.chaos.hyperstar.hook.app.plugin
 import android.content.Context
 import android.content.res.Resources
 import android.content.res.XModuleResources
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
@@ -338,6 +339,7 @@ class QSListView : BaseHooker() {
 
         }
 
+
         hookAllMethods(classLoader, "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
             "updateIcon",
             object : MethodHook {
@@ -346,6 +348,8 @@ class QSListView : BaseHooker() {
                     if (isQSListTileRadius){
                         val pluginContext: Context =
                             XposedHelpers.getObjectField(param?.thisObject, "pluginContext") as Context;
+                        //val enableColor = pluginContext.resources.getIdentifier("qs_enabled_color","color","miui.systemui.plugin")
+
                         val warning: Int = pluginContext.resources
                             .getIdentifier("qs_background_warning", "drawable", "miui.systemui.plugin");
                         val enabled: Int = pluginContext.resources
@@ -374,6 +378,7 @@ class QSListView : BaseHooker() {
                             warningD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
                         }
                         if (enabledD is GradientDrawable) {
+
                             enabledD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
                         }
                         if (restrictedD is GradientDrawable) {

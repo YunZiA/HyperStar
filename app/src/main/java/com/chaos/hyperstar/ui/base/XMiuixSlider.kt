@@ -7,10 +7,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,43 +39,28 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.Popup
-import androidx.core.text.isDigitsOnly
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.FractionalThreshold
 import androidx.wear.compose.material.SwipeableState
 import androidx.wear.compose.material.rememberSwipeableState
 import androidx.wear.compose.material.swipeable
-import com.chaos.hyperstar.ui.base.filter.FilterNumber
-import com.chaos.hyperstar.ui.pagers.dialog
 import com.chaos.hyperstar.utils.PreferencesUtil
 import com.chaos.hyperstar.utils.SPUtils
 import kotlinx.coroutines.launch
-import top.yukonga.miuix.kmp.MiuixScrollBehavior
-import top.yukonga.miuix.kmp.MiuixSuperDialog
-import top.yukonga.miuix.kmp.basic.MiuixButton
-import top.yukonga.miuix.kmp.basic.MiuixCard
-import top.yukonga.miuix.kmp.basic.MiuixSlider
-import top.yukonga.miuix.kmp.basic.MiuixText
-import top.yukonga.miuix.kmp.basic.MiuixTextField
+import top.yukonga.miuix.kmp.basic.Slider
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showDialog
@@ -156,9 +137,9 @@ fun XMiuixSlider(
                 }
             ) {
 
-                MiuixText(
+                Text(
                     fontSize = 12.sp,
-                    color = MiuixTheme.colorScheme.primaryContainer,
+                    color = MiuixTheme.colorScheme.onPrimaryContainer,
                     fontWeight = FontWeight.SemiBold,
                     text = "默认"
                 )
@@ -186,7 +167,7 @@ fun XMiuixSlider(
                 contentPadding = PaddingValues(0.dp, 0.dp),
                 shape = SquircleShape(12.dp)
             ) {
-                MiuixText(
+                Text(
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
                     text = "取消"
@@ -210,7 +191,7 @@ fun XMiuixSlider(
                     modifier = Modifier
                         .height(20.dp)
                         .fillMaxWidth()
-                        .padding(horizontal = 28.dp)
+                        .padding(horizontal = 24.dp)
                         .swipeable(
                             state = swipeableState,
                             anchors = anchors,
@@ -220,13 +201,13 @@ fun XMiuixSlider(
                         )
 
                 ) {
-                    MiuixText(
+                    Text(
                         modifier = Modifier.weight(1f),
                         text = title,
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
-                    MiuixText(
+                    Text(
                         modifier = Modifier.clickable {
                             dialog.value = true
                         },
@@ -237,7 +218,7 @@ fun XMiuixSlider(
                         fontSize = 14.sp
                     )
                 }
-                MiuixSlider(
+                Slider(
                     progress = x_progress,
                     onProgressChange = { newProgress ->
                         x_progress = newProgress
@@ -249,7 +230,7 @@ fun XMiuixSlider(
                     //dragShow = true,
                     decimalPlaces = decimalPlaces,
                     modifier = Modifier
-                        .padding(horizontal = 28.dp)
+                        .padding(horizontal = 24.dp)
                         .padding(top = 10.dp),
                     enabled = if (swipeableState.targetValue == Status.CLOSE) true else false
                 )
@@ -287,15 +268,15 @@ fun XMiuixSliders(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 28.dp)
+                    .padding(horizontal = 24.dp)
             ) {
-                MiuixText(
+                Text(
                     modifier = Modifier.weight(1f),
                     text = title,
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp
                 )
-                MiuixText(
+                Text(
                     text = if (x_progress == progress) "默认"
                     else if (decimalPlaces == 0) values(x_progress).toInt().toString() + unit
                     else values(x_progress).toString() + unit,
@@ -303,7 +284,7 @@ fun XMiuixSliders(
                     fontSize = 14.sp
                 )
             }
-            MiuixSlider(
+            Slider(
                 progress = x_progress,
                 onProgressChange = { newProgress ->
                     x_progress = newProgress
@@ -315,7 +296,7 @@ fun XMiuixSliders(
                 //dragShow = true,
                 decimalPlaces = decimalPlaces,
                 modifier = Modifier
-                    .padding(horizontal = 28.dp)
+                    .padding(horizontal = 24.dp)
                     .padding(top = 10.dp)
             )
         }
@@ -323,108 +304,4 @@ fun XMiuixSliders(
 
     }
 }
-
-
-@Composable
-fun Dialog(
-    showDialog: MutableState<Boolean>,
-    unit: Any = "",
-) {
-    if (showDialog.value) {
-        Popup(
-            alignment = Alignment.Center,
-            offset = IntOffset(-0, -100)
-        ) {
-            Row(
-                modifier = Modifier.width(100.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                MiuixButton(
-                    modifier = Modifier.weight(1f),
-                    text = "恢复默认",
-                    onClick = {
-                        //dismissDialog()
-                        showDialog.value = false
-                    }
-                )
-            }
-        }
-    }
-
-
-}
-
-@Composable
-fun Dialogs(
-    showDialog: MutableState<Boolean>,
-    unit: Any = "",
-) {
-    var text by remember { mutableStateOf("") }
-    val focusManager = LocalFocusManager.current
-    val filter = remember { FilterNumber() }
-    if (showDialog.value) {
-        showDialog(
-            content = {
-                MiuixSuperDialog(
-                    title = "Title",
-                    onDismissRequest = {
-                        showDialog.value = false
-                    },
-                ) {
-                    MiuixTextField(
-                        value = filter.getInputValue(),
-                        cornerRadius = 18.dp,
-                        onValueChange = {
-                            //it.byteInputStream()
-                            filter.onValueChange()
-                            //if (it.isDigitsOnly()) text = it
-                            //text = it
-                        },
-                        label = "进度值",
-                        modifier = Modifier
-                            .padding(vertical = 0.dp),
-                        //keyboardType = KeyboardType.Number,
-                        keyboardActions = KeyboardActions(onDone = {
-                            focusManager.clearFocus()
-                        }),//,keyboardType = KeyboardType.Number
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                        singleLine = true,
-                        trailingIcon = {
-                            MiuixText(
-                                text = unit.toString(),
-                                Modifier.padding(horizontal = 18.dp)
-                            )
-                        }
-                    )
-                    Spacer(Modifier.height(20.dp))
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        MiuixButton(
-                            modifier = Modifier.weight(1f),
-                            text = "Cancel",
-                            onClick = {
-                                dismissDialog()
-                                showDialog.value = false
-                            }
-                        )
-                        Spacer(Modifier.width(20.dp))
-                        MiuixButton(
-                            modifier = Modifier.weight(1f),
-                            text = "Confirm",
-                            submit = true,
-                            onClick = {
-                                dismissDialog()
-                                showDialog.value = false
-                            }
-                        )
-                    }
-                }
-            }
-        )
-    }
-}
-
-
-
 

@@ -4,4 +4,5 @@
     <color name="sec_color">#30ffffff</color>
     <color name="miui_volume_color_accent">#f7ffffff</color>
     <color name="miui_volume_bg_color">#40e3e3e3</color>
+    <color name="tab_bg_color">#FF313131</color>
 </resources>

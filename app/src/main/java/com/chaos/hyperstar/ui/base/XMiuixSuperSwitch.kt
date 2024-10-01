@@ -13,10 +13,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import com.chaos.hyperstar.ui.base.enums.EventState
 import com.chaos.hyperstar.utils.PreferencesUtil
 import com.chaos.hyperstar.utils.SPUtils
-import top.yukonga.miuix.kmp.MiuixSuperSwitch
 
 @Composable
 fun XMiuixSuperSwitch(
@@ -26,16 +27,19 @@ fun XMiuixSuperSwitch(
     state : MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) }
 ) {
 
-    MiuixSuperSwitch(
-        modifier = Modifier.bounceClick(),
+    SuperSwitch(
+        modifier = Modifier,
         title = title,
         summary = summary,
         checked = state.value,
+        insideMargin = DpSize(24.dp, 16.dp),
         onCheckedChange = {
             state.value = it
             SPUtils.setBoolean(key,state.value)
         },
     )
+
+
 }
 
 @Composable
@@ -45,10 +49,11 @@ fun PMiuixSuperSwitch(
 ) {
 
     var MiuixSuperSwitchState by remember { mutableStateOf(PreferencesUtil.getBoolean(key,false)) }
-    MiuixSuperSwitch(
-        modifier = Modifier.bounceClick(),
+    SuperSwitch(
+        modifier = Modifier,
         title = title,
         checked = MiuixSuperSwitchState,
+        insideMargin = DpSize(24.dp, 16.dp),
         onCheckedChange = {
             MiuixSuperSwitchState = it
             PreferencesUtil.putBoolean(key,MiuixSuperSwitchState)
@@ -65,10 +70,11 @@ fun PMiuixSuperSwitch(
 ) {
     val updatedOnCheckedChange by rememberUpdatedState(onCheckedChange)
 
-    MiuixSuperSwitch(
-        modifier = Modifier.bounceClick(),
+    SuperSwitch(
+        modifier = Modifier,
         title = title,
         checked = checked,
+        insideMargin = DpSize(24.dp, 16.dp),
         onCheckedChange = {
             updatedOnCheckedChange?.invoke(it)
         },

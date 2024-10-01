@@ -4,8 +4,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 
-open class BaseFieldFilter {
+open class BaseFieldFilter() {
     private var inputValue = mutableStateOf(TextFieldValue())
+
+    constructor(value:String) : this() {
+        inputValue.value = TextFieldValue(value, TextRange(value.lastIndex+1))
+    }
 
     protected open fun onFilter(inputTextFieldValue: TextFieldValue, lastTextFieldValue: TextFieldValue): TextFieldValue {
         return TextFieldValue()
@@ -30,6 +34,7 @@ open class BaseFieldFilter {
 
         return null
     }
+
 
     fun getInputValue(): TextFieldValue {
         return inputValue.value

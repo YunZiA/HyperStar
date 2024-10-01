@@ -8,7 +8,7 @@ class FilterNumber(
     private val minValue: Double = -Double.MAX_VALUE,
     private val maxValue: Double = Double.MAX_VALUE,
     private val decimalNumber: Int = -1
-) : BaseFieldFilter() {
+) : BaseFieldFilter("") {
 
     override fun onFilter(
         inputTextFieldValue: TextFieldValue,

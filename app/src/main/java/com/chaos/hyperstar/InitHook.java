@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.content.res.XModuleResources;
 import android.graphics.drawable.Drawable;
 
+import com.chaos.hyperstar.hook.base.InitMiuiHomeHook;
 import com.chaos.hyperstar.hook.base.InitSystemUIHook;
 import com.chaos.hyperstar.hook.base.BaseHooker;
 import com.chaos.hyperstar.hook.tool.starLog;
@@ -60,6 +61,7 @@ public class InitHook extends BaseHooker implements IXposedHookLoadPackage, IXpo
         }
 
         systemUIHook.doMethods(lpparam);
+        new InitMiuiHomeHook().doMethods(lpparam);
 
     }
 

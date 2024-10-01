@@ -23,7 +23,7 @@ public abstract class BaseHooker {
     public void doResources(XC_InitPackageResources.InitPackageResourcesParam resparam,XModuleResources modRes){}
     public void doMethods(ClassLoader classLoader){
     };
-    public void doMethods(XC_LoadPackage.LoadPackageParam XModuleResources){
+    public void doMethods(XC_LoadPackage.LoadPackageParam lpparam){
     };
     public void doRes(XC_InitPackageResources.InitPackageResourcesParam resparam){}
 

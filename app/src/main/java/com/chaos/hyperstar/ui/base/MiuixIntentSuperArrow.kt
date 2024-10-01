@@ -18,9 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.chaos.hyperstar.ui.base.enums.EventState
-import top.yukonga.miuix.kmp.MiuixSuperArrow
+import top.yukonga.miuix.kmp.extra.SuperArrow
 
 
 @Composable
@@ -33,8 +34,8 @@ fun MiuixIntentSuperArrow(
 )
 {
 
-    MiuixSuperArrow(
-        modifier = Modifier.bounceClick(),
+    SuperArrow(
+        modifier = Modifier,
         leftAction = if (leftIcon != null){ {
             Image(
                 painter = painterResource(leftIcon),
@@ -43,6 +44,7 @@ fun MiuixIntentSuperArrow(
             )
         } }else{ null },
         title = title,
+        insideMargin = DpSize(24.dp, 16.dp),
         summary = summary,
         onClick = {
             // 启动新的Activity
@@ -59,8 +61,8 @@ fun MiuixActivitySuperArrow(
     context: Context
 ) {
 
-    MiuixSuperArrow(
-        modifier = Modifier.bounceClick(),
+    SuperArrow(
+        modifier = Modifier,
         leftAction = if (leftIcon != null){ {
             Image(
                 painter = painterResource(leftIcon),
@@ -69,6 +71,7 @@ fun MiuixActivitySuperArrow(
             )
         } }else{ null },
         title = title,
+        insideMargin = DpSize(24.dp, 16.dp),
         summary = summary,
         onClick = {
             // 启动新的Activity

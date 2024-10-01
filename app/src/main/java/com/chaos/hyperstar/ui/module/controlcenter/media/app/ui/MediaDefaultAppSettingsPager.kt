@@ -71,10 +71,10 @@ import com.google.accompanist.drawablepainter.DrawablePainter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import top.yukonga.miuix.kmp.basic.MiuixCard
-import top.yukonga.miuix.kmp.basic.MiuixCheckbox
-import top.yukonga.miuix.kmp.basic.MiuixLazyColumn
-import top.yukonga.miuix.kmp.basic.MiuixText
+import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.Checkbox
+import top.yukonga.miuix.kmp.basic.LazyColumn
+import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.createRipple
 
@@ -130,7 +130,7 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
             ) {
 
                 ShowLoading()
-                MiuixText(
+                Text(
                     text = "正在加载~",
                 )
 
@@ -150,7 +150,7 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
             ) {
                 val (list,search)=createRefs()
 
-                MiuixLazyColumn(
+                LazyColumn(
                     modifier = Modifier.constrainAs(list){
                         top.linkTo(search.bottom)
                         bottom.linkTo(parent.bottom)
@@ -181,7 +181,7 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
 
                     },
                 ) {
-                    MiuixCard(
+                    Card(
                         modifier = Modifier
                             .padding(bottom = 10.dp)
                             .padding(horizontal = 24.dp),
@@ -198,7 +198,7 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
                                 onValueChange = { text = it },
                                 label = "应用名称",
                                 modifier = Modifier
-                                    .padding(vertical = 0.dp)
+                                    .padding(end = 5.dp)
                                     .weight(1f),
                                 keyboardActions = KeyboardActions(onDone = {
                                     isSearch.value = true
@@ -223,7 +223,7 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
                                     ImageVector.vectorResource(R.drawable.ic_search_icon),
                                     contentDescription = "back",
                                     Modifier.size(25.dp),
-                                    tint = colorScheme.onPrimary
+                                    tint = colorScheme.onSurface
                                 )
 
                             }
@@ -234,10 +234,7 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
 
 
 
-
             }
-
-
 
 
 
@@ -270,7 +267,7 @@ fun ShowLoading() {
 
     // 旋转的图片 - rotate(rotation.value)
     Image(
-        colorFilter = ColorFilter.tint(colorScheme.onPrimary),
+        colorFilter = ColorFilter.tint(colorScheme.onSurface),
         painter = painterResource(id = R.drawable.loading_progress),
         contentDescription = null,
         modifier = Modifier
@@ -297,7 +294,7 @@ fun AppItem(
 
     //if (isSelect) view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
 
-    MiuixCard(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 28.dp)
@@ -307,7 +304,7 @@ fun AppItem(
                 scaleY = scale
             },
 
-        color = if (isSelect) colorScheme.dropdownSelect  else colorScheme.primaryContainer
+        color = if (isSelect) colorScheme.tertiaryContainer  else colorScheme.surfaceVariant
     ) {
 
         Row(
@@ -357,7 +354,7 @@ fun AppItem(
                 }
 
             }
-            MiuixText(
+            Text(
                 text = label,
                 modifier = Modifier
                     .weight(1f)
@@ -369,7 +366,7 @@ fun AppItem(
                     .padding(vertical = 16.dp)
                     .padding(start = 8.dp, end = 16.dp)
             ){
-                MiuixCheckbox(
+                Checkbox(
                     modifier = Modifier
                         .padding(start = 8.dp),
                     enabled = true,

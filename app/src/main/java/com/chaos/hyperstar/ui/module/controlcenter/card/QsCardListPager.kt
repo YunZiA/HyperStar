@@ -24,7 +24,6 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,8 +49,8 @@ import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.ActivityPagers
 import com.chaos.hyperstar.ui.base.XMiuixClasser
 import com.chaos.hyperstar.utils.Utils
-import top.yukonga.miuix.kmp.basic.MiuixSurface
-import top.yukonga.miuix.kmp.basic.MiuixText
+import top.yukonga.miuix.kmp.basic.Surface
+import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
@@ -89,7 +88,7 @@ fun QsCardListPager(
                     Icon(
                         ImageVector.vectorResource(R.drawable.save2),
                         contentDescription = "save",
-                        tint = colorScheme.onPrimary)
+                        tint = colorScheme.primary)
 
                 }
 
@@ -194,7 +193,7 @@ fun QsCardListPager(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
 
-                        MiuixText(
+                        Text(
                             text = "已经没有可以添加的了~\no(╥﹏╥)o",
                             fontSize = 15.sp,
                             textAlign = TextAlign.Center,
@@ -246,7 +245,7 @@ fun CardItem(
             .fillMaxWidth(),
 
         ) {
-        MiuixSurface(
+        Surface(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(vertical = 4.dp, horizontal = 4.dp),

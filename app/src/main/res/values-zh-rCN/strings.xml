@@ -11,8 +11,6 @@
     <string name="color_mode_title">颜色模式</string>
     <string name="show_FPS_Monitor_title">帧率显示</string>
     <string name="page_user_scroll_title">页面滑动切换</string>
-    <string name="top_Bar_blur_title">标题栏模糊</string>
-    <string name="bottom_Bar_blur_title">底部导航栏模糊</string>
     <string name="over_scroll_title">滑动越界回弹</string>
     <string name="controlcenter">控制中心</string>
     <string name="sound_settings">音量条</string>
@@ -27,4 +25,17 @@
     <string name="show_title">显示</string>
     <string name="systemui">系统界面</string>
     <string name="progress_effect_title">进度条圆角</string>
+    <string name="title_activity_qs_list_view_settings">普通磁贴设置</string>
+    <string name="title_activity_qs_card_list">卡片磁贴设置</string>
+    <string name="other_settings">其他</string>
+    <string name="beta_home">Beta桌面</string>
+    <string name="title_activity_beta_home_settings">Beta桌面设置</string>
+    <string name="cancel">取消</string>
+    <string name="Hue">色相</string>
+    <string name="Saturation">饱和度</string>
+    <string name="Lightness">亮度</string>
+    <string name="Opacity">透明度</string>
+    <string name="Grid">网格取色</string>
+    <string name="Slider">滑块取色</string>
+    <string name="save">保存</string>
 </resources>

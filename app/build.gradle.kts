@@ -81,7 +81,10 @@ android {
 }
 
 dependencies {
-
+    implementation("com.github.skydoves:cloudy:0.2.3")
+    implementation(libs.haze)
+    //implementation ("com.godaddy.android.colorpicker:compose-color-picker-android:0.7.0")
+    implementation("com.github.ajalt.colormath:colormath-ext-jetpack-compose:3.6.0")
     implementation(libs.androidx.profileinstaller)
     implementation (libs.androidx.constraintlayout.compose)
     implementation (libs.accompanist.drawablepainter)

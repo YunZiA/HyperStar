@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
@@ -43,9 +42,9 @@ import com.chaos.hyperstar.ui.module.volume.VolumePager
 import com.chaos.hyperstar.utils.PreferencesUtil
 import com.chaos.hyperstar.utils.SPUtils
 import com.chaos.hyperstar.utils.Utils
-import top.yukonga.miuix.kmp.basic.MiuixButton
-import top.yukonga.miuix.kmp.basic.MiuixCard
-import top.yukonga.miuix.kmp.basic.MiuixText
+import top.yukonga.miuix.kmp.basic.Button
+import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 
@@ -108,7 +107,7 @@ fun RootDialog(showDialog: Boolean) {
         Dialog(
             onDismissRequest = { showDialogs.value = false },
         ) {
-            MiuixCard(
+            Card(
                 cornerRadius = 30.dp,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -116,24 +115,24 @@ fun RootDialog(showDialog: Boolean) {
                     .padding(bottom = 28.dp),
                 insideMargin = DpSize(20.dp,20.dp)
             ) {
-                MiuixText(
+                Text(
                     text = "提示",
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    color = colorScheme.onPrimary,
+                    color = colorScheme.onSurface,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp
                 )
                 Spacer(Modifier.height(20.dp))
-                MiuixText(
+                Text(
                     text = "未获取Root权限",
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    color = colorScheme.onPrimary,
+                    color = colorScheme.onSurface,
                     fontWeight = FontWeight.Medium,
                     fontSize = 13.sp
                 )
                 Spacer(Modifier.height(23.dp))
 
-                MiuixButton(
+                Button(
                     modifier = Modifier.fillMaxWidth(),
                     text = "确认",
                     submit = true,

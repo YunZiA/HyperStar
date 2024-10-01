@@ -12,15 +12,18 @@ import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import com.chaos.hyperstar.ui.base.enums.EventState
 import com.chaos.hyperstar.utils.SPUtils
-import top.yukonga.miuix.kmp.MiuixSuperDropdown
+import top.yukonga.miuix.kmp.extra.SuperDropdown
 
 @Composable
 fun XMiuixSuperDropdown(
@@ -32,13 +35,14 @@ fun XMiuixSuperDropdown(
     ) {
 
     val dropdownOptions = activity.resources.getStringArray(option).toList()
-    val dropdownSelectedOption = remember { mutableStateOf(SPUtils.getInt(key,0)) }
+    val dropdownSelectedOption = remember { mutableIntStateOf(SPUtils.getInt(key,0)) }
 
-    MiuixSuperDropdown(
-        modifier = Modifier.bounceClick(),
+    SuperDropdown(
+        modifier = Modifier,
         title = title,
         summary = summary,
         items = dropdownOptions,
+        insideMargin = DpSize(24.dp, 16.dp),
         selectedIndex = dropdownSelectedOption.value,
         onSelectedIndexChange = { newOption ->
             dropdownSelectedOption.value = newOption
@@ -62,11 +66,12 @@ fun XMiuixContentDropdown(
     val dropdownOptions = activity.resources.getStringArray(option).toList()
     val dropdownSelectedOption = remember { mutableStateOf(SPUtils.getInt(key,0)) }
 
-    MiuixSuperDropdown(
-        modifier = Modifier.bounceClick(),
+    SuperDropdown(
+        modifier = Modifier,
         title = title,
         summary = summary,
         items = dropdownOptions,
+        insideMargin = DpSize(24.dp, 16.dp),
         selectedIndex = dropdownSelectedOption.value,
         onSelectedIndexChange = { newOption ->
             dropdownSelectedOption.value = newOption
@@ -98,12 +103,13 @@ fun PMiuixSuperDropdown(
 
     val dropdownOptions = activity.resources.getStringArray(option).toList()
 
-    MiuixSuperDropdown(
-        modifier = Modifier.bounceClick(),
+    SuperDropdown(
+        modifier = Modifier,
         title = title,
         summary = summary,
         items = dropdownOptions,
         selectedIndex = selectedIndex,
+        insideMargin = DpSize(24.dp, 16.dp),
         onSelectedIndexChange =
         { newOption ->
             onSelectedIndexChange(newOption)

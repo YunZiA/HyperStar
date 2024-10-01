@@ -16,13 +16,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HyperStar"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.module.betahome.BetaHomeSettingsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_beta_home_settings"
+            android:theme="@style/Theme.HyperStar" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
             tools:node="merge">
-            <meta-data android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+            <meta-data
+                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
                 tools:node="remove" />
         </provider>
 
@@ -77,9 +83,9 @@
 
         <activity
             android:name=".MainActivity"
-            android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
             android:exported="true"
             android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.HyperStar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -90,7 +96,6 @@
 
         <activity-alias
             android:name=".MainActivityAlias"
-            android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
             android:enabled="true"
             android:exported="true"
             android:icon="@mipmap/ic_launcher"

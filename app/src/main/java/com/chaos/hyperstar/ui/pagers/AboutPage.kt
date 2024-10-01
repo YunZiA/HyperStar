@@ -34,58 +34,62 @@ import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.MiuixIntentSuperArrow
 import com.chaos.hyperstar.ui.base.XMiuixClass
 import com.chaos.hyperstar.ui.base.XMiuixClasser
-import getWindowSize
-import top.yukonga.miuix.kmp.MiuixScrollBehavior
-import top.yukonga.miuix.kmp.MiuixSuperSwitch
-import top.yukonga.miuix.kmp.basic.MiuixCard
-import top.yukonga.miuix.kmp.basic.MiuixLazyColumn
-import top.yukonga.miuix.kmp.basic.MiuixText
+import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.LazyColumn
+import top.yukonga.miuix.kmp.basic.ScrollBehavior
+import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.enableOverscroll
+import top.yukonga.miuix.kmp.utils.getWindowSize
 
 @Composable
 fun ThirdPage(
     activity : ComponentActivity,
-    topAppBarScrollBehavior: MiuixScrollBehavior,
+    topAppBarScrollBehavior: ScrollBehavior,
     padding: PaddingValues,
     enableOverScroll: Boolean,
 ) {
-    MiuixLazyColumn(
+
+    LazyColumn(
         modifier = Modifier.height(getWindowSize().height.dp),
         enableOverScroll = enableOverScroll,
         contentPadding = PaddingValues(top = padding.calculateTopPadding()+16.dp, bottom = padding.calculateBottomPadding()+16.dp),
         topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {
         item {
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 60.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                MiuixText(
+
+                Text(
                     text = "Hyper",
                     fontSize = 45.sp,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center
                 )
-                MiuixText(
+
+                Text(
                     text = "Star",
                     fontSize = 45.sp,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
                     color = colorResource(R.color.blue),
                 )
+
             }
 
-            MiuixText(
+            Text(
                 text = stringResource(id = R.string.xposed_desc),
                 fontSize = 14.sp,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 10.dp, bottom = 140.dp),
                 fontWeight = FontWeight.Medium,
-                color = MiuixTheme.colorScheme.subTextBase,
+                color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
                 textAlign = TextAlign.Center
             )
 
@@ -107,6 +111,7 @@ fun ThirdPage(
             }
 
         }
+
         item {
             XMiuixClasser(
                 title = stringResource(R.string.discussion_title),
@@ -129,18 +134,21 @@ fun ThirdPage(
                 title = stringResource(R.string.references_title),
                 bottom = 0.dp
             ){
+
                 MiuixIntentSuperArrow(
                     title = "miuix-kotlin-multiplatform",
                     summary = "YuKongA | Apache-2.0",
                     activity = activity,
                     url = "https://github.com/miuix-kotlin-multiplatform/miuix"
                 )
+
                 MiuixIntentSuperArrow(
                     title = "Xposed",
                     summary = "rovo89,Tungstwenty | Apache-2.0",
                     activity = activity,
                     url = "https://github.com/rovo89/XposedBridge"
                 )
+
                 MiuixIntentSuperArrow(
                     title = "HyperCeiler",
                     summary = "ReChronoRain | AGPL-3.0",

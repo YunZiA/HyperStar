@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.chaos.hyperstar.R
-import top.yukonga.miuix.kmp.basic.MiuixCard
-import top.yukonga.miuix.kmp.basic.MiuixText
+import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.Text
 
 @Composable
 fun XMiuixClass(
@@ -32,7 +32,7 @@ fun XMiuixClass(
         )
 
     }
-    MiuixText(
+    Text(
         text = title,
         modifier = Modifier
             .padding(horizontal = 28.dp)
@@ -50,7 +50,7 @@ fun XMiuixClasser(
     bottom : Dp = 0.dp,
     content: @Composable (() -> Unit),
 ){
-    MiuixCard(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
@@ -58,7 +58,7 @@ fun XMiuixClasser(
         insideMargin = DpSize(0.dp,14.dp)
     ) {
 
-        MiuixText(
+        Text(
             text = title,
             modifier = Modifier
                 .padding(horizontal = 24.dp)
@@ -81,7 +81,7 @@ fun XMiuixClasser(
     bottom : Dp = 0.dp,
     content: @Composable (() -> Unit),
 ){
-    MiuixCard(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
@@ -93,7 +93,7 @@ fun XMiuixClasser(
             modifier = Modifier.padding(horizontal = 24.dp)
                 .padding(top = 10.dp, bottom = 7.dp),
         ) {
-            MiuixText(
+            Text(
                 text = title,
                 modifier = Modifier
                     .padding(bottom = 1.dp),
@@ -102,7 +102,7 @@ fun XMiuixClasser(
                 fontWeight = FontWeight.Medium
             )
             summary?.let {
-                MiuixText(
+                Text(
                     text = it,
                     modifier = Modifier
                         .padding(bottom = 1.dp),

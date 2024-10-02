@@ -18,6 +18,7 @@ import com.chaos.hyperstar.ui.base.XMiuixSliders
 import com.chaos.hyperstar.ui.base.XMiuixSuperDropdown
 import com.chaos.hyperstar.ui.base.XMiuixSuperSliderSwitch
 import com.chaos.hyperstar.ui.base.XMiuixSuperSwitch
+import com.chaos.hyperstar.ui.module.controlcenter.ControlCenterColorSettings
 import com.chaos.hyperstar.ui.module.controlcenter.list.QSListColorActivity
 import com.chaos.hyperstar.ui.module.controlcenter.list.QsListViewSettings
 import com.chaos.hyperstar.ui.module.controlcenter.media.MediaSettingsActivity
@@ -37,17 +38,29 @@ fun ControlCenterPager(
     ){
         item {
 
-            MiuixActivitySuperArrow(
-                title = "妙播设置",
-                context = activity,
-                activity = MediaSettingsActivity::class.java
-            )
-            XMiuixSuperDropdown(
-                title = "控件·高级材质",
-                key = "is_super_blur_Widget",
-                option = R.array.is_super_blur_entire,
-                activity = activity
-            )
+            XMiuixClasser(
+                title = "常规",
+            ){
+
+                XMiuixSuperDropdown(
+                    title = "控件·高级材质",
+                    key = "is_super_blur_Widget",
+                    option = R.array.is_super_blur_entire,
+                    activity = activity
+                )
+                MiuixActivitySuperArrow(
+                    title = "颜色编辑",
+                    context = activity,
+                    activity = ControlCenterColorSettings::class.java
+                )
+                MiuixActivitySuperArrow(
+                    title = "妙播设置",
+                    context = activity,
+                    activity = MediaSettingsActivity::class.java
+                )
+            }
+
+
             XMiuixClasser(
                 title = "头部",
                 top = 12.dp
@@ -132,11 +145,7 @@ fun ControlCenterPager(
                 title = "普通磁贴",
                 top = 12.dp
             ){
-                MiuixActivitySuperArrow(
-                    title = "颜色自定义",
-                    context = activity,
-                    activity = QSListColorActivity::class.java
-                )
+
                 XMiuixSuperSliderSwitch(
                     switchTitle = "背景圆角自定义",
                     switchSummary = "开启后，默认与其他控件圆角值（官方原版）一致",

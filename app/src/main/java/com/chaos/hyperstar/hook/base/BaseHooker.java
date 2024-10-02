@@ -2,6 +2,7 @@ package com.chaos.hyperstar.hook.base;
 
 import android.content.res.Resources;
 import android.content.res.XModuleResources;
+import android.graphics.Color;
 
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
@@ -10,28 +11,53 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
+
+
 public abstract class BaseHooker {
 
     public BaseHooker(){
 
     }
 
+    public interface ArrayChange{
+        void change(int[] array);
+    }
+
+    private XModuleResources mXModuleResources;
+    public XC_LoadPackage.LoadPackageParam lpparam;
+
+    public XC_InitPackageResources.InitPackageResourcesParam resparam;
+    public XModuleResources modRes;
+
     public String  modulePath;
     public String plugin = "miui.systemui.plugin";
 
     public void getLocalRes(Resources res){};
-    public void doResources(XC_InitPackageResources.InitPackageResourcesParam resparam,XModuleResources modRes){}
+    public void doResources(XC_InitPackageResources.InitPackageResourcesParam resparam,XModuleResources modRes){
+        this.resparam = resparam;
+        this.modRes = modRes;
+    }
     public void doMethods(ClassLoader classLoader){
     };
     public void doMethods(XC_LoadPackage.LoadPackageParam lpparam){
     };
     public void doRes(XC_InitPackageResources.InitPackageResourcesParam resparam){}
 
+    public void ReplaceColor(String color,String colorValue){
+        resparam.res.setReplacement(plugin, "color", color, Color.parseColor(colorValue));
+    }
+    public void ReplaceIntArray(String array,ArrayChange arrayChange){
+        int arrayId = resparam.res.getIdentifier(array,"array",plugin);
+        int[] ay = resparam.res.getIntArray(arrayId);
+        arrayChange.change(ay);
+        resparam.res.setReplacement(plugin, "array", array, ay);
+
+    }
+
     //public ProviderUtils mProviderUtils;
     public String mPath;
 
-    private XModuleResources mXModuleResources;
-    public XC_LoadPackage.LoadPackageParam lpparam;
+
 
     public void initZygote(IXposedHookZygoteInit.StartupParam startupParam) throws Throwable {
         mPath=startupParam.modulePath;

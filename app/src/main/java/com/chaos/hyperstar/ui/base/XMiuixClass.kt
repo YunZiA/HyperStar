@@ -3,6 +3,7 @@ package com.chaos.hyperstar.ui.base
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -41,6 +42,53 @@ fun XMiuixClass(
         color = colorResource(R.color.class_name_color),
         fontWeight = FontWeight.Medium
     )
+}
+
+fun LazyListScope.firstClasses(
+    title : String,
+    top : Dp = 0.dp,
+    bottom : Dp = 0.dp,
+    content: @Composable (() -> Unit),
+){
+    classes(
+        title = title,
+        top = top,
+        bottom = bottom,
+        content = content
+    )
+}
+
+fun LazyListScope.classes(
+    title : String,
+    top : Dp = 12.dp,
+    bottom : Dp = 0.dp,
+    content: @Composable (() -> Unit),
+){
+
+    item{
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(top = top, bottom = bottom),
+            insideMargin = DpSize(0.dp,14.dp)
+        ) {
+
+            Text(
+                text = title,
+                modifier = Modifier
+                    .padding(horizontal = 24.dp)
+                    .padding(top = 10.dp, bottom = 8.dp),
+                fontSize = 15.sp,
+                color = colorResource(R.color.class_name_color),
+                fontWeight = FontWeight.Medium
+            )
+            content()
+
+
+        }
+    }
+
 }
 
 @Composable

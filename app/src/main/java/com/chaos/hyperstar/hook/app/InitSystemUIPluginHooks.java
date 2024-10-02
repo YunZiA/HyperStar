@@ -46,9 +46,7 @@ public class InitSystemUIPluginHooks extends BaseHooker {
             public void before(XC_MethodHook.MethodHookParam param) {
                 if (mContext != null){
                     mContext = (Context) param.args[0];
-//                    Object thisObj = param.thisObject;
-//                    XposedHelpers.callMethod(CommonUtils,"setLayoutHeight$default",CommonUtils,thisObj,0f,false,2, (Object) null);
-//                    starLog.log("changeExpand is find")
+
                 }
 
             }

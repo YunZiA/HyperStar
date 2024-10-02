@@ -3,14 +3,16 @@ package com.chaos.hyperstar.hook.base
 import android.content.Context
 import android.content.res.Resources
 import android.content.res.XModuleResources
+import android.graphics.Color
+import com.chaos.hyperstar.R
 import com.chaos.hyperstar.hook.app.plugin.PadVolume
 import com.chaos.hyperstar.hook.app.plugin.QSCardTile
 import com.chaos.hyperstar.hook.app.plugin.QSCardTileList
 import com.chaos.hyperstar.hook.app.plugin.QSClockAnim
+import com.chaos.hyperstar.hook.app.plugin.QSControlCenterColor
 import com.chaos.hyperstar.hook.app.plugin.QSEditButton
 import com.chaos.hyperstar.hook.app.plugin.QSHeaderMessage
 import com.chaos.hyperstar.hook.app.plugin.QSHeaderView
-import com.chaos.hyperstar.hook.app.plugin.QSListColor
 import com.chaos.hyperstar.hook.app.plugin.QSListView
 import com.chaos.hyperstar.hook.app.plugin.QSMediaCoverBackground
 import com.chaos.hyperstar.hook.app.plugin.QSMediaDefaultApp
@@ -21,6 +23,7 @@ import com.chaos.hyperstar.hook.app.plugin.QSVolumeOrBrightnessValue
 import com.chaos.hyperstar.hook.app.plugin.SuperBlurVolumeManager
 import com.chaos.hyperstar.hook.app.plugin.SuperBlurWidgetManager
 import com.chaos.hyperstar.hook.tool.starLog
+import com.chaos.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
@@ -30,10 +33,13 @@ class InitSystemUIPluginHook() : BaseHooker() {
 
     private val qsMediaCoverBackground: QSMediaCoverBackground
     private val padVolume: PadVolume
+    private val qsControlCenterColor: QSControlCenterColor
 
     init {
         qsMediaCoverBackground = QSMediaCoverBackground()
         padVolume = PadVolume()
+        qsControlCenterColor = QSControlCenterColor()
+
     }
 
     override fun getLocalRes(res: Resources?) {
@@ -48,7 +54,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         super.doMethods(classLoader)
         startSystemUIPluginHook(classLoader)
     }
-
+    val enableColor = XSPUtils.getString("list_enabled_color", "null")
 
     override fun doResources(
         resparam: XC_InitPackageResources.InitPackageResourcesParam?,
@@ -56,6 +62,8 @@ class InitSystemUIPluginHook() : BaseHooker() {
     ) {
         super.doResources(resparam, modRes)
         padVolume.doResources(resparam,modRes)
+        qsControlCenterColor.doResources(resparam, modRes)
+
     }
 
     override fun doRes(resparam: XC_InitPackageResources.InitPackageResourcesParam?) {
@@ -111,7 +119,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         QSMediaDeviceName().doMethods(classLoader)
         QSMediaDefaultApp().doMethods(classLoader)
         QSMediaView().doMethods(classLoader)
-        QSListColor().doMethods(classLoader)
+        qsControlCenterColor.doMethods(classLoader)
         QSListView().doMethods(classLoader)
         QSVolumeOrBrightnessValue().doMethods(classLoader)
         QSCardTileList().doMethods(classLoader)

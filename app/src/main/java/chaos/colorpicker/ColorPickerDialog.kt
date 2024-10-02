@@ -1,7 +1,6 @@
 package chaos.colorpicker
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -10,20 +9,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
@@ -48,16 +43,12 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.wear.compose.material.Icon
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.BaseButton
 import com.chaos.hyperstar.ui.base.FilterColorHex
 import com.chaos.hyperstar.ui.base.MSuperDialog
 import com.chaos.hyperstar.ui.base.MTextField
-import com.chaos.hyperstar.ui.base.ShowDialog
-import top.yukonga.miuix.kmp.basic.TextField
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showDialog
@@ -75,7 +66,7 @@ fun ColorPickerDialog(
     val focusManager = LocalFocusManager.current
     var hasFocus by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val color = rememberSaveable(stateSaver = HsvColor.Saver) {
+    val color = rememberSaveable(fColor,stateSaver = HsvColor.Saver) {
 
         mutableStateOf(HsvColor.from(fColor))
 

@@ -47,7 +47,8 @@ import androidx.wear.compose.material.Icon
 import chaos.ui.DraggableGrid
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.ActivityPagers
-import com.chaos.hyperstar.ui.base.XMiuixClasser
+import com.chaos.hyperstar.ui.base.classes
+import com.chaos.hyperstar.ui.base.firstClasses
 import com.chaos.hyperstar.utils.Utils
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.Text
@@ -102,8 +103,7 @@ fun QsCardListPager(
         },
     ){
 
-        item {
-            XMiuixClasser(
+            firstClasses(
                 title = "已添加",
                 summary = "拖拽已添加的开关调整顺序"
             ) {
@@ -150,9 +150,8 @@ fun QsCardListPager(
                 }
             }
 
-            XMiuixClasser(
-                title = "未添加",
-                top = 12.dp
+            classes (
+                title = "未添加"
             ) {
                 LazyVerticalGrid(
                     modifier = Modifier.height(getHeight(itemList.size,94.dp , 24.dp)),
@@ -206,7 +205,7 @@ fun QsCardListPager(
                 }
             }
 
-        }
+
 
 
     }

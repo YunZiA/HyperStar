@@ -10,7 +10,6 @@ import com.chaos.hyperstar.ui.base.ActivityPagers
 import com.chaos.hyperstar.ui.base.ColorPickerTool
 import com.chaos.hyperstar.ui.base.ContentFolder
 import com.chaos.hyperstar.ui.base.MiuixActivitySuperArrow
-import com.chaos.hyperstar.ui.base.XMiuixClasser
 import com.chaos.hyperstar.ui.base.classes
 import com.chaos.hyperstar.ui.base.firstClasses
 import com.chaos.hyperstar.ui.module.controlcenter.card.QSCardColorActivity
@@ -34,10 +33,11 @@ fun ControlCenterColorPager(
         ){
 
             ColorPickerTool(
-                title = "非高级材质·背景色",
+                title = "非高级材质",
                 key = "background_color"
             )
-            ContentFolder("高级材质·背景色"){
+            ContentFolder("高级材质"){
+
                 ColorPickerTool(
                     title = "混色·主",
                     key = "background_blend_color_main"

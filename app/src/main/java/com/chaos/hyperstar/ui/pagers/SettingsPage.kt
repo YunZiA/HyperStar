@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.PMiuixSuperDropdown
 import com.chaos.hyperstar.ui.base.PMiuixSuperSwitch
-import com.chaos.hyperstar.ui.base.XMiuixClasser
+import com.chaos.hyperstar.ui.base.firstClasses
 import com.chaos.hyperstar.utils.PreferencesUtil
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
@@ -41,61 +41,60 @@ fun SettingsPage(
         contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+14.dp),
         topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {
-        item {
-            XMiuixClasser(
-                title = stringResource(R.string.show_title)
-            ){
-                PMiuixSuperSwitch(
-                    title = stringResource(R.string.is_hide_icon_title),
-                    key = "is_hide_icon"
-                )
+        firstClasses(
+            title = R.string.show_title
+        ){
+            PMiuixSuperSwitch(
+                title = stringResource(R.string.is_hide_icon_title),
+                key = "is_hide_icon"
+            )
 
-                PMiuixSuperDropdown(
-                    title = stringResource(R.string.color_mode_title),
-                    option = R.array.color_mode_items,
-                    activity = activity,
-                    selectedIndex = colorMode.value,
-                    onSelectedIndexChange = {
-                        colorMode.value = it
-                        PreferencesUtil.putInt("color_mode",colorMode.value)
-                    }
-                )
+            PMiuixSuperDropdown(
+                title = stringResource(R.string.color_mode_title),
+                option = R.array.color_mode_items,
+                activity = activity,
+                selectedIndex = colorMode.value,
+                onSelectedIndexChange = {
+                    colorMode.value = it
+                    PreferencesUtil.putInt("color_mode",colorMode.value)
+                }
+            )
 
-                PMiuixSuperSwitch(
-                    title = stringResource(R.string.show_FPS_Monitor_title),
-                    checked = showFPSMonitor.value,
-                    onCheckedChange = {
-                        showFPSMonitor.value = it
-                        PreferencesUtil.putBoolean("show_FPS_Monitor",showFPSMonitor.value)
-                    }
-                )
-                PMiuixSuperSwitch(
-                    title = stringResource(R.string.page_user_scroll_title),
-                    checked = enablePageUserScroll.value,
-                    onCheckedChange = {
-                        enablePageUserScroll.value = it
-                        PreferencesUtil.putBoolean("page_user_scroll",enablePageUserScroll.value)
-                    }
-                )
-                PMiuixSuperSwitch(
-                    title = stringResource(R.string.over_scroll_title),
-                    checked = if (enableOverscroll()) enableOverScroll.value else false,
-                    onCheckedChange = {
-                        enableOverScroll.value = it
-                        PreferencesUtil.putBoolean("over_scroll",enableOverScroll.value)
-                    },
-                    enabled = enableOverscroll(),
-                )
-                PMiuixSuperSwitch(
-                    title = stringResource(R.string.progress_effect_title),
-                    key = "is_progress_effect"
-                )
-
-            }
+            PMiuixSuperSwitch(
+                title = stringResource(R.string.show_FPS_Monitor_title),
+                checked = showFPSMonitor.value,
+                onCheckedChange = {
+                    showFPSMonitor.value = it
+                    PreferencesUtil.putBoolean("show_FPS_Monitor",showFPSMonitor.value)
+                }
+            )
+            PMiuixSuperSwitch(
+                title = stringResource(R.string.page_user_scroll_title),
+                checked = enablePageUserScroll.value,
+                onCheckedChange = {
+                    enablePageUserScroll.value = it
+                    PreferencesUtil.putBoolean("page_user_scroll",enablePageUserScroll.value)
+                }
+            )
+            PMiuixSuperSwitch(
+                title = stringResource(R.string.over_scroll_title),
+                checked = if (enableOverscroll()) enableOverScroll.value else false,
+                onCheckedChange = {
+                    enableOverScroll.value = it
+                    PreferencesUtil.putBoolean("over_scroll",enableOverScroll.value)
+                },
+                enabled = enableOverscroll(),
+            )
+            PMiuixSuperSwitch(
+                title = stringResource(R.string.progress_effect_title),
+                key = "is_progress_effect"
+            )
 
         }
+
     }
 }
+
 
 
 

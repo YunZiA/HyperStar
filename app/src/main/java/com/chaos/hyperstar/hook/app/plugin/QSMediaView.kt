@@ -23,10 +23,10 @@ class QSMediaView : BaseHooker() {
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
-        startMethodsHook(classLoader)
+        startMethodsHook()
     }
 
-    private fun startMethodsHook(classLoader: ClassLoader?) {
+    private fun startMethodsHook() {
 
         val MediaPlayerViewHolder  = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",classLoader)
         XposedHelpers.findAndHookMethod(MediaPlayerViewHolder, "updateSize", object : XC_MethodHook() {

@@ -7,18 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -32,9 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.MiuixIntentSuperArrow
-import com.chaos.hyperstar.ui.base.XMiuixClass
-import com.chaos.hyperstar.ui.base.XMiuixClasser
-import top.yukonga.miuix.kmp.basic.Card
+import com.chaos.hyperstar.ui.base.classes
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
@@ -93,72 +85,64 @@ fun ThirdPage(
                 textAlign = TextAlign.Center
             )
 
+            Spacer(modifier = Modifier.height(28.dp))
         }
-        item {
-            Spacer(modifier = Modifier.height(40.dp))
-            XMiuixClasser(
-                title = stringResource(R.string.developer_title),
-                bottom = 12.dp
-            ){
-                MiuixIntentSuperArrow(
-                    leftIcon = R.drawable.dd,
-                    title = "东东说他舍不得",
-                    summary = "@GG Chaos | Hook",
-                    activity = activity,
-                    url = "coolmarket://u/8555749"
-                )
-
-            }
+        classes(
+            title = R.string.developer_title
+        ){
+            MiuixIntentSuperArrow(
+                leftIcon = R.drawable.dd,
+                title = "东东说他舍不得",
+                summary = "@GG Chaos | Hook",
+                activity = activity,
+                url = "coolmarket://u/8555749"
+            )
 
         }
 
-        item {
-            XMiuixClasser(
-                title = stringResource(R.string.discussion_title),
-                bottom = 12.dp
-            ){
-                MiuixIntentSuperArrow(
-                    title = stringResource(R.string.qq_group_title),
-                    activity = activity,
-                    url = "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&amp;k=5ONF7LuaoQS6RWEOUYBuA0x4X8ssvHJp&amp;authKey=Pic4VQJxKBJwSjFzsIzbJ50ILs0vAEPjdC8Nat4zmiuJRlftqz9%2FKjrBwZPQTc4I&amp;noverify=0&amp;group_code=810317966"
-                )
-                MiuixIntentSuperArrow(
-                    title = "Telegram",
-                    activity = activity,
-                    url = "https://t.me/+QQWVM0ToHyEyZmRl"
-                )
-
-            }
-
-            XMiuixClasser(
-                title = stringResource(R.string.references_title),
-                bottom = 0.dp
-            ){
-
-                MiuixIntentSuperArrow(
-                    title = "miuix-kotlin-multiplatform",
-                    summary = "YuKongA | Apache-2.0",
-                    activity = activity,
-                    url = "https://github.com/miuix-kotlin-multiplatform/miuix"
-                )
-
-                MiuixIntentSuperArrow(
-                    title = "Xposed",
-                    summary = "rovo89,Tungstwenty | Apache-2.0",
-                    activity = activity,
-                    url = "https://github.com/rovo89/XposedBridge"
-                )
-
-                MiuixIntentSuperArrow(
-                    title = "HyperCeiler",
-                    summary = "ReChronoRain | AGPL-3.0",
-                    activity = activity,
-                    url = "https://github.com/ReChronoRain/HyperCeiler"
-                )
-
-            }
-
+        classes(
+            title = R.string.discussion_title
+        ){
+            MiuixIntentSuperArrow(
+                title = stringResource(R.string.qq_group_title),
+                activity = activity,
+                url = "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&amp;k=5ONF7LuaoQS6RWEOUYBuA0x4X8ssvHJp&amp;authKey=Pic4VQJxKBJwSjFzsIzbJ50ILs0vAEPjdC8Nat4zmiuJRlftqz9%2FKjrBwZPQTc4I&amp;noverify=0&amp;group_code=810317966"
+            )
+            MiuixIntentSuperArrow(
+                title = "Telegram",
+                activity = activity,
+                url = "https://t.me/+QQWVM0ToHyEyZmRl"
+            )
 
         }
+
+        classes(
+            title = R.string.references_title
+        ){
+
+            MiuixIntentSuperArrow(
+                title = "miuix-kotlin-multiplatform",
+                summary = "YuKongA | Apache-2.0",
+                activity = activity,
+                url = "https://github.com/miuix-kotlin-multiplatform/miuix"
+            )
+
+            MiuixIntentSuperArrow(
+                title = "Xposed",
+                summary = "rovo89,Tungstwenty | Apache-2.0",
+                activity = activity,
+                url = "https://github.com/rovo89/XposedBridge"
+            )
+
+            MiuixIntentSuperArrow(
+                title = "HyperCeiler",
+                summary = "ReChronoRain | AGPL-3.0",
+                activity = activity,
+                url = "https://github.com/ReChronoRain/HyperCeiler"
+            )
+
+        }
+
+
     }
 }

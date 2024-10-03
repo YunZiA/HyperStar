@@ -13,12 +13,12 @@ class QSMediaDeviceName :BaseHooker() {
         super.doMethods(classLoader)
 
         if (XSPUtils.getInt("is_local_speaker",0) == 1){
-            startMethodsHook(classLoader)
+            startMethodsHook()
         }
 
     }
 
-    private fun startMethodsHook(classLoader: ClassLoader?) {
+    private fun startMethodsHook() {
         val cc : Class<*>
         val p0Var  = XposedHelpers.findClassIfExists("c.f.d.a.j.p0",classLoader)
         val v = XposedHelpers.findClassIfExists("c.f.d.a.j.v",classLoader)

@@ -23,13 +23,13 @@ class QSCardTileList :BaseHooker() {
         super.doMethods(classLoader)
         if (XSPUtils.getBoolean("use_card_tile_list",false)){
 
-            startMethodsHook(classLoader)
+            startMethodsHook()
 
         }
 
     }
 
-    private fun startMethodsHook(classLoader: ClassLoader?) {
+    private fun startMethodsHook() {
 
         val cardStyleTiles = getList()
 

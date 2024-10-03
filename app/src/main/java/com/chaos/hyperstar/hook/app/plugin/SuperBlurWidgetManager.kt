@@ -13,12 +13,12 @@ class SuperBlurWidgetManager : BaseHooker() {
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
         if (superBlurWidget != 0){
-            startMethodsHook(classLoader)
+            startMethodsHook()
 
         }
     }
 
-    private fun startMethodsHook(classLoader: ClassLoader?) {
+    private fun startMethodsHook() {
         val ControlCenterUtils  = XposedHelpers.findClass("miui.systemui.controlcenter.utils.ControlCenterUtils",classLoader)
         XposedHelpers.findAndHookMethod(ControlCenterUtils, "getBackgroundBlurOpenedInDefaultTheme", Class.forName("android.content.Context") , object : XC_MethodHook() {
             override fun beforeHookedMethod(param: MethodHookParam?) {

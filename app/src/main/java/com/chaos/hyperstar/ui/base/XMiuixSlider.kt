@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -55,6 +56,7 @@ import androidx.wear.compose.material.FractionalThreshold
 import androidx.wear.compose.material.SwipeableState
 import androidx.wear.compose.material.rememberSwipeableState
 import androidx.wear.compose.material.swipeable
+import com.chaos.hyperstar.R
 import com.chaos.hyperstar.utils.PreferencesUtil
 import com.chaos.hyperstar.utils.SPUtils
 import kotlinx.coroutines.launch
@@ -116,7 +118,8 @@ fun XMiuixSlider(
         ) {
 
             Button(
-                modifier = Modifier.size(56.dp, 48.5.dp)
+                modifier = Modifier
+                    .size(56.dp, 48.5.dp)
                     .align(Alignment.CenterVertically),
                 colors = ButtonColors(
                     MiuixTheme.colorScheme.primary,
@@ -141,7 +144,7 @@ fun XMiuixSlider(
                     fontSize = 12.sp,
                     color = MiuixTheme.colorScheme.onPrimaryContainer,
                     fontWeight = FontWeight.SemiBold,
-                    text = "默认"
+                    text = stringResource(R.string.default_it)
                 )
 
 
@@ -149,7 +152,8 @@ fun XMiuixSlider(
             }
             Spacer(modifier = Modifier.width(8.dp))
             Button(
-                modifier = Modifier.size(56.dp, 48.5.dp)
+                modifier = Modifier
+                    .size(56.dp, 48.5.dp)
                     .align(Alignment.CenterVertically),
                 onClick = {
                     view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
@@ -170,7 +174,7 @@ fun XMiuixSlider(
                 Text(
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
-                    text = "取消"
+                    text = stringResource(R.string.cancel)
                 )
 
             }

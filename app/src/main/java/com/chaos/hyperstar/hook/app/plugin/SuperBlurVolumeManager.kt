@@ -13,12 +13,12 @@ class SuperBlurVolumeManager : BaseHooker() {
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
         if (superBlurVolume != 0){
-            startMethodsHook(classLoader)
+            startMethodsHook()
 
         }
     }
 
-    private fun startMethodsHook(classLoader: ClassLoader?) {
+    private fun startMethodsHook() {
         val MiBlurCompat  = XposedHelpers.findClass("miui.systemui.util.MiBlurCompat",classLoader)
         XposedHelpers.findAndHookMethod(MiBlurCompat, "getBackgroundBlurOpened", Class.forName("android.content.Context") , object : XC_MethodHook() {
             override fun beforeHookedMethod(param: MethodHookParam?) {

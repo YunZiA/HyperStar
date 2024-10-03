@@ -168,7 +168,7 @@ fun MySwitch(
                 .fillMaxWidth()
                 .clickable {
                     checkedButton = !checkedButton
-                    //onCheckedChange(checkedButton)
+
                 }
         ) {
             Text(

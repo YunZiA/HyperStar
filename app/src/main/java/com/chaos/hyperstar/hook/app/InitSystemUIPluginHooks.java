@@ -31,11 +31,11 @@ public class InitSystemUIPluginHooks extends BaseHooker {
     @Override
     public void doMethods(ClassLoader classLoader) {
         super.doMethods(classLoader);
-        startSystemUIPluginHook(classLoader);
+        startSystemUIPluginHook();
     }
 
 
-    private void startSystemUIPluginHook(ClassLoader classLoader){
+    private void startSystemUIPluginHook(){
 
         Class<?> CommonUtils = XposedHelpers.findClass("miui.systemui.util.CommonUtils", classLoader);
 
@@ -84,7 +84,7 @@ public class InitSystemUIPluginHooks extends BaseHooker {
 
     }
 
-    private void doHook(ClassLoader classLoader){
+    public void doHook(ClassLoader classLoader){
         if (XSPUtils.INSTANCE.getBoolean("test",false)){
             findAndHookMethod("miui.systemui.controlcenter.panel.main.qs.QSCardsController",
                     classLoader,

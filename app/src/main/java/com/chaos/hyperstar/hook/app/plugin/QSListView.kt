@@ -31,7 +31,7 @@ class QSListView : BaseHooker() {
     val labelSize = XSPUtils.getFloat("list_label_size",13f)
     val labelWidth = XSPUtils.getFloat("list_label_width",100f)/100
     val labelMarquee = XSPUtils.getBoolean("list_tile_label_marquee",false)
-    private val tileColorForIcon = XSPUtils.getBoolean("qs_list_tile_color_for_icon",false)
+    private val tileColorForState = XSPUtils.getInt("qs_list_tile_color_for_state",0)
     val listSpacingY = XSPUtils.getFloat("list_spacing_y",100f)/100
     val listLabelSpacingY = XSPUtils.getFloat("list_label_spacing_y",100f)/100
     val isQSListTileRadius = XSPUtils.getBoolean("is_qs_list_tile_radius",false)
@@ -42,8 +42,8 @@ class QSListView : BaseHooker() {
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
-        startMethodsHook(classLoader)
-        qsTileRadius(classLoader)
+        startMethodsHook()
+        qsTileRadius()
     }
 
     fun collapseStatusBar(context: Context) {
@@ -55,7 +55,7 @@ class QSListView : BaseHooker() {
         }
     }
 
-    private fun startMethodsHook(classLoader: ClassLoader?) {
+    private fun startMethodsHook() {
 
         val QSItemViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder", classLoader)
         val QSItemView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSItemView", classLoader)
@@ -227,7 +227,7 @@ class QSListView : BaseHooker() {
 
         }
 
-        if (tileColorForIcon || labelMode != 0){
+        if (tileColorForState != 0 || labelMode != 0){
             XposedHelpers.findAndHookMethod(QSTileItemView, "updateTextAppearance", object : XC_MethodReplacement() {
 
                 override fun replaceHookedMethod(param: MethodHookParam?): Any? {
@@ -240,7 +240,13 @@ class QSListView : BaseHooker() {
 
 
 
-        if (tileColorForIcon){
+        if (tileColorForState != 0){
+
+            val disableColor = XSPUtils.getString("list_title_off_color", "null")
+            val enableColor = XSPUtils.getString("list_title_on_color", "null")
+            val restrictedColor = XSPUtils.getString("list_title_restricted_color", "null")
+            val unavailableColor = XSPUtils.getString("list_title_unavailable_color", "null")
+
             XposedHelpers.findAndHookMethod(QSTileItemView, "onStateUpdated",
                 Boolean::class.java, object : XC_MethodHook(){
                     override fun beforeHookedMethod(param: MethodHookParam?) {
@@ -271,7 +277,6 @@ class QSListView : BaseHooker() {
                             XposedHelpers.setIntField(copy,"state",1)
                             XposedHelpers.callMethod(Companion,"setRestrictedCompat", copy,false)
 
-
                         }
 
                         val state:Int = XposedHelpers.getIntField(copy,"state")
@@ -280,10 +285,17 @@ class QSListView : BaseHooker() {
                         val label = thisObj.findViewByIdName("tile_label") as TextView
                         val icon = XposedHelpers.callMethod(thisObj,"getIcon")
 
-                        val enable = XposedHelpers.getIntField(icon,"iconColor")
-                        val off = XposedHelpers.getIntField(icon,"iconColorOff")
-                        val unavailable = XposedHelpers.getIntField(icon,"iconColorUnavailable")
-                        val restrict = XposedHelpers.getIntField(icon,"iconColorRestrict")
+                        var off = XposedHelpers.getIntField(icon,"iconColorOff")
+                        var enable = XposedHelpers.getIntField(icon,"iconColor")
+                        var unavailable = XposedHelpers.getIntField(icon,"iconColorUnavailable")
+                        var restrict = XposedHelpers.getIntField(icon,"iconColorRestrict")
+                        if (tileColorForState == 2){
+                            if (disableColor != "null")  off = Color.parseColor(disableColor)
+                            if (enableColor != "null")  enable = Color.parseColor(enableColor)
+                            if (restrictedColor != "null")  unavailable = Color.parseColor(restrictedColor)
+                            if (unavailableColor != "null")  restrict = Color.parseColor(unavailableColor)
+                        }
+
 
                         if (state == 0) {
                             label.setTextColor(unavailable)
@@ -313,7 +325,7 @@ class QSListView : BaseHooker() {
 
     }
 
-    private fun qsTileRadius(classLoader: ClassLoader?) {
+    private fun qsTileRadius() {
 
         val classTile = XposedHelpers.findClass(
             "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",

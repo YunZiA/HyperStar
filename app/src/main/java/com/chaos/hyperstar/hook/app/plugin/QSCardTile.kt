@@ -16,7 +16,7 @@ class QSCardTile : BaseHooker() {
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
 
-        startMethodsHook(classLoader)
+        startMethodsHook()
     }
 
     fun collapseStatusBar(context: Context) {
@@ -28,7 +28,7 @@ class QSCardTile : BaseHooker() {
         }
     }
 
-    private fun startMethodsHook(classLoader: ClassLoader?) {
+    private fun startMethodsHook() {
 
         if (!clickClose){
             return
@@ -45,11 +45,7 @@ class QSCardTile : BaseHooker() {
 
                 val qsCardItemView = XposedHelpers.getObjectField(thisObj,"this$0") as LinearLayout
 
-                val clickAction = XposedHelpers.getObjectField(qsCardItemView,"clickAction")
-
-                if (clickAction == null){
-                    return
-                }
+                val clickAction = XposedHelpers.getObjectField(qsCardItemView,"clickAction") ?: return
 
                 collapseStatusBar(qsCardItemView.context)
 

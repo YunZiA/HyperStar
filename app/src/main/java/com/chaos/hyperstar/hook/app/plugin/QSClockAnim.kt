@@ -14,10 +14,10 @@ class QSClockAnim : BaseHooker() {
 
         if (!closeQsClockAnim) return
 
-        startMethodsHook(classLoader)
+        startMethodsHook()
     }
 
-    private fun startMethodsHook(classLoader: ClassLoader?) {
+    private fun startMethodsHook() {
 
         val FakeStatusHeaderController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.header.FakeStatusHeaderController",classLoader)
 

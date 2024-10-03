@@ -18,74 +18,74 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion
 
 
-        private var isDialogShowing = mutableStateOf(false)
+private var isDialogShowing = mutableStateOf(false)
 
-        private var dialogContext = mutableStateOf<(@Composable () -> Unit)?>(null)
+private var dialogContext = mutableStateOf<(@Composable () -> Unit)?>(null)
 
-        /**
-         * Show a dialog.
-         *
-         * @param content The [Composable] content of the dialog.
-         */
-        @Composable
-        fun ShowDialog(
-            content: (@Composable () -> Unit) = {  },
+/**
+ * Show a dialog.
+ *
+ * @param content The [Composable] content of the dialog.
+ */
+@Composable
+fun ShowDialog(
+    content: (@Composable () -> Unit) = {  },
+) {
+    isDialogShowing.value = true
+    BaseDialog(content)
+    //dialogContext.value = content
+}
+
+/**
+ * Dismiss the dialog.
+ */
+fun dismissDialog() {
+    isDialogShowing.value = false
+}
+
+@Composable
+fun BaseDialog(content: (@Composable () -> Unit)){
+    AnimatedVisibility(
+        visible = isDialogShowing.value,
+        modifier = Modifier
+            .zIndex(1f)
+            .fillMaxSize(),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.3f))
+        )
+    }
+    AnimatedVisibility(
+        visible = isDialogShowing.value,
+        modifier = Modifier
+            .zIndex(2f)
+            .fillMaxSize(),
+        enter = slideInVertically(
+            initialOffsetY = { fullHeight -> fullHeight },
+            animationSpec = tween(
+                durationMillis = 500,
+                easing = CubicBezierEasing(0f, 1f, 0.36f, 1f)
+            )
+        ),
+        exit = slideOutVertically(
+            targetOffsetY = { fullHeight -> fullHeight },
+            animationSpec = tween(
+                durationMillis = 300,
+                easing = CubicBezierEasing(1f, 0f, 0.64f, 0f)
+            )
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .navigationBarsPadding()
         ) {
-            isDialogShowing.value = true
-            BaseDialog(content)
-            //dialogContext.value = content
-        }
-
-        /**
-         * Dismiss the dialog.
-         */
-        fun dismissDialog() {
-            isDialogShowing.value = false
-        }
-
-        @Composable
-        fun BaseDialog(content: (@Composable () -> Unit)){
-            AnimatedVisibility(
-                visible = isDialogShowing.value,
-                modifier = Modifier
-                    .zIndex(1f)
-                    .fillMaxSize(),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f))
-                )
-            }
-            AnimatedVisibility(
-                visible = isDialogShowing.value,
-                modifier = Modifier
-                    .zIndex(2f)
-                    .fillMaxSize(),
-                enter = slideInVertically(
-                    initialOffsetY = { fullHeight -> fullHeight },
-                    animationSpec = tween(
-                        durationMillis = 500,
-                        easing = CubicBezierEasing(0f, 1f, 0.36f, 1f)
-                    )
-                ),
-                exit = slideOutVertically(
-                    targetOffsetY = { fullHeight -> fullHeight },
-                    animationSpec = tween(
-                        durationMillis = 300,
-                        easing = CubicBezierEasing(1f, 0f, 0.64f, 0f)
-                    )
-                )
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .navigationBarsPadding()
-                ) {
 //                    dialogContext.value?.invoke()
-                    content()
-                }
-            }
+            content()
         }
+    }
+}
 
 

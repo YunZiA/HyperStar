@@ -12,17 +12,12 @@ class QSMediaDefaultApp :BaseHooker() {
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
         if (apps != ""){
-            startMethodsHook(classLoader)
+            startMethodsHook()
 
         }
     }
 
-    private fun startMethodsHook(classLoader: ClassLoader?) {
-//        val c = XposedHelpers.findClass("f.q.i.c", classLoader)
-//        val LastPlaying = XposedHelpers.findClass(
-//            "com.android.systemui.QSControlMiPlayDetailHeader\$Companion\$getLastPlayingAppPackageName\$2",
-//            classLoader
-//        )
+    private fun startMethodsHook() {
 
         hookAllMethods(classLoader, "com.android.systemui.QSControlMiPlayDetailHeader\$Companion\$getLastPlayingAppPackageName\$2",
             "invokeSuspend",

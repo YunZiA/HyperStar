@@ -3,6 +3,9 @@ package com.chaos.hyperstar.ui.base
 import android.icu.text.CaseMap.Title
 import android.view.HapticFeedbackConstants
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -42,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.FractionalThreshold
 import androidx.wear.compose.material.swipeable
 import com.chaos.hyperstar.R
+import com.chaos.hyperstar.ui.base.enums.EventState
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.ArrowRight
@@ -56,15 +60,14 @@ fun ContentFolder(
 ) {
 
 
-    val view = LocalView.current
     val interactionSource =  remember { MutableInteractionSource() }
     val indication = createRipple()
     val showContent = remember { mutableStateOf(false) }
-    val insideMargin = remember { DpSize(24.dp, 16.dp) }
+    val insideMargin = remember { DpSize(24.dp, 14.dp) }
     val paddingModifier = remember(insideMargin) {
         Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
     }
-
+    val rotating = animateFloatAsState(if (showContent.value ) 90f else -90f, label = "")
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -72,7 +75,6 @@ fun ContentFolder(
                 interactionSource = interactionSource,
                 indication = indication
             ) {
-                view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                 showContent.value = !showContent.value
             }
             .then(paddingModifier),
@@ -80,51 +82,29 @@ fun ContentFolder(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 6.dp),
             text = title,
             fontWeight = FontWeight.Medium,
             color = colorScheme.onSurface
         )
-        Image(
-            modifier = Modifier
-                .size(15.dp)
-                .rotate(90f)
-                .padding(start = 6.dp),
-            imageVector = MiuixIcons.ArrowRight,
-            contentDescription = null,
-            colorFilter = BlendModeColorFilter(colorScheme.onSurfaceVariantActions, BlendMode.SrcIn),
-        )
+        Box(
+            modifier = Modifier.size(30.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(15.dp)
+                    .rotate(rotating.value),
+                imageVector = MiuixIcons.ArrowRight,
+                contentDescription = null,
+                colorFilter = BlendModeColorFilter(colorScheme.onSurfaceVariantActions, BlendMode.SrcIn),
+            )
+        }
 
-//        Box(
-//            modifier = Modifier
-//                .graphicsLayer(
-//                    shadowElevation = 12f,
-//                    shape = RoundedCornerShape(30.dp),
-//                    clip = false
-//                )
-//                .border(3.dp, Color.White, RoundedCornerShape(30.dp))
-//                .size(30.dp)
-//                .clip(RoundedCornerShape(30.dp)),
-//            contentAlignment = Alignment.Center
-//
-//        ) {
-//            Image(
-//                modifier = Modifier
-//                    .size(27.dp)
-//                    .clip(RoundedCornerShape(30.dp))
-//                    .border(
-//                        3.dp,
-//                        if (color.value == colorScheme.surfaceVariant) colorScheme.secondaryContainer else Color.Transparent,
-//                        RoundedCornerShape(30.dp)
-//                    ),
-//                imageVector = ImageVector.vectorResource(R.drawable.transparent),
-//                colorFilter = ColorFilter.tint(
-//                    color.value,
-//                    BlendMode.SrcOver
-//                ),
-//                contentDescription = "ColorImage"
-//            )
-//        }
+
+
     }
 
     AnimatedVisibility (

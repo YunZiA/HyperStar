@@ -99,4 +99,9 @@
         <item>7200</item>
         <item>28800</item>
     </integer-array>
+    <string-array name="qs_list_tile_color_for_state_entire">
+        <item>默认</item>
+        <item>跟随图标</item>
+        <item>自定义</item>
+    </string-array>
 </resources>

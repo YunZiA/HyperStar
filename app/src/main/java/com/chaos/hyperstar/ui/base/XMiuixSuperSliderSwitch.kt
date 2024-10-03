@@ -1,13 +1,10 @@
 package com.chaos.hyperstar.ui.base
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -15,11 +12,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.chaos.hyperstar.ui.base.enums.EventState
 import com.chaos.hyperstar.utils.SPUtils
 
 @Composable
@@ -71,10 +65,10 @@ fun XMiuixSuperSliderSwitch(
 }
 
 @Composable
-fun XMiuixContentSwitch(
-    switchTitle : String,
-    switchKey : String,
-    contrary : Boolean = false,
+fun SwitchContentFolder(
+    switchTitle: String,
+    switchKey: String,
+    contrary: Boolean = false,
     content: @Composable (() -> Unit),
 ) {
     var MiuixSuperSwitchState by remember { mutableStateOf(SPUtils.getBoolean(switchKey,false)) }
@@ -89,6 +83,7 @@ fun XMiuixContentSwitch(
             SPUtils.setBoolean(switchKey,MiuixSuperSwitchState)
         },
     )
+
     AnimatedVisibility (
         if (contrary)!MiuixSuperSwitchState else MiuixSuperSwitchState,
         enter = fadeIn() + expandVertically(),

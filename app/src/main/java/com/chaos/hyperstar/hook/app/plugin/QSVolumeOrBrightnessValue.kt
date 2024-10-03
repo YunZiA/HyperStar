@@ -22,12 +22,12 @@ class QSVolumeOrBrightnessValue :BaseHooker() {
     val brightnessShowStyle = XSPUtils.getInt("qs_brightness_top_value",0)
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
-        startMethodsHook(classLoader)
+        startMethodsHook()
 
 
     }
 
-    private fun startMethodsHook(classLoader: ClassLoader?) {
+    private fun startMethodsHook() {
         if (volumeShow){
             val VolumeSliderController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.volume.VolumeSliderController",classLoader)
             XposedHelpers.findAndHookMethod(VolumeSliderController,"updateIconProgress",

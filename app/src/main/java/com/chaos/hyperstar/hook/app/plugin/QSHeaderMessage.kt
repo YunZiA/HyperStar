@@ -13,10 +13,10 @@ class QSHeaderMessage : BaseHooker() {
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
-        startMethodsHook(classLoader)
+        startMethodsHook()
     }
 
-    private fun startMethodsHook(classLoader: ClassLoader?) {
+    private fun startMethodsHook() {
 
 
         val MainPanelHeaderController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.header.MainPanelHeaderController",classLoader)

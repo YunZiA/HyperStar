@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,8 +32,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
@@ -107,7 +110,6 @@ fun ColorPickerTool(
                 interactionSource = interactionSource,
                 indication = indication
             ) {
-                view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                 showDialog.value = true
             }
             .then(paddingModifier),
@@ -128,6 +130,16 @@ fun ColorPickerTool(
                     shape = RoundedCornerShape(30.dp),
                     clip = false
                 )
+                .pointerInput(Unit) {
+                    detectTapGestures{
+                        if (swipeableState.targetValue == Status.CLOSE){
+                            view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                            showDialog.value = true
+
+                        }
+                    }
+
+                }
                 .border(3.dp, Color.White, RoundedCornerShape(30.dp))
                 .size(30.dp)
                 .clip(RoundedCornerShape(30.dp)),
@@ -190,7 +202,7 @@ fun ColorPickerTool(
                     fontSize = 12.sp,
                     color = colorScheme.onPrimaryContainer,
                     fontWeight = FontWeight.SemiBold,
-                    text = "默认"
+                    text = stringResource(R.string.default_it)
                 )
 
             }
@@ -217,7 +229,7 @@ fun ColorPickerTool(
                 Text(
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
-                    text = "取消"
+                    text = stringResource(R.string.cancel)
                 )
 
             }

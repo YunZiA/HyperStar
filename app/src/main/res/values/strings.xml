@@ -47,4 +47,5 @@
     <string name="title_activity_control_center_color_settings">ControlCenterColorSettings</string>
     <string name="control_center_color_edit">控制中心颜色编辑</string>
     <string name="title_activity_qscard_color">QSCardColorActivity</string>
+    <string name="default_it">Default</string>
 </resources>

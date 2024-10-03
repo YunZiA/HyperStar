@@ -29,7 +29,7 @@ class QSHeaderView : BaseHooker() {
             return
         }
 
-        startMethodsHook(classLoader)
+        startMethodsHook()
         //startMethodsHook1(classLoader)
         //starLog.log(mPath)
 
@@ -44,7 +44,7 @@ class QSHeaderView : BaseHooker() {
         }
     }
 
-    private fun startMethodsHook(classLoader: ClassLoader?) {
+    private fun startMethodsHook() {
         var qsListControllerProvider: Any? = null
 
         val EditButtonController_Factory = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.qs.EditButtonController_Factory",classLoader)

@@ -52,9 +52,9 @@ class InitSystemUIPluginHook() : BaseHooker() {
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
-        startSystemUIPluginHook(classLoader)
+        startSystemUIPluginHook()
     }
-    val enableColor = XSPUtils.getString("list_enabled_color", "null")
+
 
     override fun doResources(
         resparam: XC_InitPackageResources.InitPackageResourcesParam?,
@@ -74,7 +74,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
     lateinit var mContext: Context;
     var ishHooked : Boolean = false;
 
-    private fun startSystemUIPluginHook(classLoader: ClassLoader?){
+    private fun startSystemUIPluginHook(){
 
         hookAllMethods(classLoader, "com.android.systemui.shared.plugins.PluginInstance\$Factory", "create",object : MethodHook {
                 override fun before(param: XC_MethodHook.MethodHookParam) {
@@ -111,25 +111,29 @@ class InitSystemUIPluginHook() : BaseHooker() {
 
     }
 
-    private fun doHook(classLoader: ClassLoader) {
 
-        SuperBlurWidgetManager().doMethods(classLoader)
-        SuperBlurVolumeManager().doMethods(classLoader)
-        qsMediaCoverBackground.doMethods(classLoader)
-        QSMediaDeviceName().doMethods(classLoader)
-        QSMediaDefaultApp().doMethods(classLoader)
-        QSMediaView().doMethods(classLoader)
-        qsControlCenterColor.doMethods(classLoader)
-        QSListView().doMethods(classLoader)
-        QSVolumeOrBrightnessValue().doMethods(classLoader)
-        QSCardTileList().doMethods(classLoader)
-        QSCardTile().doMethods(classLoader)
-        QSToggleSliderRadius().doMethods(classLoader)
-        QSHeaderMessage().doMethods(classLoader)
-        QSHeaderView().doMethods(classLoader)
-        QSEditButton().doMethods(classLoader)
-        padVolume.doMethods(classLoader)
-        QSClockAnim().doMethods(classLoader)
+    override fun doHook(classLoader: ClassLoader?) {
+        super.doHook(classLoader)
+        doSecMethods(QSClockAnim())
+        doSecMethods(SuperBlurWidgetManager())
+        doSecMethods(SuperBlurVolumeManager())
+        doSecMethods(qsMediaCoverBackground)
+        doSecMethods(QSMediaDeviceName())
+        doSecMethods(QSMediaDefaultApp())
+        doSecMethods(QSMediaView())
+        doSecMethods(qsControlCenterColor)
+        doSecMethods(QSListView())
+        doSecMethods(QSVolumeOrBrightnessValue())
+        doSecMethods(QSCardTileList())
+        doSecMethods(QSCardTile())
+        doSecMethods(QSToggleSliderRadius())
+        doSecMethods(QSHeaderMessage())
+        doSecMethods(QSHeaderView())
+        doSecMethods(QSEditButton())
+        doSecMethods(padVolume)
+        doSecMethods(QSClockAnim())
+
     }
+
 
 }

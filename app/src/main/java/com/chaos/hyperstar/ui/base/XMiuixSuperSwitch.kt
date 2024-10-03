@@ -1,8 +1,5 @@
 package com.chaos.hyperstar.ui.base
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -11,20 +8,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.chaos.hyperstar.ui.base.enums.EventState
 import com.chaos.hyperstar.utils.PreferencesUtil
 import com.chaos.hyperstar.utils.SPUtils
 
 @Composable
-fun XMiuixSuperSwitch(
-    title : String,
+fun XSuperSwitch(
+    title: String,
     summary: String? = null,
-    key : String,
-    state : MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) }
+    key: String,
+    state: MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) }
 ) {
 
     SuperSwitch(

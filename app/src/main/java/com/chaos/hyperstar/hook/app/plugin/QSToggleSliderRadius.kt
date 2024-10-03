@@ -16,10 +16,10 @@ class QSToggleSliderRadius : BaseHooker() {
         super.doMethods(classLoader)
         if (!XSPUtils.getBoolean("is_change_qs_progress_radius",false)) return
 
-        startMethodsHook(classLoader)
+        startMethodsHook()
     }
 
-    private fun startMethodsHook(classLoader: ClassLoader?) {
+    private fun startMethodsHook() {
         val ToggleSliderViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.recyclerview.ToggleSliderViewHolder",classLoader)
 
         XposedHelpers.findAndHookMethod(ToggleSliderViewHolder,"updateSize",object : XC_MethodHook(){

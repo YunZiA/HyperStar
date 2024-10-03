@@ -22,36 +22,85 @@ fun QSCardColorPager(
         },
     ) {
         firstClasses(
-            title = "关闭状态"
+            title = "关闭颜色"
         ) {
+
+            ColorPickerTool(
+                title = "图标",
+                key = "card_icon_off_color"
+            )
+            ColorPickerTool(
+                title = "标题",
+                key = "card_primary_disabled_color"
+            )
+            ColorPickerTool(
+                title = "副标题",
+                key = "card_secondary_disabled_color"
+            )
 
         }
         classes(
-            title = "开启状态"
+            title = "开启颜色"
         ) {
             ColorPickerTool(
-                title = "背景色",
+                title = "背景",
                 key = "card_enabled_color"
             )
-
-
-        }
-        classes(
-            title = "蓝牙临时开启状态",
-        ) {
             ColorPickerTool(
-                title = "背景色",
-                key = "card_restricted_color"
+                title = "图标",
+                key = "card_icon_on_color"
+            )
+            ColorPickerTool(
+                title = "标题",
+                key = "card_primary_enabled_color"
+            )
+            ColorPickerTool(
+                title = "副标题",
+                key = "card_secondary_enabled_color"
             )
 
 
         }
         classes(
-            title = "禁用状态"
+            title = "蓝牙临时开启颜色",
         ) {
             ColorPickerTool(
-                title = "背景色",
+                title = "背景",
+                key = "card_restricted_color"
+            )
+            ColorPickerTool(
+                title = "图标",
+                key = "card_icon_restricted_color"
+            )
+            ColorPickerTool(
+                title = "标题",
+                key = "card_primary_restricted_color"
+            )
+            ColorPickerTool(
+                title = "副标题",
+                key = "card_secondary_restricted_color"
+            )
+
+
+        }
+        classes(
+            title = "禁用颜色"
+        ) {
+            ColorPickerTool(
+                title = "背景",
                 key = "card_unavailable_color"
+            )
+            ColorPickerTool(
+                title = "图标",
+                key = "card_icon_unavailable_color"
+            )
+            ColorPickerTool(
+                title = "标题",
+                key = "card_primary_unavailable_color"
+            )
+            ColorPickerTool(
+                title = "副标题",
+                key = "card_secondary_unavailable_color"
             )
 
 

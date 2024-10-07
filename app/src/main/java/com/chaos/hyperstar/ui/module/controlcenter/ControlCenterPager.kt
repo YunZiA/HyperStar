@@ -47,6 +47,11 @@ fun ControlCenterPager(
                 activity = ControlCenterColorSettings::class.java
             )
             MiuixActivitySuperArrow(
+                title = "控件换位",
+                context = activity,
+                activity = ControlCenterListSettings::class.java
+            )
+            MiuixActivitySuperArrow(
                 title = "妙播设置",
                 context = activity,
                 activity = MediaSettingsActivity::class.java

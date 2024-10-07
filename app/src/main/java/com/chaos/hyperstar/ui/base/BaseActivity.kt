@@ -23,7 +23,9 @@ abstract class BaseActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         initData()
         setContent {
+//
             val colorMode = remember { mutableIntStateOf(PreferencesUtil.getInt("color_mode",0)) }
+
             val darkMode = colorMode.intValue == 2 || (isSystemInDarkTheme() && colorMode.intValue == 0)
             DisposableEffect(darkMode) {
                 enableEdgeToEdge(

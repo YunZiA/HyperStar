@@ -152,7 +152,7 @@ fun ColorPickerTool(
                     .clip(RoundedCornerShape(30.dp))
                     .border(
                         3.dp,
-                        if (color.value == colorScheme.surfaceVariant) colorScheme.secondaryContainer else Color.Transparent,
+                        if (color.value == Color.White) Color(0xFFF0F0F0) else Color.Transparent,
                         RoundedCornerShape(30.dp)
                     ),
                 imageVector = ImageVector.vectorResource(R.drawable.transparent),

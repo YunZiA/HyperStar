@@ -18,6 +18,11 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public abstract class BaseHooker {
 
+    public String plugin = "miui.systemui.plugin";
+    public String systemUI = "com.android.systemui";
+
+
+
     public BaseHooker(){
 
     }
@@ -35,7 +40,6 @@ public abstract class BaseHooker {
     public ClassLoader secClassLoader;
 
     //public String modulePath;
-    public String plugin = "miui.systemui.plugin";
 
     public void getLocalRes(Resources res){};
     public void doResources(XC_InitPackageResources.InitPackageResourcesParam resparam,XModuleResources modRes){
@@ -106,7 +110,7 @@ public abstract class BaseHooker {
                 methodHook.after(param);
             }
         });
-        //XposedBridge.hookAllMethods(hookClass,methodName,methodHook);
+
 
     }
 

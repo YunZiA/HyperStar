@@ -1,7 +1,12 @@
 package com.chaos.hyperstar.hook.app.plugin
 
 import android.content.res.XModuleResources
+import android.content.res.XResources
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.VectorDrawable
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -25,10 +30,35 @@ class QSControlCenterColor :BaseHooker() {
         super.doResources(resparam, modRes)
         starBackgroundColorHook()
         startCardColorHook()
+        startMediaColorHook()
         startListColorHook()
-        ReplaceColor("qs_icon_enabled_color","#ff000000")
-        ReplaceColor("qs_icon_disabled_color","#ff000000")
 
+
+
+    }
+
+    private fun startMediaColorHook() {
+
+//        ReplaceColor("media_player_title_text_color","#ff000000")
+//        ReplaceColor("media_player_artist_text_color","#ff000000")
+//        ReplaceColor("media_player_empty_state_text_color","#ff000000")
+//        ReplaceColor("miplay_detail_header_action","#ff000000")
+//        ReplaceColor("miplay_detail_header_action_disabled","#ff000000")
+//        resparam.res.setReplacement(plugin,"drawable","ic_media_device_default",object : XResources.DrawableLoader(){
+//            override fun newDrawable(res: XResources?, id: Int): Drawable {
+//
+//                val d = res?.getDrawable(id,res.newTheme())
+//                d?.colorFilter = PorterDuffColorFilter(Color.parseColor("ff000000"), PorterDuff.Mode.SRC_ATOP);
+//
+////                if (d is VectorDrawable){
+////                    d.alpha = 255
+////                    d.setTint(Color.parseColor("#ffffffff"))
+////                }
+//                return d!!
+//
+//            }
+//
+//        })
 
     }
 

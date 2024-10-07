@@ -23,7 +23,7 @@ import top.yukonga.miuix.kmp.basic.Scaffold
 /**
  * A util class for show popup and dialog.
  */
-class MiuixPopupUtil {
+class XPopupUtil {
 
     companion object {
         private var isPopupShowing = mutableStateOf(false)
@@ -105,7 +105,7 @@ class MiuixPopupUtil {
                 )
             ) {
                 Box(
-                    modifier = Modifier.fillMaxSize().navigationBarsPadding()
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     dialogContext.value?.invoke()
                 }

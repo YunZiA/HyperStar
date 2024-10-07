@@ -25,7 +25,7 @@ fun SubMiuixTopAppBar(
     color : Color,
     activity: ComponentActivity,
     endIcon :  @Composable () -> Unit = {},
-    endClick:(() -> Unit) = {},
+    endClick:() -> Unit = {},
     ){
 
 

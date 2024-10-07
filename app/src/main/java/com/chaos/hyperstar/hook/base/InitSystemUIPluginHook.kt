@@ -10,6 +10,7 @@ import com.chaos.hyperstar.hook.app.plugin.QSCardTile
 import com.chaos.hyperstar.hook.app.plugin.QSCardTileList
 import com.chaos.hyperstar.hook.app.plugin.QSClockAnim
 import com.chaos.hyperstar.hook.app.plugin.QSControlCenterColor
+import com.chaos.hyperstar.hook.app.plugin.QSControlCenterList
 import com.chaos.hyperstar.hook.app.plugin.QSEditButton
 import com.chaos.hyperstar.hook.app.plugin.QSHeaderMessage
 import com.chaos.hyperstar.hook.app.plugin.QSHeaderView
@@ -132,6 +133,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         doSecMethods(QSEditButton())
         doSecMethods(padVolume)
         doSecMethods(QSClockAnim())
+        doSecMethods(QSControlCenterList())
 
     }
 

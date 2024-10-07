@@ -6,6 +6,7 @@ import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.ActivityPagers
 import com.chaos.hyperstar.ui.base.XSuperDropdown
 import com.chaos.hyperstar.ui.base.XSuperSwitch
+import com.chaos.hyperstar.ui.base.firstClasses
 import com.chaos.hyperstar.utils.Utils
 
 @Composable
@@ -17,7 +18,7 @@ fun VolumePager(activity: ComponentActivity) {
             Utils.rootShell("killall com.android.systemui")
                    },
     ){
-        item {
+        firstClasses(title = "基础") {
             XSuperDropdown(
                 title = "音量条·高级材质",
                 key = "is_super_blur_volume",

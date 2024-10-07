@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
+import com.chaos.hyperstar.ui.base.XPopupUtil.Companion.MiuixPopupHost
 import com.chaos.hyperstar.ui.pagers.FPSMonitor
 import com.chaos.hyperstar.utils.PreferencesUtil
 import dev.chrisbanes.haze.HazeState
@@ -35,6 +36,7 @@ fun ActivityPagers(
     endIcon :  @Composable () -> Unit = {},
     content: LazyListScope.() -> Unit
 ) {
+
     ActivityPager(
         activityTitle = activityTitle,
         activity = activity,
@@ -66,10 +68,13 @@ fun ActivityPager(
 
     val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
     val enableOverScroll = remember { mutableStateOf(PreferencesUtil.getBoolean("over_scroll",false)) }
-    val view = LocalView.current
+
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        snackbarHost = {
+            MiuixPopupHost()
+        },
         topBar = {
             SubMiuixTopAppBar(
                 modifier = Modifier.showBlur(hazeState),

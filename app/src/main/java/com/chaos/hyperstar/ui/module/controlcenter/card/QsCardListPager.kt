@@ -6,6 +6,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -98,7 +101,6 @@ fun QsCardListPager(
 
         },
         endClick = {
-            view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             Utils.rootShell("killall com.android.systemui")
         },
     ){
@@ -109,7 +111,8 @@ fun QsCardListPager(
             ) {
                 DraggableGrid(
                     modifier = Modifier
-                        .height(getHeight(items.size, 94.dp, 20.dp))
+                        //.height(getHeight(items.size, 94.dp, 20.dp))
+                        .heightIn(0.dp,1340.dp)
                         .fillMaxWidth(),
                     items = items,
                     column = 2,
@@ -125,7 +128,14 @@ fun QsCardListPager(
 
                     CardItem(
                         R.drawable.ic_qs_tile_mark_remove,
-                        item
+                        item,
+                        show =
+                            if (items.size > 1){
+                                true
+                            }else{
+                                false
+                            }
+
                     ){
                         view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                         if (items.size <= 1){
@@ -154,7 +164,9 @@ fun QsCardListPager(
                 title = "未添加"
             ) {
                 LazyVerticalGrid(
-                    modifier = Modifier.height(getHeight(itemList.size,94.dp , 24.dp)),
+                    modifier = Modifier
+                        //.height(getHeight(itemList.size,94.dp , 24.dp))
+                        .heightIn(0.dp,1270.dp),
                     columns = GridCells.Fixed(2),
                     contentPadding = PaddingValues(24.dp,12.dp),
                     userScrollEnabled = false,
@@ -236,11 +248,12 @@ fun getHeight(
 fun CardItem(
     resId : Int,
     item: Card,
+    show : Boolean = true,
     clickable : () -> Unit
 ) {
     Box(
         modifier = Modifier
-            .height(90.dp)
+            .height(85.dp)
             .fillMaxWidth(),
 
         ) {
@@ -258,16 +271,26 @@ fun CardItem(
         Text(
             modifier = Modifier.align(Alignment.Center),
             text = item.name,
-            fontWeight = FontWeight.ExtraBold,
+            fontWeight = FontWeight.W600,
             color = colorScheme.onSurface
         )
-        Image(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .size(25.dp)
-                .clickable(onClick = clickable),
 
-            painter = painterResource(id = resId), contentDescription = "add"
-        )
+        AnimatedVisibility (
+            show,
+            modifier = Modifier
+                .align(Alignment.TopEnd),
+            enter = fadeIn() + scaleIn(),
+            exit = fadeOut() + scaleOut()
+        ){
+            Image(
+                modifier = Modifier
+                    .size(25.dp)
+                    .clickable(onClick = clickable),
+
+                painter = painterResource(id = resId), contentDescription = "add"
+            )
+
+        }
+
     }
 }

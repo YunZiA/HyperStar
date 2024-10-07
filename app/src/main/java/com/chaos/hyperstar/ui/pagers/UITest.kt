@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.activity.ComponentActivity
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -17,6 +16,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,7 +32,6 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -47,18 +45,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.BlendModeColorFilter
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Icon
@@ -67,24 +61,19 @@ import com.chaos.hyperstar.ui.base.blur
 import com.chaos.hyperstar.ui.base.showBlur
 import com.chaos.hyperstar.utils.PreferencesUtil
 import com.chaos.hyperstar.utils.Utils
-import com.skydoves.cloudy.cloudy
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeChild
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Box
-import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.HorizontalPager
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.NavigationBar
 import top.yukonga.miuix.kmp.basic.NavigationItem
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
+import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
@@ -92,6 +81,10 @@ import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.ArrowRight
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
+import top.yukonga.miuix.kmp.utils.BackHandler
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
+import top.yukonga.miuix.kmp.utils.squircleshape.CornerSmoothing
+import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 @OptIn(FlowPreview::class)
 @Composable
@@ -215,6 +208,8 @@ fun UITest(
 
     //LocalHapticFeedback.current
 
+
+
     AnimatedVisibility(
         show.value,
         enter = fadeIn(),
@@ -246,6 +241,9 @@ fun UITest(
 
 @Composable
 fun  ItemPopu(show: MutableState<Boolean>) {
+    BackHandler(enabled = show.value) {
+        show.value = false
+    }
     val view = LocalView.current
     AnimatedVisibility (
         show.value,
@@ -258,64 +256,118 @@ fun  ItemPopu(show: MutableState<Boolean>) {
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
-            Card(
+
+            Surface(
                 modifier = Modifier
-                    .fillMaxWidth(0.6f)
+                    .fillMaxWidth(0.7f)
                     //.fillMaxHeight(0.2f)
                     .clickable(enabled = false) {},
-                cornerRadius = 24.dp,
-                insideMargin = DpSize(0.dp,30.dp)
+                shape = SquircleShape(24.dp,CornerSmoothing.Medium),
+                color = colorScheme.surface,
             ) {
-//                top = 30.dp,
-                Text(
-                    text = "快速重启",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 10.dp),
-                    style = MiuixTheme.textStyles.paragraph,
-                    fontWeight = FontWeight.W700,
-                    textAlign = TextAlign.Center,
-                    fontSize = 20.sp
-                )
+                Column(
+                    modifier = Modifier.padding(vertical = 0.dp, horizontal = 0.dp),
+                ){
+                    Text(
+                        text = "快速重启",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 30.dp, bottom = 10.dp),
+                        style = MiuixTheme.textStyles.paragraph,
+                        fontWeight = FontWeight.W700,
+                        textAlign = TextAlign.Center,
+                        fontSize = 20.sp
+                    )
 
-                Button(
-                    shape = RoundedCornerShape(0.dp),
-                    contentPadding = PaddingValues(24.dp,20.dp),
-                    colors = ButtonColors(Color.Transparent,Color.Transparent,Color.Transparent,Color.Transparent),
-                    onClick = {
-                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                        Utils.rootShell("killall com.android.systemui")
-                        show.value=false
-                    }
-                ) {
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                    Button(
+                        shape = RoundedCornerShape(0.dp),
+                        contentPadding = PaddingValues(24.dp,20.dp),
+                        colors = ButtonColors(Color.Transparent,Color.Transparent,Color.Transparent,Color.Transparent),
+                        onClick = {
+                            view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                            Utils.rootShell("killall com.android.systemui")
+                            show.value=false
+                        }
                     ) {
-                        Text(
-                            text = "系统界面",
-                            modifier = Modifier.weight(1f),
-                            style = MiuixTheme.textStyles.paragraph,
-                            //textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp
-                        )
-                        Image(
-                            modifier = Modifier
-                                .size(15.dp)
-                                .padding(start = 6.dp),
-                            imageVector = MiuixIcons.ArrowRight,
-                            contentDescription = null,
-                            colorFilter = BlendModeColorFilter(colorScheme.onSurfaceVariantActions, BlendMode.SrcIn),
-                        )
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "系统界面",
+                                modifier = Modifier.weight(1f),
+                                style = MiuixTheme.textStyles.paragraph,
+                                //textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp
+                            )
+                            Image(
+                                modifier = Modifier
+                                    .size(15.dp)
+                                    .padding(start = 6.dp),
+                                imageVector = MiuixIcons.ArrowRight,
+                                contentDescription = null,
+                                colorFilter = BlendModeColorFilter(colorScheme.onSurfaceVariantActions, BlendMode.SrcIn),
+                            )
 
 
+
+                        }
+                        //
                     }
-                    //
-                }
 
+                    Button(
+                        shape = RoundedCornerShape(0.dp),
+                        contentPadding = PaddingValues(24.dp,20.dp),
+                        colors = ButtonColors(Color.Transparent,Color.Transparent,Color.Transparent,Color.Transparent),
+                        onClick = {
+                            view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                            Utils.rootShell("killall com.miui.home")
+                            show.value=false
+                        }
+                    ) {
+                        Row(
+                            Modifier.fillMaxWidth().padding(bottom = 15.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "系统桌面",
+                                modifier = Modifier.weight(1f),
+                                style = MiuixTheme.textStyles.paragraph,
+                                //textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp
+                            )
+                            Image(
+                                modifier = Modifier
+                                    .size(15.dp)
+                                    .padding(start = 6.dp),
+                                imageVector = MiuixIcons.ArrowRight,
+                                contentDescription = null,
+                                colorFilter = BlendModeColorFilter(colorScheme.onSurfaceVariantActions, BlendMode.SrcIn),
+                            )
+
+
+
+                        }
+                        //
+                    }
+                }
             }
+//            Card(
+//                modifier = Modifier
+//                    .fillMaxWidth(0.6f)
+//                    //.fillMaxHeight(0.2f)
+//                    .clickable(enabled = false) {},
+//                cornerRadius = 24.dp,
+//                insideMargin = DpSize(0.dp,30.dp)
+//            ) {
+////                top = 30.dp,
+//
+//
+//            }
         }
 
     }

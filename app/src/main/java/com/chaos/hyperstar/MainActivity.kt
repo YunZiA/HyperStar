@@ -50,7 +50,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 class MainActivity : BaseActivity() {
 
-    fun isModuleActive() : Boolean{
+    private fun isModuleActive() : Boolean{
         return false;
     }
 

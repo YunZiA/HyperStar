@@ -17,6 +17,11 @@
         android:theme="@style/Theme.HyperStar"
         tools:targetApi="31">
         <activity
+            android:name=".ui.module.controlcenter.ControlCenterListSettings"
+            android:exported="false"
+            android:label="@string/title_activity_control_center_list_settings"
+            android:theme="@style/Theme.HyperStar" />
+        <activity
             android:name=".ui.module.controlcenter.card.QSCardColorActivity"
             android:exported="false"
             android:label="@string/title_activity_qscard_color"

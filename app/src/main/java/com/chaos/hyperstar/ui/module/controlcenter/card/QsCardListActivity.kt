@@ -9,7 +9,7 @@ import com.chaos.hyperstar.utils.SPUtils
 
 class QsCardListActivity : BaseActivity() {
     val cardMap = mutableMapOf<String, Card>()
-    var cardList : List<Card> = listOf()
+    var cardList : List<Card> = emptyList<Card>()
     var cardLists : List<Card> = emptyList<Card>()
 
     @Composable

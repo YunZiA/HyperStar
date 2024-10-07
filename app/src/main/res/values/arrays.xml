@@ -5,6 +5,26 @@
         <item>miui.systemui.plugin</item>
         <item>com.miui.home</item>
     </string-array>
+    <array name="control_center_item_list">
+        <item>cards</item>
+        <item>media</item>
+        <item>brightness</item>
+        <item>volume</item>
+        <item>deviceControl</item>
+        <item>deviceCenter</item>
+        <item>list</item>
+        <item>edit</item>
+    </array>
+    <array name="control_center_item_list_name">
+        <item>卡片磁贴</item>
+        <item>小米妙播</item>
+        <item>亮度条</item>
+        <item>音量条</item>
+        <item>米家</item>
+        <item>融合中心</item>
+        <item>小磁贴</item>
+        <item>编辑</item>
+    </array>
     <string-array name="card_list">
         <item>wifi</item>
         <item>cell</item>
@@ -104,4 +124,9 @@
         <item>跟随图标</item>
         <item>自定义</item>
     </string-array>
+    <string-array name="land_rightOrLeft_entire">
+        <item>左面板</item>
+        <item>右面板</item>
+    </string-array>
+
 </resources>

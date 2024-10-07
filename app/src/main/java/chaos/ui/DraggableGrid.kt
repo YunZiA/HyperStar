@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridItemInfo
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyGridState
@@ -68,15 +69,68 @@ fun <T : Any> DraggableGrid(
         verticalArrangement = Arrangement.spacedBy(itemMargin.height),
         horizontalArrangement = Arrangement.spacedBy(itemMargin.width),
     ) {
-        itemsIndexed(items, key = { index, item ->
-            itemKey(index,item)
-        }) { index, item ->
+        itemsIndexed(
+            items = items,
+            key = { index, item ->
+                itemKey(index,item)
+            }
+        ) { index, item ->
             DraggableItem(dragDropState, index) { isDragging ->
                 content(index,item, isDragging)
             }
         }
     }
 }
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun DraggableGrids(
+    items: List<Card>,
+    column : Int,
+    itemKey:(Int,Card) -> Any,
+    onMove: (Int, Int) -> Unit,
+    itemMargin: DpSize = DpSize(0.dp, 0.dp),
+    modifier: Modifier = Modifier,
+    userScrollEnabled : Boolean = false,
+    content: @Composable (Int,Card, Boolean) -> Unit,
+) {
+
+    // Grid状态，常规做法
+    val gridState = rememberLazyGridState()
+    //记录拖拽状态
+    val dragDropState = rememberGridDragDropState(gridState, onMove)
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(column),
+        modifier = modifier.dragContainer(true,dragDropState),
+        state = gridState,
+        contentPadding = PaddingValues(24.dp,12.dp),
+        userScrollEnabled = userScrollEnabled,
+        verticalArrangement = Arrangement.spacedBy(itemMargin.height),
+        horizontalArrangement = Arrangement.spacedBy(itemMargin.width),
+    ) {
+        itemsIndexed(
+            items = items,
+            span = { index, item ->
+                GridItemSpan(item.type)
+            },
+            key = { index, item ->
+                itemKey(index,item)
+            }
+        ) { index, item ->
+            DraggableItem(dragDropState, index) { isDragging ->
+                content(index,item, isDragging)
+            }
+        }
+    }
+}
+
+open class Card(
+    val id : Int,
+    val tag: String,
+    val type : Int,
+    val name : String,
+)
 
 
 

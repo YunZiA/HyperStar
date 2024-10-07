@@ -31,8 +31,11 @@ import androidx.compose.material3.Shapes
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableFloatState
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -66,6 +69,7 @@ import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showDialog
+import top.yukonga.miuix.kmp.utils.squircleshape.CornerSmoothing
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import kotlin.math.roundToInt
 
@@ -80,19 +84,21 @@ fun XMiuixSlider(
     title : String,
     key : String,
     unit : Any = "",
+    insideMargin: DpSize? = null,
     minValue: Float = 0f,
     maxValue: Float = 1f,
     progress: Float = 0.5f,
+    x_progress : MutableFloatState = remember { mutableFloatStateOf(SPUtils.getFloat(key, progress)) },
     decimalPlaces : Int = 0
 
 ) {
 
     val view = LocalView.current
     val effect = PreferencesUtil.getBoolean("is_progress_effect", false)
-    var x_progress by remember { mutableStateOf(SPUtils.getFloat(key, progress)) }
+    //var x_progress by remember { mutableStateOf(SPUtils.getFloat(key, progress)) }
     var dialog = remember { mutableStateOf(false) }
 
-
+    val insideMargin = remember { insideMargin } ?: remember { DpSize(24.dp, 15.dp) }
     //Dialog(dialog,unit)
 
     val squareSize = 130
@@ -111,8 +117,6 @@ fun XMiuixSlider(
                 .align(Alignment.CenterEnd)
                 .width(((swipeableState.offset.value.roundToInt() / sizePx) * squareSize).dp)
                 .fillMaxHeight(),
-            //horizontalAlignment = Alignment.Start,
-            //verticalArrangement = Arrangement.Center
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -128,14 +132,14 @@ fun XMiuixSlider(
                     MiuixTheme.colorScheme.primary
                 ),
                 contentPadding = PaddingValues(0.dp, 0.dp),
-                shape = SquircleShape(12.dp),
+                shape = SquircleShape(16.dp,CornerSmoothing.Medium),
                 onClick = {
                     view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     scope.launch {
                         swipeableState.animateTo(Status.CLOSE)
                     }
-                    x_progress = progress
-                    SPUtils.setFloat(key, x_progress)
+                    x_progress.floatValue = progress
+                    SPUtils.setFloat(key, x_progress.floatValue)
 
                 }
             ) {
@@ -169,7 +173,7 @@ fun XMiuixSlider(
                     MiuixTheme.colorScheme.background
                 ),
                 contentPadding = PaddingValues(0.dp, 0.dp),
-                shape = SquircleShape(12.dp)
+                shape = SquircleShape(16.dp,CornerSmoothing.Medium)
             ) {
                 Text(
                     fontSize = 12.sp,
@@ -182,7 +186,7 @@ fun XMiuixSlider(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 15.dp)
+                .padding(vertical = insideMargin.height)
                 //.background(MiuixTheme.colorScheme.primaryContainer)
         ) {
             Column(
@@ -195,7 +199,7 @@ fun XMiuixSlider(
                     modifier = Modifier
                         .height(20.dp)
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
+                        .padding(horizontal = insideMargin.width)
                         .swipeable(
                             state = swipeableState,
                             anchors = anchors,
@@ -215,18 +219,18 @@ fun XMiuixSlider(
                         modifier = Modifier.clickable {
                             dialog.value = true
                         },
-                        text = if (x_progress == progress) "默认"
-                        else if (decimalPlaces == 0) x_progress.toInt().toString() + unit
-                        else x_progress.toString() + unit,
+                        text = if (x_progress.floatValue == progress) "默认"
+                        else if (decimalPlaces == 0) x_progress.floatValue.toInt().toString() + unit
+                        else x_progress.floatValue.toString() + unit,
                         textAlign = TextAlign.End,
                         fontSize = 14.sp
                     )
                 }
                 Slider(
-                    progress = x_progress,
+                    progress = x_progress.floatValue,
                     onProgressChange = { newProgress ->
-                        x_progress = newProgress
-                        SPUtils.setFloat(key, x_progress)
+                        x_progress.floatValue = newProgress
+                        SPUtils.setFloat(key, x_progress.floatValue)
                     },
                     effect = effect,
                     maxValue = maxValue,
@@ -234,7 +238,7 @@ fun XMiuixSlider(
                     //dragShow = true,
                     decimalPlaces = decimalPlaces,
                     modifier = Modifier
-                        .padding(horizontal = 24.dp)
+                        .padding(horizontal = insideMargin.width)
                         .padding(top = 10.dp),
                     enabled = if (swipeableState.targetValue == Status.CLOSE) true else false
                 )

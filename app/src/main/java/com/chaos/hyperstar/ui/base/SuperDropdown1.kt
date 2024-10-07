@@ -23,9 +23,11 @@ import top.yukonga.miuix.kmp.extra.SuperDropdown
 fun XSuperDropdown(
     key : String,
     option: Int,
+    dfOpt : Int = 0,
     title : String,
+    insideMargin: DpSize = DpSize(24.dp, 16.dp),
     summary : String ?= null,
-    selectedIndex : MutableIntState = remember { mutableIntStateOf(SPUtils.getInt(key,0)) }
+    selectedIndex : MutableIntState = remember { mutableIntStateOf(SPUtils.getInt(key,dfOpt)) }
 ) {
 
     val dropdownOptions = stringArrayResource(id = option).toList()
@@ -35,7 +37,7 @@ fun XSuperDropdown(
         title = title,
         summary = summary,
         items = dropdownOptions,
-        insideMargin = DpSize(24.dp, 16.dp),
+        insideMargin = insideMargin,
         selectedIndex = selectedIndex.intValue,
         onSelectedIndexChange = { newOption ->
             selectedIndex.intValue = newOption

@@ -21,7 +21,8 @@ fun BetaHomePager(activity: ComponentActivity) {
             XSuperSwitch(
                 title = "解锁部分beta特性",
                 summary = "圆角矩形大图标小部件 && OS2设置风格",
-                key = "is_use_beta_home_cc")
+                key = "is_use_beta_home_cc"
+            )
 
         }
     }

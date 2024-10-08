@@ -72,9 +72,6 @@ fun ActivityPager(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        snackbarHost = {
-            MiuixPopupHost()
-        },
         topBar = {
             SubMiuixTopAppBar(
                 modifier = Modifier.showBlur(hazeState),

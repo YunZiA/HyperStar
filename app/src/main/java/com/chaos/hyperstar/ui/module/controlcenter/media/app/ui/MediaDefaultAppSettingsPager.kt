@@ -76,7 +76,6 @@ import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.createRipple
 
 
 @Composable
@@ -313,15 +312,13 @@ fun AppItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(
-                    interactionSource = null,
-                    indication = createRipple()
-                ) {
+                .clickable{
                     EventState.Idle
                     isApp.value = if (isSelect) "" else packageName
                     isSelect = !isSelect
                     SPUtils.setString("media_default_app_package", isApp.value)
-                }.pointerInput(eventState) {
+                }
+                .pointerInput(eventState) {
 
                     awaitPointerEventScope {
                         eventState = if (eventState == EventState.Pressed) {

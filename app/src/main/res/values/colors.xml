@@ -12,7 +12,7 @@
     <color name="sec_color">#30000000</color>
 
     <color name="tab_bg_color">#FFF0F0F0</color>
-
+    <color name="card_background">#803e3e3e</color>
     <color name="miui_volume_color_btn_seleted">#3482ff</color>
     <color name="miui_timer_text_color">#ccffffff</color>
     <color name="miui_volume_color_accent">#f7ffffff</color>

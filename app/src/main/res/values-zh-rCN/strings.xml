@@ -40,4 +40,5 @@
     <string name="save">保存</string>
     <string name="control_center_color_edit">控制中心颜色编辑</string>
     <string name="default_it">默认</string>
+    <string name="enable">启用</string>
 </resources>

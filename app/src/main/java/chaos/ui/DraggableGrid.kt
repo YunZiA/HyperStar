@@ -1,6 +1,8 @@
 package chaos.ui
 
 import android.annotation.SuppressLint
+import android.view.HapticFeedbackConstants
+import android.view.View
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VectorConverter
@@ -32,6 +34,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
@@ -56,13 +59,14 @@ fun <T : Any> DraggableGrid(
     content: @Composable (Int,T, Boolean) -> Unit,
 ) {
 
+    val view = LocalView.current
     // Grid状态，常规做法
     val gridState = rememberLazyGridState()
     //记录拖拽状态
     val dragDropState = rememberGridDragDropState(gridState, onMove)
     LazyVerticalGrid(
         columns = GridCells.Fixed(column),
-        modifier = modifier.dragContainer(true,dragDropState),
+        modifier = modifier.dragContainer(true, dragDropState, view),
         state = gridState,
         contentPadding = PaddingValues(24.dp,12.dp),
         userScrollEnabled = userScrollEnabled,
@@ -95,14 +99,14 @@ fun DraggableGrids(
     userScrollEnabled : Boolean = false,
     content: @Composable (Int,Card, Boolean) -> Unit,
 ) {
-
+    val view = LocalView.current
     // Grid状态，常规做法
     val gridState = rememberLazyGridState()
     //记录拖拽状态
     val dragDropState = rememberGridDragDropState(gridState, onMove)
     LazyVerticalGrid(
         columns = GridCells.Fixed(column),
-        modifier = modifier.dragContainer(true,dragDropState),
+        modifier = modifier.dragContainer(true,dragDropState,view),
         state = gridState,
         contentPadding = PaddingValues(24.dp,12.dp),
         userScrollEnabled = userScrollEnabled,
@@ -136,18 +140,23 @@ open class Card(
 
 //核心方法，事件监听
 @SuppressLint("ModifierFactoryUnreferencedReceiver")
-fun Modifier.dragContainer(useDrag : Boolean,dragDropState: GridDragDropState): Modifier {
+fun Modifier.dragContainer(useDrag: Boolean, dragDropState: GridDragDropState, view: View): Modifier {
+
     if (useDrag){
         return pointerInput(key1 = dragDropState) {
             detectDragGesturesAfterLongPress(
+
                 onDrag = { change, offset ->
                     change.consume()
                     dragDropState.onDrag(offset = offset)
                 },
                 onDragStart = { offset ->
+                    view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                     dragDropState.onDragStart(offset)
                 },
-                onDragEnd = { dragDropState.onDragInterrupted() },
+                onDragEnd = {
+                    dragDropState.onDragInterrupted()
+                            },
                 onDragCancel = { dragDropState.onDragInterrupted() }
             )
         }

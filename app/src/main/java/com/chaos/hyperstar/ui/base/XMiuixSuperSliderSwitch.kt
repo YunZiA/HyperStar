@@ -69,6 +69,7 @@ fun SwitchContentFolder(
     switchTitle: String,
     switchKey: String,
     contrary: Boolean = false,
+    insideMargin : DpSize = DpSize(24.dp, 16.dp),
     content: @Composable (() -> Unit),
 ) {
     var MiuixSuperSwitchState by remember { mutableStateOf(SPUtils.getBoolean(switchKey,false)) }
@@ -77,7 +78,7 @@ fun SwitchContentFolder(
         modifier = Modifier,
         title = switchTitle,
         checked = MiuixSuperSwitchState,
-        insideMargin = DpSize(24.dp, 16.dp),
+        insideMargin = insideMargin,
         onCheckedChange = {
             MiuixSuperSwitchState = it
             SPUtils.setBoolean(switchKey,MiuixSuperSwitchState)

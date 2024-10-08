@@ -34,7 +34,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import com.chaos.hyperstar.ui.base.enums.EventState
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
-import top.yukonga.miuix.kmp.utils.createRipple
+//import top.yukonga.miuix.kmp.utils.createRipple
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
 
@@ -44,7 +44,7 @@ fun Modifier.bounceClick(
     val coroutineScope = rememberCoroutineScope()
     var click by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
-    val indication =  createRipple()
+    //val indication =  createRipple()
     var eventState by remember { mutableStateOf(EventState.Idle) }
     val scale by animateFloatAsState(if (eventState == EventState.Pressed ) 0.7f else 1f,animationSpec = spring(
         dampingRatio = Spring.DampingRatioLowBouncy,
@@ -61,7 +61,7 @@ fun Modifier.bounceClick(
             scaleX = scale
             scaleY = scale
         }
-        .indication(interactionSource, indication)
+        //.indication(interactionSource, indication)
         .pointerInput(Unit) {
             detectTapGestures(
                 onTap = {
@@ -97,7 +97,7 @@ fun Modifier.bounceClicks(
     val coroutineScope = rememberCoroutineScope()
     var click by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
-    val indication =  createRipple()
+    //val indication =  createRipple()
     var eventState by remember { mutableStateOf(EventState.Idle) }
     val scale by animateFloatAsState(if (eventState == EventState.Pressed ) 0.95f else 1f,animationSpec = spring(
         dampingRatio = Spring.DampingRatioLowBouncy,
@@ -122,7 +122,7 @@ fun Modifier.bounceClicks(
             scaleX = scale
             scaleY = scale
         }
-        .indication(interactionSource, indication)
+        //.indication(interactionSource, indication)
         .pointerInput(Unit) {
             detectTapGestures(
                 onTap = {

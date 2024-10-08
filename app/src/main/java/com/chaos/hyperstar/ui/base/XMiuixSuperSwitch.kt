@@ -18,7 +18,56 @@ fun XSuperSwitch(
     title: String,
     summary: String? = null,
     key: String,
-    state: MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) }
+    insideMargin: DpSize = DpSize(24.dp, 16.dp)
+) {
+    val state: MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) }
+    SuperSwitch(
+        modifier = Modifier,
+        title = title,
+        summary = summary,
+        checked = state.value,
+        insideMargin = insideMargin,
+        onCheckedChange = {
+            state.value = it
+            SPUtils.setBoolean(key,state.value)
+        },
+    )
+
+
+}
+
+@Composable
+fun XSuperSwitch(
+    title: String,
+    summary: String? = null,
+    key: String,
+    insideMargin: DpSize = DpSize(24.dp, 16.dp),
+    onStateChanged : (Boolean) -> Unit = {}
+) {
+    val state: MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) }
+    SuperSwitch(
+        modifier = Modifier,
+        title = title,
+        summary = summary,
+        checked = state.value,
+        insideMargin = insideMargin,
+        onCheckedChange = {
+            state.value = it
+            onStateChanged(state.value)
+            SPUtils.setBoolean(key,state.value)
+        },
+    )
+
+
+}
+
+@Composable
+fun XSuperSwitch(
+    title: String,
+    summary: String? = null,
+    key: String,
+    state: MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) },
+    insideMargin: DpSize = DpSize(24.dp, 16.dp)
 ) {
 
     SuperSwitch(
@@ -26,7 +75,7 @@ fun XSuperSwitch(
         title = title,
         summary = summary,
         checked = state.value,
-        insideMargin = DpSize(24.dp, 16.dp),
+        insideMargin = insideMargin,
         onCheckedChange = {
             state.value = it
             SPUtils.setBoolean(key,state.value)

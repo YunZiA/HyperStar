@@ -59,7 +59,6 @@ fun MSuperDialog(
     summary: String? = null,
     summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantDialog,
     show: MutableState<Boolean>,
-
     showAction : Boolean = false,
     color: Color = MiuixTheme.colorScheme.surfaceVariant,
     onFocus: () -> Unit = {},

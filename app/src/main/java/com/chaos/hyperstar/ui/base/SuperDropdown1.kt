@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.chaos.hyperstar.utils.SPUtils
@@ -25,6 +26,8 @@ fun XSuperDropdown(
     option: Int,
     dfOpt : Int = 0,
     title : String,
+    enabled: Boolean = true,
+    popupHorizontalPadding: Dp = 12.dp,
     insideMargin: DpSize = DpSize(24.dp, 16.dp),
     summary : String ?= null,
     selectedIndex : MutableIntState = remember { mutableIntStateOf(SPUtils.getInt(key,dfOpt)) }
@@ -37,6 +40,8 @@ fun XSuperDropdown(
         title = title,
         summary = summary,
         items = dropdownOptions,
+        enabled = enabled,
+        popupHorizontalPadding = popupHorizontalPadding+insideMargin.width/2,
         insideMargin = insideMargin,
         selectedIndex = selectedIndex.intValue,
         onSelectedIndexChange = { newOption ->
@@ -48,12 +53,46 @@ fun XSuperDropdown(
 }
 
 @Composable
+fun XSuperDialogDropdown(
+    key : String,
+    option: Int,
+    dfOpt : Int = 0,
+    title : String,
+    enabled: Boolean = true,
+    popupHorizontalPadding: Dp = 12.dp,
+    insideMargin: DpSize = DpSize(24.dp, 16.dp),
+    summary : String ?= null,
+    selectedIndex : MutableIntState = remember { mutableIntStateOf(SPUtils.getInt(key,dfOpt)) }
+) {
+
+    val dropdownOptions = stringArrayResource(id = option).toList()
+
+    SuperDropdown(
+        modifier = Modifier,
+        title = title,
+        summary = summary,
+        items = dropdownOptions,
+        enabled = enabled,
+        popupHorizontalPadding = popupHorizontalPadding,
+        insideMargin = insideMargin,
+        selectedIndex = selectedIndex.intValue,
+        onSelectedIndexChange = { newOption ->
+            selectedIndex.intValue = newOption
+            SPUtils.setInt(key,newOption)},
+        alwaysRight = true,
+
+        )
+}
+
+@Composable
 fun XMiuixContentDropdown(
     title : String,
     option: Int,
     key : String,
     showOption : Int,
     summary : String ?= null,
+    insideMargin: DpSize = DpSize(24.dp, 16.dp),
+    popupHorizontalPadding: Dp = 12.dp,
     activity : ComponentActivity,
     content: @Composable (() -> Unit),
 ) {
@@ -66,7 +105,8 @@ fun XMiuixContentDropdown(
         title = title,
         summary = summary,
         items = dropdownOptions,
-        insideMargin = DpSize(24.dp, 16.dp),
+        popupHorizontalPadding = popupHorizontalPadding+insideMargin.width/2,
+        insideMargin = insideMargin,
         selectedIndex = dropdownSelectedOption.value,
         onSelectedIndexChange = { newOption ->
             dropdownSelectedOption.value = newOption

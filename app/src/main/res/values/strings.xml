@@ -49,4 +49,5 @@
     <string name="title_activity_qscard_color">QSCardColorActivity</string>
     <string name="default_it">Default</string>
     <string name="title_activity_control_center_list_settings">ControlCenterListSettings</string>
+    <string name="enable">Enable</string>
 </resources>

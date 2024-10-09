@@ -268,7 +268,7 @@ fun  ItemPopu(show: MutableState<Boolean>) {
                     modifier = Modifier.padding(vertical = 0.dp, horizontal = 0.dp),
                 ){
                     Text(
-                        text = "快速重启",
+                        text = stringResource(R.string.fast_reboot),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 30.dp, bottom = 10.dp),
@@ -294,7 +294,7 @@ fun  ItemPopu(show: MutableState<Boolean>) {
                             horizontalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "系统界面",
+                                text = stringResource(id = R.string.systemui),
                                 modifier = Modifier.weight(1f),
                                 style = MiuixTheme.textStyles.paragraph,
                                 //textAlign = TextAlign.Center,
@@ -327,12 +327,14 @@ fun  ItemPopu(show: MutableState<Boolean>) {
                         }
                     ) {
                         Row(
-                            Modifier.fillMaxWidth().padding(bottom = 15.dp),
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 15.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "系统桌面",
+                                text = stringResource(R.string.home),
                                 modifier = Modifier.weight(1f),
                                 style = MiuixTheme.textStyles.paragraph,
                                 //textAlign = TextAlign.Center,

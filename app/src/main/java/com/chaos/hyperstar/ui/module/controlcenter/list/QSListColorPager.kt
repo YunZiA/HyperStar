@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.ActivityPagers
 import com.chaos.hyperstar.ui.base.ColorPickerTool
@@ -30,17 +31,17 @@ fun QSListColorPager(
     }
     val waitTime = 105L
     ActivityPagers(
-        activityTitle = "普通磁贴颜色",
+        activityTitle = stringResource(R.string.tile_color),
         activity = activity,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         },
     ) {
 
-        firstClasses("通用") {
+        firstClasses(R.string.general) {
 
             XSuperDropdown(
-                title = "标题状态色",
+                title = stringResource(R.string.title_color_in_state),
                 option = R.array.qs_list_tile_color_for_state_entire,
                 key = "qs_list_tile_color_for_state",
                 selectedIndex = tileColor
@@ -50,7 +51,7 @@ fun QSListColorPager(
                 waitTime = waitTime
             ) {
                 ColorPickerTool(
-                    title = "标题颜色",
+                    title = stringResource(R.string.title),
                     key = "list_title_color"
                 )
             }
@@ -58,10 +59,10 @@ fun QSListColorPager(
         }
 
         classes(
-            title = "关闭颜色"
+            title = R.string.close_state_color
         ) {
             ColorPickerTool(
-                title = "图标",
+                title = stringResource(R.string.icon),
                 key = "list_icon_off_color"
             )
             ItemAnim(
@@ -69,7 +70,7 @@ fun QSListColorPager(
                 waitTime = waitTime
             ) {
                 ColorPickerTool(
-                    title = "标题颜色",
+                    title = stringResource(R.string.title),
                     key = "list_title_off_color"
                 )
             }
@@ -77,18 +78,18 @@ fun QSListColorPager(
         }
 
         classes(
-            title = "开启颜色"
+            title = R.string.enable_state_color
         ){
             ColorPickerTool(
-                title = "常规·背景",
+                title = stringResource(R.string.enable_background),
                 key = "list_enabled_color"
             )
             ColorPickerTool(
-                title = "特殊·背景",
+                title = stringResource(R.string.warning_background),
                 key = "list_warning_color"
             )
             ColorPickerTool(
-                title = "图标",
+                title = stringResource(R.string.icon),
                 key = "list_icon_on_color"
             )
             ItemAnim(
@@ -96,21 +97,21 @@ fun QSListColorPager(
                 waitTime = waitTime
             ) {
                 ColorPickerTool(
-                    title = "标题颜色",
+                    title = stringResource(R.string.title),
                     key = "list_title_on_color"
                 )
             }
         }
 
         classes(
-            title = "蓝牙临时开启颜色"
+            title = R.string.restricted_state_color
         ){
             ColorPickerTool(
-                title = "背景",
+                title = stringResource(R.string.background),
                 key = "list_restricted_color"
             )
             ColorPickerTool(
-                title = "图标",
+                title = stringResource(R.string.icon),
                 key = "list_icon_restricted_color"
             )
             ItemAnim(
@@ -118,21 +119,21 @@ fun QSListColorPager(
                 waitTime = waitTime
             ) {
                 ColorPickerTool(
-                    title = "标题",
+                    title = stringResource(R.string.title),
                     key = "list_title_restricted_color"
                 )
             }
         }
 
         classes(
-            title = "禁用颜色"
+            title = R.string.unavailable_state_color
         ){
             ColorPickerTool(
-                title = "背景",
+                title = stringResource(R.string.background),
                 key = "list_unavailable_color"
             )
             ColorPickerTool(
-                title = "图标",
+                title = stringResource(R.string.icon),
                 key = "list_icon_unavailable_color"
             )
             ItemAnim(
@@ -140,7 +141,7 @@ fun QSListColorPager(
                 waitTime = waitTime
             ) {
                 ColorPickerTool(
-                    title = "标题",
+                    title = stringResource(R.string.title),
                     key = "list_title_unavailable_color"
                 )
             }

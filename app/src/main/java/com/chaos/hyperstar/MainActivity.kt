@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
@@ -71,7 +72,8 @@ class MainActivity : BaseActivity() {
             SPUtils.setInt("control_center_universal_corner_radius",resources.getDimensionPixelSize(R.dimen.control_center_universal_corner_radius))
 
         }else{
-            Toast.makeText(this,"模块未激活!",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.not_activated_toast_description),Toast.LENGTH_SHORT).show()
         }
         PreferencesUtil.getInstance().init(this)
         showLauncherIcon(PreferencesUtil.getBoolean("is_hide_icon",false))
@@ -116,7 +118,7 @@ fun RootDialog(showDialog: Boolean) {
                 insideMargin = DpSize(20.dp,20.dp)
             ) {
                 Text(
-                    text = "提示",
+                    text = stringResource(R.string.tips),
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     color = colorScheme.onSurface,
                     fontWeight = FontWeight.SemiBold,
@@ -124,7 +126,7 @@ fun RootDialog(showDialog: Boolean) {
                 )
                 Spacer(Modifier.height(20.dp))
                 Text(
-                    text = "未获取Root权限",
+                    text = stringResource(R.string.no_root_description),
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     color = colorScheme.onSurface,
                     fontWeight = FontWeight.Medium,
@@ -134,7 +136,7 @@ fun RootDialog(showDialog: Boolean) {
 
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "确认",
+                    text = stringResource(R.string.sure),
                     submit = true,
                     cornerRadius = 14.dp,
                     onClick = {

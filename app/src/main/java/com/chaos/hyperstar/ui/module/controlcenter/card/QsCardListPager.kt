@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -69,7 +70,7 @@ fun QsCardListPager(
     val view = LocalView.current
 
     ActivityPagers(
-        activityTitle = "卡片磁贴编辑",
+        activityTitle = stringResource(R.string.card_tile_edit),
         activity = activity,
         endIcon = {
 
@@ -106,13 +107,13 @@ fun QsCardListPager(
     ){
 
             firstClasses(
-                title = "已添加",
-                summary = "拖拽已添加的开关调整顺序"
+                title = R.string.card_list_header_title,
+                summary = R.string.card_list_header_sub_title
             ) {
                 DraggableGrid(
                     modifier = Modifier
                         //.height(getHeight(items.size, 94.dp, 20.dp))
-                        .heightIn(0.dp,1340.dp)
+                        .heightIn(0.dp, 1340.dp)
                         .fillMaxWidth(),
                     items = items,
                     column = 2,
@@ -140,7 +141,9 @@ fun QsCardListPager(
                         view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                         if (items.size <= 1){
 
-                            Toast.makeText(activity,"你们不要再删啦！人家会坏掉的~\n/(ㄒoㄒ)/~~",Toast.LENGTH_SHORT).show()
+                            Toast.makeText(activity,
+                                activity.getString(R.string.delete_warning_toast_description),
+                                Toast.LENGTH_SHORT).show()
 
                             return@CardItem
                         }
@@ -161,7 +164,7 @@ fun QsCardListPager(
             }
 
             classes (
-                title = "未添加"
+                title = R.string.card_list_no_add_title
             ) {
                 LazyVerticalGrid(
                     modifier = Modifier
@@ -199,13 +202,15 @@ fun QsCardListPager(
 
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 20.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 20.dp),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
 
                         Text(
-                            text = "已经没有可以添加的了~\no(╥﹏╥)o",
+                            text = stringResource(R.string.empty_list_description),
                             fontSize = 15.sp,
                             textAlign = TextAlign.Center,
                             color = colorResource(R.color.class_name_color),

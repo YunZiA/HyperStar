@@ -33,26 +33,26 @@ fun ControlCenterPager(
         },
     ){
         firstClasses(
-            title = "常规",
+            title = R.string.basics,
         ){
 
             XSuperDropdown(
-                title = "控件·高级材质",
+                title = stringResource(R.string.widget_advanced_textures),
                 key = "is_super_blur_Widget",
                 option = R.array.is_super_blur_entire,
             )
             MiuixActivitySuperArrow(
-                title = "颜色编辑",
+                title = stringResource(R.string.color_edit),
                 context = activity,
                 activity = ControlCenterColorSettings::class.java
             )
             MiuixActivitySuperArrow(
-                title = "控制中心编辑",
+                title = stringResource(R.string.control_center_edit),
                 context = activity,
                 activity = ControlCenterListSettings::class.java
             )
             MiuixActivitySuperArrow(
-                title = "妙播设置",
+                title = stringResource(R.string.media_settings),
                 context = activity,
                 activity = MediaSettingsActivity::class.java
             )
@@ -60,27 +60,27 @@ fun ControlCenterPager(
 
 
         classes(
-            title = "头部",
+            title = R.string.header,
             top = 12.dp
         ){
 
             XSuperSwitch(
-                title = "禁用下拉时钟动画",
+                title = stringResource(R.string.close_qs_clock_anim_title),
                 key = "close_qs_clock_anim"
             )
 
             XSuperSwitch(
-                title = "向顶栏添加设置&编辑按钮",
+                title = stringResource(R.string.is_use_chaos_header_title),
                 key = "is_use_chaos_header"
             )
 
             SwitchContentFolder(
-                switchTitle = "关闭设备状态提示",
+                switchTitle = stringResource(R.string.close_header_show_message_title),
                 switchKey = "close_header_show_message",
                 contrary = true
             ){
                 XMiuixSlider(
-                    title = "设备状态提示持续时长",
+                    title = stringResource(R.string.header_show_message_millis_title),
                     key = "header_show_message_millis",
                     progress = 1f,
                     maxValue = 5f,
@@ -91,17 +91,20 @@ fun ControlCenterPager(
             }
         }
         classes(
-            title = "卡片磁贴",
+            title = R.string.card_tile,
             top = 12.dp
         ){
             XSuperSwitch(
-                title = "自动收起",
-                summary = "开启后点击卡片磁贴会自动收起状态栏",
+                title = stringResource(R.string.card_tile_click_close_title),
+                summary = stringResource(R.string.card_tile_click_close_summary),
                 key = "card_tile_click_close"
             )
-            SwitchContentFolder(switchTitle = "启用卡片磁贴编辑", switchKey = "use_card_tile_list") {
+            SwitchContentFolder(
+                switchTitle = stringResource(R.string.enable_card_tile_edit),
+                switchKey = "use_card_tile_list"
+            ) {
                 MiuixActivitySuperArrow(
-                    title = "卡片磁贴编辑",
+                    title = stringResource(R.string.card_tile_edit),
                     context = activity,
                     activity = QsCardListActivity::class.java
 
@@ -110,13 +113,13 @@ fun ControlCenterPager(
             }
         }
         classes(
-            title = "亮度条&音量条",
+            title = R.string.volume_or_brightness,
             top = 12.dp
         ){
             XMiuixSuperSliderSwitch(
-                switchTitle = "进度条圆角自定义",
+                switchTitle = stringResource(R.string.is_change_qs_progress_radius_title),
                 switchKey = "is_change_qs_progress_radius",
-                title = "进度条圆角值" ,
+                title = stringResource(R.string.qs_progress_radius_title) ,
                 key ="qs_progress_radius",
                 minValue = 0f,
                 maxValue = 20f,
@@ -124,31 +127,37 @@ fun ControlCenterPager(
                 unit = "dp",
                 decimalPlaces = 1
             )
-            SwitchContentFolder(switchTitle = "亮度条进度值显示", switchKey = "qs_brightness_top_value_show") {
+            SwitchContentFolder(
+                switchTitle = stringResource(R.string.qs_brightness_top_value_show_title),
+                switchKey = "qs_brightness_top_value_show"
+            ) {
                 XSuperDropdown(
-                    title = "显示样式",
+                    title = stringResource(R.string.qs_brightness_top_value_title),
                     key = "qs_brightness_top_value",
                     option = R.array.seekbar_value_style_entire
                 )
             }
-            SwitchContentFolder(switchTitle = "音量条进度值显示", switchKey = "qs_volume_top_value_show") {
+            SwitchContentFolder(
+                switchTitle = stringResource(R.string.qs_volume_top_value_show_title),
+                switchKey = "qs_volume_top_value_show"
+            ) {
                 XSuperDropdown(
-                    title = "显示样式",
+                    title = stringResource(R.string.qs_volume_top_value_title),
                     key = "qs_volume_top_value",
                     option = R.array.seekbar_value_style_entire
                 )
             }
         }
         classes(
-            title = "普通磁贴",
+            title = R.string.tile,
             top = 12.dp
         ){
 
             XMiuixSuperSliderSwitch(
-                switchTitle = "背景圆角自定义",
-                switchSummary = "开启后，默认与其他控件圆角值（官方原版）一致",
+                switchTitle = stringResource(R.string.is_qs_list_tile_radius_title),
+                switchSummary = stringResource(R.string.is_qs_list_tile_radius_summary),
                 switchKey = "is_qs_list_tile_radius",
-                title = "背景圆角值",
+                title = stringResource(R.string.qs_list_tile_radius_title),
                 key = "qs_list_tile_radius",
                 minValue = 0f,
                 maxValue = 36f,
@@ -158,26 +167,26 @@ fun ControlCenterPager(
             )
 
             XSuperSwitch(
-                title = "标题超出跑马灯特效显示",
+                title = stringResource(R.string.list_tile_label_marquee_title),
                 key = "list_tile_label_marquee"
             )
             XMiuixContentDropdown(
-                title = "标题显示样式",
+                title = stringResource(R.string.is_list_label_mode_title),
                 key = "is_list_label_mode",
                 option = R.array.is_list_label_mode_entire,
                 showOption = 2,
                 activity = activity,
             ){
                 MiuixActivitySuperArrow(
-                    title = "磁贴布局",
+                    title = stringResource(R.string.tile_layout),
                     context = activity,
                     activity = QsListViewSettings::class.java
                 )
 
             }
             XSuperSwitch(
-                title = "自动收起",
-                summary = "开启后点击普通磁贴会自动收起状态栏",
+                title = stringResource(R.string.list_tile_click_close_title),
+                summary = stringResource(R.string.list_tile_click_close_summary),
                 key = "list_tile_click_close"
             )
 
@@ -186,11 +195,11 @@ fun ControlCenterPager(
         }
 
         classes(
-            title = "其他",
+            title = R.string.other,
             top = 12.dp
         ){
             XSuperSwitch(
-                title = "关闭编辑显示",
+                title = stringResource(R.string.close_edit_button_show_title),
                 key = "close_edit_button_show"
             )
 

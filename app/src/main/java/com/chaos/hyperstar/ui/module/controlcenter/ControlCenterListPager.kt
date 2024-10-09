@@ -89,7 +89,7 @@ fun ControlCenterListPager(
     }
 
     ActivityPagers(
-        activityTitle = "控制中心编辑",
+        activityTitle = stringResource(R.string.control_center_edit),
         activity = activity,
         endIcon = {
 
@@ -143,7 +143,7 @@ fun ControlCenterListPager(
 
 //                    ③
                     Text(
-                        text = "①双击部分控件即可更改有关属性\n②长按拖拽换位(需打开右侧开关生效)",
+                        text = stringResource(R.string.control_center_edit_summary),
                         modifier = Modifier.weight(1f),
                         fontSize = 11.sp,
                         lineHeight =  1.5.em,
@@ -260,7 +260,7 @@ fun EnableItemDropdown(
     )
 
     XSuperDialogDropdown(
-        title = "横屏占用面板",
+        title = stringResource(R.string.land_rightOrLeft),
         enabled = state.value,
         popupHorizontalPadding = 38.dp,
         insideMargin = insideMargin,
@@ -292,7 +292,7 @@ fun EnableItemSlider(
     )
 
     XMiuixSlider(
-        title = "横向占格",
+        title = stringResource(R.string.span_size),
         key = key,
         enabled = state.value,
         insideMargin = insideMargin,

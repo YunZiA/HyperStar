@@ -2,7 +2,6 @@ package com.chaos.hyperstar.ui.module.controlcenter.media.app
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
-import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
@@ -10,7 +9,6 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import com.chaos.hyperstar.ui.base.BaseActivity
-import com.chaos.hyperstar.ui.module.controlcenter.media.app.ui.MediaSettingsPager
 
 class MediaDefaultAppSettingsActivity : BaseActivity() {
 

@@ -27,21 +27,21 @@ fun ControlCenterColorPager(
     ) {
 
         firstClasses(
-            title = "控件背景颜色"
+            title = R.string.control_center_background_color
         ){
 
             ColorPickerTool(
-                title = "非高级材质",
+                title = stringResource(R.string.disabled_advanced_textures),
                 key = "background_color"
             )
-            ContentFolder("高级材质"){
+            ContentFolder(stringResource(R.string.advanced_textures)){
 
                 ColorPickerTool(
-                    title = "混色·主",
+                    title = stringResource(R.string.color_mix_main),
                     key = "background_blend_color_main"
                 )
                 ColorPickerTool(
-                    title = "混色·次",
+                    title = stringResource(R.string.color_mix_secondary),
                     key = "background_blend_color_secondary"
                 )
             }
@@ -50,52 +50,52 @@ fun ControlCenterColorPager(
         }
 
         classes(
-            title = "卡片磁贴"
+            title = R.string.card_tile
         ){
             MiuixActivitySuperArrow(
-                title = "颜色编辑",
+                title = stringResource(R.string.color_edit),
                 context = activity,
                 activity = QSCardColorActivity::class.java
             )
         }
 
         classes(
-            title = "妙播"
+            title = R.string.media
         ){
 
         }
 
         classes(
-            title = "亮度条"
+            title = R.string.brightness_slider
         ){
 
         }
         classes(
-            title = "音量条"
+            title = R.string.volume_slider
         ){
 
         }
         classes(
-            title = "融合设备中心"
+            title = R.string.device_control
         ){
 
         }
         classes(
-            title = "米家"
+            title = R.string.device_center
         ){
 
         }
         classes(
-            title = "普通磁贴"
+            title = R.string.tile
         ){
             MiuixActivitySuperArrow(
-                title = "颜色编辑",
+                title = stringResource(R.string.color_edit),
                 context = activity,
                 activity = QSListColorActivity::class.java
             )
         }
         classes(
-            title = "编辑"
+            title = R.string.edit
         ){
 
         }

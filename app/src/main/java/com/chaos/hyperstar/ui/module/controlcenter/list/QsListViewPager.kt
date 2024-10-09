@@ -2,7 +2,9 @@ package com.chaos.hyperstar.ui.module.controlcenter.list
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.ActivityPagers
 import com.chaos.hyperstar.ui.base.XMiuixSlider
 import com.chaos.hyperstar.ui.base.classes
@@ -13,7 +15,7 @@ import com.chaos.hyperstar.utils.Utils
 @Composable
 fun QsListViewPager(activity: ComponentActivity, ) {
     ActivityPagers(
-        activityTitle = "磁贴布局",
+        activityTitle = stringResource(R.string.tile_layout),
         activity = activity,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
@@ -21,10 +23,10 @@ fun QsListViewPager(activity: ComponentActivity, ) {
     ){
 
         firstClasses(
-            title = "标题样式"
+            title = R.string.title_style
         ){
             XMiuixSlider(
-                title = "标题大小",
+                title = stringResource(R.string.title_size),
                 key = "list_label_size",
                 unit = "dp",
                 maxValue = 25f,
@@ -34,7 +36,7 @@ fun QsListViewPager(activity: ComponentActivity, ) {
             )
 
             XMiuixSlider(
-                title = "标题宽度",
+                title = stringResource(R.string.title_width),
                 key = "list_label_width",
                 unit = "%",
                 maxValue = 100f,
@@ -44,10 +46,10 @@ fun QsListViewPager(activity: ComponentActivity, ) {
 
         }
         classes(
-            title = "竖直间距"
+            title = R.string.vertical_spacing
         ){
             XMiuixSlider(
-                title = "无字样式",
+                title = stringResource(R.string.disable_icon_labels),
                 key = "list_spacing_y",
                 unit = "%",
                 maxValue = 150f,
@@ -56,7 +58,7 @@ fun QsListViewPager(activity: ComponentActivity, ) {
             )
 
             XMiuixSlider(
-                title = "有字样式",
+                title = stringResource(R.string.enable_icon_labels),
                 key = "list_label_spacing_y",
                 unit = "%",
                 maxValue = 150f,
@@ -68,10 +70,10 @@ fun QsListViewPager(activity: ComponentActivity, ) {
 
 
         classes(
-            title = "上边距"
+            title = R.string.margin_top
         ){
             XMiuixSlider(
-                title = "图标",
+                title = stringResource(R.string.icon),
                 key = "list_icon_top",
                 unit = "%",
                 maxValue = 50F,
@@ -80,7 +82,7 @@ fun QsListViewPager(activity: ComponentActivity, ) {
             )
 
             XMiuixSlider(
-                title = "标题",
+                title = stringResource(R.string.title),
                 key = "list_label_top",
                 unit = "%",
                 maxValue = 200F,

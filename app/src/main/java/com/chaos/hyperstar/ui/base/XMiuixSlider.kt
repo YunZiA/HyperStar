@@ -110,7 +110,7 @@ fun XMiuixSlider(
                 .width(squareSize)
                 .offset {
                     IntOffset(
-                        (squareSize.toPx()+swappableState.offset.value).toInt(),
+                        (squareSize.toPx() + swappableState.offset.value).toInt(),
                         0
                     )
                 },
@@ -152,7 +152,8 @@ fun XMiuixSlider(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = insideMargin.height).offset { IntOffset(swappableState.offset.value.roundToInt(), 0) }
+                .padding(vertical = insideMargin.height)
+                .offset { IntOffset(swappableState.offset.value.roundToInt(), 0) }
         ){
 
             Row(
@@ -184,7 +185,7 @@ fun XMiuixSlider(
                         dialog.value = true
                     },
                     color = valueColor,
-                    text = if (x_progress.floatValue == progress) "默认"
+                    text = if (x_progress.floatValue == progress) stringResource(R.string.default_value)
                     else if (decimalPlaces == 0) x_progress.floatValue.toInt().toString() + unit
                     else x_progress.floatValue.toString() + unit,
                     textAlign = TextAlign.End,

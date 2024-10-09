@@ -3,7 +3,9 @@ package com.chaos.hyperstar.ui.module.controlcenter.card
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.ActivityPagers
 import com.chaos.hyperstar.ui.base.ColorPickerTool
 import com.chaos.hyperstar.ui.base.classes
@@ -15,91 +17,91 @@ fun QSCardColorPager(
     activity: ComponentActivity,
 ) {
     ActivityPagers(
-        activityTitle = "卡片磁贴颜色",
+        activityTitle = stringResource(R.string.card_tile_color),
         activity = activity,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         },
     ) {
         firstClasses(
-            title = "关闭颜色"
+            title = R.string.close_state_color
         ) {
 
             ColorPickerTool(
-                title = "图标",
+                title = stringResource(R.string.icon),
                 key = "card_icon_off_color"
             )
             ColorPickerTool(
-                title = "标题",
+                title = stringResource(R.string.title_primary),
                 key = "card_primary_disabled_color"
             )
             ColorPickerTool(
-                title = "副标题",
+                title = stringResource(R.string.title_secondary),
                 key = "card_secondary_disabled_color"
             )
 
         }
         classes(
-            title = "开启颜色"
+            title = R.string.enable_state_color
         ) {
             ColorPickerTool(
-                title = "背景",
+                title = stringResource(R.string.background),
                 key = "card_enabled_color"
             )
             ColorPickerTool(
-                title = "图标",
+                title = stringResource(R.string.icon),
                 key = "card_icon_on_color"
             )
             ColorPickerTool(
-                title = "标题",
+                title = stringResource(R.string.title_primary),
                 key = "card_primary_enabled_color"
             )
             ColorPickerTool(
-                title = "副标题",
+                title = stringResource(R.string.title_secondary),
                 key = "card_secondary_enabled_color"
             )
 
 
         }
         classes(
-            title = "蓝牙临时开启颜色",
+            title = R.string.restricted_state_color,
         ) {
             ColorPickerTool(
-                title = "背景",
+                title = stringResource(R.string.background),
                 key = "card_restricted_color"
             )
             ColorPickerTool(
-                title = "图标",
+                title = stringResource(R.string.icon),
                 key = "card_icon_restricted_color"
             )
             ColorPickerTool(
-                title = "标题",
+                title = stringResource(R.string.title_primary),
                 key = "card_primary_restricted_color"
             )
             ColorPickerTool(
-                title = "副标题",
+                title = stringResource(R.string.title_secondary),
                 key = "card_secondary_restricted_color"
             )
 
 
         }
         classes(
-            title = "禁用颜色"
+            title = R.string.unavailable_state_color
         ) {
             ColorPickerTool(
-                title = "背景",
+                title = stringResource(R.string.background),
                 key = "card_unavailable_color"
             )
             ColorPickerTool(
-                title = "图标",
+                title = stringResource(R.string.icon),
                 key = "card_icon_unavailable_color"
             )
             ColorPickerTool(
-                title = "标题",
+                title = stringResource(R.string.title_primary),
                 key = "card_primary_unavailable_color"
             )
             ColorPickerTool(
-                title = "副标题",
+                title = stringResource(R.string.title_secondary),
                 key = "card_secondary_unavailable_color"
             )
 

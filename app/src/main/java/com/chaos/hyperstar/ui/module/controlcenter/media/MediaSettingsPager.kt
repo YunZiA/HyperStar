@@ -20,46 +20,46 @@ import com.chaos.hyperstar.utils.Utils
 @Composable
 fun MediaSettingsPager(activity: ComponentActivity) {
     ActivityPagers(
-        activityTitle = "妙播设置",
+        activityTitle = stringResource(R.string.media_settings),
         activity = activity,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         },
     ){
         firstClasses(
-            title = "基础设置"
+            title = R.string.base_settings
         ){
             MiuixActivitySuperArrow(
-                title = "默认播放应用选择",
+                title = stringResource(R.string.media_default_app_settings),
                 context = activity,
                 activity = MediaDefaultAppSettingsActivity::class.java
             )
 
         }
         classes(
-            title = "常规播放页",
+            title = R.string.mipalyer_normal,
             top = 12.dp,
         ){
             SwitchContentFolder(
-                switchTitle = "隐藏歌曲封面显示",
+                switchTitle = stringResource(R.string.is_hide_cover_title),
                 switchKey = "is_hide_cover",
             ){
                 XSuperSwitch(
-                    title = "标题&歌手居中显示",
+                    title = stringResource(R.string.is_title_center_title),
                     key = "is_title_center"
                 )
 
             }
             XSuperSwitch(
-                title = "标题过长滚动显示",
+                title = stringResource(R.string.is_title_marquee_title),
                 key = "is_title_marquee"
             )
             XSuperSwitch(
-                title = "歌手过长滚动显示",
+                title = stringResource(R.string.is_artist_marquee_title),
                 key = "is_artist_marquee"
             )
             XSuperSwitch(
-                title = "暂无播放过长滚动显示",
+                title = stringResource(R.string.is_emptyState_marquee_title),
                 key = "is_emptyState_marquee"
             )
             SwitchContentFolder(
@@ -107,11 +107,11 @@ fun MediaSettingsPager(activity: ComponentActivity) {
         }
 
         classes(
-            title = "扩展详情页",
+            title = R.string.miplayer_expand,
             top = 12.dp,
         ){
             XSuperDropdown(
-                title = "设备名显示模式",
+                title = stringResource(R.string.is_local_speaker_title),
                 key = "is_local_speaker",
                 option = R.array.is_local_speaker_entire,
             )

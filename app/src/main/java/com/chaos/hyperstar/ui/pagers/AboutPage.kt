@@ -142,6 +142,15 @@ fun ThirdPage(
             )
 
         }
+        classes(
+            title = R.string.others
+        ) {
+            MiuixIntentSuperArrow(
+                title = stringResource(R.string.project_address),
+                activity = activity,
+                url = "https://github.com/3132437911/HyperStar"
+            )
+        }
 
 
     }

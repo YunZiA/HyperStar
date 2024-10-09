@@ -39,7 +39,7 @@ class QSListView : BaseHooker() {
 
     val qsListTileRadius = XSPUtils.getFloat("qs_list_tile_radius",20f)
 
-    val listIconTop = if (labelMode == 2) XSPUtils.getFloat("list_icon_top", 0F)/100 else 8f
+    val listIconTop = if (labelMode == 2) XSPUtils.getFloat("list_icon_top", 0f)/100 else 1/8f
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
@@ -205,10 +205,10 @@ class QSListView : BaseHooker() {
             })
             XposedHelpers.findAndHookMethod(DrawableUtils, "combine",Drawable::class.java,Drawable::class.java,Int::class.java, object : XC_MethodReplacement() {
                 override fun replaceHookedMethod(param: MethodHookParam?): Any {
-                    val args: Array<Any>? = param?.args
-                    val dra = args?.get(0) as Drawable
-                    val dra2 = args.get(1) as Drawable
-                    val i = args.get(2) as Int
+                    val args: Array<Any> = param?.args as Array<Any>
+                    val dra = args[0] as Drawable
+                    val dra2 = args[1] as Drawable
+                    val i = args[2] as Int
 
                     val icon = LayerDrawable(arrayOf(dra, dra2))
                     icon.setLayerGravity(1,i)
@@ -216,7 +216,7 @@ class QSListView : BaseHooker() {
                     if (height == 0) return icon
                     if (listIconTop != 0f){
                         icon.setLayerInsetBottom(1,
-                            (height/listIconTop).toInt()
+                            (height*listIconTop).toInt()
                         )
 
                     }
@@ -309,9 +309,6 @@ class QSListView : BaseHooker() {
                         } else {
                             label.setTextColor(enable)
                         }
-
-                        //val ic = XposedHelpers.callMethod(thisObj,"getIcon")
-
 
 
                     }
@@ -436,22 +433,25 @@ class QSListView : BaseHooker() {
 
                         val icons: LayerDrawable
 
-                        if (num == 2) {
-                            icons = LayerDrawable(arrayOf(disabledBg, invisibleDrawableCompat))
+                        when (num) {
+                            2 -> {
+                                icons = LayerDrawable(arrayOf(disabledBg, invisibleDrawableCompat))
 
-
-                        } else if (num == 3) {
-                            val enabledBg = combine.getDrawable(1)
-                            icons = LayerDrawable(
-                                arrayOf(
-                                    disabledBg,
-                                    enabledBg,
-                                    invisibleDrawableCompat
+                            }
+                            3 -> {
+                                val enabledBg = combine.getDrawable(1)
+                                icons = LayerDrawable(
+                                    arrayOf(
+                                        disabledBg,
+                                        enabledBg,
+                                        invisibleDrawableCompat
+                                    )
                                 )
-                            )
 
-                        } else {
-                            return
+                            }
+                            else -> {
+                                return
+                            }
                         }
 
                         val height  = combine.getLayerHeight(index)
@@ -460,7 +460,7 @@ class QSListView : BaseHooker() {
                         icons.setLayerGravity(index, Gravity.CENTER)
                         if (listIconTop != 0f){
                             icons.setLayerInsetBottom(index,
-                                (height/listIconTop).toInt()
+                                (height*listIconTop).toInt()
                             )
 
                         }

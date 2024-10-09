@@ -2,7 +2,6 @@ package com.chaos.hyperstar.hook.app.plugin
 
 import android.content.Context
 import android.content.res.Resources
-import android.content.res.XModuleResources
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -13,7 +12,6 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.FrameLayout.LayoutParams
 import android.widget.ImageView
 import android.widget.TextView
 import com.chaos.hyperstar.hook.base.BaseHooker
@@ -40,6 +38,7 @@ class QSListView : BaseHooker() {
     val qsListTileRadius = XSPUtils.getFloat("qs_list_tile_radius",20f)
 
     val listIconTop = if (labelMode == 2) XSPUtils.getFloat("list_icon_top", 0f)/100 else 1/8f
+    val listLabelTop = XSPUtils.getFloat("list_label_top", 0f)
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
@@ -156,24 +155,29 @@ class QSListView : BaseHooker() {
 
                 override fun replaceHookedMethod(param: MethodHookParam?): Any? {
                     val thisObj = param?.thisObject as FrameLayout
+                    val res = thisObj.resources
                     val label = thisObj.findViewByIdName("tile_label") as TextView
                     val isShowLabel = XposedHelpers.callMethod(thisObj,"getShowLabel") as Boolean
                     val y : Float
                     var space : Int = XposedHelpers.getIntField(thisObj,"containerHeight")
                     val labelHeight = XposedHelpers.getIntField(thisObj,"labelHeight")
                     if (isShowLabel){
-                        if (labelMode == 2){
-                            y = 0f
-                            space += labelHeight
-                            space = (space*listLabelSpacingY).toInt()
+                        when (labelMode) {
+                            2 -> {
+                                y = dpToPx(res,listLabelTop)
 
-                        }else if (labelMode == 1){
+                                space += labelHeight
+                                space = (space*listLabelSpacingY).toInt()
 
-                            y = 2f
+                            }
+                            1 -> {
 
-                        }
-                        else{
-                            return null
+                                y = 2f
+
+                            }
+                            else -> {
+                                return null
+                            }
                         }
                     }else{
                         y = labelHeight.toFloat()

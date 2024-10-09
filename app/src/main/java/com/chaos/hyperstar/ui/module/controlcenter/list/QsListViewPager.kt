@@ -84,10 +84,11 @@ fun QsListViewPager(activity: ComponentActivity, ) {
             XMiuixSlider(
                 title = stringResource(R.string.title),
                 key = "list_label_top",
-                unit = "%",
-                maxValue = 200F,
+                unit = "dp",
+                maxValue = 100f,
                 minValue = -100f,
-                progress = 100f
+                progress = 0f,
+                decimalPlaces = 1
             )
 
         }

@@ -57,8 +57,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Icon
 import com.chaos.hyperstar.R
-import com.chaos.hyperstar.ui.base.blur
-import com.chaos.hyperstar.ui.base.showBlur
+import com.chaos.hyperstar.ui.base.modifier.blur
+import com.chaos.hyperstar.ui.base.modifier.showBlur
 import com.chaos.hyperstar.utils.PreferencesUtil
 import com.chaos.hyperstar.utils.Utils
 import dev.chrisbanes.haze.HazeState
@@ -82,7 +82,6 @@ import top.yukonga.miuix.kmp.icon.icons.ArrowRight
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.CornerSmoothing
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 

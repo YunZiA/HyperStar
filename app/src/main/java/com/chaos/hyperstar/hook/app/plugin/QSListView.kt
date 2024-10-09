@@ -13,6 +13,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.FrameLayout.LayoutParams
 import android.widget.ImageView
 import android.widget.TextView
 import com.chaos.hyperstar.hook.base.BaseHooker
@@ -29,7 +30,7 @@ class QSListView : BaseHooker() {
     private val clickClose = XSPUtils.getBoolean("list_tile_click_close",false)
     val labelMode: Int = XSPUtils.getInt("is_list_label_mode",0)
     val labelSize = XSPUtils.getFloat("list_label_size",13f)
-    val labelWidth = XSPUtils.getFloat("list_label_width",100f)/100
+    val labelWidth = XSPUtils.getFloat("list_label_width",100f)/100f
     val labelMarquee = XSPUtils.getBoolean("list_tile_label_marquee",false)
     private val tileColorForState = XSPUtils.getInt("qs_list_tile_color_for_state",0)
     val listSpacingY = XSPUtils.getFloat("list_spacing_y",100f)/100
@@ -106,18 +107,18 @@ class QSListView : BaseHooker() {
                 override fun afterHookedMethod(param: MethodHookParam?) {
                     super.afterHookedMethod(param)
                     val thisObj = param?.thisObject
-                    starLog.log("QSItemViewHolder is find")
                     val qSItemView = XposedHelpers.callMethod(thisObj,"getQsItemView") as FrameLayout
 
                     val label = qSItemView.findViewByIdName("tile_label") as TextView
                     val icon = qSItemView.findViewByIdName("icon_frame") as FrameLayout
 
+                    qSItemView.removeView(label)
+                    qSItemView.removeView(icon)
+                    qSItemView.addView(icon,0)
+                    qSItemView.addView(label,1)
                     if (labelMode == 1){
                         label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 8f)
-                        qSItemView.removeView(label)
-                        qSItemView.removeView(icon)
-                        qSItemView.addView(icon,0)
-                        qSItemView.addView(label,1)
+
                         val layoutParam =  label.layoutParams
                         layoutParam.width = icon.layoutParams.width/10*9
                         label.layoutParams = layoutParam
@@ -125,11 +126,13 @@ class QSListView : BaseHooker() {
 
                         label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
                         val layoutParam =  label.layoutParams
-                        layoutParam.width = (label.layoutParams.width*labelWidth).toInt()
+                        qSItemView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+                        starLog.log("${qSItemView.layoutParams.width}+${qSItemView.measuredWidth}")
+                        val width = qSItemView.measuredWidth*labelWidth
+                        layoutParam.width = width.toInt()
                         label.layoutParams = layoutParam
 
                     }
-
                     if(labelMarquee){
                         label.ellipsize = TextUtils.TruncateAt.MARQUEE
                         label.focusable = View.NOT_FOCUSABLE

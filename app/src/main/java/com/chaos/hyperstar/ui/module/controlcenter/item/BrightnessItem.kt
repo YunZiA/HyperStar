@@ -2,8 +2,6 @@ package com.chaos.hyperstar.ui.module.controlcenter.item
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,19 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import chaos.ui.Card
-import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.MSuperDialog
-import com.chaos.hyperstar.ui.base.elevation
+import com.chaos.hyperstar.ui.base.modifier.elevation
 import com.chaos.hyperstar.ui.module.controlcenter.EnableItemDropdown
 import top.yukonga.miuix.kmp.basic.Card
-import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 

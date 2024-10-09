@@ -12,9 +12,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
-import com.chaos.hyperstar.ui.base.XPopupUtil.Companion.MiuixPopupHost
+import com.chaos.hyperstar.ui.base.modifier.blur
+import com.chaos.hyperstar.ui.base.modifier.showBlur
 import com.chaos.hyperstar.ui.pagers.FPSMonitor
 import com.chaos.hyperstar.utils.PreferencesUtil
 import dev.chrisbanes.haze.HazeState
@@ -23,9 +23,7 @@ import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
-import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
-import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
 @Composable

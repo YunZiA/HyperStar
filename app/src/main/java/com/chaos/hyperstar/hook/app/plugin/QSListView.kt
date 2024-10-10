@@ -111,17 +111,21 @@ class QSListView : BaseHooker() {
                     val label = qSItemView.findViewByIdName("tile_label") as TextView
                     val icon = qSItemView.findViewByIdName("icon_frame") as FrameLayout
 
-                    qSItemView.removeView(label)
-                    qSItemView.removeView(icon)
-                    qSItemView.addView(icon,0)
-                    qSItemView.addView(label,1)
                     if (labelMode == 1){
+                        qSItemView.removeView(label)
+                        qSItemView.removeView(icon)
+                        qSItemView.addView(icon,0)
+                        qSItemView.addView(label,1)
                         label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 8f)
 
                         val layoutParam =  label.layoutParams
                         layoutParam.width = icon.layoutParams.width/10*9
                         label.layoutParams = layoutParam
                     } else if (labelMode == 2){
+                        qSItemView.removeView(label)
+                        qSItemView.removeView(icon)
+                        qSItemView.addView(icon,0)
+                        qSItemView.addView(label,1)
 
                         label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
                         val layoutParam =  label.layoutParams

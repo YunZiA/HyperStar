@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -23,7 +24,7 @@ class MediaDefaultAppSettingsActivity : BaseActivity() {
         MediaSettingsPager(this)
     }
 
-    override fun initData() {
+    override fun initData(savedInstanceState: Bundle?) {
         appListDB = AppListDB(this)
     }
 

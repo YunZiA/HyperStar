@@ -1,6 +1,9 @@
 package com.chaos.hyperstar.ui.base
 
+import android.content.Context
+import android.content.res.Resources
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -12,16 +15,36 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import com.chaos.hyperstar.ui.base.theme.HyperStarTheme
+import com.chaos.hyperstar.utils.LanguageHelper
 import com.chaos.hyperstar.utils.PreferencesUtil
+import java.util.Locale
 
 abstract class BaseActivity : ComponentActivity() {
 
     @Composable abstract fun InitView(colorMode: MutableState<Int>?)
-    abstract fun initData()
+    abstract fun initData(savedInstanceState: Bundle?)
+
+    fun setLocale(
+        language : String,
+        country: String
+    ){
+        //locale.value=Locale(language,country)
+        val res = this.resources
+        val config = res.configuration
+        Locale.setDefault(Locale(language,country))
+        config.setLocale(Locale(language,country))
+        //attachBaseContext(this)
+        res.updateConfiguration(config,res.displayMetrics)
+
+        recreate()
+
+    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initData()
+        initData(savedInstanceState)
         setContent {
 //
             val colorMode = remember { mutableIntStateOf(PreferencesUtil.getInt("color_mode",0)) }
@@ -40,4 +63,20 @@ abstract class BaseActivity : ComponentActivity() {
         }
     }
 
+
+
+
+    override fun attachBaseContext(newBase: Context?) {
+        if(newBase == null) {
+            super.attachBaseContext(newBase)
+            return
+        }
+        PreferencesUtil.getInstance().init(newBase)
+        super.attachBaseContext(LanguageHelper.wrap(newBase));
+
+    }
+
+
 }
+
+

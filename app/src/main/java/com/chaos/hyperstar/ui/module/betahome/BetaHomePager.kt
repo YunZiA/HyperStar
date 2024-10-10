@@ -4,7 +4,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.chaos.hyperstar.R
-import com.chaos.hyperstar.ui.base.ActivityPagers
+import com.chaos.hyperstar.ui.base.ModulePagers
 import com.chaos.hyperstar.ui.base.XSuperSwitch
 import com.chaos.hyperstar.ui.base.firstClasses
 import com.chaos.hyperstar.utils.Utils
@@ -12,7 +12,7 @@ import com.chaos.hyperstar.utils.Utils
 
 @Composable
 fun BetaHomePager(activity: ComponentActivity) {
-    ActivityPagers(
+    ModulePagers(
         activityTitle = stringResource(R.string.beta_home),
         activity = activity,
         endClick = {

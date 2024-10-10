@@ -103,7 +103,7 @@ fun DeviceControlItem(
             .padding(vertical = 4.dp, horizontal = 4.dp)
             .elevation(
                 shape = SquircleShape(18.dp),
-                backgroundColor = colorScheme.background,
+                backgroundColor = colorScheme.secondary,
                 shadowElevation = 2f
             ),
         contentAlignment = Alignment.Center
@@ -111,8 +111,8 @@ fun DeviceControlItem(
 
         Text(
             text = item.name,
-            fontWeight = FontWeight.Medium,
-            color = colorScheme.onSurface
+            fontWeight = FontWeight(550),
+            color = colorScheme.onSurfaceVariantSummary
         )
     }
 }

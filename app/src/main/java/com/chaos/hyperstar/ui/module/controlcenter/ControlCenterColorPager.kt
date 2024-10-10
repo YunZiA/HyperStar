@@ -4,7 +4,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.chaos.hyperstar.R
-import com.chaos.hyperstar.ui.base.ActivityPagers
+import com.chaos.hyperstar.ui.base.ModulePagers
 import com.chaos.hyperstar.ui.base.ColorPickerTool
 import com.chaos.hyperstar.ui.base.ContentFolder
 import com.chaos.hyperstar.ui.base.MiuixActivitySuperArrow
@@ -18,7 +18,7 @@ import com.chaos.hyperstar.utils.Utils
 fun ControlCenterColorPager(
     activity: ComponentActivity,
 ) {
-    ActivityPagers(
+    ModulePagers(
         activityTitle = stringResource(R.string.control_center_color_edit),
         activity = activity,
         endClick = {
@@ -66,12 +66,7 @@ fun ControlCenterColorPager(
         }
 
         classes(
-            title = R.string.brightness_slider
-        ){
-
-        }
-        classes(
-            title = R.string.volume_slider
+            title = R.string.volume_or_brightness
         ){
 
         }

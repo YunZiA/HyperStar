@@ -1,22 +1,15 @@
 package com.chaos.hyperstar.ui.module.controlcenter.list
 
 import androidx.activity.ComponentActivity
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import com.chaos.hyperstar.R
-import com.chaos.hyperstar.ui.base.ActivityPagers
+import com.chaos.hyperstar.ui.base.ModulePagers
 import com.chaos.hyperstar.ui.base.ColorPickerTool
 import com.chaos.hyperstar.ui.base.ItemAnim
 import com.chaos.hyperstar.ui.base.XSuperDropdown
-import com.chaos.hyperstar.ui.base.XSuperSwitch
 import com.chaos.hyperstar.ui.base.classes
 import com.chaos.hyperstar.ui.base.firstClasses
 import com.chaos.hyperstar.utils.SPUtils
@@ -30,7 +23,7 @@ fun QSListColorPager(
         mutableIntStateOf(SPUtils.getInt("qs_list_tile_color_for_state",0))
     }
     val waitTime = 105L
-    ActivityPagers(
+    ModulePagers(
         activityTitle = stringResource(R.string.tile_color),
         activity = activity,
         endClick = {

@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.chaos.hyperstar.R
-import com.chaos.hyperstar.ui.base.ActivityPagers
+import com.chaos.hyperstar.ui.base.ModulePagers
 import com.chaos.hyperstar.ui.base.MiuixActivitySuperArrow
 import com.chaos.hyperstar.ui.base.SwitchContentFolder
 import com.chaos.hyperstar.ui.base.XSuperDropdown
@@ -19,7 +19,7 @@ import com.chaos.hyperstar.utils.Utils
 
 @Composable
 fun MediaSettingsPager(activity: ComponentActivity) {
-    ActivityPagers(
+    ModulePagers(
         activityTitle = stringResource(R.string.media_settings),
         activity = activity,
         endClick = {

@@ -1,5 +1,6 @@
 package com.chaos.hyperstar.ui.module.controlcenter.card
 
+import android.os.Bundle
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -17,7 +18,7 @@ class QsCardListActivity : BaseActivity() {
         QsCardListPager(this)
     }
 
-    override fun initData() {
+    override fun initData(savedInstanceState: Bundle?) {
 
         val cardTagList = this.resources.getStringArray(R.array.card_list)
         val cardNameList = this.resources.getStringArray(R.array.card_tile_name)

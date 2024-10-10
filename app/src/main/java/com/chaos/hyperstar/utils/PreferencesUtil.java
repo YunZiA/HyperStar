@@ -29,6 +29,10 @@ public class PreferencesUtil {
      * @param context
      */
     public void init(Context context) {
+        if (sp != null){
+            Log.d("ggc", "PreferencesUtil init: sp is not null");
+            return;
+        }
         sp = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
 
     }
@@ -64,6 +68,9 @@ public class PreferencesUtil {
     /**读取整型数字（带默认值的）*/
     public static int getInt(String key, int defaultValue) {
         SharedPreferences preferences = PreferencesUtil.getInstance().sp;
+        if (preferences == null){
+            return defaultValue;
+        }
         return preferences.getInt(key, defaultValue);
     }
     /*存储长整型数字*/

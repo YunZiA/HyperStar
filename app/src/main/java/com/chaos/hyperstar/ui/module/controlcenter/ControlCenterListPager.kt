@@ -2,17 +2,19 @@ package com.chaos.hyperstar.ui.module.controlcenter
 
 import android.view.HapticFeedbackConstants
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,14 +40,11 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Icon
 import chaos.ui.DraggableGrids
 import com.chaos.hyperstar.R
-import com.chaos.hyperstar.ui.base.ActivityPagers
-import com.chaos.hyperstar.ui.base.Classes
-import com.chaos.hyperstar.ui.base.SwitchContentFolder
+import com.chaos.hyperstar.ui.base.ModulePagers
+import com.chaos.hyperstar.ui.base.TopButton
 import com.chaos.hyperstar.ui.base.XMiuixSlider
 import com.chaos.hyperstar.ui.base.XSuperDialogDropdown
-import com.chaos.hyperstar.ui.base.XSuperDropdown
 import com.chaos.hyperstar.ui.base.XSuperSwitch
-import com.chaos.hyperstar.ui.base.firstClasses
 import com.chaos.hyperstar.ui.module.controlcenter.item.BrightnessItem
 import com.chaos.hyperstar.ui.module.controlcenter.item.CardItem
 import com.chaos.hyperstar.ui.module.controlcenter.item.DeviceCenterItem
@@ -56,11 +55,9 @@ import com.chaos.hyperstar.ui.module.controlcenter.item.MediaItem
 import com.chaos.hyperstar.ui.module.controlcenter.item.VolumeItem
 import com.chaos.hyperstar.utils.SPUtils
 import com.chaos.hyperstar.utils.Utils
-import top.yukonga.miuix.kmp.basic.Button
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Switch
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.extra.SuperSwitch
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 @Composable
@@ -88,33 +85,57 @@ fun ControlCenterListPager(
 
     }
 
-    ActivityPagers(
+    ModulePagers(
         activityTitle = stringResource(R.string.control_center_edit),
         activity = activity,
         endIcon = {
 
             AnimatedVisibility(
                 visible = (itemList != lastitems),
-                enter = fadeIn() + expandVertically(),
-                exit = fadeOut() + shrinkVertically()
+                enter = fadeIn() + expandHorizontally(),
+                exit = fadeOut() + shrinkHorizontally()
 
             ) {
 //                .padding(end = 12.dp)
-                IconButton(
-                    modifier = Modifier,
-                    onClick = {
-                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                        activity.setLists(itemList)
-                        lastitems = itemList
-                    }
-                ) {
-
-                    Icon(
-                        ImageVector.vectorResource(R.drawable.save2),
-                        contentDescription = "save",
-                        tint = colorScheme.primary)
-
+                TopButton(
+                    imageVector = ImageVector.vectorResource(R.drawable.save2),
+                    contentDescription = "save",
+                    tint = colorScheme.primary
+                ){
+                    activity.setLists(itemList)
+                    lastitems = itemList
                 }
+//                Box(
+//                    Modifier
+//                        //.padding(10.dp)
+//                        .clickable {
+//                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+//                        activity.setLists(itemList)
+//                        lastitems = itemList
+//
+//                    }
+//                ){
+//                    Icon(
+//                        ImageVector.vectorResource(R.drawable.save2),
+//                        modifier = Modifier.padding(6.dp),
+//                        contentDescription = "save",
+//                        tint = colorScheme.primary)
+//                }
+//                IconButton(
+//                    modifier = Modifier,
+//                    onClick = {
+//                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+//                        activity.setLists(itemList)
+//                        lastitems = itemList
+//                    }
+//                ) {
+//
+//                    Icon(
+//                        ImageVector.vectorResource(R.drawable.save2),
+//                        contentDescription = "save",
+//                        tint = colorScheme.primary)
+//
+//                }
 
             }
 

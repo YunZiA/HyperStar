@@ -1,10 +1,10 @@
 package com.chaos.hyperstar.ui.module.betahome
 
 
+import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import com.chaos.hyperstar.ui.base.BaseActivity
-import com.chaos.hyperstar.ui.module.volume.VolumePager
 
 class BetaHomeSettingsActivity : BaseActivity() {
     @Composable
@@ -12,7 +12,7 @@ class BetaHomeSettingsActivity : BaseActivity() {
         BetaHomePager(this)
     }
 
-    override fun initData() {
+    override fun initData(savedInstanceState: Bundle?) {
 
     }
 }

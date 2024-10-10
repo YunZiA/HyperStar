@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.chaos.hyperstar.R
@@ -40,7 +39,7 @@ fun MainPage(
         ){
             MiuixActivitySuperArrow(
                 leftIcon = R.drawable.icon_controlcenter,
-                title = stringResource(R.string.controlcenter),
+                title = stringResource(R.string.control_center),
                 context = activity,
                 activity = ControlCenterSettings::class.java
 

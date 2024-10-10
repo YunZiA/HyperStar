@@ -1,5 +1,6 @@
 package com.chaos.hyperstar.ui.module.controlcenter
 
+import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import com.chaos.hyperstar.ui.base.BaseActivity
@@ -11,7 +12,7 @@ class ControlCenterSettings : BaseActivity() {
         ControlCenterPager(this)
     }
 
-    override fun initData() {
+    override fun initData(savedInstanceState: Bundle?) {
 
     }
 

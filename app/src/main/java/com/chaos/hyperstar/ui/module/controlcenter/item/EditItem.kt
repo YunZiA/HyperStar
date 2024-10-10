@@ -109,15 +109,15 @@ fun EditItem(
                     )
                 },
             shape = SquircleShape(18.dp),
-            color = colorScheme.background,
+            color = colorScheme.secondary,
             shadowElevation = 2f,
             content = {}
         )
         Text(
             text = item.name,
             fontSize = 12.sp,
-            fontWeight = FontWeight.Medium,
-            color = colorScheme.onSurface
+            fontWeight = FontWeight(550),
+            color = colorScheme.onSurfaceVariantSummary
         )
     }
 }

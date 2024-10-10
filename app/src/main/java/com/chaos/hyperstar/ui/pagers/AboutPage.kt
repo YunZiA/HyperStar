@@ -25,8 +25,10 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.chaos.hyperstar.R
+import com.chaos.hyperstar.ui.base.MiuixActivitySuperArrow
 import com.chaos.hyperstar.ui.base.MiuixIntentSuperArrow
 import com.chaos.hyperstar.ui.base.classes
+import com.chaos.hyperstar.ui.module.volume.VolumeSettings
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
@@ -97,6 +99,13 @@ fun ThirdPage(
                 activity = activity,
                 url = "coolmarket://u/8555749"
             )
+            MiuixActivitySuperArrow(
+                title = stringResource(R.string.translator),
+                context = activity,
+                activity = AboutTranslatorPager::class.java
+
+            )
+
 
         }
 

@@ -7,11 +7,18 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.captionBar
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.MoreVert
@@ -67,7 +74,7 @@ fun MSuperDialog(
     content: @Composable () -> Unit
 ) {
     @Suppress("NAME_SHADOWING")
-    val insideMargin = remember { insideMargin } ?: remember { DpSize(14.dp, 14.dp) }
+    val insideMargin = remember { insideMargin } ?: remember { DpSize(14.dp, 12.dp) }
     val view = LocalView.current
     val paddingModifier = remember(insideMargin) {
         Modifier
@@ -84,6 +91,9 @@ fun MSuperDialog(
 
     Box(
         modifier = Modifier
+            .navigationBarsPadding()
+            .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
+            .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
             .fillMaxSize()
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {

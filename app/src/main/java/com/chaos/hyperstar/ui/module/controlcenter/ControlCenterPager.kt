@@ -6,7 +6,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.chaos.hyperstar.ui.module.controlcenter.card.QsCardListActivity
 import com.chaos.hyperstar.R
-import com.chaos.hyperstar.ui.base.ActivityPagers
+import com.chaos.hyperstar.ui.base.ModulePagers
 import com.chaos.hyperstar.ui.base.MiuixActivitySuperArrow
 import com.chaos.hyperstar.ui.base.SwitchContentFolder
 import com.chaos.hyperstar.ui.base.XMiuixContentDropdown
@@ -25,8 +25,8 @@ import com.chaos.hyperstar.utils.Utils
 fun ControlCenterPager(
     activity: ComponentActivity,
 ) {
-    ActivityPagers(
-        activityTitle = stringResource(R.string.controlcenter),
+    ModulePagers(
+        activityTitle = stringResource(R.string.control_center),
         activity = activity,
         endClick = {
             Utils.rootShell("killall com.android.systemui")

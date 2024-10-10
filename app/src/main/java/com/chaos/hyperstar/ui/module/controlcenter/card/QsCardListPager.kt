@@ -3,13 +3,16 @@ package com.chaos.hyperstar.ui.module.controlcenter.card
 import android.view.HapticFeedbackConstants
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,8 +27,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
@@ -50,11 +50,12 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Icon
 import chaos.ui.DraggableGrid
 import com.chaos.hyperstar.R
-import com.chaos.hyperstar.ui.base.ActivityPagers
+import com.chaos.hyperstar.ui.base.ModulePagers
+import com.chaos.hyperstar.ui.base.TopButton
 import com.chaos.hyperstar.ui.base.classes
 import com.chaos.hyperstar.ui.base.firstClasses
+import com.chaos.hyperstar.ui.base.modifier.elevation
 import com.chaos.hyperstar.utils.Utils
-import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
@@ -69,33 +70,27 @@ fun QsCardListPager(
 
     val view = LocalView.current
 
-    ActivityPagers(
+    ModulePagers(
         activityTitle = stringResource(R.string.card_tile_edit),
         activity = activity,
         endIcon = {
 
             AnimatedVisibility(
                 visible = (!items.equals(lastitems)),
-                enter = fadeIn() + expandVertically(),
-                exit = fadeOut() + shrinkVertically()
+                enter = fadeIn() + expandHorizontally(),
+                exit = fadeOut() + shrinkHorizontally()
 
             ) {
 //                .padding(end = 12.dp)
-                IconButton(
-                    modifier = Modifier,
-                    onClick = {
-                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                        activity.saveList(items)
-                        lastitems = items
-                    }
-                ) {
-
-                    Icon(
-                        ImageVector.vectorResource(R.drawable.save2),
-                        contentDescription = "save",
-                        tint = colorScheme.primary)
-
+                TopButton(
+                    imageVector = ImageVector.vectorResource(R.drawable.save2),
+                    contentDescription = "save",
+                    tint = colorScheme.primary
+                ){
+                    activity.saveList(items)
+                    lastitems = items
                 }
+
 
             }
 
@@ -259,26 +254,31 @@ fun CardItem(
     Box(
         modifier = Modifier
             .height(85.dp)
-            .fillMaxWidth(),
-
-        ) {
-        Surface(
+            .fillMaxWidth()
+    ) {
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(vertical = 4.dp, horizontal = 4.dp),
-            shape = SquircleShape(18.dp),
-            color = colorScheme.background,
-            shadowElevation = 3f
-
+                .padding(vertical = 4.dp, horizontal = 4.dp)
+                .elevation(
+                    shape = SquircleShape(18.dp),
+                    backgroundColor = colorScheme.secondary,
+                    shadowElevation = 3f
+                ),
+            contentAlignment = Alignment.Center
         ) {
+            Text(
+                modifier = Modifier.padding(horizontal = 20.dp).basicMarquee(),//.basicMarquee(),
+                text = item.name,
+                maxLines = 1,
+                textAlign = TextAlign.Center,
+                //overflow = TextOverflow.Ellipsis,
+                softWrap = false,
+                fontWeight = FontWeight(550),
+                color = colorScheme.onSurfaceVariantSummary
+            )
 
         }
-        Text(
-            modifier = Modifier.align(Alignment.Center),
-            text = item.name,
-            fontWeight = FontWeight.W600,
-            color = colorScheme.onSurface
-        )
 
         AnimatedVisibility (
             show,

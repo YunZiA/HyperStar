@@ -53,13 +53,14 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.wear.compose.material.Icon
 import com.chaos.hyperstar.R
-import com.chaos.hyperstar.ui.base.ActivityPager
+import com.chaos.hyperstar.ui.base.ModulePager
 import com.chaos.hyperstar.ui.base.XMiuixTextField
 import com.chaos.hyperstar.ui.base.enums.EventState
 
@@ -79,7 +80,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 @Composable
 fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
 
-    ActivityPager(
+    ModulePager(
         activityTitle = stringResource(R.string.media_default_app_settings),
         activity = activity,
         endClick = {
@@ -196,7 +197,7 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
                                 value = text,
                                 cornerRadius = 13.dp,
                                 onValueChange = { text = it },
-                                label = "应用名称",
+                                label = stringResource(R.string.app_name_type),
                                 modifier = Modifier
                                     .padding(end = 5.dp)
                                     .weight(1f),
@@ -335,7 +336,7 @@ fun AppItem(
         ) {
             Box(
                 modifier = Modifier
-                    .padding(start = 16.dp, end = 8.dp)
+                    .padding(start = 16.dp, end = 12.dp)
                     .padding(vertical = 16.dp)
             ){
                 app.icon?.let { icon ->
@@ -354,6 +355,7 @@ fun AppItem(
             }
             Text(
                 text = label,
+                fontWeight = FontWeight.Medium,
                 modifier = Modifier
                     .weight(1f)
                     .align(Alignment.CenterVertically),

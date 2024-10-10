@@ -1,13 +1,12 @@
 package com.chaos.hyperstar.ui.module.controlcenter
 
-import android.util.Log
+import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import chaos.ui.Card
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.BaseActivity
 import com.chaos.hyperstar.utils.SPUtils
-import com.chaos.hyperstar.utils.XSPUtils
 
 class ControlCenterListSettings : BaseActivity() {
     var cardList : List<Card> = emptyList<Card>()
@@ -18,7 +17,7 @@ class ControlCenterListSettings : BaseActivity() {
         ControlCenterListPager(this)
     }
 
-    override fun initData() {
+    override fun initData(savedInstanceState: Bundle?) {
         getLists()
         val cardTagList = this.resources.getStringArray(R.array.control_center_item_list)
         val cardNameList = this.resources.getStringArray(R.array.control_center_item_list_name)

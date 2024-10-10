@@ -2,11 +2,9 @@ package com.chaos.hyperstar.ui.module.controlcenter.card
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.chaos.hyperstar.R
-import com.chaos.hyperstar.ui.base.ActivityPagers
+import com.chaos.hyperstar.ui.base.ModulePagers
 import com.chaos.hyperstar.ui.base.ColorPickerTool
 import com.chaos.hyperstar.ui.base.classes
 import com.chaos.hyperstar.ui.base.firstClasses
@@ -16,7 +14,7 @@ import com.chaos.hyperstar.utils.Utils
 fun QSCardColorPager(
     activity: ComponentActivity,
 ) {
-    ActivityPagers(
+    ModulePagers(
         activityTitle = stringResource(R.string.card_tile_color),
         activity = activity,
         endClick = {

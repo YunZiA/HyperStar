@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="title_activity_qs_list_view_settings">普通磁贴设置</string>
+    <string name="title_activity_qs_card_list">卡片磁贴设置</string>
     <string name="is_cover_scale_background_title">启用封面背景图缩放</string>
     <string name="cover_scale_background_value_title">封面背景图缩放值</string>
     <string name="is_cover_blur_background_title">启用模糊封面背景</string>
@@ -12,7 +14,7 @@
     <string name="show_FPS_Monitor_title">帧率显示</string>
     <string name="page_user_scroll_title">页面滑动切换</string>
     <string name="over_scroll_title">滑动越界回弹</string>
-    <string name="controlcenter">控制中心</string>
+    <string name="control_center">控制中心</string>
     <string name="sound_settings">音量条</string>
     <string name="main_page_title">首页</string>
     <string name="settings_page_title">设置</string>
@@ -25,8 +27,6 @@
     <string name="show_title">显示</string>
     <string name="systemui">系统界面</string>
     <string name="progress_effect_title">进度条圆角</string>
-    <string name="title_activity_qs_list_view_settings">普通磁贴设置</string>
-    <string name="title_activity_qs_card_list">卡片磁贴设置</string>
     <string name="other_settings">其他</string>
     <string name="beta_home">Beta桌面</string>
     <string name="title_activity_beta_home_settings">Beta桌面设置</string>
@@ -142,4 +142,7 @@
     <string name="default_value">默认</string>
     <string name="others">其他</string>
     <string name="project_address">项目地址</string>
+    <string name="translator">翻译人员</string>
+    <string name="app_name_type">应用名称</string>
+    <string name="language">语言</string>
 </resources>

@@ -2,6 +2,7 @@ package com.chaos.hyperstar.ui.base
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,7 +28,7 @@ import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
 @Composable
-fun ActivityPagers(
+fun ModulePagers(
     activityTitle: String,
     activity: ComponentActivity,
     endClick: () -> Unit,
@@ -35,7 +36,7 @@ fun ActivityPagers(
     content: LazyListScope.() -> Unit
 ) {
 
-    ActivityPager(
+    ModulePager(
         activityTitle = activityTitle,
         activity = activity,
         endClick = endClick,
@@ -53,7 +54,7 @@ fun ActivityPagers(
 }
 
 @Composable
-fun ActivityPager(
+fun ModulePager(
     activityTitle: String,
     activity: ComponentActivity,
     endClick: () -> Unit,
@@ -71,7 +72,7 @@ fun ActivityPager(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            SubMiuixTopAppBar(
+            ModuleTopAppBar(
                 modifier = Modifier.showBlur(hazeState),
                 color = Color.Transparent,
                 title = activityTitle,
@@ -89,6 +90,62 @@ fun ActivityPager(
         if (contents != null) {
             Box(Modifier.blur(hazeState)) {
                 contents(topAppBarScrollBehavior,padding,enableOverScroll.value)
+
+            }
+        }
+
+    }
+
+
+    if (showFPSMonitor.value) {
+        FPSMonitor(
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(horizontal = 28.dp)
+        )
+    }
+}
+
+@Composable
+fun ActivityPager(
+    activityTitle: String,
+    activity: ComponentActivity,
+    actions: @Composable() (RowScope.() -> Unit) = {},
+    content: (LazyListScope.() -> Unit)? = null
+) {
+
+    val hazeState = remember { HazeState() }
+    val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
+
+    val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
+    val enableOverScroll = remember { mutableStateOf(PreferencesUtil.getBoolean("over_scroll",false)) }
+
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            ActivityTopAppBar(
+                modifier = Modifier.showBlur(hazeState),
+                color = Color.Transparent,
+                title = activityTitle,
+                scrollBehavior = topAppBarScrollBehavior,
+                activity = activity,
+                actions = actions
+            )
+
+        },
+
+        ) { padding ->
+        if (content != null) {
+            Box(Modifier.blur(hazeState)) {
+                LazyColumn(
+                    modifier = Modifier.height(getWindowSize().height.dp),
+                    enableOverScroll = enableOverScroll.value,
+                    contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+28.dp),
+                    topAppBarScrollBehavior = topAppBarScrollBehavior
+                ) {
+                    content()
+                }
 
             }
         }

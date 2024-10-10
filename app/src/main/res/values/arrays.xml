@@ -5,6 +5,12 @@
         <item>miui.systemui.plugin</item>
         <item>com.miui.home</item>
     </string-array>
+    <string-array name="language_list">
+        <item>跟随系统</item>
+        <item>简体中文</item>
+        <item>English</item>
+    </string-array>
+    
     <array name="control_center_item_list">
         <item>cards</item>
         <item>media</item>
@@ -16,14 +22,14 @@
         <item>edit</item>
     </array>
     <array name="control_center_item_list_name">
-        <item>卡片磁贴</item>
-        <item>小米妙播</item>
-        <item>亮度条</item>
-        <item>音量条</item>
-        <item>米家</item>
-        <item>融合中心</item>
-        <item>小磁贴</item>
-        <item>编辑</item>
+        <item>Card Tile</item>
+        <item>Media Player</item>
+        <item>Brightness Bar</item>
+        <item>Volume Bar</item>
+        <item>Mi Home</item>
+        <item>Xiaomi Smart Hub</item>
+        <item>Standard Tile</item>
+        <item>Edit</item>
     </array>
     <string-array name="card_list">
         <item>wifi</item>
@@ -58,34 +64,34 @@
         <item>custom(com.android.camera/com.xiaomi.camera.videocast.VideoCastTileService)</item>
     </string-array>
     <array name="card_tile_name">
-        <item>WIFI</item>
-        <item>移动数据</item>
-        <item>蓝牙</item>
-        <item>设置</item>
-        <item>飞行模式</item>
-        <item>自动亮度</item>
-        <item>热点</item>
+        <item>WLAN</item>
+        <item>Mobile networks</item>
+        <item>Bluetooth</item>
+        <item>Settings</item>
+        <item>Airplane mode</item>
+        <item>Auto brightness</item>
+        <item>Hotspot</item>
         <item>NFC</item>
-        <item>位置信息</item>
-        <item>静音</item>
-        <item>振动</item>
-        <item>截屏</item>
-        <item>手电筒</item>
-        <item>自动旋转</item>
-        <item>锁屏</item>
-        <item>扫一扫</item>
-        <item>护眼模式</item>
-        <item>深色模式</item>
-        <item>勿扰模式</item>
-        <item>省电模式</item>
-        <item>小爱翻译</item>
-        <item>实时字幕</item>
-        <item>无线反向充电</item>
-        <item>杜比全景声</item>
-        <item>投屏</item>
-        <item>小米互传</item>
-        <item>超级省电</item>
-        <item>多机联录</item>
+        <item>Location</item>
+        <item>Mute</item>
+        <item>Vibrate</item>
+        <item>Screenshot</item>
+        <item>Flashlight</item>
+        <item>Lock orientation</item>
+        <item>Lock screen</item>
+        <item>Scanner</item>
+        <item>Reading mode</item>
+        <item>Dark mode</item>
+        <item>DND</item>
+        <item>Battery saver</item>
+        <item>Mi AI Translate</item>
+        <item>AI subtitles</item>
+        <item>Reverse wireless charging</item>
+        <item>Dolby Atoms</item>
+        <item>Cast</item>
+        <item>Mi Share</item>
+        <item>Ultra battery saver</item>
+        <item>Dual phone</item>
     </array>
     <string-array name="color_mode_items">
         <item>System</item>
@@ -93,40 +99,33 @@
         <item>Dark</item>
     </string-array>
     <string-array name="is_local_speaker_entire">
-        <item>本机（默认）</item>
-        <item>设备名称</item>
+        <item>Default</item>
+        <item>Device name</item>
     </string-array>
     <string-array name="is_super_blur_entire">
-        <item>默认</item>
-        <item>强制关闭</item>
-        <item>强制开启</item>
+        <item>Default</item>
+        <item>Force off</item>
+        <item>Force on</item>
     </string-array>
 
     <string-array name="is_list_label_mode_entire">
-        <item>默认</item>
-        <item>内字</item>
-        <item>自定义</item>
+        <item>Default</item>
+        <item>Inside</item>
+        <item>Custom</item>
     </string-array>
 
     <string-array name="seekbar_value_style_entire">
-        <item>百分比</item>
-        <item>原始值</item>
+        <item>Percentage</item>
+        <item>Actual value</item>
     </string-array>
-    <integer-array name="miui_volume_timer_segments">
-        <item>0</item>
-        <item>1800</item>
-        <item>3600</item>
-        <item>7200</item>
-        <item>28800</item>
-    </integer-array>
     <string-array name="qs_list_tile_color_for_state_entire">
-        <item>默认</item>
-        <item>跟随图标</item>
-        <item>自定义</item>
+        <item>Default</item>
+        <item>Follow the icon</item>
+        <item>Custom</item>
     </string-array>
     <string-array name="land_rightOrLeft_entire">
-        <item>左面板</item>
-        <item>右面板</item>
+        <item>Left panel</item>
+        <item>Right panel</item>
     </string-array>
 
 </resources>

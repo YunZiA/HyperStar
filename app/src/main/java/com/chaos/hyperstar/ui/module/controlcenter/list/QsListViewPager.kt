@@ -3,9 +3,8 @@ package com.chaos.hyperstar.ui.module.controlcenter.list
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.chaos.hyperstar.R
-import com.chaos.hyperstar.ui.base.ActivityPagers
+import com.chaos.hyperstar.ui.base.ModulePagers
 import com.chaos.hyperstar.ui.base.XMiuixSlider
 import com.chaos.hyperstar.ui.base.classes
 import com.chaos.hyperstar.ui.base.firstClasses
@@ -14,7 +13,7 @@ import com.chaos.hyperstar.utils.Utils
 
 @Composable
 fun QsListViewPager(activity: ComponentActivity, ) {
-    ActivityPagers(
+    ModulePagers(
         activityTitle = stringResource(R.string.tile_layout),
         activity = activity,
         endClick = {

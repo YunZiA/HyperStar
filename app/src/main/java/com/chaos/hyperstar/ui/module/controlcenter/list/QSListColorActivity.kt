@@ -1,5 +1,6 @@
 package com.chaos.hyperstar.ui.module.controlcenter.list
 
+import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import com.chaos.hyperstar.ui.base.BaseActivity
@@ -10,7 +11,7 @@ class QSListColorActivity : BaseActivity() {
         QSListColorPager(this)
     }
 
-    override fun initData() {
+    override fun initData(savedInstanceState: Bundle?) {
 
     }
 

@@ -56,7 +56,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Icon
+import com.chaos.hyperstar.MainActivity
 import com.chaos.hyperstar.R
+import com.chaos.hyperstar.ui.base.BaseActivity
 import com.chaos.hyperstar.ui.base.modifier.blur
 import com.chaos.hyperstar.ui.base.modifier.showBlur
 import com.chaos.hyperstar.utils.PreferencesUtil
@@ -88,7 +90,7 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 @OptIn(FlowPreview::class)
 @Composable
 fun UITest(
-    activity: ComponentActivity,
+    activity: MainActivity,
     colorMode: MutableState<Int>,
 ) {
     val topAppBarScrollBehavior0 = MiuixScrollBehavior(rememberTopAppBarState())
@@ -216,7 +218,7 @@ fun UITest(
     ){
 
 
-        val alpha: Float by animateFloatAsState(if (show.value) 0.3f else 0f)
+        val alpha: Float by animateFloatAsState(if (show.value) 0.3f else 0f, label = "")
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -377,7 +379,7 @@ fun  ItemPopu(show: MutableState<Boolean>) {
 
 @Composable
 fun AppHorizontalPager(
-    activity: ComponentActivity,
+    activity: MainActivity,
     colorMode: MutableState<Int>,
     modifier: Modifier = Modifier,
     pagerState: PagerState,

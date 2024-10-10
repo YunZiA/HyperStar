@@ -1,5 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <array name="control_center_item_list_name">
+        <item>卡片磁贴</item>
+        <item>妙播</item>
+        <item>亮度条</item>
+        <item>音量条</item>
+        <item>米家</item>
+        <item>融合设备中心</item>
+        <item>普通磁贴</item>
+        <item>编辑</item>
+    </array>
+    <array name="card_tile_name">
+        <item>WIFI</item>
+        <item>移动数据</item>
+        <item>蓝牙</item>
+        <item>设置</item>
+        <item>飞行模式</item>
+        <item>自动亮度</item>
+        <item>热点</item>
+        <item>NFC</item>
+        <item>位置信息</item>
+        <item>静音</item>
+        <item>振动</item>
+        <item>截屏</item>
+        <item>手电筒</item>
+        <item>自动旋转</item>
+        <item>锁屏</item>
+        <item>扫一扫</item>
+        <item>护眼模式</item>
+        <item>深色模式</item>
+        <item>勿扰模式</item>
+        <item>省电模式</item>
+        <item>小爱翻译</item>
+        <item>实时字幕</item>
+        <item>无线反向充电</item>
+        <item>杜比全景声</item>
+        <item>投屏</item>
+        <item>小米互传</item>
+        <item>超级省电</item>
+        <item>多机联录</item>
+    </array>
     <string-array name="is_local_speaker_entire">
         <item>本机（默认）</item>
         <item>设备名称</item>
@@ -9,4 +49,28 @@
         <item>浅色</item>
         <item>深色</item>
     </string-array>
+    <string-array name="is_super_blur_entire">
+        <item>默认</item>
+        <item>强制关闭</item>
+        <item>强制开启</item>
+    </string-array>
+    <string-array name="is_list_label_mode_entire">
+        <item>默认</item>
+        <item>内字</item>
+        <item>自定义</item>
+    </string-array>
+    <string-array name="seekbar_value_style_entire">
+        <item>百分比</item>
+        <item>原始值</item>
+    </string-array>
+    <string-array name="qs_list_tile_color_for_state_entire">
+        <item>默认</item>
+        <item>跟随图标</item>
+        <item>自定义</item>
+    </string-array>
+    <string-array name="land_rightOrLeft_entire">
+        <item>左面板</item>
+        <item>右面板</item>
+    </string-array>
+
 </resources>

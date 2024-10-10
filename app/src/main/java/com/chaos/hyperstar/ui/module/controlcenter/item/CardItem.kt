@@ -1,5 +1,6 @@
 package com.chaos.hyperstar.ui.module.controlcenter.item
 
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import chaos.ui.Card
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.MSuperDialog
@@ -86,7 +88,7 @@ fun CardItem(
                     .padding(vertical = 4.dp, horizontal = 4.dp)
                     .elevation(
                         shape = SquircleShape(18.dp),
-                        backgroundColor = colorScheme.background,
+                        backgroundColor = colorScheme.secondary,
                         shadowElevation = 2f
                     ),
                 contentAlignment = Alignment.Center
@@ -94,8 +96,11 @@ fun CardItem(
 
                 Text(
                     text = name[it],
-                    fontWeight = FontWeight.Medium,
-                    color =  colorScheme.onSurface
+                    modifier = Modifier.padding(horizontal = 20.dp).basicMarquee(),
+                    fontSize = 16.sp,
+                    maxLines = 1,
+                    fontWeight = FontWeight(550),
+                    color =  colorScheme.onSurfaceVariantSummary
                 )
 
 

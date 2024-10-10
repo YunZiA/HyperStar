@@ -63,12 +63,10 @@ class MainActivity : BaseActivity() {
         val state = savedInstanceState?.getString("state")
         if (state != null){
             this.state = State.valueOf(state)
-            Toast.makeText(this, "${state}",Toast.LENGTH_SHORT).show()
 
         }
         val paddingData = savedInstanceState?.getSerializable("paddings",PaddingData::class.java)
         if (paddingData != null){
-            Toast.makeText(this, "${paddings.calculateTopPadding()}",Toast.LENGTH_SHORT).show()
             paddings = paddingData.toPaddingValues()
 
         }

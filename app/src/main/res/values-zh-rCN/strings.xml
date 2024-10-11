@@ -155,4 +155,6 @@
     <string name="progress_bar">进度条</string>
     <string name="toggle_slider_value">进度值</string>
     <string name="unlock">特性</string>
+    <string name="follow_system">跟随系统</string>
+    <string name="title_activity_slider_colors_settings">SliderColorsSettings</string>
 </resources>

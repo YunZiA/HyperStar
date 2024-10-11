@@ -29,6 +29,7 @@
     <string name="sound_settings">Volume Dialog</string>
     <string name="main_page_title">Home</string>
     <string name="settings_page_title">Settings</string>
+    <string name="follow_system">System</string>
     <string name="about_page_title">About</string>
     <string name="developer_title">DEVELOPERS</string>
     <string name="discussion_title">DISCUSSION</string>

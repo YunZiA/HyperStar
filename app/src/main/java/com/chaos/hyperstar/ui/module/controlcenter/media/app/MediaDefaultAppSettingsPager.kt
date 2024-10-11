@@ -1,6 +1,7 @@
 
 package com.chaos.hyperstar.ui.module.controlcenter.media.app
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.compose.animation.AnimatedVisibility
@@ -77,6 +78,7 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 
+@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
 
@@ -86,7 +88,7 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         },
-    ){ topAppBarScrollBehavior,padding,enableOverScroll->
+    ){ topAppBarScrollBehavior,padding->
 
         val appLists = remember { mutableStateOf(activity.appList) }
         val isLoading = remember { mutableStateOf(true) }
@@ -158,7 +160,6 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
 
                         }
                         .fillMaxSize(),
-                    enableOverScroll = enableOverScroll,
                     contentPadding = PaddingValues(top = 35.dp, bottom = padding.calculateBottomPadding()+68.dp),
                     topAppBarScrollBehavior = topAppBarScrollBehavior
                 ) {

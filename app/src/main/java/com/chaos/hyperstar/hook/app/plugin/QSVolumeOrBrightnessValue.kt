@@ -1,7 +1,6 @@
 package com.chaos.hyperstar.hook.app.plugin
 
 import android.content.Context
-import android.content.res.XModuleResources
 import android.graphics.Color
 import android.view.View
 import android.widget.SeekBar
@@ -15,6 +14,12 @@ import java.lang.reflect.Method
 
 
 class QSVolumeOrBrightnessValue :BaseHooker() {
+    val mainValueBlendColor = XSPUtils.getString("toggle_slider_value_color_main", "null")
+    val secondaryValueBlendColor = XSPUtils.getString("toggle_slider_value_color_secondary", "null")
+
+    val mainIconBlendColor = XSPUtils.getString("toggle_slider_icon_color_main", "null")
+    val secondaryIconBlendColor = XSPUtils.getString("toggle_slider_icon_color_secondary", "null")
+
 
     private val volumeShow = XSPUtils.getBoolean("qs_volume_top_value_show",false)
     val volumeShowStyle = XSPUtils.getInt("qs_volume_top_value",0)
@@ -36,10 +41,7 @@ class QSVolumeOrBrightnessValue :BaseHooker() {
                         super.afterHookedMethod(param)
                         val thisObj = param?.thisObject
                         val str: String
-                        val sliderHolder = XposedHelpers.callMethod(thisObj,"getHolder")
-                        if (sliderHolder == null){
-                            return
-                        }
+                        val sliderHolder = XposedHelpers.callMethod(thisObj,"getHolder") ?: return
                         val item = XposedHelpers.getObjectField(sliderHolder,"itemView") as View
 
                         val seekBar = item.findViewByIdName("slider") as SeekBar
@@ -49,7 +51,7 @@ class QSVolumeOrBrightnessValue :BaseHooker() {
                         str = if (volumeShowStyle == 0) ((value * 100) / max).toString() + "%" else value.toString()
 
                         topValue.visibility = View.VISIBLE
-                        topValue.setText(str)
+                        topValue.text = str
 
                     }
                 })
@@ -92,6 +94,7 @@ class QSVolumeOrBrightnessValue :BaseHooker() {
         val MiBlurCompat = XposedHelpers.findClass("miui.systemui.util.MiBlurCompat",classLoader)
 
         XposedHelpers.findAndHookMethod(ToggleSliderViewHolder,"updateBlendBlur",object : XC_MethodHook(){
+
             override fun afterHookedMethod(param: MethodHookParam?) {
                 super.afterHookedMethod(param)
                 val thisObj = param?.thisObject
@@ -102,9 +105,10 @@ class QSVolumeOrBrightnessValue :BaseHooker() {
 
                 val item = XposedHelpers.getObjectField(thisObj,"itemView") as View
                 val topValue = item.findViewByIdName("top_text") as TextView
+                val icon = item.findViewByIdName("icon")
 
                 if (!default){
-                    val colorId = context.resources.getIdentifier("toggle_slider_icon_color", "color", "miui.systemui.plugin")
+                    val colorId = context.resources.getIdentifier("toggle_slider_top_text_color", "color", "miui.systemui.plugin")
                     val color = item.resources.getColor(colorId)
 
                     topValue.setTextColor(color)
@@ -117,6 +121,7 @@ class QSVolumeOrBrightnessValue :BaseHooker() {
                 topValue.setTextColor(Color.WHITE)
                 XposedHelpers.callStaticMethod(MiBlurCompat,"setMiViewBlurModeCompat",topValue,3)
                 val array = context.resources.getIdentifier("toggle_slider_icon_blend_colors", "array", "miui.systemui.plugin")
+
                 //val setMiProgressIconBackgroundBlendColors = XposedHelpers.findMethodBestMatch(MiBlurCompat,"setMiProgressIconBackgroundBlendColors",View::class.java,Int::class.java,Float::class.java)
                 val method: Method = MiBlurCompat.getDeclaredMethod(
                     "setMiBackgroundBlendColors",
@@ -125,6 +130,26 @@ class QSVolumeOrBrightnessValue :BaseHooker() {
                     Float::class.java
                 )
                 val intArray = item.resources.getIntArray(array)
+
+                if (mainIconBlendColor != "null"){
+                    intArray[0] = Color.parseColor(mainIconBlendColor)
+
+                }
+                if (secondaryIconBlendColor != "null"){
+                    intArray[2] = Color.parseColor(secondaryIconBlendColor)
+
+                }
+                method.invoke(thisObj,icon,intArray,1f)
+
+
+                if (mainValueBlendColor != "null"){
+                    intArray[0] = Color.parseColor(mainValueBlendColor)
+
+                }
+                if (secondaryValueBlendColor != "null"){
+                    intArray[2] = Color.parseColor(secondaryValueBlendColor)
+
+                }
                 method.invoke(thisObj,topValue,intArray,1f)
 
 

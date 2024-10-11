@@ -19,7 +19,9 @@ fun BetaHomePager(activity: ComponentActivity) {
             Utils.rootShell("killall com.miui.home")
         },
     ){
-        firstClasses(title = "特性") {
+        firstClasses(
+            title = R.string.unlock
+        ) {
             XSuperSwitch(
                 title = stringResource(R.string.is_use_beta_home_cc_title),
                 summary = stringResource(R.string.is_use_beta_home_cc_summary),

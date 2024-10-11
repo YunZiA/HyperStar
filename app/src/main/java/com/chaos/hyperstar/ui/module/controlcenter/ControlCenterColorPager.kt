@@ -12,6 +12,7 @@ import com.chaos.hyperstar.ui.base.classes
 import com.chaos.hyperstar.ui.base.firstClasses
 import com.chaos.hyperstar.ui.module.controlcenter.card.QSCardColorActivity
 import com.chaos.hyperstar.ui.module.controlcenter.list.QSListColorActivity
+import com.chaos.hyperstar.ui.module.controlcenter.slider.ToggleSliderColorsSettings
 import com.chaos.hyperstar.utils.Utils
 
 @Composable
@@ -62,13 +63,43 @@ fun ControlCenterColorPager(
         classes(
             title = R.string.media
         ){
+            ContentFolder(stringResource(R.string.color_edit)){
+                ColorPickerTool(
+                    title = stringResource(R.string.expand_button),
+                    key = "media_device_icon_color"
+                )
+                ColorPickerTool(
+                    title = stringResource(R.string.song_title),
+                    key = "media_title_color"
+                )
+                ColorPickerTool(
+                    title = stringResource(R.string.artist),
+                    key = "media_artist_color"
+                )
+                ColorPickerTool(
+                    title = stringResource(R.string.empty_state),
+                    key = "media_empty_state_color"
+                )
+                ColorPickerTool(
+                    title = stringResource(R.string.media_button),
+                    key = "media_icon_color_enabled"
+                )
+                ColorPickerTool(
+                    title = stringResource(R.string.media_button_disabled),
+                    key = "media_icon_color_disabled"
+                )
 
+            }
         }
 
         classes(
             title = R.string.volume_or_brightness
         ){
-
+            MiuixActivitySuperArrow(
+                title = stringResource(R.string.color_edit),
+                context = activity,
+                activity = ToggleSliderColorsSettings::class.java
+            )
         }
         classes(
             title = R.string.device_control

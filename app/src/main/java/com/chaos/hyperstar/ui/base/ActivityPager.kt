@@ -41,10 +41,9 @@ fun ModulePagers(
         activity = activity,
         endClick = endClick,
         endIcon = endIcon,
-    ){ topAppBarScrollBehavior,padding,enableOverScroll->
+    ){ topAppBarScrollBehavior,padding->
         LazyColumn(
             modifier = Modifier.height(getWindowSize().height.dp),
-            enableOverScroll = enableOverScroll,
             contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+28.dp),
             topAppBarScrollBehavior = topAppBarScrollBehavior
         ) {
@@ -59,15 +58,13 @@ fun ModulePager(
     activity: ComponentActivity,
     endClick: () -> Unit,
     endIcon :  @Composable () -> Unit = {},
-    contents: @Composable ((ScrollBehavior, PaddingValues, Boolean) -> Unit)? = null
+    contents: @Composable ((ScrollBehavior, PaddingValues) -> Unit)? = null
 ) {
 
     val hazeState = remember { HazeState() }
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
 
     val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
-    val enableOverScroll = remember { mutableStateOf(PreferencesUtil.getBoolean("over_scroll",false)) }
-
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -89,7 +86,7 @@ fun ModulePager(
         ) { padding ->
         if (contents != null) {
             Box(Modifier.blur(hazeState)) {
-                contents(topAppBarScrollBehavior,padding,enableOverScroll.value)
+                contents(topAppBarScrollBehavior,padding)
 
             }
         }
@@ -118,7 +115,6 @@ fun ActivityPager(
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
 
     val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
-    val enableOverScroll = remember { mutableStateOf(PreferencesUtil.getBoolean("over_scroll",false)) }
 
 
     Scaffold(
@@ -140,7 +136,6 @@ fun ActivityPager(
             Box(Modifier.blur(hazeState)) {
                 LazyColumn(
                     modifier = Modifier.height(getWindowSize().height.dp),
-                    enableOverScroll = enableOverScroll.value,
                     contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+28.dp),
                     topAppBarScrollBehavior = topAppBarScrollBehavior
                 ) {

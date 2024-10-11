@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Resources
+import android.util.DisplayMetrics
+import android.widget.Toast
 import java.util.Locale
 
 
@@ -125,10 +127,10 @@ class LanguageHelper {
 
             val res = context.resources;
             val configuration = res.configuration;
-
             val index = PreferencesUtil.getInt("app_language",0)
 
             configuration.setLocale(getIndexLanguage(index))
+
             val contexts = context.createConfigurationContext(configuration)
 
             return ContextWrapper(contexts);

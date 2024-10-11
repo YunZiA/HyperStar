@@ -1,17 +1,15 @@
 package com.chaos.hyperstar.hook.app.plugin
 
 import android.content.res.XModuleResources
-import android.content.res.XResources
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.VectorDrawable
-import android.widget.FrameLayout
+import android.graphics.drawable.AnimatedVectorDrawable
+import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.chaos.hyperstar.hook.base.BaseHooker
-import com.chaos.hyperstar.hook.tool.starLog
 import com.chaos.hyperstar.utils.XSPUtils
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import de.robv.android.xposed.XC_MethodHook
@@ -30,37 +28,43 @@ class QSControlCenterColor :BaseHooker() {
         super.doResources(resparam, modRes)
         starBackgroundColorHook()
         startCardColorHook()
-        startMediaColorHook()
+        startToggleSliderColorHook()
         startListColorHook()
 
 
 
     }
 
-    private fun startMediaColorHook() {
+    private fun startToggleSliderColorHook() {
+        val mainProgressBlendColor = XSPUtils.getString("toggle_slider_progress_color_main", "null")
+        val secondaryProgressBlendColor = XSPUtils.getString("toggle_slider_progress_color_secondary", "null")
 
-//        ReplaceColor("media_player_title_text_color","#ff000000")
-//        ReplaceColor("media_player_artist_text_color","#ff000000")
-//        ReplaceColor("media_player_empty_state_text_color","#ff000000")
-//        ReplaceColor("miplay_detail_header_action","#ff000000")
-//        ReplaceColor("miplay_detail_header_action_disabled","#ff000000")
-//        resparam.res.setReplacement(plugin,"drawable","ic_media_device_default",object : XResources.DrawableLoader(){
-//            override fun newDrawable(res: XResources?, id: Int): Drawable {
-//
-//                val d = res?.getDrawable(id,res.newTheme())
-//                d?.colorFilter = PorterDuffColorFilter(Color.parseColor("ff000000"), PorterDuff.Mode.SRC_ATOP);
-//
-////                if (d is VectorDrawable){
-////                    d.alpha = 255
-////                    d.setTint(Color.parseColor("#ffffffff"))
-////                }
-//                return d!!
-//
-//            }
-//
-//        })
+        val progressColor = XSPUtils.getString("toggle_slider_progress_color", "null")
+        val valueColor = XSPUtils.getString("toggle_slider_value_color", "null")
+
+        ReplaceColor("toggle_slider_progress_color",progressColor)
+        //ReplaceColor("toggle_slider_icon_color",valueColor)
+
+        ReplaceColor("toggle_slider_top_text_color",valueColor)
+
+        ReplaceIntArray(
+            "toggle_slider_progress_blend_colors"
+        ) { array ->
+            if (mainProgressBlendColor != "null"){
+                array[0] = Color.parseColor(mainProgressBlendColor)
+
+            }
+            if (secondaryProgressBlendColor != "null"){
+                array[2] = Color.parseColor(secondaryProgressBlendColor)
+
+            }
+
+        }
+
 
     }
+
+
 
     private fun starBackgroundColorHook() {
         val backgroundColor = XSPUtils.getString("background_color", "null")
@@ -173,9 +177,209 @@ class QSControlCenterColor :BaseHooker() {
 
         startCardTitleHook()
         startCardIconHook()
+        startMediaColorsHook()
+        startToggleSliderIconColorHook()
         startListIconColor()
 
     }
+
+    private fun startToggleSliderIconColorHook() {
+
+        val iconColor = XSPUtils.getString("toggle_slider_icon_color", "null")
+
+        val BrightnessSliderController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.brightness.BrightnessSliderController",classLoader)
+        val VolumeSliderController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.volume.VolumeSliderController",classLoader)
+
+
+        if (iconColor != "null"){
+
+            XposedHelpers.findAndHookMethod(BrightnessSliderController,"updateIconB",object : XC_MethodHook(){
+                override fun afterHookedMethod(param: MethodHookParam?) {
+                    super.afterHookedMethod(param)
+                    val thisObj = param?.thisObject
+                    val sliderHolder = XposedHelpers.callMethod(thisObj,"getSliderHolder")
+                    val itemView = XposedHelpers.getObjectField(sliderHolder,"itemView") as View
+                    val icon = itemView.findViewByIdName("icon") as ImageView
+                    val drawable = icon.drawable
+                    if (drawable is AnimatedVectorDrawable){
+                        drawable.colorFilter = PorterDuffColorFilter(Color.parseColor(iconColor),PorterDuff.Mode.SRC_IN)
+                    }
+
+                }
+            })
+
+            XposedHelpers.findAndHookMethod(VolumeSliderController,"updateIconB",object : XC_MethodHook(){
+                override fun afterHookedMethod(param: MethodHookParam?) {
+                    super.afterHookedMethod(param)
+                    val thisObj = param?.thisObject
+                    val sliderHolder = XposedHelpers.callMethod(thisObj,"getSlider")
+                    val itemView = XposedHelpers.getObjectField(sliderHolder,"itemView") as View
+                    val icon = itemView.findViewByIdName("icon") as ImageView
+                    val drawable = icon.drawable
+                    if (drawable is AnimatedVectorDrawable){
+                        drawable.colorFilter = PorterDuffColorFilter(Color.parseColor(iconColor),PorterDuff.Mode.SRC_IN)
+                    }
+
+                }
+            })
+
+        }
+
+        //ReplaceColor("toggle_slider_icon_color",iconColor)
+    }
+
+    private fun startMediaColorsHook() {
+        val titleColor = XSPUtils.getString("media_title_color", "null")
+        val artistColor = XSPUtils.getString("media_artist_color", "null")
+        val emptyStateColor = XSPUtils.getString("media_empty_state_color", "null")
+        val disabledIconColor = XSPUtils.getString("media_icon_color_disabled", "null")
+        val enabledIconColor = XSPUtils.getString("media_icon_color_enabled", "null")
+        val deviceIconColor = XSPUtils.getString("media_device_icon_color", "null")
+
+        val MediaPlayerViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",classLoader)
+        val ConfigUtils = XposedHelpers.findClass("miui.systemui.controlcenter.ConfigUtils",classLoader)
+        val MediaPlayerIconsInfo = XposedHelpers.findClass("miui.systemui.controlcenter.media.MediaPlayerIconsInfo",classLoader)
+
+        XposedHelpers.findAndHookConstructor(MediaPlayerViewHolder,View::class.java,object : XC_MethodHook(){
+            override fun afterHookedMethod(param: MethodHookParam?) {
+                super.afterHookedMethod(param)
+                val thisObj = param?.thisObject
+                val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
+                if (deviceIconColor != null){
+                    val deviceIcon = itemView.findViewByIdName("device_icon") as ImageView
+                    deviceIcon.alpha = 1f
+                    deviceIcon.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceIconColor), PorterDuff.Mode.SRC_IN)
+
+                }
+
+                if (titleColor != "null"){
+                    val title = itemView.findViewByIdName("title") as TextView
+                    title.setTextColor(Color.parseColor(titleColor))
+
+                }
+
+                if(artistColor != "null"){
+                    val artist = itemView.findViewByIdName("artist") as TextView
+                    artist.setTextColor(Color.parseColor(artistColor))
+
+                }
+
+                if (enabledIconColor != "null"){
+
+                    val emptyState = itemView.findViewByIdName("empty_state") as TextView
+                    emptyState.setTextColor(Color.parseColor(emptyStateColor))
+                }
+            }
+        })
+
+        if (deviceIconColor != null){
+            XposedHelpers.findAndHookMethod(MediaPlayerViewHolder,"updateIconsInfo",MediaPlayerIconsInfo, Boolean::class.java ,object : XC_MethodHook(){
+                override fun afterHookedMethod(param: MethodHookParam?) {
+                    super.afterHookedMethod(param)
+                    val thisObj = param?.thisObject
+                    val deviceRes = XposedHelpers.getObjectField(thisObj,"deviceRes")
+                    val mediaPlayerIconsInfo = param?.args?.get(0)
+                    val boolean = param?.args?.get(1) as Boolean
+                    val getDeviceRes = XposedHelpers.callMethod(mediaPlayerIconsInfo,"getDeviceRes") as Int
+                    if (deviceRes != getDeviceRes || boolean){
+                        val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
+                        val deviceIcon = itemView.findViewByIdName("device_icon") as ImageView
+                        deviceIcon.alpha = 1f
+                        deviceIcon.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceIconColor), PorterDuff.Mode.SRC_IN)
+
+                    }
+
+
+
+
+                }
+            })
+
+        }
+
+
+
+
+        XposedHelpers.findAndHookMethod(MediaPlayerViewHolder,"onConfigurationChanged", Int::class.java ,object : XC_MethodHook(){
+            override fun afterHookedMethod(param: MethodHookParam?) {
+                super.afterHookedMethod(param)
+                val thisObj = param?.thisObject
+                val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
+                val configuration = param?.args?.get(0)
+                val instances = XposedHelpers.getStaticObjectField(ConfigUtils,"INSTANCE")
+
+                val textAppearanceChanged = XposedHelpers.callMethod(instances,"textAppearanceChanged",configuration) as Boolean
+                if (textAppearanceChanged){
+                    if (titleColor != "null"){
+                        val title = itemView.findViewByIdName("title") as TextView
+                        title.setTextColor(Color.parseColor(titleColor))
+
+                    }
+
+                    if(artistColor != "null"){
+                        val artist = itemView.findViewByIdName("artist") as TextView
+                        artist.setTextColor(Color.parseColor(artistColor))
+
+                    }
+
+                    if (enabledIconColor != "null"){
+
+                        val emptyState = itemView.findViewByIdName("empty_state") as TextView
+                        emptyState.setTextColor(Color.parseColor(emptyStateColor))
+                    }
+
+                }
+
+
+            }
+        })
+
+        XposedHelpers.findAndHookMethod(MediaPlayerViewHolder,"disableMediaController",object : XC_MethodHook(){
+            override fun afterHookedMethod(param: MethodHookParam?) {
+                super.afterHookedMethod(param)
+                val thisObj = param?.thisObject
+                val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
+                if (disabledIconColor != "null"){
+                    val prev = itemView.findViewByIdName("prev") as ImageView
+                    val next = itemView.findViewByIdName("next") as ImageView
+                    prev.colorFilter = PorterDuffColorFilter(Color.parseColor(disabledIconColor), PorterDuff.Mode.SRC_IN)
+                    next.colorFilter = PorterDuffColorFilter(Color.parseColor(disabledIconColor), PorterDuff.Mode.SRC_IN)
+
+                }
+                if (enabledIconColor != "null"){
+                    val play = itemView.findViewByIdName("play") as ImageView
+
+                    play.colorFilter = PorterDuffColorFilter(Color.parseColor(enabledIconColor), PorterDuff.Mode.SRC_IN)
+                }
+
+
+            }
+        })
+
+
+        if (enabledIconColor != "null"){
+
+            XposedHelpers.findAndHookMethod(MediaPlayerViewHolder,"enableMediaController",object : XC_MethodHook(){
+                override fun afterHookedMethod(param: MethodHookParam?) {
+                    super.afterHookedMethod(param)
+                    val thisObj = param?.thisObject
+                    val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
+                    val prev = itemView.findViewByIdName("prev") as ImageView
+                    val play = itemView.findViewByIdName("play") as ImageView
+                    val next = itemView.findViewByIdName("next") as ImageView
+                    prev.colorFilter = PorterDuffColorFilter(Color.parseColor(enabledIconColor), PorterDuff.Mode.SRC_IN)
+                    play.colorFilter = PorterDuffColorFilter(Color.parseColor(enabledIconColor), PorterDuff.Mode.SRC_IN)
+                    next.colorFilter = PorterDuffColorFilter(Color.parseColor(enabledIconColor), PorterDuff.Mode.SRC_IN)
+
+
+                }
+            })
+
+        }
+
+
+    }
+
 
     private fun startCardTitleHook() {
         val disablePrimaryColor = XSPUtils.getString("card_primary_disabled_color", "null")

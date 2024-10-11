@@ -3,6 +3,7 @@ package com.chaos.hyperstar.ui.base
 import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -16,6 +17,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import com.chaos.hyperstar.ui.base.theme.HyperStarTheme
 import com.chaos.hyperstar.utils.LanguageHelper
+import com.chaos.hyperstar.utils.LanguageHelper.Companion.getIndexLanguage
 import com.chaos.hyperstar.utils.PreferencesUtil
 import java.util.Locale
 
@@ -67,12 +69,24 @@ abstract class BaseActivity : ComponentActivity() {
 
 
     override fun attachBaseContext(newBase: Context?) {
+        PreferencesUtil.getInstance().init(newBase)
         if(newBase == null) {
             super.attachBaseContext(newBase)
             return
         }
-        PreferencesUtil.getInstance().init(newBase)
         super.attachBaseContext(LanguageHelper.wrap(newBase));
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val res = this.resources;
+        val configuration = res.configuration;
+        val metrics: DisplayMetrics = res.displayMetrics
+        val index = PreferencesUtil.getInt("app_language",0)
+
+        configuration.setLocale(getIndexLanguage(index))
+        res.updateConfiguration(configuration,metrics)
 
     }
 

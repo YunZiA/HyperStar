@@ -130,7 +130,6 @@ fun UITest(
     val hazeState = remember { HazeState() }
     val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
     val enablePageUserScroll = remember { mutableStateOf(PreferencesUtil.getBoolean("page_user_scroll",false)) }
-    val enableOverScroll = remember { mutableStateOf(PreferencesUtil.getBoolean("over_scroll",false)) }
 
     val show = remember { mutableStateOf(false) }
 
@@ -191,8 +190,7 @@ fun UITest(
             topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
             padding = padding,
             showFPSMonitor = showFPSMonitor,
-            enablePageUserScroll = enablePageUserScroll,
-            enableOverScroll = enableOverScroll,
+            enablePageUserScroll = enablePageUserScroll
         )
 
 
@@ -386,8 +384,7 @@ fun AppHorizontalPager(
     topAppBarScrollBehaviorList: List<ScrollBehavior>,
     padding: PaddingValues,
     showFPSMonitor: MutableState<Boolean>,
-    enablePageUserScroll: MutableState<Boolean>,
-    enableOverScroll: MutableState<Boolean>,
+    enablePageUserScroll: MutableState<Boolean>
 ) {
     HorizontalPager(
         modifier = modifier,
@@ -403,7 +400,7 @@ fun AppHorizontalPager(
                         activity = activity,
                         topAppBarScrollBehavior = topAppBarScrollBehaviorList[0],
                         padding = padding,
-                        enableOverScroll = enableOverScroll.value,
+
                     )
 
 
@@ -418,7 +415,7 @@ fun AppHorizontalPager(
                         colorMode = colorMode,
                         showFPSMonitor = showFPSMonitor,
                         enablePageUserScroll = enablePageUserScroll,
-                        enableOverScroll = enableOverScroll,
+
                     )
                 }
 
@@ -427,7 +424,7 @@ fun AppHorizontalPager(
                         activity = activity,
                         topAppBarScrollBehavior = topAppBarScrollBehaviorList[2],
                         padding = padding,
-                        enableOverScroll = enableOverScroll.value,
+
                     )
                 }
             }

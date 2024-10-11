@@ -22,14 +22,12 @@ import top.yukonga.miuix.kmp.utils.getWindowSize
 fun MainPage(
     activity : ComponentActivity,
     topAppBarScrollBehavior: ScrollBehavior,
-    padding: PaddingValues,
-    enableOverScroll: Boolean,
+    padding: PaddingValues
 ) {
 
 
     LazyColumn(
         modifier = Modifier.height(getWindowSize().height.dp),
-        enableOverScroll = enableOverScroll,
         contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+14.dp),
         topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {

@@ -105,37 +105,7 @@ fun ControlCenterListPager(
                     activity.setLists(itemList)
                     lastitems = itemList
                 }
-//                Box(
-//                    Modifier
-//                        //.padding(10.dp)
-//                        .clickable {
-//                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-//                        activity.setLists(itemList)
-//                        lastitems = itemList
-//
-//                    }
-//                ){
-//                    Icon(
-//                        ImageVector.vectorResource(R.drawable.save2),
-//                        modifier = Modifier.padding(6.dp),
-//                        contentDescription = "save",
-//                        tint = colorScheme.primary)
-//                }
-//                IconButton(
-//                    modifier = Modifier,
-//                    onClick = {
-//                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-//                        activity.setLists(itemList)
-//                        lastitems = itemList
-//                    }
-//                ) {
-//
-//                    Icon(
-//                        ImageVector.vectorResource(R.drawable.save2),
-//                        contentDescription = "save",
-//                        tint = colorScheme.primary)
-//
-//                }
+
 
             }
 

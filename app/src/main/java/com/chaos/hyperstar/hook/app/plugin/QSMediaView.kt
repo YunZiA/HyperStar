@@ -31,7 +31,7 @@ class QSMediaView : BaseHooker() {
         val MediaPlayerViewHolder  = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",classLoader)
         XposedHelpers.findAndHookMethod(MediaPlayerViewHolder, "updateSize", object : XC_MethodHook() {
             override fun beforeHookedMethod(param: MethodHookParam?) {
-                starLog.log("updateSize is hook")
+                //starLog.log("updateSize is hook")
                 val thisObj = param?.thisObject
                 val itemView : View = XposedHelpers.getObjectField(thisObj,"itemView") as View
 
@@ -69,7 +69,7 @@ class QSMediaView : BaseHooker() {
         XposedHelpers.findAndHookConstructor(MediaPlayerViewHolder,View::class.java, object : XC_MethodHook() {
             override fun beforeHookedMethod(param: MethodHookParam?) {
                 super.beforeHookedMethod(param)
-                starLog.log("MediaPlayerViewHolder is hook")
+                //starLog.log("MediaPlayerViewHolder is hook")
 
                 val itemView : View = param?.args?.get(0) as View
                 val title = itemView.findViewByIdName("title") as TextView

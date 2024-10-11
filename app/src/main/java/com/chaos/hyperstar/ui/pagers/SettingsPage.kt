@@ -52,7 +52,6 @@ fun SettingsPage(
     colorMode: MutableState<Int>,
     showFPSMonitor: MutableState<Boolean>,
     enablePageUserScroll:MutableState<Boolean>,
-    enableOverScroll: MutableState<Boolean>,
 ) {
 
     val language = remember { mutableIntStateOf(PreferencesUtil.getInt("app_language",0)) }
@@ -70,7 +69,6 @@ fun SettingsPage(
 
     LazyColumn(
         modifier = Modifier.height(getWindowSize().height.dp),
-        enableOverScroll = enableOverScroll.value,
         contentPadding =if (state.value == State.Recreate) PaddingValues(top = paddinged.calculateTopPadding()+14.dp, bottom = paddinged.calculateBottomPadding()+14.dp)
         else PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+14.dp),
         topAppBarScrollBehavior = topAppBarScrollBehavior
@@ -123,15 +121,15 @@ fun SettingsPage(
                     PreferencesUtil.putBoolean("page_user_scroll",enablePageUserScroll.value)
                 }
             )
-            PMiuixSuperSwitch(
-                title = stringResource(R.string.over_scroll_title),
-                checked = if (enableOverscroll()) enableOverScroll.value else false,
-                onCheckedChange = {
-                    enableOverScroll.value = it
-                    PreferencesUtil.putBoolean("over_scroll",enableOverScroll.value)
-                },
-                enabled = enableOverscroll(),
-            )
+//            PMiuixSuperSwitch(
+//                title = stringResource(R.string.over_scroll_title),
+//                checked = if (enableOverscroll()) enableOverScroll.value else false,
+//                onCheckedChange = {
+//                    enableOverScroll.value = it
+//                    PreferencesUtil.putBoolean("over_scroll",enableOverScroll.value)
+//                },
+//                enabled = enableOverscroll(),
+//            )
             PMiuixSuperSwitch(
                 title = stringResource(R.string.progress_effect_title),
                 key = "is_progress_effect"

@@ -40,13 +40,11 @@ import top.yukonga.miuix.kmp.utils.getWindowSize
 fun ThirdPage(
     activity : ComponentActivity,
     topAppBarScrollBehavior: ScrollBehavior,
-    padding: PaddingValues,
-    enableOverScroll: Boolean,
+    padding: PaddingValues
 ) {
 
     LazyColumn(
         modifier = Modifier.height(getWindowSize().height.dp),
-        enableOverScroll = enableOverScroll,
         contentPadding = PaddingValues(top = padding.calculateTopPadding()+16.dp, bottom = padding.calculateBottomPadding()+16.dp),
         topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {

@@ -41,7 +41,7 @@ fun XSuperDropdown(
         summary = summary,
         items = dropdownOptions,
         enabled = enabled,
-        popupHorizontalPadding = popupHorizontalPadding+insideMargin.width/2,
+        horizontalPadding = popupHorizontalPadding+insideMargin.width/2,
         insideMargin = insideMargin,
         selectedIndex = selectedIndex.intValue,
         onSelectedIndexChange = { newOption ->
@@ -73,15 +73,15 @@ fun XSuperDialogDropdown(
         summary = summary,
         items = dropdownOptions,
         enabled = enabled,
-        popupHorizontalPadding = popupHorizontalPadding,
+        horizontalPadding = popupHorizontalPadding,
         insideMargin = insideMargin,
         selectedIndex = selectedIndex.intValue,
         onSelectedIndexChange = { newOption ->
             selectedIndex.intValue = newOption
             SPUtils.setInt(key,newOption)},
-        alwaysRight = true,
+        alwaysRight = true
+    )
 
-        )
 }
 
 @Composable
@@ -93,11 +93,10 @@ fun XMiuixContentDropdown(
     summary : String ?= null,
     insideMargin: DpSize = DpSize(24.dp, 16.dp),
     popupHorizontalPadding: Dp = 12.dp,
-    activity : ComponentActivity,
     content: @Composable (() -> Unit),
 ) {
 
-    val dropdownOptions = activity.resources.getStringArray(option).toList()
+    val dropdownOptions = stringArrayResource(id = option).toList()
     val dropdownSelectedOption = remember { mutableStateOf(SPUtils.getInt(key,0)) }
 
     SuperDropdown(
@@ -105,14 +104,14 @@ fun XMiuixContentDropdown(
         title = title,
         summary = summary,
         items = dropdownOptions,
-        popupHorizontalPadding = popupHorizontalPadding+insideMargin.width/2,
+        horizontalPadding = popupHorizontalPadding+insideMargin.width/2,
         insideMargin = insideMargin,
         selectedIndex = dropdownSelectedOption.value,
         onSelectedIndexChange = { newOption ->
             dropdownSelectedOption.value = newOption
             SPUtils.setInt(key,newOption)},
-        alwaysRight = true,
-        )
+        alwaysRight = true
+    )
 
     AnimatedVisibility (
         (dropdownSelectedOption.value == showOption),
@@ -132,11 +131,12 @@ fun PMiuixSuperDropdown(
     option: Int,
     summary : String ?= null,
     selectedIndex: Int,
-    activity : ComponentActivity,
+    popupHorizontalPadding: Dp = 12.dp,
+    insideMargin: DpSize = DpSize(24.dp, 16.dp),
     onSelectedIndexChange: (Int) -> Unit
 ) {
 
-    val dropdownOptions = activity.resources.getStringArray(option).toList()
+    val dropdownOptions = stringArrayResource(id = option).toList()
 
     SuperDropdown(
         modifier = Modifier,
@@ -144,7 +144,8 @@ fun PMiuixSuperDropdown(
         summary = summary,
         items = dropdownOptions,
         selectedIndex = selectedIndex,
-        insideMargin = DpSize(24.dp, 16.dp),
+        horizontalPadding = popupHorizontalPadding+insideMargin.width/2,
+        insideMargin = insideMargin,
         onSelectedIndexChange =
         { newOption ->
             onSelectedIndexChange(newOption)

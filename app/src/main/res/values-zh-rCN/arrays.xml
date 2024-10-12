@@ -59,6 +59,12 @@
         <item>内字</item>
         <item>自定义</item>
     </string-array>
+
+    <string-array name="edit_background_mode_entire">
+        <item>独立</item>
+        <item>全局</item>
+    </string-array>
+
     <string-array name="seekbar_value_style_entire">
         <item>百分比</item>
         <item>原始值</item>

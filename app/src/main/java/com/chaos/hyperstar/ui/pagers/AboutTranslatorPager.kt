@@ -8,7 +8,7 @@ import androidx.compose.ui.res.stringResource
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.ActivityPager
 import com.chaos.hyperstar.ui.base.BaseActivity
-import com.chaos.hyperstar.ui.base.MiuixIntentSuperArrow
+import com.chaos.hyperstar.ui.base.SuperIntentArrow
 import com.chaos.hyperstar.ui.base.firstClasses
 
 class AboutTranslatorPager : BaseActivity() {
@@ -35,12 +35,19 @@ fun TranslatorPager(
         firstClasses(
             title = "English"
         ) {
-            MiuixIntentSuperArrow(
+            SuperIntentArrow(
                 //leftIcon = R.drawable.dd,
                 title = "cafayeli",
                 summary = "Telegram@cafayeli",
                 activity = activity,
                 url = "https://t.me/cafayeli"
+            )
+            SuperIntentArrow(
+                //leftIcon = R.drawable.dd,
+                title = "Natsukawa Masuzu",
+                summary = "Telegram@Minggg07",
+                activity = activity,
+                url = "https://t.me/Minggg07"
             )
         }
     }

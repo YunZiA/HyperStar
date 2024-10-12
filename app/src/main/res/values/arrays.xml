@@ -114,6 +114,11 @@
         <item>Custom</item>
     </string-array>
 
+    <string-array name="edit_background_mode_entire">
+        <item>Separate</item>
+        <item>Global</item>
+    </string-array>
+
     <string-array name="seekbar_value_style_entire">
         <item>Percentage</item>
         <item>Actual value</item>

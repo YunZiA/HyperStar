@@ -174,8 +174,7 @@ fun ColorPickerDialog(
                         modifier = Modifier.weight(1f),
                         text = stringResource(R.string.cancel),
                         onClick = {
-                            dismissDialog()
-                            showDialog.value = false
+                            dismissDialog(showDialog)
                             color.value = HsvColor.from(fColor)
                         }
                     )
@@ -187,8 +186,7 @@ fun ColorPickerDialog(
                         onClick = {
                             doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
                             onColorListener(color.value.toColor())
-                            dismissDialog()
-                            showDialog.value = false
+                            dismissDialog(showDialog)
                         }
                     )
                 }

@@ -5,8 +5,11 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import android.content.res.Resources;
 import android.content.res.XModuleResources;
 
+import com.chaos.hyperstar.hook.app.systemui.NavigationBarBackground;
 import com.chaos.hyperstar.hook.tool.starLog;
 
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
@@ -52,9 +55,27 @@ public class InitSystemUIHook extends BaseHooker {
 
     }
 
-    private void doMethodsHook(ClassLoader classLoader) {
+    @Override
+    public void doMethodsHook(ClassLoader classLoader) {
+        super.doMethodsHook(classLoader);
+        doBaseMethods(initSystemUIPluginHook);
+        doBaseMethods(new NavigationBarBackground());
 
         initSystemUIPluginHook.doMethods(classLoader);
+
+        doTestHook();
+    }
+    //     public void doMethodsHook(ClassLoader classLoader) {
+//
+//
+//
+//    }
+
+    private void doTestHook() {
+
+
+
+
 
     }
 

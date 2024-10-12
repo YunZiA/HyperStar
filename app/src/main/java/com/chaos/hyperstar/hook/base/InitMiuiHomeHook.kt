@@ -14,9 +14,16 @@ class InitMiuiHomeHook : BaseHooker() {
         
     }
 
-    private fun doMethodsHook(classLoader: ClassLoader?) {
-        BetaBigIcon().doMethods(classLoader)
+    override fun doMethodsHook(classLoader: ClassLoader?) {
+        super.doMethodsHook(classLoader)
+        doBaseMethods(BetaBigIcon())
+        //BetaBigIcon().doMethods(classLoader)
+
     }
+//    @Override
+//    fun doMethodsHook( classLoader:ClassLoader) {
+//        BetaBigIcon().doMethods(classLoader)
+//    }
 
 
 }

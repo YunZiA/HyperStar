@@ -121,9 +121,9 @@
     <string name="volume">音量条</string>
     <string name="is_local_speaker_title">设备名显示模式</string>
     <string name="miplayer_expand">扩展详情页</string>
-    <string name="is_artist_marquee_title">歌手过长滚动显示</string>
-    <string name="is_emptyState_marquee_title">暂无播放过长滚动显示</string>
-    <string name="is_title_marquee_title">标题过长滚动显示</string>
+    <string name="is_artist_marquee_title">歌手超出滚动显示</string>
+    <string name="is_emptyState_marquee_title">暂无播放超出滚动显示</string>
+    <string name="is_title_marquee_title">标题超出滚动显示</string>
     <string name="is_title_center_title"><![CDATA[标题&歌手居中显示]]></string>
     <string name="is_hide_cover_title">隐藏歌曲封面显示</string>
     <string name="mipalyer_normal">常规播放页</string>
@@ -157,4 +157,14 @@
     <string name="unlock">特性</string>
     <string name="follow_system">跟随系统</string>
     <string name="title_activity_slider_colors_settings">SliderColorsSettings</string>
+    <string name="cover_anciently_title">启用封面背景暗边</string>
+    <string name="more">更多</string>
+    <string name="navigation_bar">小白条</string>
+    <string name="status_bar">状态栏</string>
+    <string name="transparent_navigationBar_background">透明处理部分场景下的透黑背景</string>
+    <string name="transparent_statusBar_background">透明处理部分场景下的透黑背景</string>
+    <string name="transparent_statusBar_background_summary">仅去除背景，不支持反色</string>
+    <string name="smart_hub_color">融合设备中心改色</string>
+    <string name="edit_background_mode">背景颜色模式</string>
+    <string name="device_center_detail_icon">展开图标</string>
 </resources>

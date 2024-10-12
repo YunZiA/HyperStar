@@ -18,7 +18,17 @@
         android:theme="@style/Theme.HyperStar"
         tools:targetApi="31">
         <activity
-            android:name=".ui.module.controlcenter.slider.ToggleSliderColorsSettings"
+            android:name=".ui.module.systemui.controlcenter.devicecenter.DeviceCenterColorSettings"
+            android:exported="false"
+            android:label="@string/title_activity_device_center_color_settings"
+            android:theme="@style/Theme.HyperStar" />
+        <activity
+            android:name=".ui.module.systemui.other.SystemUIOtherSettings"
+            android:exported="false"
+            android:label="@string/title_activity_system_uiother_settings"
+            android:theme="@style/Theme.HyperStar" />
+        <activity
+            android:name=".ui.module.systemui.controlcenter.slider.ToggleSliderColorsSettings"
             android:exported="false"
             android:label="@string/title_activity_slider_colors_settings"
             android:theme="@style/Theme.HyperStar" />
@@ -28,22 +38,22 @@
             android:label="@string/title_activity_about_translator_pager"
             android:theme="@style/Theme.HyperStar" />
         <activity
-            android:name=".ui.module.controlcenter.ControlCenterListSettings"
+            android:name=".ui.module.systemui.controlcenter.ControlCenterListSettings"
             android:exported="false"
             android:label="@string/title_activity_control_center_list_settings"
             android:theme="@style/Theme.HyperStar" />
         <activity
-            android:name=".ui.module.controlcenter.card.QSCardColorActivity"
+            android:name=".ui.module.systemui.controlcenter.card.QSCardColorActivity"
             android:exported="false"
             android:label="@string/title_activity_qscard_color"
             android:theme="@style/Theme.HyperStar" />
         <activity
-            android:name=".ui.module.controlcenter.ControlCenterColorSettings"
+            android:name=".ui.module.systemui.controlcenter.ControlCenterColorSettings"
             android:exported="false"
             android:label="@string/title_activity_control_center_color_settings"
             android:theme="@style/Theme.HyperStar" />
         <activity
-            android:name=".ui.module.controlcenter.list.QSListColorActivity"
+            android:name=".ui.module.systemui.controlcenter.list.QSListColorActivity"
             android:exported="false"
             android:label="@string/title_activity_qslistcolor"
             android:theme="@style/Theme.HyperStar" />
@@ -64,36 +74,36 @@
         </provider>
 
         <activity
-            android:name=".ui.module.controlcenter.card.QsCardListActivity"
+            android:name=".ui.module.systemui.controlcenter.card.QsCardListActivity"
             android:exported="false"
             android:label="@string/title_activity_qs_card_list"
             android:theme="@style/Theme.HyperStar" />
         <activity
-            android:name=".ui.module.controlcenter.list.QsListViewSettings"
+            android:name=".ui.module.systemui.controlcenter.list.QsListViewSettings"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
             android:exported="false"
             android:label="@string/title_activity_qs_list_view_settings"
             android:theme="@style/Theme.HyperStar" />
         <activity
-            android:name=".ui.module.controlcenter.media.app.MediaDefaultAppSettingsActivity"
+            android:name=".ui.module.systemui.controlcenter.media.app.MediaDefaultAppSettingsActivity"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
             android:exported="false"
             android:label="@string/title_activity_media_default_app_settings"
             android:theme="@style/Theme.HyperStar" />
         <activity
-            android:name=".ui.module.controlcenter.ControlCenterSettings"
+            android:name=".ui.module.systemui.controlcenter.ControlCenterSettings"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
             android:exported="false"
             android:label="@string/title_activity_control_center_settings"
             android:theme="@style/Theme.HyperStar" />
         <activity
-            android:name=".ui.module.volume.VolumeSettings"
+            android:name=".ui.module.systemui.volume.VolumeSettings"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
             android:exported="false"
             android:label="@string/title_activity_volume_settings"
             android:theme="@style/Theme.HyperStar" />
         <activity
-            android:name=".ui.module.controlcenter.media.MediaSettingsActivity"
+            android:name=".ui.module.systemui.controlcenter.media.MediaSettingsActivity"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
             android:exported="false"
             android:label="@string/title_activity_media_settings"

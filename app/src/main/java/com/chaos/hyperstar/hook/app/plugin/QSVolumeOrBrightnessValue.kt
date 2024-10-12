@@ -78,7 +78,7 @@ class QSVolumeOrBrightnessValue :BaseHooker() {
                     str = if (brightnessShowStyle == 0) ((value * 100) / max).toString() + "%" else value.toString()
 
                     topValue.visibility = View.VISIBLE
-                    topValue.setText(str)
+                    topValue.text = str
 
 
                 }
@@ -92,6 +92,7 @@ class QSVolumeOrBrightnessValue :BaseHooker() {
         val ToggleSliderViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.recyclerview.ToggleSliderViewHolder",classLoader)
         val ControlCenterUtils = XposedHelpers.findClass("miui.systemui.controlcenter.utils.ControlCenterUtils",classLoader)
         val MiBlurCompat = XposedHelpers.findClass("miui.systemui.util.MiBlurCompat",classLoader)
+        var colorArray : IntArray? = null
 
         XposedHelpers.findAndHookMethod(ToggleSliderViewHolder,"updateBlendBlur",object : XC_MethodHook(){
 
@@ -120,7 +121,11 @@ class QSVolumeOrBrightnessValue :BaseHooker() {
                 //Color.WHITE Color.parseColor("#959595")
                 topValue.setTextColor(Color.WHITE)
                 XposedHelpers.callStaticMethod(MiBlurCompat,"setMiViewBlurModeCompat",topValue,3)
-                val array = context.resources.getIdentifier("toggle_slider_icon_blend_colors", "array", "miui.systemui.plugin")
+                if (colorArray == null){
+                    val array = context.resources.getIdentifier("toggle_slider_icon_blend_colors", "array", "miui.systemui.plugin")
+
+                    colorArray = item.resources.getIntArray(array)
+                }
 
                 //val setMiProgressIconBackgroundBlendColors = XposedHelpers.findMethodBestMatch(MiBlurCompat,"setMiProgressIconBackgroundBlendColors",View::class.java,Int::class.java,Float::class.java)
                 val method: Method = MiBlurCompat.getDeclaredMethod(
@@ -129,28 +134,34 @@ class QSVolumeOrBrightnessValue :BaseHooker() {
                     IntArray::class.java,
                     Float::class.java
                 )
-                val intArray = item.resources.getIntArray(array)
+
+                val iconColorArray : IntArray = colorArray as IntArray
 
                 if (mainIconBlendColor != "null"){
-                    intArray[0] = Color.parseColor(mainIconBlendColor)
+                    iconColorArray[0] = Color.parseColor(mainIconBlendColor)
 
                 }
                 if (secondaryIconBlendColor != "null"){
-                    intArray[2] = Color.parseColor(secondaryIconBlendColor)
+                    iconColorArray[2] = Color.parseColor(secondaryIconBlendColor)
 
                 }
-                method.invoke(thisObj,icon,intArray,1f)
+                method.invoke(thisObj,icon,iconColorArray,1f)
 
+                val valueColorArray : IntArray = colorArray as IntArray
 
                 if (mainValueBlendColor != "null"){
-                    intArray[0] = Color.parseColor(mainValueBlendColor)
+                    valueColorArray[0] = Color.parseColor(mainValueBlendColor)
 
                 }
                 if (secondaryValueBlendColor != "null"){
-                    intArray[2] = Color.parseColor(secondaryValueBlendColor)
+                    valueColorArray[2] = Color.parseColor(secondaryValueBlendColor)
 
                 }
-                method.invoke(thisObj,topValue,intArray,1f)
+                method.invoke(thisObj,topValue,valueColorArray,1f)
+
+
+
+
 
 
 

@@ -47,7 +47,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.wear.compose.material.Icon
 import com.chaos.hyperstar.R
-//import com.chaos.hyperstar.ui.base.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -62,12 +61,12 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 @Composable
 fun MSuperDialog(
     title: String? = null,
-    titleColor: Color = MiuixTheme.colorScheme.onSurface,
+    titleColor: Color = colorScheme.onSurface,
     summary: String? = null,
-    summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantDialog,
+    summaryColor: Color = colorScheme.onSurfaceVariantDialog,
     show: MutableState<Boolean>,
     showAction : Boolean = false,
-    color: Color = MiuixTheme.colorScheme.surfaceVariant,
+    color: Color = colorScheme.surfaceVariant,
     onFocus: () -> Unit = {},
     onDismissRequest: () -> Unit,
     insideMargin: DpSize? = null,
@@ -85,7 +84,7 @@ fun MSuperDialog(
     val contentAlignment by remember { derivedStateOf { if (getWindowSize.width > getWindowSize.height) Alignment.Center else Alignment.BottomCenter } }
 
     BackHandler(enabled = show.value) {
-        dismissDialog()
+        dismissDialog(show)
         onDismissRequest()
     }
 
@@ -97,7 +96,7 @@ fun MSuperDialog(
             .fillMaxSize()
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
-                    dismissDialog()
+                    dismissDialog(show)
                     onDismissRequest()
                 })
             }
@@ -143,7 +142,7 @@ fun MSuperDialog(
                                 .padding(bottom = 20.dp),
                             onClick = {
                                 view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                                dismissDialog()
+                                dismissDialog(show)
                                 onDismissRequest()
                             }
                         ) {

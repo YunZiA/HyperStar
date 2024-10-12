@@ -83,7 +83,6 @@ fun SettingsPage(
             PMiuixSuperDropdown(
                 title = stringResource(R.string.language),
                 option = R.array.language_list,
-                activity = activity,
                 selectedIndex = language.intValue,
                 onSelectedIndexChange = {
                     language.intValue = it
@@ -97,7 +96,6 @@ fun SettingsPage(
             PMiuixSuperDropdown(
                 title = stringResource(R.string.color_mode_title),
                 option = R.array.color_mode_items,
-                activity = activity,
                 selectedIndex = colorMode.value,
                 onSelectedIndexChange = {
                     colorMode.value = it

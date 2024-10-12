@@ -49,6 +49,13 @@ public abstract class BaseHooker {
     public void doMethods(ClassLoader classLoader){
         this.classLoader = classLoader;
     };
+    public void doMethodsHook(ClassLoader classLoader){
+        this.classLoader = classLoader;
+    }
+    public void doBaseMethods(BaseHooker baseHooker){
+
+        baseHooker.doMethods(classLoader);
+    };
 
     public void doSecMethods(BaseHooker baseHooker){
 

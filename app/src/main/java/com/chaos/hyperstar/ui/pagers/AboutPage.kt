@@ -132,6 +132,13 @@ fun ThirdPage(
             )
 
             SuperIntentArrow(
+                title = "XposedBridge",
+                summary = "rovo89 | Apache-2.0",
+                activity = activity,
+                url = "https://github.com/rovo89/XposedBridge"
+            )
+
+            SuperIntentArrow(
                 title = "HyperCeiler",
                 summary = "ReChronoRain | AGPL-3.0",
                 activity = activity,

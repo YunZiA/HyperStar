@@ -7,9 +7,12 @@ import android.widget.LinearLayout
 import com.chaos.hyperstar.hook.base.BaseHooker
 import com.chaos.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 
 class QSCardTile : BaseHooker() {
+
+
 
     private val clickClose = XSPUtils.getBoolean("card_tile_click_close",false)
 

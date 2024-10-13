@@ -3,7 +3,7 @@
 <img src="img/app_icon.png" width="160" height="160" style="display: block; margin: 0 auto;" alt="icon"/>
 
 # HyperStar
-### 信hyper，得永生！
+**信hyper，得永生**
 
 </div>
 
@@ -34,20 +34,13 @@
 
 ## 翻译人员
 
-感谢以下人员为HyperStar项目贡献翻译
-
+感谢以下人员为HyperStar项目贡献翻译：
 
 | 语言      | 翻译人员                                                                          |
 |:--------|:------------------------------------------------------------------------------|
 | English | [cafayeli](https://t.me/cafayeli) & [Natsukawa Masuzu](https://t.me/Minggg07) |
 
-
-[![Crowdin](https://badges.crowdin.net/cemiuiler/localized.svg)](https://crowdin.com/project/cemiuiler)
-
-您可以在[这里](https://crwd.in/cemiuiler)为 HyperCeiler 项目贡献翻译。
-
-
-
+如果您想要为 HyperStar 项目贡献翻译，请联系我吧~
 
 [qgroup_url]: http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&amp;k=5ONF7LuaoQS6RWEOUYBuA0x4X8ssvHJp&amp;authKey=Pic4VQJxKBJwSjFzsIzbJ50ILs0vAEPjdC8Nat4zmiuJRlftqz9%2FKjrBwZPQTc4I&amp;noverify=0&amp;group_code=810317966
 

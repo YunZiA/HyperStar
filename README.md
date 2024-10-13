@@ -6,8 +6,8 @@
 
 </div>
 
-<div align="center"  style="margin: 50px 10px">
-<picture>
+<div align="center">
+<picture style="margin: 50px 10px">
 <img src="img/app_name.png" width="180" alt="icon"/>
 </picture>
 

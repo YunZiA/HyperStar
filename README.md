@@ -3,14 +3,14 @@
 <picture >
 <img src="img/app_icon.png" width="160" height="160" alt="icon"/>
 </picture>
+
+</div>
 <br>
+<div align="center">
 <picture>
 <img src="img/app_name.png" width="180" alt="icon"/>
 </picture>
 
-</div>
-
-<div align="center">
 <br>
 
 **信hyper，得永生**

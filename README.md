@@ -1,10 +1,10 @@
 <div align="center">
 
-<picture>
-<img src="img/app_icon.png" width="160" height="160"  alt="icon"/>
+<picture >
+<img src="img/app_icon.png" width="160" height="160" align="center" alt="icon"/>
 </picture>
 <picture>
-<img src="img/app_name.png" width="180"  alt="icon"/>
+<img src="img/app_name.png" width="180" align="center" alt="icon"/>
 </picture>
 
 </div>

@@ -13,7 +13,7 @@
 </picture>
 
 
-**<br><br><br>信hyper，得永生**
+**<br>信hyper，得永生**
 
 </div>
 

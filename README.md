@@ -1,9 +1,12 @@
 <div align="center">
 
-<img src="img/app_icon.png" width="160" height="160" style="display: block; margin: 0 auto;" alt="icon"/>
+<img src="img/app_icon.png" width="160" height="160" style="display: block; margin: 0 50;" alt="icon"/>
 
-# HyperStar
+<img src="img/app_name.png" style="display: block; margin: 50 50;" alt="icon"/>
+
 **信hyper，得永生**
+
+# 
 
 </div>
 

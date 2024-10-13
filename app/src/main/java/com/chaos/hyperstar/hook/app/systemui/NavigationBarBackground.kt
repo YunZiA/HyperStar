@@ -88,8 +88,7 @@ class NavigationBarBackground :BaseHooker() {
             "com.android.systemui.statusbar.phone.LightBarTransitionsController\$Factory",
             classLoader
         )
-        val DisplayTracker =
-            XposedHelpers.findClass("com.android.systemui.settings.DisplayTracker", classLoader)
+        val DisplayTracker = XposedHelpers.findClass("com.android.systemui.settings.DisplayTracker", classLoader)
 
 
         XposedHelpers.findAndHookConstructor(NavigationBarTransitions, NavigationBarView, LightBarTransitionsControllerFactory, DisplayTracker,

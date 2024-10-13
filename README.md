@@ -1,15 +1,15 @@
 <div align="center">
 
 <picture >
-<img src="img/app_icon.png" width="160" height="160" align="center" alt="icon"/>
-</picture>
-<picture>
-<img src="img/app_name.png" width="180" align="center" alt="icon"/>
+<img src="img/app_icon.png" width="160" height="160" alt="icon"/>
 </picture>
 
 </div>
 
-<div align="center">
+<div align="center"  style="margin: 50px 10px">
+<picture>
+<img src="img/app_name.png" width="180" alt="icon"/>
+</picture>
 
 **信hyper，得永生**
 

@@ -5,8 +5,8 @@
 </picture>
 
 </div>
-<br>
-<div align="center">
+
+<div align="center" style="margin: 50px 10px;">
 <picture>
 <img src="img/app_name.png" width="180" alt="icon"/>
 </picture>

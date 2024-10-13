@@ -7,9 +7,11 @@
 </div>
 
 <div align="center">
-<picture style="margin: 50px 10px">
+<br>
+<picture>
 <img src="img/app_name.png" width="180" alt="icon"/>
 </picture>
+<br>
 
 **信hyper，得永生**
 

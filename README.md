@@ -1,12 +1,12 @@
 <div align="center">
 
-<img src="img/app_icon.png" width="160" height="160" style="display: block; margin: 0 Auto;" alt="icon"/>
+<img src="img/app_icon.png" width="160" height="160"  alt="icon"/>
 
 </div>
 
 <div align="center">
 
-<img src="img/app_name.png" width="180" style="display: block; margin: 50 50;" alt="icon"/>
+<img src="img/app_name.png" width="180"  alt="icon"/>
 
 **信hyper，得永生**
 

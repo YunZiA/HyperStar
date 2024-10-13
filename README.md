@@ -10,11 +10,15 @@
 <img src="img/app_name.png" width="180" alt="icon"/>
 </picture>
 
-**信hyper，得永生**
+**信hyper，得永生!**
+
+
 
 </div>
 
+
 # 
+
 ## 介绍
 
 这是一个平平无奇的xp模块，主要功能为自定义 HyperOS 控制中心，外加一些自己认为有用的功能。
@@ -24,6 +28,15 @@
 |:----------------|:-----|:-----|
 | HyperOS1.0 Beta | 15   | 部分能用 |
 | HyperOS1.0      | 14   | 支持   |
+
+## 使用前说明
+
+请在 [LSPosed](https://github.com/LSPosed/LSPosed/releases) 中启用 HyperStar， 然后在 HyperStar 应用内启用对应的功能，重启作用域 (需要 Root 权限)；
+
+对于`修改较多的第三方 MIUI/Xiaomi HyperOS ROM`、`修改较多的系统软件`，本模块<b>不会适配</b> ，但也不保证功能一定失效，如若功能在此环境下出现异常，请<b>关闭功能</b>或者<b>卸载模块</b>;
+
+目前 HyperStar 是基于 Android 14 的 HyperOS1.0 的手机设备进行适配，功能不能保证覆盖完整，请多多向我反馈！
+
 
 ## 模块作用域
 

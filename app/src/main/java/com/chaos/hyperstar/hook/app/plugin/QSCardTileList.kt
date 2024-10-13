@@ -69,7 +69,7 @@ class QSCardTileList :BaseHooker() {
                         "qs_card_wifi_background_disabled",
                         "drawable", "miui.systemui.plugin"
                     )
-                    idUnavailable = linearLayout.getContext().getResources().getIdentifier("qs_card_cell_background_unavailable",
+                    idUnavailable = linearLayout.context.resources.getIdentifier("qs_card_cell_background_unavailable",
                         "drawable", "miui.systemui.plugin");
 //                    val cornerRadius = linearLayout.context.resources.getIdentifier(
 //                        "control_center_universal_corner_radius", "dimen", "miui.systemui.plugin"
@@ -78,37 +78,47 @@ class QSCardTileList :BaseHooker() {
                 }
             }
         )
+        XposedHelpers.findAndHookMethod(QSCardItemView,"setCornerRadius",Float::class.java,object : XC_MethodHook(){
+            override fun afterHookedMethod(param: MethodHookParam?) {
+                super.afterHookedMethod(param)
+                val radius = param?.args?.get(0)
+                starLog.log("$radius")
+            }
+        })
 //        XCallback.PRIORITY_HIGHEST
         findAndHookMethod(QSCardItemView, "updateBackground", object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam) {
                     val linearLayout: LinearLayout = param.thisObject as LinearLayout
                     val state = XposedHelpers.getObjectField(param.thisObject, "state")
-                    val cornerRadius = XposedHelpers.getObjectField(param.thisObject, "_cornerRadius")
-                    val spec = XposedHelpers.getObjectField(state, "spec")
-                    val i = XposedHelpers.getIntField(state, "state")
                     if (state == null){
                         starLog.log("state == null")
                         return
-
                     }
+                    val i = XposedHelpers.getIntField(state, "state")
+                    val spec = XposedHelpers.getObjectField(state, "spec")
+                    val cornerRadius = XposedHelpers.getObjectField(param.thisObject, "_cornerRadius")
                     if(spec == null){
                         starLog.log("spec == null")
-                        val id :Int
-                        if (i == 0){
-                            id = idUnavailable
-                        } else if (i == 2) {
-                            id = idEnable
-                        } else if (i == 1) {
-                            id = idDisabled
-                        } else{
-                            return
+                        val id :Int = when (i) {
+                            0 -> {
+                                idUnavailable
+                            }
+                            2 -> {
+                                idEnable
+                            }
+                            1 -> {
+                                idDisabled
+                            }
+                            else -> {
+                                return
+                            }
                         }
                         if (id == -1 ) {
                             logE("updateBackground", "id is -1!!")
                             return
                         }
-                        val background: Drawable = linearLayout.getContext().getTheme().getResources().getDrawable(id, linearLayout.getContext().getTheme())
-                        linearLayout.setBackground(background)
+                        val background: Drawable = linearLayout.context.theme.resources.getDrawable(id, linearLayout.context.theme)
+                        linearLayout.background = background
                         XposedHelpers.callMethod(
                             param.thisObject,
                             "setCornerRadius",
@@ -116,29 +126,30 @@ class QSCardTileList :BaseHooker() {
                         )
                         return
                     }
-                    starLog.log("spec != null")
-
                     when (spec.toString()) {
-                        "bt", "cell", "flashlight", "wifi", "vowifi1", "vowifi2" -> {
-                            starLog.log("spec is else!!")}
+                        "bt", "cell", "flashlight", "wifi", "vowifi1", "vowifi2" -> {}
                         else -> {
-                            starLog.log("spec is else!!")
-                            val id :Int
-                            if (i == 0){
-                                id = idUnavailable
-                            } else if (i == 2) {
-                                id = idEnable
-                            } else if (i == 1) {
-                                id = idDisabled
-                            } else{
-                                return
+                            starLog.log("spec is else $spec")
+                            val id :Int = when (i) {
+                                0 -> {
+                                    idUnavailable
+                                }
+                                2 -> {
+                                    idEnable
+                                }
+                                1 -> {
+                                    idDisabled
+                                }
+                                else -> {
+                                    return
+                                }
                             }
                             if (id == -1 ) {
                                 logE("updateBackground", "id is -1!!")
                                 return
                             }
-                            val background: Drawable = linearLayout.getContext().getTheme().getResources().getDrawable(id, linearLayout.getContext().getTheme())
-                            linearLayout.setBackground(background)
+                            val background: Drawable = linearLayout.context.theme.resources.getDrawable(id, linearLayout.context.theme)
+                            linearLayout.background = background
                             XposedHelpers.callMethod(
                                 param.thisObject,
                                 "setCornerRadius",

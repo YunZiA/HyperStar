@@ -12,8 +12,7 @@
 <img src="img/app_name.png" width="180" alt="icon"/>
 </picture>
 
-
-**<br>信hyper，得永生**
+**信hyper，得永生**
 
 </div>
 

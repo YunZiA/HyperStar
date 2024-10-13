@@ -1,16 +1,18 @@
 <div align="center">
 
-<img src="img/app_icon.png" width="160" height="160" style="display: block; margin: 0 50;" alt="icon"/>
-
-<img src="img/app_name.png" style="display: block; margin: 50 50;" alt="icon"/>
-
-**信hyper，得永生**
-
-
-# 
+<img src="img/app_icon.png" width="160" height="160" style="display: block; margin: 0 Auto;" alt="icon"/>
 
 </div>
 
+<div align="center">
+
+<img src="img/app_name.png" width="180" style="display: block; margin: 50 50;" alt="icon"/>
+
+**信hyper，得永生**
+
+</div>
+
+# 
 ## 介绍
 
 这是一个平平无奇的xp模块，主要功能为自定义 HyperOS 控制中心，外加一些自己认为有用的功能。

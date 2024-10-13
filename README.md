@@ -4,8 +4,6 @@
 </picture>
 </div>
 
-<br>
-
 <div align="center" >
 
 <picture>

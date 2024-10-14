@@ -21,7 +21,7 @@
 
 ## Introduction
 
-This is an extremely ordinary XP module, mainly designed to customize the HyperOS Control Center, along with some features that the developer considers useful.
+This is an extremely ordinary Xposed module, mainly designed to customize the Xiaomi HyperOS Control Center, along with some features that the developer considers useful.
 
 ## Current supported versions
 
@@ -34,9 +34,9 @@ This is an extremely ordinary XP module, mainly designed to customize the HyperO
 
 Please enable HyperStar in [LSPosed](https://github.com/LSPosed/LSPosed/releases) , then enable the features within the HyperStar app, and restart the scope (Root permission for the module is required).
 
-For `heavily modified third-party MIUI/Xiaomi HyperOS ROMs` and `heavily modified system apps`, this module <b>will not be compatible</b>. However, it does not guarantee that the functions will definitely fail. If any functions malfunction in such environments, please <b>disable the functions</b> or <b>uninstall the module</b>.
+For `heavily modified third-party Xiaomi HyperOS ROMs` and `heavily modified system apps`, this module <b>will not be compatible</b>. However, it does not guarantee that the functions will definitely fail. If any functions malfunction in such environments, please <b>disable the functions</b> or <b>uninstall the module</b>.
 
-Currently, HyperStar is adapted for devices running HyperOS 1.0 based on Android 14. Functionality may not be fully covered, so please provide me with plenty of feedback!
+Currently, HyperStar is adapted for devices running Xiaomi HyperOS 1.0 based on Android 14. Functionality may not be fully covered, so please provide me with plenty of feedback!
 
 ## Supported apps
 
@@ -48,7 +48,7 @@ Currently, HyperStar is adapted for devices running HyperOS 1.0 based on Android
 
 ## Chat & Feedback Group
 
-You can join the group to exchange information or provide feedback on any issues you encounter.。
+You can join the group to exchange information or provide feedback on any issues you encounter.
 
 [![badge_qgroup]][qgroup_url]
 [![badge_telegram]][telegram_url]

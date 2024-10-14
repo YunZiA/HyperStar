@@ -15,9 +15,7 @@
 
 **信hyper，得永生!**
 
-# 
-
-<br>
+#
 
 [![GitHub License](https://img.shields.io/github/license/HowieHChen/XiaomiHelper)](https://github.com/YunZiA/HyperStar/blob/master/LICENSE)
 

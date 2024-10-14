@@ -15,13 +15,14 @@
 
 **信hyper，得永生!**
 
-#
+---
+
+**简体中文 | [English](README_EN-US.md)**
 
 [![GitHub License](https://img.shields.io/github/license/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/blob/master/LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/forks)
 
-**简体中文** | [English](README_EN-US.md)
 
 </div>
 

@@ -7,14 +7,21 @@
 <div align="center" >
 
 <picture>
-<img src="img/app_name_light.png" width="180" alt="icon"/>
+<source media="(prefers-color-scheme: dark)" srcset="img/app_name_dark.png">
+<source media="(prefers-color-scheme: light)" srcset="img/app_name_light.png">
+<img  src="img/app_name_light.png" width="180" alt="icon"/>
 </picture>
 
 **Trust Hyper, you will live forever!**
 
-# 
+---
 
-[简体中文](README.md) | **English**
+**[简体中文](README.md) | English**
+
+[![GitHub License](https://img.shields.io/github/license/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/blob/master/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/forks)
+
 
 </div>
 

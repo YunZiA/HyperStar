@@ -1,6 +1,6 @@
 <div align="center">
 <picture  >
-<img src="img/app_icon.png" width="130" height="130" alt="icon"/>
+<img src="img/app_icon.png" width="100" height="100" alt="icon"/>
 </picture>
 </div>
 

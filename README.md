@@ -47,7 +47,7 @@
 
 ## 交流 & 反馈群组
 
-加入群组交流或者反馈您所遇到的问题。
+你可以加入群组交流或者反馈您所遇到的问题。
 
 [![badge_qgroup]][qgroup_url]
 [![badge_telegram]][telegram_url]

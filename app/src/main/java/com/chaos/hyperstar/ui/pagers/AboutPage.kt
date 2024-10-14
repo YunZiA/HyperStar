@@ -83,7 +83,7 @@ fun ThirdPage(
             SuperIntentArrow(
                 leftIcon = R.drawable.dd,
                 title = "东东说他舍不得",
-                summary = "@GG Chaos | Hook",
+                summary = "@YunZiA | Hook",
                 activity = activity,
                 url = "coolmarket://u/8555749"
             )
@@ -152,7 +152,7 @@ fun ThirdPage(
             SuperIntentArrow(
                 title = stringResource(R.string.project_address),
                 activity = activity,
-                url = "https://github.com/3132437911/HyperStar"
+                url = "https://github.com/YunZiA/HyperStar"
             )
         }
 

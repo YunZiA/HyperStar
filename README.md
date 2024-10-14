@@ -6,15 +6,21 @@
 
 <div align="center" >
 
-<picture>
-<img src="img/app_name.png" width="180" alt="icon"/>
-</picture>
+**<font size=6 face="微软雅黑">Hyper</font><font color=#2856FF size=6 face="微软雅黑">Star</font>**
+
+[//]: # (<picture>)
+
+[//]: # (<img src="img/app_name.png" width="180" alt="icon"/>)
+
+[//]: # (</picture>)
 
 **信hyper，得永生!**
 
 # 
 
 **简体中文** | [English](README_EN-US.md)
+<br>
+[![GitHub License](https://img.shields.io/github/license/HowieHChen/XiaomiHelper)](https://github.com/HowieHChen/XiaomiHelper/blob/master/LICENSE)
 
 </div>
 

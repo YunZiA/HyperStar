@@ -14,9 +14,7 @@
 </picture>
 
 **信hyper，得永生!**
-
-#
-
+****
 **简体中文 | [English](README_EN-US.md)**
 
 [![GitHub License](https://img.shields.io/github/license/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/blob/master/LICENSE)

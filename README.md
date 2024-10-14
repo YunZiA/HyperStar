@@ -18,6 +18,8 @@
 #
 
 [![GitHub License](https://img.shields.io/github/license/HowieHChen/XiaomiHelper)](https://github.com/YunZiA/HyperStar/blob/master/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/HowieHChen/XiaomiHelper)](https://github.com/YunZiA/HyperStar/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/HowieHChen/XiaomiHelper)](https://github.com/YunZiA/HyperStar/forks)
 
 **简体中文** | [English](README_EN-US.md)
 

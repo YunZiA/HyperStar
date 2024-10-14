@@ -12,12 +12,11 @@
 
 **信hyper，得永生!**
 
+# 
 
+**简体中文** | [English](README_EN-US.md)
 
 </div>
-
-
-# 
 
 ## 介绍
 

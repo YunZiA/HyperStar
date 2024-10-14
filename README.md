@@ -6,14 +6,15 @@
 
 <div align="center" >
 
-
-**<font size=6 face="微软雅黑">Hyper</font><font color=#2856FF size=6 face="微软雅黑">Star</font>**
+![GitHub-Mark-Light](./img/app_name.png#gh-dark-mode-only)
 
 <picture>
 <source media="(prefers-color-scheme: dark)" srcset="img/app_name.png">
-<img  src="img/app_name.png" width="180" alt="icon"/>
+
+[//]: # (<img  src="img/app_name.png" width="180" alt="icon"/>)
 
 </picture>
+
 **信hyper，得永生!**
 
 # 

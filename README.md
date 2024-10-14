@@ -6,15 +6,9 @@
 
 <div align="center" >
 
-<picture>
-<source media="(prefers-color-scheme: dark)" srcset="img/app_name_dark.png">
-<source media="(prefers-color-scheme: light)" srcset="img/app_name_light.png">
-<img  src="img/app_name_light.png" width="180" alt="icon"/>
-</picture>
+# <picture><source media="(prefers-color-scheme: dark)" srcset="img/app_name_dark.png"><source media="(prefers-color-scheme: light)" srcset="img/app_name_light.png"><img  src="img/app_name_light.png" width="180" alt="icon"/></picture>
 
-### **信hyper，得永生!**
-
- 
+**信hyper，得永生!**
 
 **简体中文 | [English](README_EN-US.md)**
 

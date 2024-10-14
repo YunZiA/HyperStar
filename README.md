@@ -6,16 +6,14 @@
 
 <div align="center" >
 
-<span style="font-size: 36px; font-family: '微软雅黑', sans-serif;">Hyper</span>
-<span style="font-size: 36px; font-family: '微软雅黑', sans-serif; color: #2856FF;">Star</span>
 
 **<font size=6 face="微软雅黑">Hyper</font><font color=#2856FF size=6 face="微软雅黑">Star</font>**
 
-[//]: # (<picture>)
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="img/app_name.png">
+<img  src="img/app_name.png" width="180" alt="icon"/>
 
-[//]: # (<img src="img/app_name.png" width="180" alt="icon"/>)
-
-[//]: # (</picture>)
+</picture>
 **信hyper，得永生!**
 
 # 

@@ -7,7 +7,7 @@
 <div align="center" >
 
 <picture>
-<img src="img/app_name.png" width="180" alt="icon"/>
+<img src="img/app_name_light.png" width="180" alt="icon"/>
 </picture>
 
 **Trust Hyper, you will live forever!**

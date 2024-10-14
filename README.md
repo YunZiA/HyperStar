@@ -17,9 +17,11 @@
 
 # 
 
-**简体中文** | [English](README_EN-US.md)
 <br>
-[![GitHub License](https://img.shields.io/github/license/HowieHChen/XiaomiHelper)](https://github.com/HowieHChen/XiaomiHelper/blob/master/LICENSE)
+
+[![GitHub License](https://img.shields.io/github/license/HowieHChen/XiaomiHelper)](https://github.com/YunZiA/HyperStar/blob/master/LICENSE)
+
+**简体中文** | [English](README_EN-US.md)
 
 </div>
 

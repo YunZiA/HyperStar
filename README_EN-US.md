@@ -6,15 +6,9 @@
 
 <div align="center" >
 
-<picture>
-<source media="(prefers-color-scheme: dark)" srcset="img/app_name_dark.png">
-<source media="(prefers-color-scheme: light)" srcset="img/app_name_light.png">
-<img  src="img/app_name_light.png" width="180" alt="icon"/>
-</picture>
+# <picture><source media="(prefers-color-scheme: dark)" srcset="img/app_name_dark.png"><source media="(prefers-color-scheme: light)" srcset="img/app_name_light.png"><img  src="img/app_name_light.png" width="180" alt="icon"/></picture>
 
 **Trust Hyper, you will live forever!**
-
-#
 
 **[简体中文](README.md) | English**
 

@@ -8,8 +8,6 @@ import android.content.res.XModuleResources;
 import com.chaos.hyperstar.hook.app.systemui.NavigationBarBackground;
 import com.chaos.hyperstar.hook.tool.starLog;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 

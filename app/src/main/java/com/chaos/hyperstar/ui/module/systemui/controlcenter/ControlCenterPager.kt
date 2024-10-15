@@ -154,6 +154,15 @@ fun ControlCenterPager(
             top = 12.dp
         ){
 
+            XSuperSwitch(
+                title = stringResource(R.string.list_tile_click_close_title),
+                summary = stringResource(R.string.list_tile_click_close_summary),
+                key = "list_tile_click_close"
+            )
+            XSuperSwitch(
+                title = stringResource(R.string.title_fix_list_tile_icon_scale),
+                key = "fix_list_tile_icon_scale"
+            )
             XMiuixSuperSliderSwitch(
                 switchTitle = stringResource(R.string.is_qs_list_tile_radius_title),
                 switchSummary = stringResource(R.string.is_qs_list_tile_radius_summary),
@@ -167,10 +176,6 @@ fun ControlCenterPager(
                 decimalPlaces = 1
             )
 
-            XSuperSwitch(
-                title = stringResource(R.string.list_tile_label_marquee_title),
-                key = "list_tile_label_marquee"
-            )
             XMiuixContentDropdown(
                 title = stringResource(R.string.is_list_label_mode_title),
                 key = "is_list_label_mode",
@@ -183,12 +188,11 @@ fun ControlCenterPager(
                     route = SystemUIPagerList.TILE_LAYOUT
                 )
             }
-            XSuperSwitch(
-                title = stringResource(R.string.list_tile_click_close_title),
-                summary = stringResource(R.string.list_tile_click_close_summary),
-                key = "list_tile_click_close"
-            )
 
+            XSuperSwitch(
+                title = stringResource(R.string.list_tile_label_marquee_title),
+                key = "list_tile_label_marquee"
+            )
 
 
         }

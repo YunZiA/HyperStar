@@ -3,6 +3,7 @@ package com.chaos.hyperstar.hook.app.plugin
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
@@ -20,6 +21,7 @@ import com.chaos.hyperstar.utils.XSPUtils
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
+import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 
 
@@ -44,6 +46,38 @@ class QSListView : BaseHooker() {
         super.doMethods(classLoader)
         startMethodsHook()
         qsTileRadius()
+        fixTileIcon()
+    }
+
+    private fun fixTileIcon() {
+
+        val fix = XSPUtils.getBoolean("fix_list_tile_icon_scale",false)
+        if (!fix) return
+
+        val QSTileItemIconView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",classLoader)
+
+        XposedHelpers.findAndHookMethod(QSTileItemIconView,"getProperIconSize",Drawable::class.java,object : XC_MethodHook(){
+            override fun afterHookedMethod(param: MethodHookParam?) {
+                super.afterHookedMethod(param)
+                val thisObj = param?.thisObject
+                val tileSize = XposedHelpers.getFloatField(thisObj,"tileSize").toInt()
+                //height = tileSize
+
+                val drawable = param?.args?.get(0) as Drawable
+
+                val isCustomTile = XposedHelpers.getBooleanField(thisObj,"isCustomTile")
+                if (isCustomTile) return
+
+                if(drawable !is AnimatedVectorDrawable) return
+
+                val customTileSize = XposedHelpers.getFloatField(thisObj,"customTileSize").toInt()
+                if (drawable.intrinsicHeight < customTileSize){
+                    param.result = customTileSize
+
+                }
+
+            }
+        })
     }
 
     fun collapseStatusBar(context: Context) {
@@ -153,7 +187,6 @@ class QSListView : BaseHooker() {
         val CommonUtils = XposedHelpers.findClass("miui.systemui.util.CommonUtils", classLoader)
 
         if ( labelMode != 0 ){
-            val DrawableUtils = XposedHelpers.findClass("miui.systemui.util.DrawableUtils",classLoader)
 
             XposedHelpers.findAndHookMethod(QSTileItemView, "changeExpand", object : XC_MethodReplacement() {
 
@@ -199,42 +232,6 @@ class QSListView : BaseHooker() {
                 }
 
             })
-
-            val QSTileItemIconView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",classLoader)
-
-            var height :Int = 0
-
-
-            XposedHelpers.findAndHookMethod(QSTileItemIconView,"getProperIconSize",Drawable::class.java,object : XC_MethodHook(){
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    super.afterHookedMethod(param)
-                    height = param?.result as Int
-                }
-            })
-            XposedHelpers.findAndHookMethod(DrawableUtils, "combine",Drawable::class.java,Drawable::class.java,Int::class.java, object : XC_MethodReplacement() {
-                override fun replaceHookedMethod(param: MethodHookParam?): Any {
-                    val args: Array<Any> = param?.args as Array<Any>
-                    val dra = args[0] as Drawable
-                    val dra2 = args[1] as Drawable
-                    val i = args[2] as Int
-
-                    val icon = LayerDrawable(arrayOf(dra, dra2))
-                    icon.setLayerGravity(1,i)
-
-                    if (height == 0) return icon
-                    if (listIconTop != 0f){
-                        icon.setLayerInsetBottom(1,
-                            (height*listIconTop).toInt()
-                        )
-
-                    }
-
-                    return icon
-
-                    }
-
-                })
-
 
         }
 
@@ -349,7 +346,6 @@ class QSListView : BaseHooker() {
 
                         val pluginContext: Context = XposedHelpers.getObjectField(param.thisObject, "pluginContext") as Context;
 
-
                         param.args[0] = dpToPx(pluginContext.resources,qsListTileRadius)
                     }
 
@@ -359,12 +355,20 @@ class QSListView : BaseHooker() {
 
         }
 
+        var height :Int = 0
+
 
         hookAllMethods(classLoader, "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
             "updateIcon",
             object : MethodHook {
 
                 override fun before(param: XC_MethodHook.MethodHookParam?) {
+                    if ( labelMode != 0 ) {
+
+                        val thisObj = param?.thisObject
+                        val tileSize = XposedHelpers.getFloatField(thisObj,"tileSize").toInt()
+                        height = tileSize
+                    }
                     if (isQSListTileRadius){
                         val pluginContext: Context =
                             XposedHelpers.getObjectField(param?.thisObject, "pluginContext") as Context;
@@ -464,11 +468,12 @@ class QSListView : BaseHooker() {
 
                         val height  = combine.getLayerHeight(index)
                         val width = combine.getLayerWidth(index)
+                        val tileSize = XposedHelpers.getFloatField(thisObj,"tileSize").toInt()
 
                         icons.setLayerGravity(index, Gravity.CENTER)
                         if (listIconTop != 0f){
                             icons.setLayerInsetBottom(index,
-                                (height*listIconTop).toInt()
+                                (tileSize*listIconTop).toInt()
                             )
 
                         }
@@ -481,6 +486,35 @@ class QSListView : BaseHooker() {
 
                 }
             })
+
+        if ( labelMode != 0 ) {
+            val DrawableUtils = XposedHelpers.findClass("miui.systemui.util.DrawableUtils", classLoader)
+
+            XposedHelpers.findAndHookMethod(DrawableUtils, "combine", Drawable::class.java, Drawable::class.java, Int::class.java,
+                object : XC_MethodReplacement() {
+                    override fun replaceHookedMethod(param: MethodHookParam?): Any {
+                        val args: Array<Any> = param?.args as Array<Any>
+                        val dra = args[0] as Drawable
+                        val dra2 = args[1] as Drawable
+                        val i = args[2] as Int
+
+                        val icon = LayerDrawable(arrayOf(dra, dra2))
+                        icon.setLayerGravity(1, i)
+
+                        if (height == 0) return icon
+                        if (listIconTop != 0f) {
+                            icon.setLayerInsetBottom(1,
+                                (height * listIconTop).toInt()
+                            )
+
+                        }
+
+                        return icon
+
+                    }
+
+                })
+        }
     }
 
     fun dpToPx(resources: Resources, dp: Float): Float {

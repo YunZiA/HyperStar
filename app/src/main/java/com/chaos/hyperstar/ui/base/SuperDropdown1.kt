@@ -59,7 +59,7 @@ fun XSuperDialogDropdown(
     dfOpt : Int = 0,
     title : String,
     enabled: Boolean = true,
-    popupHorizontalPadding: Dp = 12.dp,
+    //popupHorizontalPadding: Dp = 12.dp,
     insideMargin: DpSize = DpSize(24.dp, 16.dp),
     summary : String ?= null,
     selectedIndex : MutableIntState = remember { mutableIntStateOf(SPUtils.getInt(key,dfOpt)) }
@@ -73,7 +73,7 @@ fun XSuperDialogDropdown(
         summary = summary,
         items = dropdownOptions,
         enabled = enabled,
-        horizontalPadding = popupHorizontalPadding,
+        horizontalPadding = insideMargin.width,
         insideMargin = insideMargin,
         selectedIndex = selectedIndex.intValue,
         onSelectedIndexChange = { newOption ->

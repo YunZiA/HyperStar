@@ -341,7 +341,6 @@ fun EnableItemDropdown(
     XSuperDialogDropdown(
         title = stringResource(R.string.land_rightOrLeft),
         enabled = state.value,
-        popupHorizontalPadding = 38.dp,
         insideMargin = insideMargin,
         key = key,
         dfOpt = dfOpt,

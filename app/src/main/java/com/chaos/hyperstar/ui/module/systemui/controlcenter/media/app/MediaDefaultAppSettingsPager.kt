@@ -2,6 +2,11 @@
 package com.chaos.hyperstar.ui.module.systemui.controlcenter.media.app
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
+import android.content.Context
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.compose.animation.AnimatedVisibility
@@ -59,9 +64,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
 import androidx.wear.compose.material.Icon
 import com.chaos.hyperstar.R
-import com.chaos.hyperstar.ui.base.ModulePager
+import com.chaos.hyperstar.ui.base.ModuleNavPager
 import com.chaos.hyperstar.ui.base.XMiuixTextField
 import com.chaos.hyperstar.ui.base.enums.EventState
 
@@ -77,23 +83,94 @@ import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
+@SuppressLint("QueryPermissionsNeeded")
+private fun getAllAppInfo(
+    context:Context,
+    isFilterSystem: Boolean,
+    appListDB:AppListDB?,
+    appIconlist: MutableMap<String, Drawable>
+): ArrayList<AppInfo> {
+    val appBeanList: ArrayList<AppInfo> = ArrayList<AppInfo>()
+    val packageManager = context.packageManager
+    val list = packageManager.getInstalledPackages(0)
+
+    appListDB?.resetTable()
+
+    for (p in list) {
+        val applicationInfo = p.applicationInfo
+
+        // 检查是否是系统应用以及是否应该过滤系统应用
+        val isSystemApp = isFilterSystem && ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0)
+
+        // 检查是否是特定的应用包名
+        if ("com.miui.player" == applicationInfo.packageName) {
+            processAppInfo(applicationInfo, packageManager, appBeanList,appListDB,appIconlist)
+        } else if (!isSystemApp) {  // 非系统应用
+            processAppInfo(applicationInfo, packageManager, appBeanList, appListDB,appIconlist)
+        }
+    }
+
+    return appBeanList
+}
+
+private fun processAppInfo(
+    applicationInfo: ApplicationInfo?,
+    packageManager: PackageManager?,
+    appBeanList: ArrayList<AppInfo>,
+    appListDB: AppListDB?,
+    appIconlist: MutableMap<String, Drawable>
+) {
+    run {
+        val app_name = applicationInfo?.let { packageManager?.getApplicationLabel(it).toString() }
+        val package_name = applicationInfo?.packageName
+        val app_icon = applicationInfo?.let { packageManager?.getApplicationIcon(it) }
+
+        val bean = AppInfo()
+        bean.label = app_name.toString()
+        bean.package_name = package_name.toString()
+        bean.icon = app_icon
+
+        val values = ContentValues()
+        values.put("package_name", package_name)
+        values.put("app_name", app_name)
+
+        if (app_icon != null && package_name != null) {
+            appIconlist[package_name] = app_icon
+            if (appIconlist[package_name] == null){
+                Log.d("ggc","appIconlist[package_name]  == null")
+
+            }
+        }
+
+
+        appBeanList.add(bean)
+        appListDB?.add(values)
+
+        values.clear()
+    }
+}
+
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
-fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
+fun MediaAppSettingsPager(
+    navController: NavController
+) {
 
-    ModulePager(
+    ModuleNavPager(
         activityTitle = stringResource(R.string.media_default_app_settings),
-        activity = activity,
+        navController = navController,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         },
     ){ topAppBarScrollBehavior,padding->
-
-        val appLists = remember { mutableStateOf(activity.appList) }
+        val mContext = navController.context
+        val appListDB = AppListDB(mContext)
+        val appLists = remember { mutableStateOf<ArrayList<AppInfo>?>(null) }
+        val appIconlist = remember { mutableMapOf<String, Drawable>() }
         val isLoading = remember { mutableStateOf(true) }
         val isApp = remember { mutableStateOf(SPUtils.getString("media_default_app_package","")) }
-        val isSearch = remember { mutableStateOf(false) }
+        var isSearch by remember { mutableStateOf(false) }
 
         val coroutineScope = rememberCoroutineScope()
 
@@ -103,16 +180,23 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
         LaunchedEffect(Unit) {
             coroutineScope.launch {
                 val result = withContext(Dispatchers.IO) {
-                    activity.getAllAppInfo(isFilterSystem = true)
+                    getAllAppInfo(mContext,isFilterSystem = true,appListDB,appIconlist)
                 }
                 appLists.value = result
                 isLoading.value = false
             }
         }
 
-        if (isSearch.value){
-            appLists.value = activity.searchApp(text)
-            isSearch.value = false
+        LaunchedEffect(isSearch) {
+            if (!isSearch) return@LaunchedEffect
+            coroutineScope.launch {
+                withContext(Dispatchers.IO) {
+                    appLists.value = appListDB.searchAPPlist(text,appIconlist)
+                }
+                isSearch = false
+            }
+
+
         }
 
 
@@ -170,7 +254,8 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
 
-                        }.fillMaxSize(),
+                        }
+                        .fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -218,7 +303,7 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
                                 .padding(end = 5.dp)
                                 .weight(1f),
                             keyboardActions = KeyboardActions(onDone = {
-                                isSearch.value = true
+                                isSearch = true
                                 focusManager.clearFocus()
                             }),
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -229,7 +314,7 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
                             modifier = Modifier.padding(end = 2.dp),
                             onClick = {
                                 //Toast.makeText(activity,text,Toast.LENGTH_SHORT).show()
-                                isSearch.value = true
+                                isSearch = true
                                 focusManager.clearFocus()
                             },
                             contentPadding = PaddingValues(10.dp,16.dp),
@@ -266,7 +351,7 @@ fun MediaSettingsPager(activity: MediaDefaultAppSettingsActivity) {
 
 
 @Composable
-fun ShowLoading() {
+private fun ShowLoading() {
     val rotation = remember { Animatable(0f) }
     // 开启旋转动画
     val isRotating = true
@@ -298,7 +383,7 @@ fun ShowLoading() {
 }
 
 @Composable
-fun AppItem(
+private fun AppItem(
     app: AppInfo,
     isApp : MutableState<String>
 ){
@@ -391,7 +476,6 @@ fun AppItem(
                     enabled = true,
                     checked = isSelect,
                     onCheckedChange = {
-                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                         isApp.value = if (isSelect) "" else packageName
                         isSelect = !isSelect
                         SPUtils.setString("media_default_app_package",isApp.value)

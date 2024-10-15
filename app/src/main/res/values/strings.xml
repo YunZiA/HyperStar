@@ -1,18 +1,9 @@
 <resources>
     <string name="app_name" translatable="false">HyperStar</string>
     <string name="xposed_desc">Trust Hyper, you will live forever!</string>
-    <string name="title_activity_media_settings" translatable="false">MediaSettingsActivity</string>
-    <string name="title_activity_control_center_settings" translatable="false">ControlCenterSettings</string>
-    <string name="title_activity_volume_settings" translatable="false">VolumeSettings</string>
-    <string name="title_activity_qslistcolor" translatable="false">QSListColorActivity</string>
-    <string name="title_activity_control_center_color_settings" translatable="false">ControlCenterColorSettings</string>
-    <string name="title_activity_media_default_app_settings" translatable="false">MediaDefaultAppSettingsActivity</string>
-    <string name="title_activity_control_center_list_settings" translatable="false">ControlCenterListSettings</string>
-    <string name="title_activity_about_translator_pager" translatable="false">AboutTranslatorPager</string>
     <string name="title_activity_qs_list_view_settings">QsListViewSettings</string>
     <string name="title_activity_qs_card_list">QsCardListActivity</string>
     <string name="title_activity_beta_home_settings">BetaHomeSettingsActivity</string>
-    <string name="title_activity_qscard_color" translatable="false">QSCardColorActivity</string>
     <string name="is_cover_scale_background_title">Enable cover art zoom</string>
     <string name="cover_scale_background_value_title">Zoom value</string>
     <string name="is_cover_blur_background_title">Enable cover art blur</string>
@@ -34,7 +25,7 @@
     <string name="developer_title">DEVELOPERS</string>
     <string name="discussion_title">DISCUSSION</string>
     <string name="qq_group_title">QQ Group</string>
-    <string name="references_title">REFERENCES</string>
+    <string name="references_title">references</string>
     <string name="show_title">SHOW</string>
     <string name="systemui">SYSTEM UI</string>
     <string name="progress_effect_title">Rounded Progress Bar</string>
@@ -161,21 +152,19 @@
     <string name="empty_state">Empty Playback Prompt</string>
     <string name="media_button">Button</string>
     <string name="media_button_disabled">Disabled state Button</string>
-    <string name="title_activity_slider_colors_settings">SliderColorsSettings</string>
     <string name="toggle_slider_color">Toggle slider color</string>
     <string name="progress_bar">Progress bar</string>
     <string name="toggle_slider_value">Progress value</string>
     <string name="unlock">Unlock</string>
     <string name="cover_anciently_title">Enable vintage filter</string>
-    <string name="title_activity_system_uiother_settings">SystemUIOtherSettings</string>
     <string name="more">More</string>
     <string name="navigation_bar">Navigation Bar</string>
     <string name="status_bar">Status Bar</string>
     <string name="transparent_navigationBar_background">Remove translucent background</string>
     <string name="transparent_statusBar_background">Remove translucent background</string>
     <string name="transparent_statusBar_background_summary">Remove the background only, without supporting inverse colors</string>
-    <string name="title_activity_device_center_color_settings">DeviceCenterColorSettings</string>
     <string name="smart_hub_color">Smart hub color</string>
     <string name="edit_background_mode">Background theme</string>
     <string name="device_center_detail_icon">Detail icon</string>
+    <string name="open_source_statement">This project is open-sourced under the GPL 3.0 license</string>
 </resources>

@@ -55,6 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.wear.compose.material.Icon
 import com.chaos.hyperstar.MainActivity
 import com.chaos.hyperstar.R
@@ -90,6 +91,7 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 @OptIn(FlowPreview::class)
 @Composable
 fun UITest(
+    navController: NavController,
     activity: MainActivity,
     colorMode: MutableState<Int>,
 ) {
@@ -184,6 +186,7 @@ fun UITest(
     ) { padding ->
         AppHorizontalPager(
             modifier = Modifier.blur(hazeState),
+            navController = navController,
             activity = activity,
             pagerState = pagerState,
             colorMode = colorMode,
@@ -378,6 +381,7 @@ fun  ItemPopu(show: MutableState<Boolean>) {
 @Composable
 fun AppHorizontalPager(
     activity: MainActivity,
+    navController: NavController,
     colorMode: MutableState<Int>,
     modifier: Modifier = Modifier,
     pagerState: PagerState,
@@ -398,6 +402,7 @@ fun AppHorizontalPager(
 
                     MainPage(
                         activity = activity,
+                        navController = navController,
                         topAppBarScrollBehavior = topAppBarScrollBehaviorList[0],
                         padding = padding,
 
@@ -410,6 +415,7 @@ fun AppHorizontalPager(
                 1 -> {
                     SettingsPage(
                         activity = activity,
+                        navController = navController,
                         topAppBarScrollBehavior = topAppBarScrollBehaviorList[1],
                         padding = padding,
                         colorMode = colorMode,
@@ -422,6 +428,7 @@ fun AppHorizontalPager(
                 else -> {
                     ThirdPage(
                         activity = activity,
+                        navController = navController,
                         topAppBarScrollBehavior = topAppBarScrollBehaviorList[2],
                         padding = padding,
 

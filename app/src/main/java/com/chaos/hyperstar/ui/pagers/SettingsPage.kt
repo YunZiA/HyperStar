@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.chaos.hyperstar.MainActivity
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.State
@@ -47,6 +48,7 @@ import top.yukonga.miuix.kmp.utils.getWindowSize
 @Composable
 fun SettingsPage(
     activity : MainActivity,
+    navController: NavController,
     topAppBarScrollBehavior: ScrollBehavior,
     padding: PaddingValues,
     colorMode: MutableState<Int>,

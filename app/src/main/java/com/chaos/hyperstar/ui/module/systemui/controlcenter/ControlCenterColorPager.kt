@@ -3,29 +3,29 @@ package com.chaos.hyperstar.ui.module.systemui.controlcenter
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavController
+import com.chaos.hyperstar.CenterColorList
 import com.chaos.hyperstar.R
+import com.chaos.hyperstar.SystemUIPagerList
 import com.chaos.hyperstar.ui.base.ModulePagers
 import com.chaos.hyperstar.ui.base.ColorPickerTool
 import com.chaos.hyperstar.ui.base.ContentFolder
+import com.chaos.hyperstar.ui.base.ModuleNavPagers
 import com.chaos.hyperstar.ui.base.SuperActivityArrow
+import com.chaos.hyperstar.ui.base.SuperNavHostArrow
 import com.chaos.hyperstar.ui.base.XMiuixContentDropdown
 import com.chaos.hyperstar.ui.base.XSuperSwitch
 import com.chaos.hyperstar.ui.base.classes
 import com.chaos.hyperstar.ui.base.firstClasses
-import com.chaos.hyperstar.ui.module.systemui.controlcenter.card.QSCardColorActivity
-import com.chaos.hyperstar.ui.module.systemui.controlcenter.devicecenter.DeviceCenterColorSettings
-import com.chaos.hyperstar.ui.module.systemui.controlcenter.list.QSListColorActivity
-import com.chaos.hyperstar.ui.module.systemui.controlcenter.list.QsListViewSettings
-import com.chaos.hyperstar.ui.module.systemui.controlcenter.slider.ToggleSliderColorsSettings
 import com.chaos.hyperstar.utils.Utils
 
 @Composable
 fun ControlCenterColorPager(
-    activity: ComponentActivity,
+    navController: NavController
 ) {
-    ModulePagers(
+    ModuleNavPagers(
         activityTitle = stringResource(R.string.control_center_color_edit),
-        activity = activity,
+        navController = navController,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         },
@@ -57,10 +57,11 @@ fun ControlCenterColorPager(
         classes(
             title = R.string.card_tile
         ){
-            SuperActivityArrow(
+
+            SuperNavHostArrow(
                 title = stringResource(R.string.color_edit),
-                context = activity,
-                activity = QSCardColorActivity::class.java
+                navController = navController,
+                route = CenterColorList.CARD_TILE
             )
         }
 
@@ -99,11 +100,12 @@ fun ControlCenterColorPager(
         classes(
             title = R.string.volume_or_brightness
         ){
-            SuperActivityArrow(
+            SuperNavHostArrow(
                 title = stringResource(R.string.color_edit),
-                context = activity,
-                activity = ToggleSliderColorsSettings::class.java
+                navController = navController,
+                route = CenterColorList.TOGGLE_SLIDER
             )
+
         }
         classes(
             title = R.string.device_control
@@ -121,20 +123,20 @@ fun ControlCenterColorPager(
         classes(
             title = R.string.device_center
         ){
-            SuperActivityArrow(
+            SuperNavHostArrow(
                 title = stringResource(R.string.color_edit),
-                context = activity,
-                activity = DeviceCenterColorSettings::class.java
+                navController = navController,
+                route = CenterColorList.DEVICE_CENTER
             )
 
         }
         classes(
             title = R.string.tile
         ){
-            SuperActivityArrow(
+            SuperNavHostArrow(
                 title = stringResource(R.string.color_edit),
-                context = activity,
-                activity = QSListColorActivity::class.java
+                navController = navController,
+                route = CenterColorList.LIST_COLOR
             )
         }
         classes(

@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.wear.compose.material.Icon
 import com.chaos.hyperstar.R
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
@@ -67,7 +68,6 @@ fun ModuleTopAppBar(
     )
 
 }
-
 @Composable
 fun ActivityTopAppBar(
     modifier: Modifier,
@@ -101,6 +101,85 @@ fun ActivityTopAppBar(
 
         },
         actions = actions
+    )
+
+}
+
+@Composable
+fun NavTopAppBar(
+    modifier: Modifier,
+    title : String,
+    scrollBehavior: ScrollBehavior? = null,
+    color : Color,
+    navController: NavController,
+    actions: @Composable() (RowScope.() -> Unit) = {}
+){
+
+    val view = LocalView.current
+
+    TopAppBar(
+        modifier = modifier,
+        color = color,
+        title = title,
+        scrollBehavior = scrollBehavior,
+        navigationIcon = {
+            IconButton(
+                modifier = Modifier.padding(start = 12.dp),
+                onClick = {
+                    view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                    navController.popBackStack()
+                }
+            ) {
+                Icon(
+                    ImageVector.vectorResource(R.drawable.bar_back__exit),
+                    contentDescription = "back",
+                    tint = colorScheme.onBackground)
+            }
+
+        },
+        actions = actions
+    )
+
+}
+
+@Composable
+fun ModuleNavTopAppBar(
+    modifier: Modifier,
+    title : String,
+    scrollBehavior: ScrollBehavior? = null,
+    color : Color,
+    navController: NavController,
+    endIcon :  @Composable () -> Unit = {},
+    endClick:() -> Unit = {}
+){
+
+    TopAppBar(
+        modifier = modifier,
+        color = color,
+        title = title,
+        scrollBehavior = scrollBehavior,
+        navigationIcon = {
+            TopButton(
+                modifier = Modifier.padding(start = 18.dp),
+                imageVector = ImageVector.vectorResource(R.drawable.bar_back__exit),
+                contentDescription = "back",
+                onClick = {
+                    navController.popBackStack()
+                }
+            )
+
+
+        },
+        actions = {
+            endIcon()
+            TopButton(
+                modifier = Modifier.padding(end = 18.dp),
+                imageVector = ImageVector.vectorResource(R.drawable.ic_menu_refresh),
+                contentDescription = "restart",
+                onClick = endClick
+            )
+
+        }
     )
 
 }

@@ -16,9 +16,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.chaos.hyperstar.PagerList
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.SuperActivityArrow
 import com.chaos.hyperstar.ui.base.SuperIntentArrow
+import com.chaos.hyperstar.ui.base.SuperNavHostArrow
 import com.chaos.hyperstar.ui.base.classes
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
@@ -29,6 +32,7 @@ import top.yukonga.miuix.kmp.utils.getWindowSize
 @Composable
 fun ThirdPage(
     activity : ComponentActivity,
+    navController: NavController,
     topAppBarScrollBehavior: ScrollBehavior,
     padding: PaddingValues
 ) {
@@ -84,13 +88,13 @@ fun ThirdPage(
                 leftIcon = R.drawable.dd,
                 title = "东东说他舍不得",
                 summary = "@YunZiA | Hook",
-                activity = activity,
+                navController = navController,
                 url = "coolmarket://u/8555749"
             )
-            SuperActivityArrow(
+            SuperNavHostArrow(
                 title = stringResource(R.string.translator),
-                context = activity,
-                activity = AboutTranslatorPager::class.java
+                navController = navController,
+                route = PagerList.TRANSLATOR
 
             )
 
@@ -102,56 +106,30 @@ fun ThirdPage(
         ){
             SuperIntentArrow(
                 title = stringResource(R.string.qq_group_title),
-                activity = activity,
+                navController = navController,
                 url = "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&amp;k=5ONF7LuaoQS6RWEOUYBuA0x4X8ssvHJp&amp;authKey=Pic4VQJxKBJwSjFzsIzbJ50ILs0vAEPjdC8Nat4zmiuJRlftqz9%2FKjrBwZPQTc4I&amp;noverify=0&amp;group_code=810317966"
             )
             SuperIntentArrow(
                 title = "Telegram",
-                activity = activity,
+                navController = navController,
                 url = "https://t.me/+QQWVM0ToHyEyZmRl"
             )
 
         }
 
         classes(
-            title = R.string.references_title
-        ){
-
-            SuperIntentArrow(
-                title = "miuix-kotlin-multiplatform",
-                summary = "YuKongA | Apache-2.0",
-                activity = activity,
-                url = "https://github.com/miuix-kotlin-multiplatform/miuix"
-            )
-
-            SuperIntentArrow(
-                title = "Xposed",
-                summary = "rovo89,Tungstwenty | Apache-2.0",
-                activity = activity,
-                url = "https://github.com/rovo89/XposedBridge"
-            )
-
-            SuperIntentArrow(
-                title = "XposedBridge",
-                summary = "rovo89 | Apache-2.0",
-                activity = activity,
-                url = "https://github.com/rovo89/XposedBridge"
-            )
-
-            SuperIntentArrow(
-                title = "HyperCeiler",
-                summary = "ReChronoRain | AGPL-3.0",
-                activity = activity,
-                url = "https://github.com/ReChronoRain/HyperCeiler"
-            )
-
-        }
-        classes(
             title = R.string.others
         ) {
+            SuperNavHostArrow(
+                title = stringResource(R.string.references_title),
+                navController = navController,
+                route = PagerList.REFERENCES
+
+            )
             SuperIntentArrow(
                 title = stringResource(R.string.project_address),
-                activity = activity,
+                summary = stringResource(R.string.open_source_statement),
+                navController = navController,
                 url = "https://github.com/YunZiA/HyperStar"
             )
         }

@@ -4,24 +4,30 @@ import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.chaos.hyperstar.CenterColorList
 import com.chaos.hyperstar.R
+import com.chaos.hyperstar.SystemUIPagerList
+import com.chaos.hyperstar.ui.base.ModuleNavPagers
 import com.chaos.hyperstar.ui.base.ModulePagers
 import com.chaos.hyperstar.ui.base.SuperActivityArrow
+import com.chaos.hyperstar.ui.base.SuperNavHostArrow
 import com.chaos.hyperstar.ui.base.SwitchContentFolder
 import com.chaos.hyperstar.ui.base.XSuperDropdown
 import com.chaos.hyperstar.ui.base.XMiuixSuperSliderSwitch
 import com.chaos.hyperstar.ui.base.XSuperSwitch
 import com.chaos.hyperstar.ui.base.classes
 import com.chaos.hyperstar.ui.base.firstClasses
-import com.chaos.hyperstar.ui.module.systemui.controlcenter.media.app.MediaDefaultAppSettingsActivity
 import com.chaos.hyperstar.utils.Utils
 
 
 @Composable
-fun MediaSettingsPager(activity: ComponentActivity) {
-    ModulePagers(
+fun MediaSettingsPager(
+    navController: NavController
+) {
+    ModuleNavPagers(
         activityTitle = stringResource(R.string.media_settings),
-        activity = activity,
+        navController = navController,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         },
@@ -29,10 +35,10 @@ fun MediaSettingsPager(activity: ComponentActivity) {
         firstClasses(
             title = R.string.base_settings
         ){
-            SuperActivityArrow(
+            SuperNavHostArrow(
                 title = stringResource(R.string.media_default_app_settings),
-                context = activity,
-                activity = MediaDefaultAppSettingsActivity::class.java
+                navController = navController,
+                route = SystemUIPagerList.MEDIA_APP
             )
 
         }

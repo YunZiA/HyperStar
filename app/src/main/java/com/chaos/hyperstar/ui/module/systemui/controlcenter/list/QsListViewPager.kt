@@ -1,9 +1,10 @@
 package com.chaos.hyperstar.ui.module.systemui.controlcenter.list
 
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavHostController
 import com.chaos.hyperstar.R
+import com.chaos.hyperstar.ui.base.ModuleNavPagers
 import com.chaos.hyperstar.ui.base.ModulePagers
 import com.chaos.hyperstar.ui.base.XMiuixSlider
 import com.chaos.hyperstar.ui.base.classes
@@ -12,10 +13,12 @@ import com.chaos.hyperstar.utils.Utils
 
 
 @Composable
-fun QsListViewPager(activity: ComponentActivity, ) {
-    ModulePagers(
+fun QsListViewPager(
+    navController: NavHostController
+) {
+    ModuleNavPagers(
         activityTitle = stringResource(R.string.tile_layout),
-        activity = activity,
+        navController = navController,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         }

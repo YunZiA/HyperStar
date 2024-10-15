@@ -45,7 +45,7 @@ class AppListDB(context: Context?) :
         while (csearch.moveToNext()) {
             val label = csearch.getString(csearch.getColumnIndex("app_name"))
             val packageName = csearch.getString(csearch.getColumnIndex("package_name"))
-            Log.d("ggc", "searchAPPlist: $label $packageName")
+//            Log.d("ggc", "searchAPPlist: $label $packageName")
             val appData = AppInfo()
             appData.label = label
             appData.package_name = packageName
@@ -62,7 +62,7 @@ class AppListDB(context: Context?) :
         }
         db_search.close()
         csearch.close()
-        Log.d("ggc", "searchAPPlist: " + appList.size)
+//        Log.d("ggc", "searchAPPlist: " + appList.size)
 
         return appList
     }

@@ -4,10 +4,13 @@ import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.chaos.hyperstar.ui.module.systemui.controlcenter.card.QsCardListActivity
+import androidx.navigation.NavController
 import com.chaos.hyperstar.R
+import com.chaos.hyperstar.SystemUIPagerList
+import com.chaos.hyperstar.ui.base.ModuleNavPagers
 import com.chaos.hyperstar.ui.base.ModulePagers
 import com.chaos.hyperstar.ui.base.SuperActivityArrow
+import com.chaos.hyperstar.ui.base.SuperNavHostArrow
 import com.chaos.hyperstar.ui.base.SwitchContentFolder
 import com.chaos.hyperstar.ui.base.XMiuixContentDropdown
 import com.chaos.hyperstar.ui.base.XMiuixSlider
@@ -16,18 +19,16 @@ import com.chaos.hyperstar.ui.base.XMiuixSuperSliderSwitch
 import com.chaos.hyperstar.ui.base.XSuperSwitch
 import com.chaos.hyperstar.ui.base.classes
 import com.chaos.hyperstar.ui.base.firstClasses
-import com.chaos.hyperstar.ui.module.systemui.controlcenter.list.QsListViewSettings
-import com.chaos.hyperstar.ui.module.systemui.controlcenter.media.MediaSettingsActivity
 import com.chaos.hyperstar.utils.Utils
 
 
 @Composable
 fun ControlCenterPager(
-    activity: ComponentActivity,
+    navController: NavController
 ) {
-    ModulePagers(
+    ModuleNavPagers(
         activityTitle = stringResource(R.string.control_center),
-        activity = activity,
+        navController = navController,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         },
@@ -41,20 +42,21 @@ fun ControlCenterPager(
                 key = "is_super_blur_Widget",
                 option = R.array.is_super_blur_entire,
             )
-            SuperActivityArrow(
+
+            SuperNavHostArrow(
                 title = stringResource(R.string.color_edit),
-                context = activity,
-                activity = ControlCenterColorSettings::class.java
+                navController = navController,
+                route = SystemUIPagerList.COLOR_EDIT
             )
-            SuperActivityArrow(
+            SuperNavHostArrow(
                 title = stringResource(R.string.control_center_edit),
-                context = activity,
-                activity = ControlCenterListSettings::class.java
+                navController = navController,
+                route = SystemUIPagerList.LAYOUT_ARRANGEMENT
             )
-            SuperActivityArrow(
+            SuperNavHostArrow(
                 title = stringResource(R.string.media_settings),
-                context = activity,
-                activity = MediaSettingsActivity::class.java
+                navController = navController,
+                route = SystemUIPagerList.MEDIA
             )
         }
 
@@ -103,11 +105,10 @@ fun ControlCenterPager(
                 switchTitle = stringResource(R.string.enable_card_tile_edit),
                 switchKey = "use_card_tile_list"
             ) {
-                SuperActivityArrow(
+                SuperNavHostArrow(
                     title = stringResource(R.string.card_tile_edit),
-                    context = activity,
-                    activity = QsCardListActivity::class.java
-
+                    navController = navController,
+                    route = SystemUIPagerList.CARD_LIST
                 )
 
             }
@@ -176,12 +177,11 @@ fun ControlCenterPager(
                 option = R.array.is_list_label_mode_entire,
                 showOption = 2,
             ){
-                SuperActivityArrow(
+                SuperNavHostArrow(
                     title = stringResource(R.string.tile_layout),
-                    context = activity,
-                    activity = QsListViewSettings::class.java
+                    navController = navController,
+                    route = SystemUIPagerList.TILE_LAYOUT
                 )
-
             }
             XSuperSwitch(
                 title = stringResource(R.string.list_tile_click_close_title),

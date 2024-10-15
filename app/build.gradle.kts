@@ -81,6 +81,8 @@ android {
 }
 
 dependencies {
+
+    implementation(libs.androidx.navigation.compose)
     implementation("com.github.skydoves:cloudy:0.2.3")
     implementation(libs.haze)
     //implementation ("com.godaddy.android.colorpicker:compose-color-picker-android:0.7.0")

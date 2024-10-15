@@ -5,10 +5,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavController
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.ModulePagers
 import com.chaos.hyperstar.ui.base.ColorPickerTool
 import com.chaos.hyperstar.ui.base.ItemAnim
+import com.chaos.hyperstar.ui.base.ModuleNavPagers
 import com.chaos.hyperstar.ui.base.XSuperDropdown
 import com.chaos.hyperstar.ui.base.classes
 import com.chaos.hyperstar.ui.base.firstClasses
@@ -17,15 +19,15 @@ import com.chaos.hyperstar.utils.Utils
 
 @Composable
 fun QSListColorPager(
-    activity: ComponentActivity,
+    navController: NavController
 ) {
     val tileColor = remember {
         mutableIntStateOf(SPUtils.getInt("qs_list_tile_color_for_state",0))
     }
     val waitTime = 105L
-    ModulePagers(
+    ModuleNavPagers(
         activityTitle = stringResource(R.string.tile_color),
-        activity = activity,
+        navController = navController,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         },

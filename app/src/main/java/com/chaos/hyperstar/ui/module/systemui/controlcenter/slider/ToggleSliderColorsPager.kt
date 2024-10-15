@@ -2,9 +2,11 @@ package com.chaos.hyperstar.ui.module.systemui.controlcenter.slider
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavController
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.ColorPickerTool
 import com.chaos.hyperstar.ui.base.ContentFolder
+import com.chaos.hyperstar.ui.base.ModuleNavPagers
 import com.chaos.hyperstar.ui.base.ModulePagers
 import com.chaos.hyperstar.ui.base.classes
 import com.chaos.hyperstar.ui.base.firstClasses
@@ -12,11 +14,11 @@ import com.chaos.hyperstar.utils.Utils
 
 @Composable
 fun ToggleSliderColorsPager(
-    activity: ToggleSliderColorsSettings
+    navController: NavController
 ) {
-    ModulePagers(
+    ModuleNavPagers(
         activityTitle = stringResource(R.string.toggle_slider_color),
-        activity = activity,
+        navController = navController,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         },

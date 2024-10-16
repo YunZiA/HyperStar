@@ -78,7 +78,7 @@ fun XMiuixSlider(
     maxValue: Float = 1f,
     progress: Float = 0.5f,
     enabled : Boolean = true,
-    x_progress : MutableFloatState = remember { mutableFloatStateOf(SPUtils.getFloat(key, progress)) },
+    x_progress : MutableFloatState = remember { mutableFloatStateOf(SPUtils.getFloat(key, progress).coerceIn(minValue, maxValue)) },
     decimalPlaces : Int = 0
 
 ) {
@@ -187,7 +187,7 @@ fun XMiuixSlider(
                     },
                     color = valueColor,
                     text = if (x_progress.floatValue == progress) stringResource(R.string.default_value)
-                    else if (decimalPlaces == 0) x_progress.floatValue.toInt().toString() + unit
+                    else if (decimalPlaces == 0) x_progress.floatValue.coerceIn(0f, 100f).toInt().toString() + unit
                     else x_progress.floatValue.toString() + unit,
                     textAlign = TextAlign.End,
                     fontSize = 14.sp

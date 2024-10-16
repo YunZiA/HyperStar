@@ -30,7 +30,6 @@ class QSToggleSliderRadius : BaseHooker() {
                 val thisObj = param?.thisObject
                 val mContext = XposedHelpers.callMethod(thisObj,"getResources") as Resources
 
-                //val progressRadius = XposedHelpers.getFloatField(thisObj,"progressRadius")
                 XposedHelpers.setFloatField(thisObj,"progressRadius",dpToPx(mContext,progressRadius))
 
 

@@ -168,4 +168,5 @@
     <string name="device_center_detail_icon">Detail icon</string>
     <string name="open_source_statement">This project is open-sourced under the GPL 3.0 license</string>
     <string name="title_fix_list_tile_icon_scale">Fix scaling issues for some animated tiles</string>
+    <string name="progress_radius_summary">Ensure the custom corner radius does not exceed the background corner radius</string>
 </resources>

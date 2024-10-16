@@ -23,6 +23,7 @@ import com.chaos.hyperstar.hook.app.plugin.QSToggleSliderRadius
 import com.chaos.hyperstar.hook.app.plugin.QSVolumeOrBrightnessValue
 import com.chaos.hyperstar.hook.app.plugin.SuperBlurVolumeManager
 import com.chaos.hyperstar.hook.app.plugin.SuperBlurWidgetManager
+import com.chaos.hyperstar.hook.app.plugin.VolumeColumnProgressRadius
 import com.chaos.hyperstar.hook.tool.starLog
 import com.chaos.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
@@ -134,6 +135,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         doSecMethods(padVolume)
         doSecMethods(QSClockAnim())
         doSecMethods(QSControlCenterList())
+        doSecMethods(VolumeColumnProgressRadius())
 
     }
 

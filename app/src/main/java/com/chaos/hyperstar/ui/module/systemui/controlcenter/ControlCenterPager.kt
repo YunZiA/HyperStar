@@ -119,6 +119,7 @@ fun ControlCenterPager(
         ){
             XMiuixSuperSliderSwitch(
                 switchTitle = stringResource(R.string.is_change_qs_progress_radius_title),
+                switchSummary = stringResource(R.string.progress_radius_summary),
                 switchKey = "is_change_qs_progress_radius",
                 title = stringResource(R.string.qs_progress_radius_title) ,
                 key ="qs_progress_radius",

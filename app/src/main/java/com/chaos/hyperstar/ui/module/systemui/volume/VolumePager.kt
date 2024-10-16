@@ -7,8 +7,10 @@ import androidx.navigation.NavController
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.ui.base.ModuleNavPagers
 import com.chaos.hyperstar.ui.base.ModulePagers
+import com.chaos.hyperstar.ui.base.XMiuixSuperSliderSwitch
 import com.chaos.hyperstar.ui.base.XSuperDropdown
 import com.chaos.hyperstar.ui.base.XSuperSwitch
+import com.chaos.hyperstar.ui.base.classes
 import com.chaos.hyperstar.ui.base.firstClasses
 import com.chaos.hyperstar.utils.Utils
 
@@ -36,6 +38,21 @@ fun VolumePager(
                 summary = stringResource(R.string.is_use_pad_volume_summary),
                 key = "is_use_pad_volume"
             )
+        }
+        classes(title = R.string.progress_bar){
+            XMiuixSuperSliderSwitch(
+                switchTitle = stringResource(R.string.is_change_qs_progress_radius_title),
+                switchKey = "is_change_volume_progress_radius",
+                switchSummary = stringResource(id = R.string.progress_radius_summary),
+                title = stringResource(R.string.qs_progress_radius_title) ,
+                key ="volume_progress_radius",
+                minValue = 0f,
+                maxValue = 20f,
+                progress = 2f,
+                unit = "dp",
+                decimalPlaces = 1
+            )
+
         }
     }
 

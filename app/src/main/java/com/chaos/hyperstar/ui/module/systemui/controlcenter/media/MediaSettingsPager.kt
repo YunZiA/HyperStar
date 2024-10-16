@@ -97,8 +97,9 @@ fun MediaSettingsPager(
                     switchKey = "is_cover_dim_background",
                     title = stringResource(R.string.cover_dim_background_value_title),
                     key = "cover_dim_background_value",
-                    progress = 50f,
-                    maxValue = 255f,
+                    unit = "%",
+                    progress = 0f,
+                    maxValue = 100f,
                     minValue = 0f
                 )
 

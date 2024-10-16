@@ -3,7 +3,10 @@ package chaos.utils
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.graphics.HardwareRenderer
+import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.RenderEffect
 import android.graphics.RenderNode
@@ -11,6 +14,7 @@ import android.graphics.Shader
 import android.hardware.HardwareBuffer
 import android.media.ImageReader
 import android.util.Log
+import androidx.palette.graphics.Palette
 
 class BitmapUtils {
     companion object {
@@ -21,7 +25,7 @@ class BitmapUtils {
             isBlur:Boolean,
             blurRadius:Float,
             isDim:Boolean,
-            alpha: Int
+            alpha: Float
         ):Bitmap{
             val startTime = System.nanoTime()
             var processedBitmap = bitmap
@@ -30,14 +34,15 @@ class BitmapUtils {
                 processedBitmap = scaleAndCropCenterBitmap(processedBitmap, scaleFactor)
             }
 
+
+            if (isDim) {
+                processedBitmap = reduceBrightness(processedBitmap,alpha)
+                //processedBitmap = dim(processedBitmap, alpha)
+            }
+
             if (isBlur) {
                 processedBitmap = blur(processedBitmap, blurRadius)
             }
-
-            if (isDim) {
-                processedBitmap = dim(processedBitmap, alpha)
-            }
-
             val endTime = System.nanoTime()
 
             Log.d("ggc", "doBitmap: "+(endTime-startTime)/ 1_000_000.0)
@@ -48,15 +53,51 @@ class BitmapUtils {
         }
 
 
-        private fun dim(bitmap: Bitmap,alpha: Int):Bitmap{
-            val dimBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+        fun auto(bitmap: Bitmap,callback: (Bitmap) -> Unit){
+            val result = Bitmap.createBitmap(bitmap.width, bitmap.height, bitmap.config)
+            val canvas = Canvas(result)
+            val paint = Paint()
+            paint.alpha = 255
 
-            val canvas = Canvas(dimBitmap)
-
-            canvas.drawColor(Color.argb(alpha, 0, 0, 0))
-
-            return dimBitmap
+            Palette.from(bitmap).generate { palette ->
+                val vibrantColor = palette?.getVibrantColor(Color.GREEN)
+                // 使用 vibrantColor 对 bitmap 进行处理
+                if (vibrantColor != null) {
+                    paint.color = vibrantColor
+                    canvas.drawBitmap(bitmap, 0f, 0f, paint)
+                } else {
+                    // 如果没有 vibrantColor，可以使用默认颜色
+                    paint.color = Color.GREEN
+                    canvas.drawBitmap(bitmap, 0f, 0f, paint)
+                }
+                callback(result)
+            }
         }
+
+        private fun reduceBrightness(bitmap: Bitmap, factor: Float): Bitmap {
+            val result = Bitmap.createBitmap(bitmap.width, bitmap.height, bitmap.config)
+
+            val canvas = Canvas(result)
+            val paint = Paint()
+            paint.isFilterBitmap = true
+            paint.isDither = true
+
+            val colorMatrix = ColorMatrix()
+
+            val lum = factor * 255 * 0.01f
+            val brightnessArray = floatArrayOf(
+                1f, 0f, 0f, 0f, lum,
+                0f, 1f, 0f, 0f, lum,
+                0f, 0f, 1f, 0f, lum,
+                0f, 0f, 0f, 1f, 0f
+            )
+            colorMatrix.set(brightnessArray)
+            //colorMatrix.setSaturation(saturation) // 降低饱和度来达到降低亮度的效果
+            paint.setColorFilter(ColorMatrixColorFilter(colorMatrix))
+            canvas.drawBitmap(bitmap, 0f, 0f, paint)
+            return result
+        }
+
 
         private fun scaleAndCropCenterBitmap(original: Bitmap, scaleFactor: Float): Bitmap {
 

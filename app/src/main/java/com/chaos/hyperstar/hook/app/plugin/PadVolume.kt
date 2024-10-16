@@ -580,7 +580,7 @@ class PadVolume : BaseHooker() {
 
 }
 
-fun dpToPx(resources: Resources, dp: Float): Int {
+private fun dpToPx(resources: Resources, dp: Float): Int {
     // 获取屏幕的密度
     val density = resources.displayMetrics.density
 

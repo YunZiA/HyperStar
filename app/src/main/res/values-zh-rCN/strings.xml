@@ -168,4 +168,5 @@
     <string name="device_center_detail_icon">展开图标</string>
     <string name="open_source_statement">本项目基于GPL3.0协议开源</string>
     <string name="title_fix_list_tile_icon_scale">修复部分动画磁贴缩放异常</string>
+    <string name="progress_radius_summary">自定义的圆角不会大于背景圆角</string>
 </resources>

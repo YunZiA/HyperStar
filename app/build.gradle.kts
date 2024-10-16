@@ -85,6 +85,10 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation("com.github.skydoves:cloudy:0.2.3")
     implementation(libs.haze)
+    //implementation ("com.android.support:palette-v7:29.0.0")
+
+    implementation ("androidx.palette:palette-ktx:1.0.0")
+
     //implementation ("com.godaddy.android.colorpicker:compose-color-picker-android:0.7.0")
     implementation("com.github.ajalt.colormath:colormath-ext-jetpack-compose:3.6.0")
     implementation(libs.androidx.profileinstaller)

@@ -3,7 +3,9 @@ package com.chaos.hyperstar.hook.app.plugin
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.Outline
 import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
@@ -12,16 +14,18 @@ import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
+import android.view.ViewOutlineProvider
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.graphics.drawable.RoundedBitmapDrawable
+import chaos.utils.DensityUtil.Companion.dpToPx
 import com.chaos.hyperstar.hook.base.BaseHooker
 import com.chaos.hyperstar.hook.tool.starLog
 import com.chaos.hyperstar.utils.XSPUtils
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
-import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 
 
@@ -337,19 +341,37 @@ class QSListView : BaseHooker() {
             classLoader
         )
         if (isQSListTileRadius){
-            XposedHelpers.findAndHookMethod(
-                classTile,
-                "setCornerRadius",
-                Float::class.java,
-                object : XC_MethodHook() {
+//            XposedHelpers.findAndHookMethod(classTile,
+//                "setDisabledBg", Drawable::class.java, object : XC_MethodHook() {
+//                    override fun beforeHookedMethod(param: MethodHookParam) {
+//                    }
+//
+//                    override fun afterHookedMethod(param: MethodHookParam?) {
+//                        super.afterHookedMethod(param)
+//                        val disabledBg = param?.args?.get(0) as Drawable
+//                        if (disabledBg is GradientDrawable){
+//                            starLog.log("setDisabledBg is GradientDrawable")
+//                        }else if(disabledBg is BitmapDrawable){
+//                            starLog.log("setDisabledBg is BitmapDrawable")
+//
+//                        }
+//                        starLog.log("setDisabledBg-$disabledBg")
+//                    }
+//                })
+
+
+            XposedHelpers.findAndHookMethod(classTile,
+                "setCornerRadius", Float::class.java, object : XC_MethodHook() {
                     override fun beforeHookedMethod(param: MethodHookParam) {
 
                         val pluginContext: Context = XposedHelpers.getObjectField(param.thisObject, "pluginContext") as Context;
 
                         param.args[0] = dpToPx(pluginContext.resources,qsListTileRadius)
+
                     }
 
                     override fun afterHookedMethod(param: MethodHookParam) {
+
                     }
                 })
 
@@ -363,9 +385,9 @@ class QSListView : BaseHooker() {
             object : MethodHook {
 
                 override fun before(param: XC_MethodHook.MethodHookParam?) {
+                    val thisObj = param?.thisObject
                     if ( labelMode != 0 ) {
 
-                        val thisObj = param?.thisObject
                         val tileSize = XposedHelpers.getFloatField(thisObj,"tileSize").toInt()
                         height = tileSize
                     }
@@ -393,11 +415,11 @@ class QSListView : BaseHooker() {
                             "drawable",
                             "miui.systemui.plugin"
                         );
-                        val warningD: Drawable = pluginContext.getTheme().getDrawable(warning);
-                        val enabledD: Drawable = pluginContext.getTheme().getDrawable(enabled);
-                        val restrictedD: Drawable = pluginContext.getTheme().getDrawable(restricted);
-                        val disabledD: Drawable = pluginContext.getTheme().getDrawable(disabled);
-                        val unavailableD: Drawable = pluginContext.getTheme().getDrawable(unavailable);
+                        val warningD: Drawable = pluginContext.theme.getDrawable(warning);
+                        val enabledD: Drawable = pluginContext.theme.getDrawable(enabled);
+                        val restrictedD: Drawable = pluginContext.theme.getDrawable(restricted);
+                        val disabledD: Drawable = pluginContext.theme.getDrawable(disabled);
+                        val unavailableD: Drawable = pluginContext.theme.getDrawable(unavailable);
                         if (warningD is GradientDrawable) {
                             warningD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
                         }
@@ -424,6 +446,10 @@ class QSListView : BaseHooker() {
                         return
                     }
                     val thisObj = param?.thisObject
+                    //val disabledBg = XposedHelpers.getObjectField(thisObj,"disabledBg") as Drawable
+
+                    val pluginContext: Context =
+                        XposedHelpers.getObjectField(param?.thisObject, "pluginContext") as Context;
                     val Icon: ImageView =
                         XposedHelpers.getObjectField(thisObj, "icon") as ImageView;
 
@@ -481,6 +507,7 @@ class QSListView : BaseHooker() {
 
                         Icon.setImageDrawable(icons)
 
+
                     }
 
 
@@ -517,13 +544,7 @@ class QSListView : BaseHooker() {
         }
     }
 
-    fun dpToPx(resources: Resources, dp: Float): Float {
-        // 获取屏幕的密度
-        val density = resources.displayMetrics.density
 
-        // 转换 dp 到 px
-        return dp * density
-    }
 
 
 }

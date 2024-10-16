@@ -3,12 +3,17 @@ package com.chaos.hyperstar.hook.app.plugin
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Outline
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.view.View
+import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.core.graphics.drawable.toDrawable
 import chaos.utils.BitmapUtils
+import chaos.utils.BitmapUtils.Companion.auto
 import com.chaos.hyperstar.hook.base.BaseHooker
 import com.chaos.hyperstar.hook.tool.starLog
 import com.chaos.hyperstar.utils.XSPUtils
@@ -29,7 +34,7 @@ class QSMediaCoverBackground: BaseHooker() {
     val isBlur:Boolean = XSPUtils.getBoolean("is_cover_blur_background",false)
     val blurRadius:Float = XSPUtils.getFloat("cover_blur_background_value",50f)
     val isDim:Boolean = XSPUtils.getBoolean("is_cover_dim_background",false)
-    val alpha:Int = XSPUtils.getFloat("cover_dim_background_value",50f).toInt()
+    val alpha = XSPUtils.getFloat("cover_dim_background_value",0f).coerceIn(0f, 100f)
     val coverAnciently:Boolean = XSPUtils.getBoolean("cover_anciently",false)
 
     override fun getLocalRes(res : Resources){
@@ -45,9 +50,11 @@ class QSMediaCoverBackground: BaseHooker() {
     }
 
     private fun startMethodsHook() {
-        var foreground: RoundedBitmapDrawable? = null
+        var foreground: Drawable? = null
         val MediaPlayerMetaData  = XposedHelpers.findClass("miui.systemui.controlcenter.media.MediaPlayerMetaData",classLoader)
         val MediaPlayerViewHolder  = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",classLoader)
+
+
         XposedHelpers.findAndHookMethod(MediaPlayerViewHolder, "updateMetaData", MediaPlayerMetaData , object : XC_MethodHook() {
             override fun beforeHookedMethod(param: MethodHookParam?) {
 
@@ -60,6 +67,7 @@ class QSMediaCoverBackground: BaseHooker() {
                 val thisObj = param.thisObject
                 val itemView : View = XposedHelpers.getObjectField(thisObj,"itemView") as View
                 val cover = itemView.findViewByIdName("cover") as ImageView
+                val res = itemView.resources
 
                 if (mediaPlayerMetaData == null) {
 
@@ -85,7 +93,6 @@ class QSMediaCoverBackground: BaseHooker() {
                     return
                 }
 
-                val _cornerRadius : Float = XposedHelpers.getObjectField(thisObj,"_cornerRadius") as Float
 
                 var art = XposedHelpers.callMethod(mediaPlayerMetaData,"getArt")
 
@@ -96,31 +103,44 @@ class QSMediaCoverBackground: BaseHooker() {
 
                 }
 
-                art = BitmapUtils.doBitmap(art,isScale,scaleFactor,isBlur,blurRadius,isDim,alpha)
+                art = BitmapUtils.doBitmap(art,isScale,scaleFactor,isBlur,blurRadius,isDim,-alpha)
 
-                val roundedArtDrawable = RoundedBitmapDrawableFactory.create(itemView.resources, art).apply {
-                    cornerRadius = _cornerRadius
-                    setAntiAlias(true)
-                }
+                val artDrawable = art.toDrawable(res)
 
                 if (coverAnciently && foreground == null) {
-                    foreground = RoundedBitmapDrawableFactory.create(itemView.resources, vin).apply {
-                        cornerRadius = _cornerRadius
-                        setAntiAlias(true)
-                    }
+
+                    foreground = vin?.toDrawable(res)
+
                 }
 
                 itemView.background = if (coverAnciently) {
-                    val layerDrawable = LayerDrawable(arrayOf(roundedArtDrawable, foreground))
+                    val layerDrawable = LayerDrawable(arrayOf(artDrawable, foreground))
                     layerDrawable
                 } else {
-                    roundedArtDrawable
+                    artDrawable
                 }
 
 
             }
         })
         if (coverBackground){
+            XposedHelpers.findAndHookConstructor(MediaPlayerViewHolder,View::class.java,object : XC_MethodHook(){
+                override fun afterHookedMethod(param: MethodHookParam?) {
+                    super.afterHookedMethod(param)
+                    val thisObj = param?.thisObject
+                    val itemView : View = XposedHelpers.getObjectField(thisObj,"itemView") as View
+                    val _cornerRadius : Float = XposedHelpers.getFloatField(thisObj,"_cornerRadius")
+                    itemView.outlineProvider = object : ViewOutlineProvider(){
+                        override fun getOutline(view: View?, outline: Outline?) {
+                            if (view == null) return
+                            outline?.setRoundRect(0,0,view.width,view.height,_cornerRadius)
+                        }
+
+                    }
+                    itemView.clipToOutline = true
+
+                }
+            })
             XposedHelpers.findAndHookMethod(MediaPlayerViewHolder,"updateResources",object : XC_MethodReplacement(){
                 override fun replaceHookedMethod(param: MethodHookParam?): Any? {
 

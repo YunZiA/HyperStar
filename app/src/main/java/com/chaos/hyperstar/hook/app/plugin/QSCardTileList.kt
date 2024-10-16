@@ -2,7 +2,9 @@ package com.chaos.hyperstar.hook.app.plugin
 
 import android.content.Context
 import android.content.res.XModuleResources
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.util.Log
 import android.widget.LinearLayout
@@ -11,6 +13,7 @@ import com.chaos.hyperstar.hook.tool.starLog
 import com.chaos.hyperstar.hook.tool.starLog.logE
 import com.chaos.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.XposedHelpers.findAndHookMethod
 
@@ -78,14 +81,17 @@ class QSCardTileList :BaseHooker() {
                 }
             }
         )
-        XposedHelpers.findAndHookMethod(QSCardItemView,"setCornerRadius",Float::class.java,object : XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val radius = param?.args?.get(0)
-                starLog.log("$radius")
+        findAndHookMethod(QSCardItemView,"setCornerRadius",Float::class.java,object : XC_MethodHook(){
+            override fun beforeHookedMethod(param: MethodHookParam?) {
+                super.beforeHookedMethod(param)
+                val linearLayout = param?.thisObject as LinearLayout
+                val cornerRadius = XposedHelpers.getFloatField(linearLayout, "_cornerRadius")
+                param.args[0] = cornerRadius
             }
+
+
         })
-//        XCallback.PRIORITY_HIGHEST
+//
         findAndHookMethod(QSCardItemView, "updateBackground", object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam) {
                     val linearLayout: LinearLayout = param.thisObject as LinearLayout

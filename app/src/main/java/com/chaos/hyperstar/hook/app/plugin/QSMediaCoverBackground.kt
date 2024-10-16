@@ -14,6 +14,7 @@ import com.chaos.hyperstar.hook.tool.starLog
 import com.chaos.hyperstar.utils.XSPUtils
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedHelpers
 
 
@@ -118,8 +119,17 @@ class QSMediaCoverBackground: BaseHooker() {
 
 
             }
+        })
+        if (coverBackground){
+            XposedHelpers.findAndHookMethod(MediaPlayerViewHolder,"updateResources",object : XC_MethodReplacement(){
+                override fun replaceHookedMethod(param: MethodHookParam?): Any? {
+
+                    return null
+                }
+
+            })
+
         }
-        )
     }
 
 

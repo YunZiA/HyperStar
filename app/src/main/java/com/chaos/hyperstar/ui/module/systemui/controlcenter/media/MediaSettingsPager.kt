@@ -1,6 +1,12 @@
 package com.chaos.hyperstar.ui.module.systemui.controlcenter.media
 
 import androidx.activity.ComponentActivity
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -11,6 +17,7 @@ import com.chaos.hyperstar.SystemUIPagerList
 import com.chaos.hyperstar.ui.base.ModuleNavPagers
 import com.chaos.hyperstar.ui.base.ModulePagers
 import com.chaos.hyperstar.ui.base.SuperActivityArrow
+import com.chaos.hyperstar.ui.base.SuperContentDropdown
 import com.chaos.hyperstar.ui.base.SuperNavHostArrow
 import com.chaos.hyperstar.ui.base.SwitchContentFolder
 import com.chaos.hyperstar.ui.base.XSuperDropdown
@@ -68,47 +75,57 @@ fun MediaSettingsPager(
                 title = stringResource(R.string.is_emptyState_marquee_title),
                 key = "is_emptyState_marquee"
             )
-            SwitchContentFolder(
-                switchTitle = stringResource(R.string.is_cover_background_title),
-                switchKey = "is_cover_background",
+            SuperContentDropdown(
+                title = stringResource(R.string.media_background_style_title),
+                key = "media_background_style",
+                option = R.array.media_background_style_entire
             ){
-                XMiuixSuperSliderSwitch(
-                    switchTitle = stringResource(R.string.is_cover_scale_background_title),
-                    switchKey = "is_cover_scale_background",
-                    title = stringResource(R.string.cover_scale_background_value_title),
-                    key = "cover_scale_background_value",
-                    progress = 1.5f,
-                    maxValue = 2f,
-                    minValue = 1.1f,
-                    decimalPlaces = 2
-                )
-                XMiuixSuperSliderSwitch(
-                    switchTitle = stringResource(R.string.is_cover_blur_background_title),
-                    switchKey = "is_cover_blur_background",
-                    title = stringResource(R.string.cover_blur_background_value_title),
-                    key = "cover_blur_background_value",
-                    progress = 50f,
-                    maxValue = 60f,
-                    minValue = 0f,
-                    decimalPlaces = 2
-                )
-                XMiuixSuperSliderSwitch(
-                    switchTitle = stringResource(R.string.is_cover_dim_background_title),
-                    switchKey = "is_cover_dim_background",
-                    title = stringResource(R.string.cover_dim_background_value_title),
-                    key = "cover_dim_background_value",
-                    unit = "%",
-                    progress = 0f,
-                    maxValue = 100f,
-                    minValue = 0f
-                )
+                AnimatedVisibility (
+                    (it.value == 2),
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically()
+                ) {
+                    Column{
+                        XMiuixSuperSliderSwitch(
+                            switchTitle = stringResource(R.string.is_cover_scale_background_title),
+                            switchKey = "is_cover_scale_background",
+                            title = stringResource(R.string.cover_scale_background_value_title),
+                            key = "cover_scale_background_value",
+                            progress = 1.5f,
+                            maxValue = 2f,
+                            minValue = 1.1f,
+                            decimalPlaces = 2
+                        )
+                        XMiuixSuperSliderSwitch(
+                            switchTitle = stringResource(R.string.is_cover_blur_background_title),
+                            switchKey = "is_cover_blur_background",
+                            title = stringResource(R.string.cover_blur_background_value_title),
+                            key = "cover_blur_background_value",
+                            progress = 50f,
+                            maxValue = 60f,
+                            minValue = 0f,
+                            decimalPlaces = 2
+                        )
+                        XMiuixSuperSliderSwitch(
+                            switchTitle = stringResource(R.string.is_cover_dim_background_title),
+                            switchKey = "is_cover_dim_background",
+                            title = stringResource(R.string.cover_dim_background_value_title),
+                            key = "cover_dim_background_value",
+                            unit = "%",
+                            progress = 0f,
+                            maxValue = 100f,
+                            minValue = 0f
+                        )
 
-                XSuperSwitch(
-                    title = stringResource(R.string.cover_anciently_title),
-                    key = "cover_anciently"
-                )
+                        XSuperSwitch(
+                            title = stringResource(R.string.cover_anciently_title),
+                            key = "cover_anciently"
+                        )
 
+                    }
+                }
             }
+
 
 
         }

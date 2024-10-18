@@ -65,6 +65,12 @@
         <item>全局</item>
     </string-array>
 
+    <string-array name="media_background_style_entire">
+        <item>默认</item>
+        <item>封面取色</item>
+        <item>封面</item>
+    </string-array>
+
     <string-array name="seekbar_value_style_entire">
         <item>百分比</item>
         <item>原始值</item>

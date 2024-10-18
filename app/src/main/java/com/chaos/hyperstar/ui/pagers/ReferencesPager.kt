@@ -40,6 +40,13 @@ fun ReferencesPager(
                 navController = navController,
                 url = "https://github.com/rovo89/XposedBridge"
             )
+
+            SuperIntentArrow(
+                title = "Haze",
+                summary = "Chris Banes",
+                navController = navController,
+                url = "https://github.com/chrisbanes/haze"
+            )
         }
         classes(title = "AGPL-3.0") {
 

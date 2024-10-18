@@ -341,24 +341,6 @@ class QSListView : BaseHooker() {
             classLoader
         )
         if (isQSListTileRadius){
-//            XposedHelpers.findAndHookMethod(classTile,
-//                "setDisabledBg", Drawable::class.java, object : XC_MethodHook() {
-//                    override fun beforeHookedMethod(param: MethodHookParam) {
-//                    }
-//
-//                    override fun afterHookedMethod(param: MethodHookParam?) {
-//                        super.afterHookedMethod(param)
-//                        val disabledBg = param?.args?.get(0) as Drawable
-//                        if (disabledBg is GradientDrawable){
-//                            starLog.log("setDisabledBg is GradientDrawable")
-//                        }else if(disabledBg is BitmapDrawable){
-//                            starLog.log("setDisabledBg is BitmapDrawable")
-//
-//                        }
-//                        starLog.log("setDisabledBg-$disabledBg")
-//                    }
-//                })
-
 
             XposedHelpers.findAndHookMethod(classTile,
                 "setCornerRadius", Float::class.java, object : XC_MethodHook() {
@@ -422,19 +404,24 @@ class QSListView : BaseHooker() {
                         val unavailableD: Drawable = pluginContext.theme.getDrawable(unavailable);
                         if (warningD is GradientDrawable) {
                             warningD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
+                            //warningD.setStroke(10,Color.RED)
                         }
                         if (enabledD is GradientDrawable) {
 
                             enabledD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
+                            //enabledD.setStroke(10,Color.RED)
                         }
                         if (restrictedD is GradientDrawable) {
                             restrictedD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
+                            //restrictedD.setStroke(10,Color.RED)
                         }
                         if (disabledD is GradientDrawable) {
                             disabledD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
+                            //disabledD.setStroke(10,Color.RED)
                         }
                         if (unavailableD is GradientDrawable) {
                             unavailableD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
+                            //unavailableD.setStroke(10,Color.RED)
                         }
 
                     }

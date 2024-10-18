@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.HardwareRenderer
+import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.RenderEffect
@@ -14,7 +15,10 @@ import android.graphics.Shader
 import android.hardware.HardwareBuffer
 import android.media.ImageReader
 import android.util.Log
+import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.toColor
 import androidx.palette.graphics.Palette
+import com.chaos.hyperstar.hook.tool.starLog
 
 class BitmapUtils {
     companion object {
@@ -40,6 +44,7 @@ class BitmapUtils {
                 //processedBitmap = dim(processedBitmap, alpha)
             }
 
+
             if (isBlur) {
                 processedBitmap = blur(processedBitmap, blurRadius)
             }
@@ -53,28 +58,111 @@ class BitmapUtils {
         }
 
 
-        fun auto(bitmap: Bitmap,callback: (Bitmap) -> Unit){
+        fun auto(bitmap: Bitmap):Bitmap{
             val result = Bitmap.createBitmap(bitmap.width, bitmap.height, bitmap.config)
             val canvas = Canvas(result)
-            val paint = Paint()
-            paint.alpha = 255
+            val palette = Palette.from(bitmap).generate()
 
-            Palette.from(bitmap).generate { palette ->
-                val vibrantColor = palette?.getVibrantColor(Color.GREEN)
-                // 使用 vibrantColor 对 bitmap 进行处理
-                if (vibrantColor != null) {
-                    paint.color = vibrantColor
-                    canvas.drawBitmap(bitmap, 0f, 0f, paint)
-                } else {
-                    // 如果没有 vibrantColor，可以使用默认颜色
-                    paint.color = Color.GREEN
-                    canvas.drawBitmap(bitmap, 0f, 0f, paint)
-                }
-                callback(result)
+            val dominantColor = palette.getDominantColor(Color.TRANSPARENT)
+            if (dominantColor == Color.TRANSPARENT){
+                starLog.log("backgroundColor is null")
+                return bitmap
             }
+
+            val outHsl = FloatArray(3)
+            ColorUtils.colorToHSL(dominantColor,outHsl)
+            //starLog.log("1 Hue: ${outHsl[0]}, Saturation: ${outHsl[1]}, Lightness: ${outHsl[2]}")
+            outHsl[2] = if (outHsl[2] > 0.5f){
+                0.4f
+            }else if (outHsl[2] < 0.11f){
+                0.2f
+            } else if (outHsl[2] < 0.2f){
+                0.25f
+            }else{
+                outHsl[2]
+            }
+            outHsl[1] = if (outHsl[1] < 0.45f){
+                0.5f
+            } else if (outHsl[1] > 0.85f) {
+                0.5f
+            }else outHsl[1]
+
+            //starLog.log("2 Hue: ${outHsl[0]}, Saturation: ${outHsl[1]}, Lightness: ${outHsl[2]}")
+
+            val backgroundColor = ColorUtils.HSLToColor(outHsl)
+
+            canvas.drawColor(backgroundColor)
+
+            return result
+        }
+
+        fun mixColorsMultiplicative(color1: Int, color2: Int): Int {
+            val r1 = Color.red(color1)
+            val g1 = Color.green(color1)
+            val b1 = Color.blue(color1)
+            val a1 = Color.alpha(color1)
+
+            val r2 = Color.red(color2)
+            val g2 = Color.green(color2)
+            val b2 = Color.blue(color2)
+            val a2 = Color.alpha(color2)
+
+            val r = (r1 * r2 / 255).toInt()
+            val g = (g1 * g2 / 255).toInt()
+            val b = (b1 * b2 / 255).toInt()
+            val a = (a1 * a2 / 255).toInt()
+
+            return Color.argb(a, r, g, b)
+        }
+
+        fun mixColorsLinear(color1: Int, color2: Int, ratio: Float): Int {
+            val r1 = Color.red(color1)
+            val g1 = Color.green(color1)
+            val b1 = Color.blue(color1)
+            val a1 = Color.alpha(color1)
+
+            val r2 = Color.red(color2)
+            val g2 = Color.green(color2)
+            val b2 = Color.blue(color2)
+            val a2 = Color.alpha(color2)
+
+            val r = (r1 * (1 - ratio) + r2 * ratio).toInt()
+            val g = (g1 * (1 - ratio) + g2 * ratio).toInt()
+            val b = (b1 * (1 - ratio) + b2 * ratio).toInt()
+            val a = (a1 * (1 - ratio) + a2 * ratio).toInt()
+
+            return Color.argb(a, r, g, b)
+        }
+
+        fun getColorBrightness(color: Int): Int {
+            val red = Color.red(color)
+            val green = Color.green(color)
+            val blue = Color.blue(color)
+
+            // 使用加权和计算亮度
+            val brightness = (0.299 * red + 0.587 * green + 0.114 * blue).toInt()
+
+            return brightness
+        }
+
+        fun adjustColorBrightness(color: Int, brightness: Float): Int {
+            val red = Color.red(color)
+            val green = Color.green(color)
+            val blue = Color.blue(color)
+
+            val alpha = Color.alpha(color)
+
+            // 计算新的 RGB 值
+            val newRed = (red + (255 - red) * brightness).toInt().coerceIn(0, 255)
+            val newGreen = (green + (255 - green) * brightness).toInt().coerceIn(0, 255)
+            val newBlue = (blue + (255 - blue) * brightness).toInt().coerceIn(0, 255)
+
+            // 返回新的颜色值
+            return Color.argb(alpha, newRed, newGreen, newBlue)
         }
 
         private fun reduceBrightness(bitmap: Bitmap, factor: Float): Bitmap {
+
             val result = Bitmap.createBitmap(bitmap.width, bitmap.height, bitmap.config)
 
             val canvas = Canvas(result)

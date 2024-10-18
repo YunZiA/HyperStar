@@ -7,6 +7,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -32,7 +33,17 @@ class QSControlCenterColor :BaseHooker() {
         startToggleSliderColorHook()
         startListColorHook()
         startDeviceColorRes()
-
+//        resparam?.res?.setReplacement(plugin, "drawable", "qs_background_disabled", object : XResources.DrawableLoader() {
+//            override fun newDrawable(res: XResources?, id: Int): Drawable {
+//                val newDraw = res?.getDrawable(id) as Drawable
+//                if (newDraw is GradientDrawable){
+//                    newDraw.setStroke(20,Color.RED)
+//                }
+//                return newDraw
+//
+//
+//            }
+//        })
 
     }
 

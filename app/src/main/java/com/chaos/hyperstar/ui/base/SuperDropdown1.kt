@@ -9,6 +9,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -123,6 +124,47 @@ fun XMiuixContentDropdown(
 
         }
     }
+}
+
+@Composable
+fun SuperContentDropdown(
+    title : String,
+    option: Int,
+    key : String,
+    summary : String ?= null,
+    insideMargin: DpSize = DpSize(24.dp, 16.dp),
+    popupHorizontalPadding: Dp = 12.dp,
+    content: @Composable ((MutableState<Int>) -> Unit),
+) {
+
+    val dropdownOptions = stringArrayResource(id = option).toList()
+    val dropdownSelectedOption = remember { mutableStateOf(SPUtils.getInt(key,0)) }
+
+    SuperDropdown(
+        modifier = Modifier,
+        title = title,
+        summary = summary,
+        items = dropdownOptions,
+        horizontalPadding = popupHorizontalPadding+insideMargin.width/2,
+        insideMargin = insideMargin,
+        selectedIndex = dropdownSelectedOption.value,
+        onSelectedIndexChange = { newOption ->
+            dropdownSelectedOption.value = newOption
+            SPUtils.setInt(key,newOption)},
+        alwaysRight = true
+    )
+    content(dropdownSelectedOption)
+
+//    AnimatedVisibility (
+//        (dropdownSelectedOption.value == showOption),
+//        enter = fadeIn() + expandVertically(),
+//        exit = fadeOut() + shrinkVertically()
+//    ) {
+//        Column{
+//            content()
+//
+//        }
+//    }
 }
 
 @Composable

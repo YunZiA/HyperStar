@@ -26,7 +26,7 @@ fun Modifier.showBlur(hazeState: HazeState) = composed {
     val hazeStyle = remember(containerColor, alpha, blurRadius, noiseFactor) {
         HazeStyle(
             backgroundColor = containerColor,
-            tint = HazeTint.Color(containerColor.copy(alpha)),
+            tint = HazeTint(containerColor.copy(alpha)),
             blurRadius = blurRadius,
             noiseFactor = noiseFactor
         )

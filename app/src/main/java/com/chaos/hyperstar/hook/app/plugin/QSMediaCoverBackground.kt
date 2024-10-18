@@ -26,6 +26,8 @@ import de.robv.android.xposed.XposedHelpers
 class QSMediaCoverBackground: BaseHooker() {
 
     var vin: Bitmap? = null;
+    val mediaBackground= XSPUtils.getInt("media_background_style",0)
+    val defaultBackground = (mediaBackground == 0)
     val coverBackground = XSPUtils.getBoolean("is_cover_background",false)
     val isScale:Boolean = XSPUtils.getBoolean("is_cover_scale_background",false)
     val isHideCover:Boolean = XSPUtils.getBoolean("is_hide_cover",false)
@@ -53,7 +55,7 @@ class QSMediaCoverBackground: BaseHooker() {
         var foreground: Drawable? = null
         val MediaPlayerMetaData  = XposedHelpers.findClass("miui.systemui.controlcenter.media.MediaPlayerMetaData",classLoader)
         val MediaPlayerViewHolder  = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",classLoader)
-
+        val CommonUtils = XposedHelpers.findClass("miui.systemui.util.CommonUtils",classLoader)
 
         XposedHelpers.findAndHookMethod(MediaPlayerViewHolder, "updateMetaData", MediaPlayerMetaData , object : XC_MethodHook() {
             override fun beforeHookedMethod(param: MethodHookParam?) {
@@ -71,8 +73,10 @@ class QSMediaCoverBackground: BaseHooker() {
 
                 if (mediaPlayerMetaData == null) {
 
-                    if (coverBackground){
-                        XposedHelpers.callMethod(thisObj,"updateResources")
+                    if (!defaultBackground){
+                        val background = itemView.resources.getIdentifier("media_player_background","drawable",plugin)
+                        itemView.setBackgroundResource(background)
+
                     }
 
                     return
@@ -89,12 +93,16 @@ class QSMediaCoverBackground: BaseHooker() {
 
 
                 }
-                if (!coverBackground){
+                if (defaultBackground){
                     return
                 }
 
 
                 var art = XposedHelpers.callMethod(mediaPlayerMetaData,"getArt")
+                if (art == null){
+                    starLog.log("art is null")
+                    return
+                }
 
                 if (art !is Bitmap){
                     starLog.log("mediaPlayerMetaData:art is not get!!!")
@@ -103,7 +111,13 @@ class QSMediaCoverBackground: BaseHooker() {
 
                 }
 
-                art = BitmapUtils.doBitmap(art,isScale,scaleFactor,isBlur,blurRadius,isDim,-alpha)
+                art = if (mediaBackground == 1){
+                    auto(art)
+                }else if (mediaBackground == 2){
+                    BitmapUtils.doBitmap(art,isScale,scaleFactor,isBlur,blurRadius,isDim,-alpha)
+                }else{
+                    return
+                }
 
                 val artDrawable = art.toDrawable(res)
 
@@ -123,7 +137,7 @@ class QSMediaCoverBackground: BaseHooker() {
 
             }
         })
-        if (coverBackground){
+        if (!defaultBackground){
             XposedHelpers.findAndHookConstructor(MediaPlayerViewHolder,View::class.java,object : XC_MethodHook(){
                 override fun afterHookedMethod(param: MethodHookParam?) {
                     super.afterHookedMethod(param)

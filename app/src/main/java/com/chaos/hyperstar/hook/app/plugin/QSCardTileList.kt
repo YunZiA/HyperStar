@@ -2,6 +2,7 @@ package com.chaos.hyperstar.hook.app.plugin
 
 import android.content.Context
 import android.content.res.XModuleResources
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -124,6 +125,9 @@ class QSCardTileList :BaseHooker() {
                             return
                         }
                         val background: Drawable = linearLayout.context.theme.resources.getDrawable(id, linearLayout.context.theme)
+//                        if (background is GradientDrawable){
+//                            background.setStroke(10, Color.RED)
+//                        }
                         linearLayout.background = background
                         XposedHelpers.callMethod(
                             param.thisObject,
@@ -133,7 +137,14 @@ class QSCardTileList :BaseHooker() {
                         return
                     }
                     when (spec.toString()) {
-                        "bt", "cell", "flashlight", "wifi", "vowifi1", "vowifi2" -> {}
+                        "bt", "cell", "flashlight", "wifi", "vowifi1", "vowifi2" -> {
+//                            val background = linearLayout.background
+//                            if (background is GradientDrawable){
+//                                background.shape
+//                                background.setStroke(30, Color.parseColor("#40FFFFFF"))
+//                            }
+//                            linearLayout.background = background
+                        }
                         else -> {
                             starLog.log("spec is else $spec")
                             val id :Int = when (i) {
@@ -155,7 +166,12 @@ class QSCardTileList :BaseHooker() {
                                 return
                             }
                             val background: Drawable = linearLayout.context.theme.resources.getDrawable(id, linearLayout.context.theme)
+//                            if (background is GradientDrawable){
+//                                //background.colo
+//                                background.setStroke(20, Color.parseColor("#40FFFFFF"))
+//                            }
                             linearLayout.background = background
+
                             XposedHelpers.callMethod(
                                 param.thisObject,
                                 "setCornerRadius",

@@ -71,6 +71,8 @@
 - [「Xposed」 by rovo89, Tungstwenty](https://github.com/rovo89/XposedBridge)
 - [「XposedBridge」 by rovo89](https://github.com/rovo89/XposedBridge)
 - [「miuix-kotlin-multiplatform」 by YuKongA](https://github.com/miuix-kotlin-multiplatform/miuix)
+- [「Haze」 by Chris Banes](https://github.com/chrisbanes/haze)
+
 
 ##### GNU Affero General Public License v3
 

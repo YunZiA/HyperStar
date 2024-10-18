@@ -197,7 +197,7 @@ class PowerMenu : BaseHooker() {
         val airPlane = Item(createStateListDrawable(mContext,airPlaneMode==1,icAirplaneOn,icAirplaneOff),"静音",airPlaneMode==1)
 
         val silentMode = XposedHelpers.callStaticMethod(VolumeUtil,"isSilentMode",mContext)  as Boolean
-        val silent = Item(createStateListDrawable(mContext,silentMode,icSilentOn,icSilentOff),"静音",true)
+        val silent = Item(createStateListDrawable(mContext,silentMode,icSilentOn,icSilentOff),"静音",silentMode)
 
 
         val items: List<Item?> = listOf(

@@ -193,7 +193,7 @@ fun LazyGridItemScope.DraggableItem(
             }
     } else {
         //idle状态
-        Modifier.animateItemPlacement()
+        Modifier.animateItem()
     }
     Box(modifier = Modifier.then(draggingModifier) , propagateMinConstraints = true) {
         content(dragging)

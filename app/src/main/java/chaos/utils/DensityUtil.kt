@@ -11,6 +11,10 @@ class DensityUtil {
             // 转换 dp 到 px
             return dp * density
         }
+        fun pxToDp(resources: Resources,px: Float): Float {
+            val density = resources.displayMetrics.density
+            return px / density
+        }
     }
 
 }

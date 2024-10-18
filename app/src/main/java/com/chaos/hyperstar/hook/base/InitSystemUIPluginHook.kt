@@ -6,6 +6,7 @@ import android.content.res.XModuleResources
 import android.graphics.Color
 import com.chaos.hyperstar.R
 import com.chaos.hyperstar.hook.app.plugin.PadVolume
+import com.chaos.hyperstar.hook.app.plugin.PowerMenu
 import com.chaos.hyperstar.hook.app.plugin.QSCardTile
 import com.chaos.hyperstar.hook.app.plugin.QSCardTileList
 import com.chaos.hyperstar.hook.app.plugin.QSClockAnim
@@ -36,11 +37,13 @@ class InitSystemUIPluginHook() : BaseHooker() {
     private val qsMediaCoverBackground: QSMediaCoverBackground
     private val padVolume: PadVolume
     private val qsControlCenterColor: QSControlCenterColor
+    private val powerMenu: PowerMenu
 
     init {
         qsMediaCoverBackground = QSMediaCoverBackground()
         padVolume = PadVolume()
         qsControlCenterColor = QSControlCenterColor()
+        powerMenu = PowerMenu()
 
     }
 
@@ -65,6 +68,8 @@ class InitSystemUIPluginHook() : BaseHooker() {
         super.doResources(resparam, modRes)
         padVolume.doResources(resparam,modRes)
         qsControlCenterColor.doResources(resparam, modRes)
+        powerMenu.doResources(resparam, modRes)
+
 
     }
 
@@ -136,7 +141,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         doSecMethods(QSClockAnim())
         doSecMethods(QSControlCenterList())
         doSecMethods(VolumeColumnProgressRadius())
-
+        doSecMethods(powerMenu)
     }
 
 

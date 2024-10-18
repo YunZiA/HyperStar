@@ -41,5 +41,17 @@ fun SystemUIOtherPager(
                 key = "is_transparent_navigationBar_background"
             )
         }
+        classes(
+            title = R.string.power_menu,
+        ) {
+            XSuperSwitch(
+                title = stringResource(R.string.is_power_menu_nav_show_title),
+                key = "is_power_menu_nav_show"
+            )
+            XSuperSwitch(
+                title = stringResource(R.string.is_use_power_menu_plus_title),
+                key = "is_use_power_menu_plus"
+            )
+        }
     }
 }

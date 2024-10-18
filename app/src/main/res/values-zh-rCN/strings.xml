@@ -170,4 +170,7 @@
     <string name="title_fix_list_tile_icon_scale">修复部分动画磁贴缩放异常</string>
     <string name="progress_radius_summary">自定义的圆角不会大于背景圆角</string>
     <string name="media_background_style_title">妙播背景样式</string>
+    <string name="is_power_menu_nav_show_title">拒绝隐藏小白条</string>
+    <string name="is_use_power_menu_plus_title">扩展电源菜单</string>
+    <string name="power_menu">电源菜单</string>
 </resources>

@@ -4,16 +4,16 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.chaos.hyperstar",
+  "applicationId": "com.yunzia.hyperstar",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 4,
-      "versionName": "1.2",
-      "outputFile": "HyperStar_v1.2_2024101818_test.apk"
+      "versionCode": 1,
+      "versionName": "0.8.1",
+      "outputFile": "HyperStar_v0.8.1_2024102502_test.apk"
     }
   ],
   "elementType": "File",
@@ -22,14 +22,14 @@
       "minApi": 28,
       "maxApi": 30,
       "baselineProfiles": [
-        "baselineProfiles/1/HyperStar_v1.2_2024101818_test.dm"
+        "baselineProfiles/1/HyperStar_v0.8.1_2024102502_test.dm"
       ]
     },
     {
       "minApi": 31,
       "maxApi": 2147483647,
       "baselineProfiles": [
-        "baselineProfiles/0/HyperStar_v1.2_2024101818_test.dm"
+        "baselineProfiles/0/HyperStar_v0.8.1_2024102502_test.dm"
       ]
     }
   ],

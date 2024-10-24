@@ -12,15 +12,15 @@ plugins {
 }
 
 android {
-    namespace = "com.chaos.hyperstar"
+    namespace = "com.yunzia.hyperstar"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.chaos.hyperstar"
+        applicationId = "com.yunzia.hyperstar"
         minSdk = 33
         targetSdk = 34
-        versionCode = 4
-        versionName = "1.2"
+        versionCode = 1
+        versionName = "0.8.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

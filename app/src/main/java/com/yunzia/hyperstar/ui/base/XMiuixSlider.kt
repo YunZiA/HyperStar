@@ -114,7 +114,7 @@ fun XMiuixSlider(
                 text = stringResource(R.string.default_it),
                 textColor = colorScheme.onPrimaryContainer,
                 modifier = Modifier.size(56.dp, 48.5.dp),
-                radius = 18.dp,
+                radius = 12.dp,
                 color = colorScheme.primary,
                 onClick = {
                     scope.launch {
@@ -129,7 +129,7 @@ fun XMiuixSlider(
             MiniTextButton(
                 text = stringResource(R.string.cancel),
                 modifier = Modifier.size(56.dp, 48.5.dp),
-                radius = 18.dp,
+                radius = 12.dp,
                 color = colorScheme.secondary,
                 onClick = {
 

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.squircleshape.CornerSmoothing
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
@@ -37,9 +38,10 @@ fun MiniTextButton(
     textColor: Color = colorScheme.onBackground,
     fontSize: TextUnit = 12.sp,
     modifier: Modifier = Modifier,
-    radius: Dp = 18.dp,
+    radius: Dp = 8.dp,
     onClick: () -> Unit,
 ) {
+
 
     BaseButton(
         modifier = modifier,
@@ -64,7 +66,7 @@ fun BaseButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     color: Color = colorScheme.primary,
-    cornerRadius: Dp = 30.dp,
+    cornerRadius: Dp = 24.dp,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable () -> Unit
 ) {
@@ -73,9 +75,9 @@ fun BaseButton(
 
     Surface(
         enabled = enabled,
-        modifier = modifier.clip(SquircleShape(cornerRadius,CornerSmoothing.Medium)).semantics { role = Role.Button },
+        modifier = modifier.clip(SmoothRoundedCornerShape(cornerRadius,0.5f)).semantics { role = Role.Button },
         //interactionSource = interactionSource,
-        shape = SquircleShape(cornerRadius,CornerSmoothing.Medium),
+        shape = SmoothRoundedCornerShape(cornerRadius,0.8f),
         color = color,
         onClick = {
             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -100,7 +102,7 @@ fun BaseButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     submit: Boolean = false,
-    cornerRadius: Dp = 30.dp,
+    cornerRadius: Dp = 12.dp,
     interactionSource: MutableInteractionSource? = null
 ) {
     @Suppress("NAME_SHADOWING")
@@ -116,7 +118,8 @@ fun BaseButton(
         },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = SquircleShape(cornerRadius,CornerSmoothing.High),
+        shape = SmoothRoundedCornerShape(cornerRadius,0.8f),
+                //SquircleShape(cornerRadius,CornerSmoothing.High),
         color = color
     ) {
         Row(

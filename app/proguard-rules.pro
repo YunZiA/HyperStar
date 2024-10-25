@@ -26,5 +26,5 @@
 #保持反射不被混淆
 -keepattributes EnclosingMethod
 
--keep class com.chaos.hyperstar.** { *; }
+-keep class com.yunzia.hyperstar.** { *; }
 

@@ -14,7 +14,7 @@ fun HyperStarTheme(
 
     val darkTheme = isSystemInDarkTheme()
     return MiuixTheme(
-        colorScheme = when (colorMode) {
+        colors = when (colorMode) {
             1 -> lightColorScheme()
             2 -> darkColorScheme()
             else -> if (darkTheme) darkColorScheme() else lightColorScheme()

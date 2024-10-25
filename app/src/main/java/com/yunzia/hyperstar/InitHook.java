@@ -48,8 +48,7 @@ public class InitHook extends BaseHooker implements IXposedHookLoadPackage, IXpo
         resparam.res.setReplacement("miui.systemui.plugin", "drawable", "ic_controls_edit", modRes.fwd(R.drawable.ic_controls_edit));
 
         systemUIHook.doResources(resparam,modRes);
-        //systemUIHook.setmXModuleResources(modRes);
-        //XModuleResources modRes = XModuleResources.createInstance(mPath, resparam.res);
+
 
     }
 

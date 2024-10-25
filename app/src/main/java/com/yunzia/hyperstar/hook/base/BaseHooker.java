@@ -13,14 +13,10 @@ import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 
-
-
 public abstract class BaseHooker {
 
     public String plugin = "miui.systemui.plugin";
     public String systemUI = "com.android.systemui";
-
-
 
     public BaseHooker(){
 

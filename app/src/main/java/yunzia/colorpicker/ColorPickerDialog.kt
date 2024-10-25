@@ -52,8 +52,7 @@ import com.yunzia.hyperstar.ui.base.MTextField
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showDialog
-import top.yukonga.miuix.kmp.utils.squircleshape.CornerSmoothing
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 
 @Composable
@@ -102,11 +101,11 @@ fun ColorPickerDialog(
                         Image(
                             modifier = Modifier
                                 .size(60.dp)
-                                .clip(SquircleShape(20.dp, CornerSmoothing.High))
+                                .clip(SmoothRoundedCornerShape(10.dp,0.8f))
                                 .border(
                                     2.dp,
                                     if (color.value.toColor() == colorScheme.surfaceVariant) colorScheme.secondaryContainer else Color.Transparent,
-                                    SquircleShape(20.dp, CornerSmoothing.High)
+                                    SmoothRoundedCornerShape(10.dp,0.8f)
                                 ),
                             imageVector = ImageVector.vectorResource(R.drawable.transparent),
                             colorFilter = ColorFilter.tint(
@@ -133,7 +132,7 @@ fun ColorPickerDialog(
                                             doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
                                         },
                                         contentPadding = PaddingValues(10.dp,16.dp),
-                                        shape = SquircleShape(20.dp, CornerSmoothing.High),
+                                        shape = SmoothRoundedCornerShape(8.dp,0.8f),
                                         colors = ButtonColors(Color.Transparent, Color.Transparent,Color.Transparent,Color.Transparent)
                                     ) {
                                         Icon(

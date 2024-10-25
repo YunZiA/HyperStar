@@ -182,7 +182,7 @@ fun ColorPickerTool(
                 textColor = colorScheme.onPrimaryContainer,
                 fontSize = 11.sp,
                 modifier = Modifier.size(48.dp, 40.dp),
-                radius = 17.dp,
+                radius = 10.dp,
                 color = colorScheme.primary,
                 onClick = {
                     scope.launch {
@@ -197,7 +197,7 @@ fun ColorPickerTool(
                 text = stringResource(R.string.cancel),
                 fontSize = 11.sp,
                 modifier = Modifier.size(48.dp, 40.dp),
-                radius = 17.dp,
+                radius = 10.dp,
                 color = colorScheme.secondary,
                 onClick = {
                     scope.launch {

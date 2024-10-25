@@ -26,6 +26,7 @@ import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.squircleshape.CornerSmoothing
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
@@ -35,7 +36,7 @@ fun SuperBottomSheetDialog(
     title: String? = null,
     titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
-    summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantDialog,
+    summaryColor: Color = MiuixTheme.colorScheme.surfaceVariant,
     show: MutableState<Boolean>,
     onFocus: () -> Unit = {},
     onDismissRequest: () -> Unit,
@@ -78,12 +79,12 @@ fun SuperBottomSheetDialog(
                 .align(Alignment.BottomCenter)
                 .graphicsLayer(
                     shadowElevation = 12f,
-                    shape = SquircleShape(45.dp, cornerSmoothing = CornerSmoothing.High),
+                    shape = SmoothRoundedCornerShape(36.dp,0.8f),
                     clip = false
                 )
                 .background(
                     color = MiuixTheme.colorScheme.background,
-                    shape = SquircleShape(45.dp, cornerSmoothing = CornerSmoothing.High)
+                    shape = SmoothRoundedCornerShape(36.dp,0.8f)
                 )
                 .padding(24.dp),
         ) {

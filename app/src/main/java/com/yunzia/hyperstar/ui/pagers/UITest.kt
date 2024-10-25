@@ -84,6 +84,7 @@ import top.yukonga.miuix.kmp.icon.icons.ArrowRight
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.squircleshape.CornerSmoothing
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
@@ -263,7 +264,7 @@ fun  ItemPopu(show: MutableState<Boolean>) {
                     .fillMaxWidth(0.7f)
                     //.fillMaxHeight(0.2f)
                     .clickable(enabled = false) {},
-                shape = SquircleShape(24.dp,CornerSmoothing.Medium),
+                shape = SmoothRoundedCornerShape(16.dp,0.8f),
                 color = colorScheme.surface,
             ) {
                 Column(

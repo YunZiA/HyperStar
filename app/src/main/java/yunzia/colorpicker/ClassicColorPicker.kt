@@ -48,7 +48,7 @@ fun ClassicColorPicker(
             pagerState.currentPage,
             tabColor = colorScheme.surfaceVariant,
             tabBgColor = colorResource(R.color.tab_bg_color),
-            titleColor = colorScheme.onSurfaceVariantDialog,
+            titleColor = colorScheme.onSurfaceSecondary,
             titleSelectColor = colorScheme.onSurface
 
         ){

@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.squircleshape.CornerSmoothing
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
@@ -156,7 +157,7 @@ fun MTextField(
     modifier: Modifier = Modifier,
     insideMargin: DpSize = DpSize(18.5.dp, 18.5.dp),
     backgroundColor: Color = colorScheme.secondaryContainer,
-    cornerRadius: Dp = 20.dp,
+    cornerRadius: Dp = 8.dp,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     label: String = "",
@@ -184,7 +185,7 @@ fun MTextField(
     val isFocused by interactionSource.collectIsFocusedAsState()
     val borderWidth by animateDpAsState(if (isFocused) 3.dp else 0.dp)
     val bgColor by animateColorAsState(if (isFocused) colorScheme.surfaceVariant else backgroundColor)
-    val border = Modifier.border(borderWidth, backgroundColor, SquircleShape(cornerRadius, CornerSmoothing.High))
+    val border = Modifier.border(borderWidth, backgroundColor, SmoothRoundedCornerShape(cornerRadius,0.8f))
 
     val labelOffsetY by animateDpAsState(if (value.text.isNotEmpty()) -(insideMargin.height / 2) else 0.dp)
     val innerTextOffsetY by animateDpAsState(if (value.text.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
@@ -215,7 +216,8 @@ fun MTextField(
                     .fillMaxWidth()
                     .background(
                         color = bgColor,
-                        shape = SquircleShape(cornerRadius, cornerSmoothing = CornerSmoothing.High)
+                        shape = SmoothRoundedCornerShape(cornerRadius,0.8f)
+                        //SquircleShape(cornerRadius, cornerSmoothing = CornerSmoothing.High)
                     )
                     .then(border)
             ) {

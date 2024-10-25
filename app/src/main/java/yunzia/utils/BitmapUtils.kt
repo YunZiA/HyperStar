@@ -48,7 +48,7 @@ class BitmapUtils {
             }
             val endTime = System.nanoTime()
 
-            Log.d("ggc", "doBitmap: "+(endTime-startTime)/ 1_000_000.0)
+            Log.d("ggc", "doBitmap: ${(endTime-startTime)/ 1_000_000.0}ms")
 
             return processedBitmap
 

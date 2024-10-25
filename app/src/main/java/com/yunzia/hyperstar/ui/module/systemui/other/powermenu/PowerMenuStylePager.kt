@@ -19,9 +19,12 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+//import com.chaos.hyperstar.R
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.XSuperDropdown
@@ -51,15 +55,20 @@ fun PowerMenuStylePager(
     val style = remember { mutableIntStateOf( SPUtils.getInt("is_power_menu_style",0) ) }
 
 
-    val pagerState = rememberPagerState(pageCount = { style.intValue+1 })
+    val pagerState = rememberPagerState(initialPage = style.intValue,pageCount = { 3 })
 
-    LaunchedEffect(style.intValue) {
-        //Toast.makeText(navController.context,"style ${style.intValue}",Toast.LENGTH_SHORT).show()
-        pagerState.animateScrollToPage(style.intValue+1)
+    var isInitialized by remember { mutableStateOf(false) }
+
+    LaunchedEffect(style.intValue, isInitialized) {
+        if (isInitialized) {
+            pagerState.animateScrollToPage(style.intValue)
+        } else {
+            isInitialized = true
+        }
     }
 
     ModuleNavPagers(
-        activityTitle = stringResource(R.string.more),
+        activityTitle = "电源菜单",
         navController = navController,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
@@ -69,7 +78,7 @@ fun PowerMenuStylePager(
             XSuperDropdown(
                 key = "is_power_menu_style",
                 option = R.array.power_menu_style,
-                title = "电源菜单样式",
+                title = "样式",
                 selectedIndex = style
             )
         }

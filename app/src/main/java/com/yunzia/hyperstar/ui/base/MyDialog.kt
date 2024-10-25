@@ -40,12 +40,14 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Icon
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
-import top.yukonga.miuix.kmp.utils.squircleshape.CornerSmoothing
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
+
+
 
 
 @Composable
@@ -53,7 +55,7 @@ fun MSuperDialog(
     title: String? = null,
     titleColor: Color = colorScheme.onSurface,
     summary: String? = null,
-    summaryColor: Color = colorScheme.onSurfaceVariantDialog,
+    summaryColor: Color = colorScheme.surfaceVariant,
     show: MutableState<Boolean>,
     showAction : Boolean = false,
     color: Color = colorScheme.surfaceVariant,
@@ -62,6 +64,7 @@ fun MSuperDialog(
     insideMargin: DpSize? = null,
     content: @Composable () -> Unit
 ) {
+
     @Suppress("NAME_SHADOWING")
     val insideMargin = remember { insideMargin } ?: remember { DpSize(14.dp, 12.dp) }
     val view = LocalView.current
@@ -106,14 +109,10 @@ fun MSuperDialog(
                     }
                 }
                 .align(contentAlignment)
-                .graphicsLayer(
-                    shadowElevation = 12f,
-                    shape = SquircleShape(45.dp, cornerSmoothing = CornerSmoothing.High),
-                    clip = false
-                )
                 .background(
                     color = color,
-                    shape = SquircleShape(45.dp, cornerSmoothing = CornerSmoothing.High)
+                    shape = SmoothRoundedCornerShape(25.dp,0.8f)
+                    // SquircleShape(45.dp, cornerSmoothing = CornerSmoothing.High)
                 )
                 .padding(24.dp),
         ) {

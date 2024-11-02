@@ -12,9 +12,9 @@
 
 **[简体中文](README.md) | English**
 
-[![GitHub License](https://img.shields.io/github/license/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar2.0/blob/master/LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar2.0/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar2.0/forks)
+[![GitHub License](https://img.shields.io/github/license/YunZiA/HyperStar2.0)](https://github.com/YunZiA/HyperStar2.0/blob/master/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/YunZiA/HyperStar2.0)](https://github.com/YunZiA/HyperStar2.0/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/YunZiA/HyperStar2.0)](https://github.com/YunZiA/HyperStar2.0/forks)
 
 
 </div>

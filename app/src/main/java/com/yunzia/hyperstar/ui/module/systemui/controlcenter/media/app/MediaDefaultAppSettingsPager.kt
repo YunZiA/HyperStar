@@ -8,7 +8,6 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.util.Log
-import android.view.HapticFeedbackConstants
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -49,12 +48,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
@@ -76,8 +73,6 @@ import com.yunzia.hyperstar.ui.base.enums.EventState
 import com.yunzia.hyperstar.utils.SPUtils
 import com.yunzia.hyperstar.utils.Utils
 import com.google.accompanist.drawablepainter.DrawablePainter
-import com.yunzia.hyperstar.ui.base.modifier.bounceClick
-import com.yunzia.hyperstar.ui.base.modifier.bounceScale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -131,7 +126,7 @@ private fun processAppInfo(
 
         val bean = AppInfo()
         bean.label = app_name.toString()
-        bean.packageName = package_name.toString()
+        bean.package_name = package_name.toString()
         bean.icon = app_icon
 
         val values = ContentValues()
@@ -160,7 +155,6 @@ private fun processAppInfo(
 fun MediaAppSettingsPager(
     navController: NavController
 ) {
-    val view = LocalView.current
 
     ModuleNavPager(
         activityTitle = stringResource(R.string.media_default_app_settings),
@@ -292,7 +286,7 @@ fun MediaAppSettingsPager(
                     modifier = Modifier
                         .padding(bottom = 10.dp)
                         .padding(horizontal = 24.dp),
-                    insideMargin = PaddingValues(5.dp,5.dp),
+                    insideMargin = DpSize(5.dp,5.dp),
                     cornerRadius = 18.dp
                 ) {
                     Row(
@@ -318,7 +312,7 @@ fun MediaAppSettingsPager(
                         Button(
                             modifier = Modifier.padding(end = 2.dp),
                             onClick = {
-                                view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                                //Toast.makeText(activity,text,Toast.LENGTH_SHORT).show()
                                 isSearch = true
                                 focusManager.clearFocus()
                             },
@@ -393,29 +387,27 @@ private fun AppItem(
     isApp : MutableState<String>
 ){
     val label = app.label
-    val packageName = app.packageName
+    val packageName = app.package_name
     var isSelect = packageName == isApp.value // 直接比较，不需要用 mutableStateOf
 
-    val view = LocalView.current
-    val eventState = remember { mutableStateOf(EventState.Idle) }
-    val click = remember { mutableStateOf(false) }
-    //val scale by animateFloatAsState(if (eventState == EventState.Pressed) 0.90f else 1f)
+    var eventState by remember { mutableStateOf(EventState.Idle) }
+    val scale by animateFloatAsState(if (eventState == EventState.Pressed) 0.90f else 1f)
 
+
+    val view = LocalView.current
+
+    //if (isSelect) view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 28.dp)
             .padding(top = 10.dp)
-            .bounceScale(eventState){
-                if (click.value){
-
-                    isApp.value = if (isSelect) "" else packageName
-                    isSelect = !isSelect
-                    SPUtils.setString("media_default_app_package", isApp.value)
-                }
-                click.value = false
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
             },
+
         color = if (isSelect) colorScheme.tertiaryContainer  else colorScheme.surfaceVariant
     ) {
 
@@ -425,12 +417,25 @@ private fun AppItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .bounceClick(eventState)
                 .clickable {
-                    view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                    click.value = true
+                    EventState.Idle
+                    isApp.value = if (isSelect) "" else packageName
+                    isSelect = !isSelect
+                    SPUtils.setString("media_default_app_package", isApp.value)
                 }
+                .pointerInput(eventState) {
 
+                    awaitPointerEventScope {
+                        eventState = if (eventState == EventState.Pressed) {
+                            waitForUpOrCancellation()
+                            EventState.Idle
+                        } else {
+                            ///view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                            awaitFirstDown(false)
+                            EventState.Pressed
+                        }
+                    }
+                }
         ) {
             Box(
                 modifier = Modifier
@@ -470,10 +475,9 @@ private fun AppItem(
                     enabled = true,
                     checked = isSelect,
                     onCheckedChange = {
-                        click.value = true
-//                        isApp.value = if (isSelect) "" else packageName
-//                        isSelect = !isSelect
-//                        SPUtils.setString("media_default_app_package",isApp.value)
+                        isApp.value = if (isSelect) "" else packageName
+                        isSelect = !isSelect
+                        SPUtils.setString("media_default_app_package",isApp.value)
                     } // 如果需要处理选中变化，可以在这里添加逻辑
                 )
 

@@ -20,12 +20,28 @@ public class InitSystemUIHook extends BaseHooker {
     }
 
     @Override
+    public void getLocalRes(Resources res) {
+        super.getLocalRes(res);
+        initSystemUIPluginHook.getLocalRes(res);
+    }
+
+    @Override
     public void doMethods(XC_LoadPackage.LoadPackageParam lpparam) {
         super.doMethods(lpparam);
         if (lpparam.packageName.equals("com.android.systemui")){
 
             starLog.log("Loaded app: "+lpparam.packageName);
             doMethodsHook(lpparam.classLoader);
+
+        }
+    }
+
+    @Override
+    public void doRes(XC_InitPackageResources.InitPackageResourcesParam resparam) {
+        super.doRes(resparam);
+        if (resparam.packageName.equals("com.android.systemui")){
+
+            //doResHook(resparam);
 
         }
     }
@@ -47,13 +63,24 @@ public class InitSystemUIHook extends BaseHooker {
 
         doTestHook();
     }
-
+    //     public void doMethodsHook(ClassLoader classLoader) {
+//
+//
+//
+//    }
 
     private void doTestHook() {
 
 
 
+
+
     }
 
+//    private void doResHook(XC_InitPackageResources.InitPackageResourcesParam resparam){
+//
+//        resparam.res.setReplacement(resparam.packageName,"drawable","qs");
+//
+//    }
 
 }

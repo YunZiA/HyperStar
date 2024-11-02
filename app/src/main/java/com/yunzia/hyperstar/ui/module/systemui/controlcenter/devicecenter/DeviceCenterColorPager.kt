@@ -23,7 +23,7 @@ fun DeviceCenterColorPager(
     ) {
 
         firstClasses(
-            title = R.string.empty_device
+            title = "空设备状态"
         ) {
             ColorPickerTool(
                 title = stringResource(R.string.icon),
@@ -36,7 +36,7 @@ fun DeviceCenterColorPager(
 
         }
         classes(
-            title = R.string.device_item
+            title = "设备项"
         ) {
             ColorPickerTool(
                 title = stringResource(R.string.background),

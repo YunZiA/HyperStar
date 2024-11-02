@@ -17,20 +17,34 @@ import com.yunzia.hyperstar.ui.base.theme.HyperStarTheme
 import com.yunzia.hyperstar.utils.LanguageHelper
 import com.yunzia.hyperstar.utils.LanguageHelper.Companion.getIndexLanguage
 import com.yunzia.hyperstar.utils.PreferencesUtil
-import yunzia.utils.SystemProperties
 import java.util.Locale
 
 abstract class BaseActivity : ComponentActivity() {
 
     @Composable abstract fun InitView(colorMode: MutableState<Int>?)
-
     abstract fun initData(savedInstanceState: Bundle?)
+
+    fun setLocale(
+        language : String,
+        country: String
+    ){
+        //locale.value=Locale(language,country)
+        val res = this.resources
+        val config = res.configuration
+        Locale.setDefault(Locale(language,country))
+        config.setLocale(Locale(language,country))
+        //attachBaseContext(this)
+        res.updateConfiguration(config,res.displayMetrics)
+
+        recreate()
+
+    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         initData(savedInstanceState)
-
         setContent {
 //
             val colorMode = remember { mutableIntStateOf(PreferencesUtil.getInt("color_mode",0)) }

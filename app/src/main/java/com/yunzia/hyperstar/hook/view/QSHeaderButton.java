@@ -7,7 +7,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.yunzia.hyperstar.R;
@@ -86,6 +88,14 @@ public class QSHeaderButton extends LinearLayout {
 
 
     }
+
+    @Override
+    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        Toast.makeText(changedView.getContext(),"改变",Toast.LENGTH_SHORT).show();
+    }
+
+
 
     private boolean goSettings(Context context){
         Intent intent = new Intent();

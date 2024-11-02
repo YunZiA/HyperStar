@@ -2,10 +2,6 @@ package com.yunzia.hyperstar
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -14,9 +10,7 @@ import androidx.compose.runtime.MutableState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.yunzia.hyperstar.ui.base.navtype.PagersModel
-import com.yunzia.hyperstar.ui.base.navtype.pagersJson
+import com.yunzia.hyperstar.ui.module.betahome.BetaHomePager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.list.QSListColorPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.list.QsListViewPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.MediaSettingsPager
@@ -24,6 +18,7 @@ import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.app.MediaAppS
 import com.yunzia.hyperstar.ui.module.systemui.other.SystemUIOtherPager
 import com.yunzia.hyperstar.ui.module.systemui.volume.VolumePager
 import com.yunzia.hyperstar.ui.pagers.TranslatorPager
+import com.yunzia.hyperstar.ui.base.theme.HyperStarTheme
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterColorPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterListPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterPager
@@ -32,14 +27,8 @@ import com.yunzia.hyperstar.ui.module.systemui.controlcenter.card.QSCardListPage
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.devicecenter.DeviceCenterColorPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.slider.ToggleSliderColorsPager
 import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.PowerMenuStylePager
-import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.SelectFunPager
-import com.yunzia.hyperstar.ui.pagers.DonationPager
-import com.yunzia.hyperstar.ui.pagers.GoRootPager
-import com.yunzia.hyperstar.ui.pagers.LanguagePager
 import com.yunzia.hyperstar.ui.pagers.ReferencesPager
-import com.yunzia.hyperstar.ui.pagers.SettingsShowPage
-import com.yunzia.hyperstar.ui.pagers.MainPage
-import com.yunzia.hyperstar.ui.pagers.dialog.FirstDialog
+import com.yunzia.hyperstar.ui.pagers.UITest
 
 @SuppressLint("RestrictedApi", "StateFlowValueCalledInComposition")
 @Composable
@@ -47,105 +36,88 @@ fun App(
     activity: MainActivity?,
     colorMode: MutableState<Int>,
 ) {
+    HyperStarTheme(
+        colorMode = colorMode.value
+    ) {
 
-    val navController = rememberNavController()
+        var pager = "null"
 
-    val easing = FastOutSlowInEasing
+        val navController = rememberNavController()
+        //val nav = remember
+        val easing = CubicBezierEasing(0.12f, 0.38f, 0.2f, 1f)
+        activity?.let {
+            NavHost(
+                navController = navController,
+                startDestination = PagerList.MAIN,
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500, easing = easing)
+                    )
+                },
+                exitTransition = {
 
-    activity?.let {
+                    slideOutHorizontally(
+                        targetOffsetX = { -it / 5 },
+                        animationSpec = tween(durationMillis = 500, easing = easing)
+                    )
+                },
+                popEnterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { -it / 5 },
+                        animationSpec = tween(durationMillis = 500, easing = easing)
+                    )
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500, easing = easing)
+                    )
+                }
+            ) {
 
-        FirstDialog(activity,navController)
-        NavHost(
-            navController = navController,
-            startDestination = PagerList.MAIN,
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it  },
-                    animationSpec = tween(durationMillis = 500, easing = easing)
-                )
-            },
-            exitTransition = {
+                composable(PagerList.MAIN) { UITest(navController, activity,colorMode) }
 
-                slideOutHorizontally(
-                    targetOffsetX = { -it / 5 },
-                    animationSpec = tween(durationMillis = 500, easing = easing)
-                )
-            },
-            popEnterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { -it / 5 },
-                    animationSpec = tween(durationMillis = 500, easing = easing)
-                )
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(durationMillis = 500, easing = easing)
-                )
+                composable(SystemUIPagerList.CONTROL_CENTER) { ControlCenterPager(navController) };
+
+                composable(PagerList.TRANSLATOR) { TranslatorPager(navController) }
+
+                composable(PagerList.REFERENCES) { ReferencesPager(navController)  }
+
+                composable(PagerList.BETA_HOME) { BetaHomePager(navController) }
+
+                composable(SystemUIPagerList.COLOR_EDIT) { ControlCenterColorPager(navController) }
+
+                composable(SystemUIPagerList.LAYOUT_ARRANGEMENT) { ControlCenterListPager(navController) }
+
+                composable(SystemUIPagerList.MEDIA) { MediaSettingsPager(navController) }
+
+                composable(SystemUIPagerList.CARD_LIST) { QSCardListPager(navController) }
+
+                composable(SystemUIPagerList.TILE_LAYOUT) { QsListViewPager(navController) }
+
+                composable(CenterColorList.CARD_TILE) { QSCardColorPager(navController) }
+
+                composable(CenterColorList.TOGGLE_SLIDER) { ToggleSliderColorsPager(navController) }
+
+                composable(CenterColorList.DEVICE_CENTER) { DeviceCenterColorPager(navController) }
+
+                composable(CenterColorList.LIST_COLOR) { QSListColorPager(navController) }
+
+                composable(SystemUIPagerList.VOLUME_DIALOG) { VolumePager(navController) }
+
+                composable(SystemUIPagerList.MORE) { SystemUIOtherPager(navController) }
+
+                composable(SystemUIPagerList.MEDIA_APP) { MediaAppSettingsPager(navController) }
+
+                composable(SystemUIPagerList.POWERMENU){ PowerMenuStylePager(navController) }
+
             }
-        ) {
-
-            composable(PagerList.MAIN) { MainPage(navController, activity,colorMode) }
-
-            composable(PagerList.GO_ROOT){ GoRootPager(navController) }
-
-            composable(SystemUIPagerList.CONTROL_CENTER) { ControlCenterPager(navController) }
-
-            composable(PagerList.LANGUAGE){ LanguagePager(activity,navController) }
-
-            composable(PagerList.TRANSLATOR) { TranslatorPager(navController) }
-
-            composable(PagerList.DONATION) { DonationPager(navController)  }
-
-            composable(PagerList.SHOW){ SettingsShowPage(navController) }
-
-            composable(PagerList.REFERENCES) { ReferencesPager(navController)  }
-
-            //composable(PagerList.BETA_HOME) { BetaHomePager(navController) }
-
-            composable(SystemUIPagerList.COLOR_EDIT) { ControlCenterColorPager(navController) }
-
-            composable(SystemUIPagerList.LAYOUT_ARRANGEMENT) { ControlCenterListPager(navController) }
-
-            composable(SystemUIPagerList.MEDIA) { MediaSettingsPager(navController) }
-
-            composable(SystemUIPagerList.CARD_LIST) { QSCardListPager(navController) }
-
-            composable(SystemUIPagerList.TILE_LAYOUT) { QsListViewPager(navController) }
-
-            composable(CenterColorList.CARD_TILE) { QSCardColorPager(navController) }
-
-            composable(CenterColorList.TOGGLE_SLIDER) { ToggleSliderColorsPager(navController) }
-
-            composable(CenterColorList.DEVICE_CENTER) { DeviceCenterColorPager(navController) }
-
-            composable(CenterColorList.LIST_COLOR) { QSListColorPager(navController) }
-
-            composable(SystemUIPagerList.VOLUME_DIALOG) { VolumePager(navController) }
-
-            composable(SystemUIPagerList.MORE) { SystemUIOtherPager(navController) }
-
-            composable(SystemUIPagerList.MEDIA_APP) { MediaAppSettingsPager(navController) }
-
-            composable(SystemUIPagerList.POWERMENU){ PowerMenuStylePager(navController) }
-
-            composable(
-                FunList.SELECT_LIST+"/{pagersJson}",
-                listOf(
-                    navArgument("pagersJson") {
-                        type = pagersJson<PagersModel>()
-                    }
-                )
-            ){ SelectFunPager(navController,it) }
 
 
         }
 
-
-
     }
-
-
 }
 
 
@@ -154,18 +126,12 @@ object PagerList {
 
     //主页
     const val MAIN = "main"
-    const val LANGUAGE = "language"
-    const val GO_ROOT = "go_root"
     //系统界面更多
     const val BETA_HOME = "beta_home"
-    //翻译
+    //系统界面更多
     const val TRANSLATOR = "translator"
     //
     const val REFERENCES = "references"
-    //投喂
-    const val DONATION = "donation"
-    //显示设置
-    const val SHOW = "show"
 }
 
 object SystemUIPagerList {
@@ -190,12 +156,6 @@ object SystemUIPagerList {
     const val MORE = "more"
 
     const val POWERMENU = "powermenu"
-}
-
-object FunList {
-
-    //控制中心
-    const val SELECT_LIST = "selectList"
 }
 
 object CenterColorList {

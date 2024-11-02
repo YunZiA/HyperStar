@@ -26,20 +26,21 @@ public abstract class BaseHooker {
         void change(int[] array);
     }
 
+    //private XModuleResources mXModuleResources;
+    //public XC_LoadPackage.LoadPackageParam lpparam;
+
     public XC_InitPackageResources.InitPackageResourcesParam resparam;
     public XModuleResources modRes;
     public ClassLoader classLoader;
     public ClassLoader secClassLoader;
 
+    //public String modulePath;
+
+    public void getLocalRes(Resources res){};
     public void doResources(XC_InitPackageResources.InitPackageResourcesParam resparam,XModuleResources modRes){
         this.resparam = resparam;
         this.modRes = modRes;
     }
-
-    public void doResources(BaseHooker baseHooker){
-
-        baseHooker.doResources(resparam,modRes);
-    };
     public void doMethods(ClassLoader classLoader){
         this.classLoader = classLoader;
     };
@@ -63,7 +64,7 @@ public abstract class BaseHooker {
 
     public void doMethods(XC_LoadPackage.LoadPackageParam lpparam){
     };
-
+    public void doRes(XC_InitPackageResources.InitPackageResourcesParam resparam){}
 
     public void ReplaceColor(String color,String colorValue){
         resparam.res.setReplacement(plugin, "color", color, Color.parseColor(colorValue));
@@ -78,7 +79,7 @@ public abstract class BaseHooker {
     public void setColorField(Object context, String fieldName, String color){
         XposedHelpers.setIntField(context,fieldName, Color.parseColor(color));
     }
-
+    //public ProviderUtils mProviderUtils;
     public String mPath;
 
 
@@ -122,6 +123,9 @@ public abstract class BaseHooker {
     }
 
 
+    public void setmXModuleResources(XModuleResources mXModuleResources) {
+        //this.mXModuleResources = mXModuleResources;
+    }
 
 
     public interface MethodHook{

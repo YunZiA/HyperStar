@@ -8,7 +8,6 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.drag
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,7 +24,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 val strokeThickness = 8.dp
@@ -48,8 +46,8 @@ internal fun SeekBar (
         modifier = modifier
             .height(barThickness)
             .fillMaxWidth()
-            .clip(SmoothRoundedCornerShape(17.dp))
-            .border(0.2.dp, Color.Gray, SmoothRoundedCornerShape(17.dp))
+            .clip(SquircleShape(30.dp))
+            .border(0.2.dp, Color.Gray, SquircleShape(30.dp))
             .pointerInput(Unit) {
 
                 awaitEachGesture {

@@ -7,7 +7,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
-    id ("kotlin-parcelize")
+
+    //id ("kotlin-android-extensions")
 }
 
 android {
@@ -18,8 +19,8 @@ android {
         applicationId = "com.yunzia.hyperstar"
         minSdk = 33
         targetSdk = 34
-        versionCode = 7
-        versionName = "1.0.1"
+        versionCode = 1
+        versionName = "2.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -31,12 +32,11 @@ android {
         outputs.all {
             if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
                 val config = project.android.defaultConfig
-                val appName = "HyperStar"
+                val appName = "HyperStar2.0"
                 val versionName = "v"+config.versionName
                 val formatter = DateTimeFormatter.ofPattern("yyyyMMddHH")
                 val createTime = LocalDateTime.now().format(formatter)
                 this.outputFileName = "${appName}_${versionName}_${createTime}_test.apk"
-                //this.outputFileName = "${appName}_${versionName}_Release.apk"
             }
         }
     }
@@ -61,11 +61,11 @@ android {
     }
     //outputFileName = "${defaultConfig.applicationId}${buildType.applicationIdSuffix}-${defaultConfig.versionName}${buildType.versionNameSuffix}.apk"
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "21"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -82,7 +82,6 @@ android {
 
 dependencies {
 
-    implementation("com.google.code.gson:gson:2.11.0")
     implementation(libs.androidx.navigation.compose)
     implementation("com.github.skydoves:cloudy:0.2.3")
     implementation(libs.haze)

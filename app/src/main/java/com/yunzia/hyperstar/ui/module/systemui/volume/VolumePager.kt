@@ -4,11 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.ContentFolder
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.XMiuixSuperSliderSwitch
 import com.yunzia.hyperstar.ui.base.XSuperDropdown
-import com.yunzia.hyperstar.ui.base.XSuperSliders
 import com.yunzia.hyperstar.ui.base.XSuperSwitch
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
@@ -38,6 +36,8 @@ fun VolumePager(
                 summary = stringResource(R.string.is_use_pad_volume_summary),
                 key = "is_use_pad_volume"
             )
+        }
+        classes(title = R.string.progress_bar){
             XMiuixSuperSliderSwitch(
                 switchTitle = stringResource(R.string.is_change_qs_progress_radius_title),
                 switchKey = "is_change_volume_progress_radius",
@@ -50,65 +50,8 @@ fun VolumePager(
                 unit = "dp",
                 decimalPlaces = 1
             )
-        }
-
-        classes(title = R.string.sidebar_mode){
-
-            XSuperSwitch(
-                title = stringResource(R.string.title_standardview_hide),
-                key = "is_hide_StandardView"
-            )
-            OrientationDimBarFolder(
-                stringResource(R.string.title_volume_height_collapsed),"volume_height_collapsed",300f
-            )
-            OrientationDimBarFolder(
-                stringResource(R.string.title_volume_offset_top_collapsed),"volume_offset_top_collapsed",250f
-            )
-            OrientationDimBarFolder(
-                stringResource(R.string.title_volume_shadow_height_collapsed),"volume_shadow_height_collapsed",350f
-            )
-            OrientationDimBarFolder(
-                stringResource(R.string.title_volume_shadow_margin_top_collapsed),"volume_shadow_margin_top_collapsed",450f
-            )
 
         }
     }
 
-}
-
-
-
-
-@Composable
-fun OrientationDimBarFolder(
-    title:String,
-    key:String,
-    maxValue: Float
-){
-    ContentFolder(title){
-
-        XSuperSliders(
-            host = title,
-            title = stringResource(R.string.PORTRAIT),
-            key = key+"_p",
-            defValue = -1f,
-            maxValue = maxValue,
-            minValue = 0f,
-            unit = "dp",
-            decimalPlaces = 1
-        )
-
-
-        XSuperSliders(
-            host = title,
-            title = stringResource(R.string.LANDSCAPE),
-            key = key+"_l",
-            defValue = -1f,
-            maxValue = maxValue,
-            minValue = 0f,
-            unit = "dp",
-            decimalPlaces = 1
-        )
-
-    }
 }

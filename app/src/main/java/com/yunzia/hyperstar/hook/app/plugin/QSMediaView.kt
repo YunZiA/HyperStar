@@ -9,6 +9,7 @@ import com.yunzia.hyperstar.hook.base.BaseHooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 
 class QSMediaView : BaseHooker() {
@@ -64,11 +65,13 @@ class QSMediaView : BaseHooker() {
 
             }
         })
-        XposedHelpers.findAndHookConstructor(MediaPlayerViewHolder,View::class.java, object : XC_MethodHook() {
-            override fun beforeHookedMethod(param: MethodHookParam?) {
-                super.beforeHookedMethod(param)
-                //starLog.log("MediaPlayerViewHolder is hook")
 
+        val HapticFeedback = XposedHelpers.findClass("miui.systemui.util.HapticFeedback",classLoader)
+
+        XposedBridge.hookAllConstructors(MediaPlayerViewHolder, object : XC_MethodHook() {
+
+            override fun afterHookedMethod(param: MethodHookParam?) {
+                super.afterHookedMethod(param)
                 val itemView : View = param?.args?.get(0) as View
                 val title = itemView.findViewByIdName("title") as TextView
                 val artist = itemView.findViewByIdName("artist") as TextView
@@ -97,10 +100,16 @@ class QSMediaView : BaseHooker() {
                     emptyState.isSelected = true
 
                 }
-
-
-
             }
+//            override fun beforeHookedMethod(param: MethodHookParam?) {
+//                super.beforeHookedMethod(param)
+//                //starLog.log("MediaPlayerViewHolder is hook")
+//
+//
+//
+//
+//
+//            }
 
         })
 

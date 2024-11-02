@@ -146,7 +146,7 @@ fun ModuleNavTopAppBar(
     title : String,
     scrollBehavior: ScrollBehavior? = null,
     color : Color,
-    startClick: () -> Unit,
+    navController: NavController,
     endIcon :  @Composable () -> Unit = {},
     endClick:() -> Unit = {}
 ){
@@ -161,8 +161,9 @@ fun ModuleNavTopAppBar(
                 modifier = Modifier.padding(start = 18.dp),
                 imageVector = ImageVector.vectorResource(R.drawable.bar_back__exit),
                 contentDescription = "back",
-                onClick = startClick
-
+                onClick = {
+                    navController.popBackStack()
+                }
             )
 
 

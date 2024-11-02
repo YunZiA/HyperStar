@@ -6,7 +6,6 @@ import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -208,7 +207,7 @@ fun ControlCenterListPager(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                insideMargin = PaddingValues(0.dp,14.dp),
+                insideMargin = DpSize(0.dp,14.dp),
                 cornerRadius = 21.dp
             ) {
 
@@ -320,7 +319,7 @@ fun getHeight(
 
 }
 
-val insideMargin  = PaddingValues(16.dp, 16.dp)
+val insideMargin  = DpSize(16.dp, 16.dp)
 
 @Composable
 fun EnableItemDropdown(
@@ -371,13 +370,12 @@ fun EnableItemSlider(
     XMiuixSlider(
         title = stringResource(R.string.span_size),
         key = key,
-        isDialog = true,
         enabled = state.value,
-        paddingValues = insideMargin,
+        insideMargin = insideMargin,
         maxValue = 4f,
         minValue = 1f,
-        defValue = progress,
-        progress = progressState
+        progress = progress,
+        x_progress = progressState
     )
 
 }

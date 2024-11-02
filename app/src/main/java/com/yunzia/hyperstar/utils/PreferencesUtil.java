@@ -4,15 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONException;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 
@@ -140,43 +131,19 @@ public class PreferencesUtil {
         return editor.commit();
     }
 
-    public static boolean removePreferences(String key) {
-        SharedPreferences pref = PreferencesUtil.getInstance().sp;
-        SharedPreferences.Editor editor = pref.edit();
-        editor.remove(key);
-        return editor.commit();
-    }
-
-
-
-    public static void getAllPreferences(ArrayList<SP> preferencesUtil) throws JSONException {
+    public static void getAllPreferences() {
         SharedPreferences pref = PreferencesUtil.getInstance().sp;
         Map<String, ?> allEntries = pref.getAll();
-
-        String type  = "PreferencesUtil";
-        //ArrayList<SP> preferencesUtil = new ArrayList<>();
-        //Gson gson = new Gson();
 
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            Log.d("SharedPref", "Key: " + key + ", Value: " + value.toString());
 
             if (value instanceof String) {
-                preferencesUtil.add(new SP(type,key,SP.type_string,value));
-            } else if (value instanceof Integer) {
-                preferencesUtil.add(new SP(type,key,SP.type_int,value));
-            } else if (value instanceof Boolean) {
-                preferencesUtil.add(new SP(type,key,SP.type_boolean,value));
-            } else if (value instanceof Float) {
-                preferencesUtil.add(new SP(type,key,SP.type_float,value));
-            } else if (value instanceof Long) {
-                preferencesUtil.add(new SP(type,key,SP.type_long,value));
-            } else {
-                preferencesUtil.add(new SP(type,key,SP.type_string,value));
+                String stringValue = (String) value;
+                Log.d("SharedPref", "Key: " + key + ", Value: " + stringValue);
             }
         }
-        //return gson.toJsonTree(preferencesUtil,new TypeToken<ArrayList<SP>>() {}.getType());
     }
 }
 

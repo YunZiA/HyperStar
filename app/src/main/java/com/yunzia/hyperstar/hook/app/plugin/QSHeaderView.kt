@@ -2,6 +2,7 @@ package com.yunzia.hyperstar.hook.app.plugin
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.Gravity
 import android.view.HapticFeedbackConstants
 import android.view.View
@@ -15,6 +16,9 @@ import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedHelpers
+
+import yunzia.utils.DensityUtil.Companion.dpToPx
+import yunzia.utils.DensityUtil.Companion.pxToDp
 
 
 class QSHeaderView : BaseHooker() {
@@ -46,7 +50,7 @@ class QSHeaderView : BaseHooker() {
         var qsListControllerProvider: Any? = null
 
         val EditButtonController_Factory = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.qs.EditButtonController_Factory",classLoader)
-        val MainPanelModeController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.MainPanelModeController\$MainPanelMode",classLoader)
+        val MainPanelModeController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.MainPanelController\$Mode",classLoader)
 
         XposedHelpers.findAndHookMethod(EditButtonController_Factory,"get",object : XC_MethodHook(){
             override fun afterHookedMethod(param: MethodHookParam?) {
@@ -75,19 +79,22 @@ class QSHeaderView : BaseHooker() {
                 val sysUIContext = XposedHelpers.getObjectField(thisObj,"sysUIContext") as Context
                 val view = XposedHelpers.callMethod(thisObj,"getView") as ViewGroup
                 val mContext = view.context
+                val res = view.resources
                 //XposedHelpers.callMethod(sysUIContext.getResources().getAssets(), "addAssetPath", modulePath);
 
-                val ic_header_settings:Int = view.resources.getIdentifier("ic_header_settings", "drawable", "miui.systemui.plugin");
-                val ic_controls_edit = view.resources.getIdentifier("ic_controls_edit","drawable","miui.systemui.plugin")
+                val ic_header_settings:Int = res.getIdentifier("ic_header_settings", "drawable", "miui.systemui.plugin");
+                val ic_controls_edit = res.getIdentifier("ic_controls_edit","drawable","miui.systemui.plugin")
 
 
                 //feedbackConstant – One of the constants defined in HapticFeedbackConstants
+                val size = dpToPx(res,21.4f).toInt()
                 val a = Button(mContext)
                 a.setBackgroundResource(ic_header_settings)
-                val lp = ViewGroup.MarginLayoutParams(60, 60)
+                val lp = ViewGroup.MarginLayoutParams(size, size)
                 lp.topMargin = 100
                 //c.gravity = Gravity.START
                 a.layoutParams = lp
+                //Log.d("ggc", "afterHookedMethod: ${pxToDp(res,60f)}")
 
                 val b = Button(mContext)
                 b.setBackgroundResource(ic_controls_edit)
@@ -98,6 +105,8 @@ class QSHeaderView : BaseHooker() {
                 val c_lp = LinearLayout.LayoutParams(-1,-1)
                 c_lp.weight = 1f
                 c.layoutParams = c_lp
+
+
 
                 val header = LinearLayout(sysUIContext)
 
@@ -115,7 +124,7 @@ class QSHeaderView : BaseHooker() {
                 view.addView(header)
 
                 a.setOnClickListener{
-                    if (view.alpha == 0f) return@setOnClickListener
+                    if(view.alpha == 0f) return@setOnClickListener
                     it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     val intent = Intent()
                     intent.setClassName("com.android.settings", "com.android.settings.MainSettings")
@@ -125,7 +134,7 @@ class QSHeaderView : BaseHooker() {
                 }
 
                 b.setOnClickListener{
-                    if (view.alpha == 0f) return@setOnClickListener
+                    if(view.alpha == 0f) return@setOnClickListener
                     it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     if (qsListControllerProvider != null){
                         starLog.log("qsListControllerProvider != null")

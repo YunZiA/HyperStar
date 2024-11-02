@@ -47,7 +47,7 @@ import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.BaseButton
 import com.yunzia.hyperstar.ui.base.tool.FilterColorHex
-import com.yunzia.hyperstar.ui.base.dialog.MSuperDialog
+import com.yunzia.hyperstar.ui.base.MSuperDialog
 import com.yunzia.hyperstar.ui.base.MTextField
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
@@ -81,19 +81,12 @@ fun ColorPickerDialog(
                 show = showDialog,
                 onFocus = {
                     kc?.hide()
-                    focusManager.clearFocus()
+                    //doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
                 },
                 onDismissRequest = {
-                    if (hasFocus){
-                        kc?.hide()
-                        focusManager.clearFocus()
-                        return@MSuperDialog
-                    }
-                    if (doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)){
-
-                        color.value = HsvColor.from(fColor)
-                        dismissDialog(showDialog)
-                    }
+                    showDialog.value = false
+                    doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
+                    color.value = HsvColor.from(fColor)
                 },
             ) {
                 Column(
@@ -210,10 +203,10 @@ fun trueTextFieldValue(
 
     val local = value.text
 
-    return if ((local.length != 7) && (local.length != 9)) {
-        false
+    if ((local.length != 7) && (local.length != 9)) {
+        return false
     }else{
-        true
+        return true
     }
 }
 
@@ -225,10 +218,10 @@ fun doTextFieldValue(
     focusManager: FocusManager,
     color : MutableState<HsvColor>,
     context : Context
-):Boolean{
-//    if (!hasFocus) {
-//        return
-//    }
+){
+    if (!hasFocus) {
+        return
+    }
     val local = value.text
 
     if ((local.length != 7) && (local.length != 9)) {
@@ -237,12 +230,11 @@ fun doTextFieldValue(
             "[长度不对]请重新输入！",
             Toast.LENGTH_SHORT
         ).show()
-        return false
+        return
     }
 
     focusManager.clearFocus()
     color.value = HsvColor.from(local.colorFromHex())
-    return true
 
 }
 

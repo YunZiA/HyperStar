@@ -6,8 +6,6 @@ import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.XMiuixSlider
-import com.yunzia.hyperstar.ui.base.XSuperDropdown
-import com.yunzia.hyperstar.ui.base.XSuperSwitch
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
 import com.yunzia.hyperstar.utils.Utils
@@ -24,18 +22,8 @@ fun QsListViewPager(
             Utils.rootShell("killall com.android.systemui")
         }
     ){
-        firstClasses{
 
-            XSuperDropdown(
-                title = stringResource(R.string.wordless_mode),
-                key = "is_wordless_mode_2",
-                option = R.array.is_wordless_mode_entire,
-            )
-
-
-        }
-
-        classes(
+        firstClasses(
             title = R.string.title_style
         ){
             XMiuixSlider(
@@ -44,7 +32,7 @@ fun QsListViewPager(
                 unit = "dp",
                 maxValue = 25f,
                 minValue = 0f,
-                defValue = 13f,
+                progress = 13f,
                 decimalPlaces = 2
             )
 
@@ -54,7 +42,7 @@ fun QsListViewPager(
                 unit = "%",
                 maxValue = 100f,
                 minValue = 0f,
-                defValue = 100f
+                progress = 100f
             )
 
         }
@@ -67,7 +55,7 @@ fun QsListViewPager(
                 unit = "%",
                 maxValue = 150f,
                 minValue = 0f,
-                defValue = 100f
+                progress = 100f
             )
 
             XMiuixSlider(
@@ -76,7 +64,7 @@ fun QsListViewPager(
                 unit = "%",
                 maxValue = 150f,
                 minValue = 0f,
-                defValue = 100f
+                progress = 100f
             )
 
         }
@@ -91,7 +79,7 @@ fun QsListViewPager(
                 unit = "%",
                 maxValue = 50F,
                 minValue = -50f,
-                defValue = 0f
+                progress = 0f
             )
 
             XMiuixSlider(
@@ -100,7 +88,7 @@ fun QsListViewPager(
                 unit = "dp",
                 maxValue = 100f,
                 minValue = -100f,
-                defValue = 0f,
+                progress = 0f,
                 decimalPlaces = 1
             )
 

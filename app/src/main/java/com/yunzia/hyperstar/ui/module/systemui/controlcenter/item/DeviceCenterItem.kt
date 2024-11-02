@@ -17,7 +17,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import yunzia.ui.Card
-import com.yunzia.hyperstar.ui.base.dialog.MSuperDialog
+import com.yunzia.hyperstar.ui.base.MSuperDialog
 import com.yunzia.hyperstar.ui.base.modifier.elevation
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemDropdown
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemSlider
@@ -26,7 +26,6 @@ import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 @Composable
@@ -67,7 +66,7 @@ fun DeviceCenterItem(
                 showAction = true,
                 color = colorScheme.background,
                 onDismissRequest = {
-                    dismissDialog(showDialog)
+                    showDialog.value = false
                 }
             ) {
 

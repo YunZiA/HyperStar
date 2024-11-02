@@ -1,15 +1,9 @@
 package com.yunzia.hyperstar.ui.module.systemui.controlcenter
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.SystemUIPagerList
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
@@ -27,7 +21,7 @@ import com.yunzia.hyperstar.utils.Utils
 
 @Composable
 fun ControlCenterPager(
-    navController: NavHostController
+    navController: NavController
 ) {
     ModuleNavPagers(
         activityTitle = stringResource(R.string.control_center),
@@ -75,6 +69,7 @@ fun ControlCenterPager(
             )
 
             XSuperSwitch(
+                enabled = false,
                 title = stringResource(R.string.is_use_chaos_header_title),
                 key = "is_use_chaos_header"
             )
@@ -87,7 +82,7 @@ fun ControlCenterPager(
                 XMiuixSlider(
                     title = stringResource(R.string.header_show_message_millis_title),
                     key = "header_show_message_millis",
-                    defValue = 1f,
+                    progress = 1f,
                     maxValue = 5f,
                     minValue = 0.1f,
                     unit = "s",
@@ -154,15 +149,6 @@ fun ControlCenterPager(
             }
         }
         classes(
-            title = R.string.device_center,
-        ){
-            XSuperDropdown(
-                title = stringResource(R.string.device_center_ist),
-                key = "is_device_center_mode",
-                option = R.array.is_device_center_mode_entire,
-            )
-        }
-        classes(
             title = R.string.tile,
             top = 12.dp
         ){
@@ -193,15 +179,6 @@ fun ControlCenterPager(
                 title = stringResource(R.string.is_list_label_mode_title),
                 key = "is_list_label_mode",
                 option = R.array.is_list_label_mode_entire,
-                showOptions = 0,
-                contents = {
-
-                    XSuperDropdown(
-                        title = stringResource(R.string.wordless_mode),
-                        key = "is_wordless_mode_0",
-                        option = R.array.is_wordless_mode_entire,
-                    )
-                },
                 showOption = 2,
             ){
                 SuperNavHostArrow(
@@ -223,7 +200,6 @@ fun ControlCenterPager(
             title = R.string.other,
             top = 12.dp
         ){
-
             XSuperSwitch(
                 title = stringResource(R.string.close_edit_button_show_title),
                 key = "close_edit_button_show"

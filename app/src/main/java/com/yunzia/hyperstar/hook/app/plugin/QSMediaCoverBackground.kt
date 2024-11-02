@@ -1,7 +1,6 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
 import android.content.res.Resources
-import android.content.res.XModuleResources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Outline
@@ -17,17 +16,14 @@ import com.yunzia.hyperstar.hook.base.BaseHooker
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
-import com.yunzia.hyperstar.R
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedHelpers
-import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
 
 class QSMediaCoverBackground: BaseHooker() {
 
-    private var vintage :Int? = null
-
+    var vin: Bitmap? = null;
     val mediaBackground= XSPUtils.getInt("media_background_style",0)
     val defaultBackground = (mediaBackground == 0)
     val coverBackground = XSPUtils.getBoolean("is_cover_background",false)
@@ -41,14 +37,9 @@ class QSMediaCoverBackground: BaseHooker() {
     val alpha = XSPUtils.getFloat("cover_dim_background_value",0f).coerceIn(0f, 100f)
     val coverAnciently:Boolean = XSPUtils.getBoolean("cover_anciently",false)
 
-
-    override fun doResources(
-        resparam: XC_InitPackageResources.InitPackageResourcesParam?,
-        modRes: XModuleResources?
-    ) {
-        super.doResources(resparam, modRes)
-        vintage = resparam?.res?.addResource(modRes, R.drawable.vintage)!!
-
+    override fun getLocalRes(res : Resources){
+        val backImg : ByteArray = XposedHelpers.assetAsByteArray(res, "vintage.png")
+        vin = BitmapFactory.decodeByteArray(backImg,0, backImg.size)
 
     }
 
@@ -130,8 +121,7 @@ class QSMediaCoverBackground: BaseHooker() {
 
                 if (coverAnciently && foreground == null) {
 
-                    foreground = vintage?.let { res.getDrawable(it) }
-                        //vin?.toDrawable(res)
+                    foreground = vin?.toDrawable(res)
 
                 }
 

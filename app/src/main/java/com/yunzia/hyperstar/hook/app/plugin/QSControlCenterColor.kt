@@ -16,6 +16,7 @@ import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
@@ -474,7 +475,7 @@ class QSControlCenterColor :BaseHooker() {
         val ConfigUtils = XposedHelpers.findClass("miui.systemui.controlcenter.ConfigUtils",classLoader)
         val MediaPlayerIconsInfo = XposedHelpers.findClass("miui.systemui.controlcenter.media.MediaPlayerIconsInfo",classLoader)
 
-        XposedHelpers.findAndHookConstructor(MediaPlayerViewHolder,View::class.java,object : XC_MethodHook(){
+        XposedBridge.hookAllConstructors(MediaPlayerViewHolder, object : XC_MethodHook() {
             override fun afterHookedMethod(param: MethodHookParam?) {
                 super.afterHookedMethod(param)
                 val thisObj = param?.thisObject
@@ -630,17 +631,29 @@ class QSControlCenterColor :BaseHooker() {
         val QSItemView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSItemView", classLoader)
         val QSCardItemView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSCardItemView", classLoader)
 
-        XposedHelpers.findAndHookMethod(QSCardItemView,"updateBackground",object : XC_MethodHook(){
-            override fun beforeHookedMethod(param: MethodHookParam?) {
-                super.beforeHookedMethod(param)
-                val thisObj = param?.thisObject  as LinearLayout
+        XposedBridge.hookAllMethods(QSCardItemView,"updateState",object : XC_MethodHook(){
+
+            override fun afterHookedMethod(param: MethodHookParam?) {
+                super.afterHookedMethod(param)
+                val thisObj = param?.thisObject
+
+                if (thisObj == null) {
+                    starLog.log("QSControlCenterColor View is null")
+                    return
+                }
 
                 val Companion = XposedHelpers.getStaticObjectField(QSItemView,"Companion")
+
+                if (Companion == null) {
+                    starLog.log("QSItemView Companion is null")
+                    return
+                }
                 val sta = XposedHelpers.getObjectField(thisObj,"state")
 
                 val states = XposedHelpers.callMethod(Companion,"isRestrictedCompat",sta) as Boolean
 
                 val state = XposedHelpers.getObjectField(sta,"state")
+                thisObj as LinearLayout
                 val title = thisObj.findViewByIdName("title") as TextView
 
                 val status = thisObj.findViewByIdName("status") as TextView
@@ -670,8 +683,8 @@ class QSControlCenterColor :BaseHooker() {
                     if (enableSecondaryColor != "null") status.setTextColor(Color.parseColor(enableSecondaryColor))
 
                 }
-
             }
+
         })
     }
 

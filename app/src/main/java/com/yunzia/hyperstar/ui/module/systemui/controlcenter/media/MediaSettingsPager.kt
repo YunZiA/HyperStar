@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.SystemUIPagerList
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
@@ -27,7 +26,7 @@ import com.yunzia.hyperstar.utils.Utils
 
 @Composable
 fun MediaSettingsPager(
-    navController: NavHostController
+    navController: NavController
 ) {
     ModuleNavPagers(
         activityTitle = stringResource(R.string.media_settings),
@@ -131,14 +130,6 @@ fun MediaSettingsPager(
             title = R.string.miplayer_expand,
             top = 12.dp,
         ){
-            XSuperSwitch(
-                title = stringResource(R.string.title_qs_detail_app_icon_radius),
-                key = "qs_detail_app_icon_radius"
-            )
-            XSuperSwitch(
-                title = stringResource(R.string.title_qs_detail_progress_bg_radius),
-                key = "qs_detail_progress_bg_radius"
-            )
             XSuperDropdown(
                 title = stringResource(R.string.is_local_speaker_title),
                 key = "is_local_speaker",

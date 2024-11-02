@@ -23,12 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Icon
 import yunzia.ui.Card
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.dialog.MSuperDialog
+import com.yunzia.hyperstar.ui.base.MSuperDialog
 import com.yunzia.hyperstar.ui.base.modifier.elevation
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemDropdown
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
@@ -48,7 +47,7 @@ fun VolumeItem(
                 showAction = true,
                 color = colorScheme.background,
                 onDismissRequest = {
-                    dismissDialog(showDialog)
+                    showDialog.value = false
                 }
             ) {
 

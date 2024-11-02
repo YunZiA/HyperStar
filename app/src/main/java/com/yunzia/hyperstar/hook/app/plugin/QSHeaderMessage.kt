@@ -18,10 +18,10 @@ class QSHeaderMessage : BaseHooker() {
     private fun startMethodsHook() {
 
 
-        val MainPanelHeaderController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.header.MainPanelHeaderController",classLoader)
+        val MessageHeaderController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.header.MessageHeaderController",classLoader)
 
         if (showMessage){
-            XposedHelpers.findAndHookMethod(MainPanelHeaderController,"showMessage",CharSequence::class.java, object : XC_MethodReplacement(){
+            XposedHelpers.findAndHookMethod(MessageHeaderController,"showMsg",CharSequence::class.java, object : XC_MethodReplacement(){
                 override fun replaceHookedMethod(param: MethodHookParam?): Any? {
 
                     return null;
@@ -32,17 +32,19 @@ class QSHeaderMessage : BaseHooker() {
 
         }
         else if (showMessageMillis != 1000f){
-            XposedHelpers.findAndHookMethod(MainPanelHeaderController,"handleShowMessage",CharSequence::class.java, object : XC_MethodReplacement(){
+            val showConfig = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.header.MessageHeaderController\$Msg\$showConfig\$1",classLoader)
+
+
+
+            XposedHelpers.findAndHookMethod(showConfig,"onComplete",Any::class.java, object : XC_MethodReplacement(){
                 override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-                    //this.headerMsgController.changeMsg
-                    //this.uiHandler.postDelayed
                     val thisObj = param?.thisObject
-                    val message = param?.args?.get(0)
-                    val headerMsgController = XposedHelpers.getObjectField(thisObj,"headerMsgController")
-                    XposedHelpers.callMethod(headerMsgController,"changeMsg",message)
-                    XposedHelpers.callMethod(thisObj,"changeTarget",headerMsgController,true)
-                    val uiHandler = XposedHelpers.getObjectField(thisObj,"uiHandler") as Handler
-                    val hideMsgCallback = XposedHelpers.getObjectField(thisObj,"hideMsgCallback") as Runnable
+                    val messageHeaderController = XposedHelpers.getObjectField(thisObj,"this\$0")
+                    val msg = XposedHelpers.getObjectField(thisObj,"this\$1")
+
+                    val uiHandler = XposedHelpers.getObjectField(messageHeaderController,"uiHandler") as Handler
+                    val hideMsgCallback = XposedHelpers.getObjectField(msg,"hideRunnable") as Runnable
+
                     uiHandler.postDelayed(hideMsgCallback,showMessageMillis.toLong())
 
                     return null;

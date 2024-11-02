@@ -7,6 +7,14 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.FrameLayout
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.Action.Companion.apCode
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.Action.Companion.apScan
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.Action.Companion.bootloader
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.Action.Companion.recovery
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.Action.Companion.screenshot
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.Action.Companion.wcCode
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.Action.Companion.wcScaner
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.Action.Companion.xiaoai
 import com.yunzia.hyperstar.hook.base.BaseHooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
@@ -24,7 +32,6 @@ class PowerMenu : BaseHooker() {
     var icSilentOff = 0
     var icQsScreenshot = 0
 
-    var xiaoai = 0
     var alipayPay = 0
     var wechatScan = 0
     var alipayScan = 0
@@ -41,8 +48,7 @@ class PowerMenu : BaseHooker() {
         super.doResources(resparam, modRes)
 
 
-        xiaoai = resparam?.res?.addResource(modRes,R.drawable.xiaoai)!!
-        icBootloader = resparam.res?.addResource(modRes,R.drawable.ic_bootloader)!!
+        icBootloader = resparam?.res?.addResource(modRes,R.drawable.ic_bootloader)!!
         icRecovery = resparam.res?.addResource(modRes,R.drawable.ic_recovery)!!
         icAirplaneOn = resparam.res?.addResource(modRes,R.drawable.ic_airplane_on)!!
         icAirplaneOff = resparam.res?.addResource(modRes,R.drawable.ic_airplane_off)!!
@@ -62,7 +68,6 @@ class PowerMenu : BaseHooker() {
         super.doMethods(classLoader)
 
         val MiuiGlobalActionsDialog = XposedHelpers.findClass("com.android.systemui.miui.globalactions.MiuiGlobalActionsDialog",classLoader)
-        val VolumeUtil = XposedHelpers.findClass("com.android.systemui.miui.volume.VolumeUtil",classLoader)
 
         if (isPowerMenuNavShow){
             XposedHelpers.findAndHookMethod(MiuiGlobalActionsDialog,"initDialog",object : XC_MethodHook() {
@@ -93,41 +98,24 @@ class PowerMenu : BaseHooker() {
 
                 val s = mSliderView.layoutParams as FrameLayout.LayoutParams
                 //mSliderView.translationX = 250f
-                val action = Action(
-                    mContext,xiaoai, icBootloader, icRecovery, icAirplaneOn, icAirplaneOff,
-                    icSilentOn, icSilentOff, icQsScreenshot, alipayPay, wechatScan, alipayScan, wechatPay , VolumeUtil
+
+                val items1: List<Item?> = listOf(
+                    recovery(mContext,icRecovery),
+                    bootloader(mContext,icBootloader),
+                    xiaoai(mContext,icAirplaneOn),
+                    screenshot(mContext,icQsScreenshot),
+                    wcScaner(mContext,wechatScan),
+                    wcCode(mContext,wechatPay),
+                    apScan(mContext,alipayScan),
+                    apCode(mContext,alipayPay)
                 )
-
-
-
-
                 when(isPowerMenuStyle){
                     1->{
-
-                        val items1: List<Item?> = listOf(
-                            action.getAction("recovery"),
-                            action.getAction("bootloader"),
-                        )
-
                         group = menuB(
                             mContext,thisObj,items1,mTalkbackLayout,mSliderView
                         )
                     }
                     2->{
-
-                        var items1: List<Item?> = emptyList()
-                        val items1m  = items1.toMutableList()
-                        for (i in 0..7){
-                            val type = XSPUtils.getString("power_menu_style_b_$i","null").toString()
-                            if (type != "null"){
-                                items1m.add(action.getAction(type))
-
-                            }
-
-                        }
-                        items1 = items1m.toList()
-
-
                         group = menuA(
                             mContext,thisObj,items1,mTalkbackLayout,mSliderView
                         )

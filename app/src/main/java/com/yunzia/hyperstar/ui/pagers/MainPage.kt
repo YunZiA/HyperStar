@@ -60,26 +60,26 @@ fun MainPage(
 
 
         }
-        classes (
-            title = R.string.other_settings
-        ){
-            SuperNavHostArrow(
-                leftIcon = R.drawable.ic_miui_home_settings,
-                title = stringResource(R.string.beta_home),
-                navController = navController,
-                route = PagerList.BETA_HOME
-
-            )
-
-
-
-
-
-            //SearchBar()
-
-
-
-        }
+//        classes (
+//            title = R.string.other_settings
+//        ){
+//            SuperNavHostArrow(
+//                leftIcon = R.drawable.ic_miui_home_settings,
+//                title = stringResource(R.string.beta_home),
+//                navController = navController,
+//                route = PagerList.BETA_HOME
+//
+//            )
+//
+//
+//
+//
+//
+//            //SearchBar()
+//
+//
+//
+//        }
 
 
 

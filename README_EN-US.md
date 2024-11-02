@@ -12,9 +12,9 @@
 
 **[简体中文](README.md) | English**
 
-[![GitHub License](https://img.shields.io/github/license/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/blob/master/LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/forks)
+[![GitHub License](https://img.shields.io/github/license/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar2.0/blob/master/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar2.0/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar2.0/forks)
 
 
 </div>
@@ -27,8 +27,7 @@ This is an extremely ordinary Xposed module, mainly designed to customize the Xi
 
 | System versions | Android versions | Support status       |
 |:----------------|:-----------------|:---------------------|
-| HyperOS1.0 Beta | 15               | Partially functional |
-| HyperOS1.0      | 14               | Supported            |
+| HyperOS2.0      | 15               | Partially functional |
 
 ## Pre-use instructions
 
@@ -36,7 +35,7 @@ Please enable HyperStar in [LSPosed](https://github.com/LSPosed/LSPosed/releases
 
 For `heavily modified third-party Xiaomi HyperOS ROMs` and `heavily modified system apps`, this module <b>will not be compatible</b>. However, it does not guarantee that the functions will definitely fail. If any functions malfunction in such environments, please <b>disable the functions</b> or <b>uninstall the module</b>.
 
-Currently, HyperStar is adapted for devices running Xiaomi HyperOS 1.0 based on Android 14. Functionality may not be fully covered, so please provide me with plenty of feedback!
+Currently, HyperStar is adapted for devices running Xiaomi HyperOS 2.0 based on Android 15. Functionality may not be fully covered, so please provide me with plenty of feedback!
 
 ## Supported apps
 
@@ -44,7 +43,8 @@ Currently, HyperStar is adapted for devices running Xiaomi HyperOS 1.0 based on 
 |:-----------------|:---------------------|
 | System UI        | com.android.systemui |
 | System UI Plugin | miui.systemui.plugin |
-| System launcher  | com.miui.home        |
+
+[//]: # (| System launcher  | com.miui.home        |)
 
 ## Chat & Feedback Group
 

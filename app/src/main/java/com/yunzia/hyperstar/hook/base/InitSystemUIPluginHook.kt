@@ -3,7 +3,6 @@ package com.yunzia.hyperstar.hook.base
 import android.content.Context
 import android.content.res.Resources
 import android.content.res.XModuleResources
-import com.yunzia.hyperstar.hook.app.plugin.PadVolume
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTile
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTileList
@@ -31,13 +30,11 @@ import de.robv.android.xposed.callbacks.XC_InitPackageResources
 class InitSystemUIPluginHook() : BaseHooker() {
 
     private val qsMediaCoverBackground: QSMediaCoverBackground
-    private val padVolume: PadVolume
     private val qsControlCenterColor: QSControlCenterColor
     private val powerMenu: PowerMenu
 
     init {
         qsMediaCoverBackground = QSMediaCoverBackground()
-        padVolume = PadVolume()
         qsControlCenterColor = QSControlCenterColor()
         powerMenu = PowerMenu()
 
@@ -62,7 +59,6 @@ class InitSystemUIPluginHook() : BaseHooker() {
         modRes: XModuleResources?
     ) {
         super.doResources(resparam, modRes)
-        padVolume.doResources(resparam,modRes)
         qsControlCenterColor.doResources(resparam, modRes)
         powerMenu.doResources(resparam, modRes)
 
@@ -133,7 +129,6 @@ class InitSystemUIPluginHook() : BaseHooker() {
         doSecMethods(QSHeaderMessage())
         doSecMethods(QSHeaderView())
         doSecMethods(QSEditButton())
-        doSecMethods(padVolume)
         doSecMethods(QSClockAnim())
         doSecMethods(QSControlCenterList())
         doSecMethods(VolumeColumnProgressRadius())

@@ -52,15 +52,24 @@ fun ThirdPage(
 
                 Text(
                     text = "Hyper",
-                    fontSize = 45.sp,
-                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 40.sp,
+                    fontWeight = FontWeight(580),
                     textAlign = TextAlign.Center
                 )
 
                 Text(
                     text = "Star",
-                    fontSize = 45.sp,
-                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 40.sp,
+                    fontWeight = FontWeight(580),
+                    textAlign = TextAlign.Center,
+                    color = colorResource(R.color.blue),
+                )
+
+                Text(
+                    modifier=Modifier.padding(start = 10.dp),
+                    text = "2.0",
+                    fontSize = 40.sp,
+                    fontWeight = FontWeight(580),
                     textAlign = TextAlign.Center,
                     color = colorResource(R.color.blue),
                 )
@@ -129,7 +138,7 @@ fun ThirdPage(
                 title = stringResource(R.string.project_address),
                 summary = stringResource(R.string.open_source_statement),
                 navController = navController,
-                url = "https://github.com/YunZiA/HyperStar"
+                url = "https://github.com/YunZiA/HyperStar2.0"
             )
         }
 

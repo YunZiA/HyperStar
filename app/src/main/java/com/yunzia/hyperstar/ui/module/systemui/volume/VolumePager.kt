@@ -31,11 +31,6 @@ fun VolumePager(
                 key = "is_super_blur_volume",
                 option = R.array.is_super_blur_entire
             )
-            XSuperSwitch(
-                title = stringResource(R.string.is_use_pad_volume_title),
-                summary = stringResource(R.string.is_use_pad_volume_summary),
-                key = "is_use_pad_volume"
-            )
         }
         classes(title = R.string.progress_bar){
             XMiuixSuperSliderSwitch(

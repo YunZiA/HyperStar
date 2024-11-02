@@ -12,9 +12,9 @@
 
 **简体中文 | [English](README_EN-US.md)**
 
-[![GitHub License](https://img.shields.io/github/license/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/blob/master/LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/forks)
+[![GitHub License](https://img.shields.io/github/license/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar2.0/blob/master/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar2.0/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar2.0/forks)
 
 
 </div>
@@ -24,10 +24,9 @@
 这是一个平平无奇的Xposed模块，主要功能为自定义 Xiaomi HyperOS 控制中心，外加一些自己认为有用的功能。
 
 ## 当前支持的版本
-| 系统版本            | 安卓版本 | 支持状态 |
-|:----------------|:-----|:-----|
-| HyperOS1.0 Beta | 15   | 部分能用 |
-| HyperOS1.0      | 14   | 支持   |
+| 系统版本       | 安卓版本 | 支持状态 |
+|:-----------|:-----|:-----|
+| HyperOS2.0 | 15   | 部分能用 |
 
 ## 使用前说明
 
@@ -35,7 +34,7 @@
 
 对于`修改较多的第三方 Xiaomi HyperOS ROM`、`修改较多的系统软件`，本模块<b>不会适配</b> ，但也不保证功能一定失效，如若功能在此环境下出现异常，请<b>关闭功能</b>或者<b>卸载模块</b>;
 
-目前 HyperStar 是基于 Android 14 的 Xiaomi HyperOS 1.0 的手机设备进行适配，功能并不能保证覆盖完整，请多多向我反馈！
+目前 HyperStar 是基于 Android 15 的 Xiaomi HyperOS 2.0 的手机设备进行适配，功能并不能保证覆盖完整，请多多向我反馈！
 
 
 ## 模块作用域
@@ -44,7 +43,8 @@
 |:-------|:----------------------|
 | 系统界面   | com.android.systemui  |
 | 系统界面组件 | miui.systemui.plugin  |
-| 系统桌面   | com.miui.home         |
+
+[//]: # (| 系统桌面   | com.miui.home         |)
 
 ## 交流 & 反馈群组
 

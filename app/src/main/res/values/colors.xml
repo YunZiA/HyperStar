@@ -17,5 +17,17 @@
     <color name="miui_timer_text_color">#ccffffff</color>
     <color name="miui_volume_color_accent">#f7ffffff</color>
     <color name="miui_volume_bg_color">#40e3e3e3</color>
+
+
+
+    <color name="logo_color1">#757a7a7a</color>
+    <color name="logo_color2">#127300</color>
+    <color name="logo_color3">#7a000000</color>
+
+
+<!--    <color name="logo_color1">#e6a1a1a1</color>-->
+<!--    <color name="logo_color2">#4de6e6e6</color>-->
+<!--    <color name="logo_color3">#1af500</color>-->
+
     <!--    <color name="miui_volume_divider">#0000000</color>-->
 </resources>

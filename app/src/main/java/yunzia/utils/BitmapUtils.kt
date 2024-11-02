@@ -57,7 +57,8 @@ class BitmapUtils {
 
 
         fun auto(bitmap: Bitmap):Bitmap{
-            val result = Bitmap.createBitmap(bitmap.width, bitmap.height, bitmap.config)
+            if (bitmap.config == null) return bitmap
+            val result = Bitmap.createBitmap(bitmap.width, bitmap.height, bitmap.config!!)
             val canvas = Canvas(result)
             val palette = Palette.from(bitmap).generate()
 
@@ -160,8 +161,9 @@ class BitmapUtils {
         }
 
         private fun reduceBrightness(bitmap: Bitmap, factor: Float): Bitmap {
+            if (bitmap.config == null) return bitmap
 
-            val result = Bitmap.createBitmap(bitmap.width, bitmap.height, bitmap.config)
+            val result = Bitmap.createBitmap(bitmap.width, bitmap.height, bitmap.config!!)
 
             val canvas = Canvas(result)
             val paint = Paint()
@@ -195,11 +197,13 @@ class BitmapUtils {
             val scaledHeight = (originalHeight * adjustedScaleFactor).toInt()
             // 创建一个新的Bitmap用于放大后的图像
             val scaledBitmap = Bitmap.createScaledBitmap(original, scaledWidth, scaledHeight, true)
+
+            if (scaledBitmap.config == null) return original
             // 计算裁切区域的起始坐标（基于中心）
             val cropX = (scaledWidth - originalWidth) / 2
             val cropY = (scaledHeight - originalHeight) / 2
             // 创建一个与原始Bitmap相同尺寸的Bitmap用于存放裁切结果
-            val resultBitmap = Bitmap.createBitmap(originalWidth, originalHeight, scaledBitmap.config)
+            val resultBitmap = Bitmap.createBitmap(originalWidth, originalHeight, scaledBitmap.config!!)
             // 创建一个Canvas用于在resultBitmap上绘制
             val canvas = Canvas(resultBitmap)
 

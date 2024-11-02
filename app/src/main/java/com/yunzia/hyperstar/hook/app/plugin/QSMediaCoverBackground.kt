@@ -136,7 +136,8 @@ class QSMediaCoverBackground: BaseHooker() {
             }
         })
         if (!defaultBackground){
-            XposedHelpers.findAndHookConstructor(MediaPlayerViewHolder,View::class.java,object : XC_MethodHook(){
+            val HapticFeedback = XposedHelpers.findClass("miui.systemui.util.HapticFeedback",classLoader)
+            XposedHelpers.findAndHookConstructor(MediaPlayerViewHolder,View::class.java,HapticFeedback,object : XC_MethodHook(){
                 override fun afterHookedMethod(param: MethodHookParam?) {
                     super.afterHookedMethod(param)
                     val thisObj = param?.thisObject

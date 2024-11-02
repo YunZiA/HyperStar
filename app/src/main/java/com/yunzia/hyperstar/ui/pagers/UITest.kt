@@ -60,7 +60,6 @@ import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.modifier.blur
 import com.yunzia.hyperstar.ui.base.modifier.showBlur
-import com.yunzia.hyperstar.ui.pagers.ThirdPage
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.Utils
 import dev.chrisbanes.haze.HazeState
@@ -85,8 +84,6 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
-import top.yukonga.miuix.kmp.utils.squircleshape.CornerSmoothing
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 @OptIn(FlowPreview::class)
 @Composable
@@ -136,12 +133,13 @@ fun UITest(
     val show = remember { mutableStateOf(false) }
 
     val view = LocalView.current
+    val showBlurs = remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                modifier = Modifier.showBlur(hazeState),
+                modifier =if (targetPage == 2 && !showBlurs.value) Modifier else Modifier.showBlur(hazeState),
                 color = Color.Transparent,
                 title = pagerTitle,
                 largeTitle = if (targetPage == 2) "" else pagerTitle,
@@ -192,6 +190,7 @@ fun UITest(
             colorMode = colorMode,
             topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
             padding = padding,
+            showBlurs = showBlurs,
             showFPSMonitor = showFPSMonitor,
             enablePageUserScroll = enablePageUserScroll
         )
@@ -388,7 +387,8 @@ fun AppHorizontalPager(
     topAppBarScrollBehaviorList: List<ScrollBehavior>,
     padding: PaddingValues,
     showFPSMonitor: MutableState<Boolean>,
-    enablePageUserScroll: MutableState<Boolean>
+    enablePageUserScroll: MutableState<Boolean>,
+    showBlurs: MutableState<Boolean>
 ) {
     HorizontalPager(
         modifier = modifier,
@@ -428,6 +428,8 @@ fun AppHorizontalPager(
                 else -> {
                     ThirdPage(
                         activity = activity,
+                        showBlurs = showBlurs,
+                        colorMode = colorMode,
                         navController = navController,
                         topAppBarScrollBehavior = topAppBarScrollBehaviorList[2],
                         padding = padding,

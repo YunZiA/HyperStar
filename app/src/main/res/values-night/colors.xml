@@ -5,4 +5,13 @@
     <color name="miui_volume_color_accent">#f7ffffff</color>
     <color name="miui_volume_bg_color">#40e3e3e3</color>
     <color name="tab_bg_color">#FF313131</color>
+
+
+    <color name="logo_color1">#a0a0a0</color>
+    <color name="logo_color2">#ccf200</color>
+    <color name="logo_color3">#6effffff</color>
+
+<!--    <color name="logo_color1">#e6a1a1a1</color>-->
+<!--    <color name="logo_color2">#4de6e6e6</color>-->
+<!--    <color name="logo_color3">#1af500</color>-->
 </resources>

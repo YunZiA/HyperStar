@@ -99,10 +99,10 @@ private fun getAllAppInfo(
         val applicationInfo = p.applicationInfo
 
         // 检查是否是系统应用以及是否应该过滤系统应用
-        val isSystemApp = isFilterSystem && ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0)
+        val isSystemApp = isFilterSystem && ((applicationInfo?.flags?.and(ApplicationInfo.FLAG_SYSTEM)) != 0)
 
         // 检查是否是特定的应用包名
-        if ("com.miui.player" == applicationInfo.packageName) {
+        if ("com.miui.player" == applicationInfo?.packageName) {
             processAppInfo(applicationInfo, packageManager, appBeanList,appListDB,appIconlist)
         } else if (!isSystemApp) {  // 非系统应用
             processAppInfo(applicationInfo, packageManager, appBeanList, appListDB,appIconlist)

@@ -174,5 +174,9 @@
     <string name="is_use_power_menu_plus_title">Expanded power menu</string>
     <string name="power_menu">Power Menu</string>
     <string name="title_qs_detail_app_icon_radius">Disable app icon clipping</string>
+    <string name="os_ver_tips">The OS version does not match, and it has been deactivated!</string>
     <string name="title_qs_detail_progress_bg_radius">Rounded rectangle volume progress bar</string>
+    <string name="os_description">The current OS version is not 1.0, and this module has been deactivated.</string>
+    <string name="os_tips">已停用</string>
+    <string name="os2_link"><![CDATA[OS2.0 >>]]></string>
 </resources>

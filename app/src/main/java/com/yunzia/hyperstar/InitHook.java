@@ -17,18 +17,24 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import yunzia.utils.SystemProperties;
 
 public class InitHook extends BaseHooker implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
 
-    private InitSystemUIHook systemUIHook;
+    private final InitSystemUIHook systemUIHook;
+    private final boolean errVersion ;
+
 
     public InitHook() {
+        errVersion = SystemProperties.getInt("ro.mi.os.version.code",1) != 1;
         systemUIHook = new InitSystemUIHook();
+
     }
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
         super.initZygote(startupParam);
+        if (errVersion) return;
         Resources res = XModuleResources.createInstance(startupParam.modulePath, null);
         systemUIHook.getLocalRes(res);
 
@@ -38,9 +44,9 @@ public class InitHook extends BaseHooker implements IXposedHookLoadPackage, IXpo
     @Override
     public void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam resparam) throws Throwable {
         super.handleInitPackageResources(resparam);
+        if (errVersion) return;
         systemUIHook.doRes(resparam);
-        if (!resparam.packageName.equals("miui.systemui.plugin"))
-            return;
+        if (!resparam.packageName.equals("miui.systemui.plugin")) return;
         //starLog.log("替换资源");
 
         XModuleResources modRes = XModuleResources.createInstance(mPath, resparam.res);
@@ -54,6 +60,7 @@ public class InitHook extends BaseHooker implements IXposedHookLoadPackage, IXpo
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+        if (errVersion) return;
         if (lpparam.packageName.equals(APPLICATION_ID)){
             XposedHelpers.findAndHookMethod(APPLICATION_ID+".MainActivity", lpparam.classLoader, "isModuleActive", XC_MethodReplacement.returnConstant(true));
         }

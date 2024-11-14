@@ -17,6 +17,7 @@ import com.yunzia.hyperstar.ui.base.theme.HyperStarTheme
 import com.yunzia.hyperstar.utils.LanguageHelper
 import com.yunzia.hyperstar.utils.LanguageHelper.Companion.getIndexLanguage
 import com.yunzia.hyperstar.utils.PreferencesUtil
+import yunzia.utils.SystemProperties
 import java.util.Locale
 
 abstract class BaseActivity : ComponentActivity() {
@@ -44,6 +45,9 @@ abstract class BaseActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
         initData(savedInstanceState)
         setContent {
 //

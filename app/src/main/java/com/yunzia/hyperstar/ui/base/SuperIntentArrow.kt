@@ -37,7 +37,7 @@ fun SuperIntentArrow(
         insideMargin = DpSize(24.dp, 16.dp),
         summary = summary,
         onClick = {
-            // 启动新的Activity
+
             navController.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
     )

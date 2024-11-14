@@ -175,4 +175,8 @@
     <string name="power_menu">Power Menu</string>
     <string name="title_qs_detail_app_icon_radius">Disable app icon clipping</string>
     <string name="title_qs_detail_progress_bg_radius">Rounded rectangle volume progress bar</string>
+    <string name="os_description">The current OS version is not 2.0, and this module has been deactivated.</string>
+    <string name="os_tips">Disabled</string>
+    <string name="os1_link"><![CDATA[OS1.0 >>]]></string>
+    <string name="os_ver_tips">The OS version does not match, and it has been deactivated!</string>
 </resources>

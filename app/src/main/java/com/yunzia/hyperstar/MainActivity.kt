@@ -1,11 +1,15 @@
 package com.yunzia.hyperstar
 
 import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -22,7 +26,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,6 +44,7 @@ import top.yukonga.miuix.kmp.basic.Button
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
+import yunzia.utils.SystemProperties
 import java.io.Serializable
 
 
@@ -52,6 +61,8 @@ class MainActivity : BaseActivity() {
     override fun InitView(colorMode: MutableState<Int>?) {
         val isRoot:Boolean = Utils.getRootPermission() == 0
 
+        val errVersion = (SystemProperties.getInt("ro.mi.os.version.code", 1) != 2)
+        VerDialog(errVersion,this)
         RootDialog(!isRoot)
         Log.d("ggc", "Greeting: $isRoot")
         if (colorMode != null) {
@@ -163,6 +174,76 @@ fun RootDialog(showDialog: Boolean) {
                     text = stringResource(R.string.no_root_description),
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     color = colorScheme.onSurface,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 13.sp
+                )
+                Spacer(Modifier.height(23.dp))
+
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(R.string.sure),
+                    submit = true,
+                    cornerRadius = 14.dp,
+                    onClick = {
+                        //dismissDialog()
+                        showDialogs.value = false
+                    }
+                )
+
+
+            }
+
+        }
+    }
+}
+
+@Composable
+fun VerDialog(showDialog: Boolean,context: Context) {
+    val showDialogs = remember{ mutableStateOf(showDialog)}
+    if (showDialogs.value) {
+
+        Dialog(
+            onDismissRequest = { showDialogs.value = false },
+        ) {
+            Card(
+                cornerRadius = 30.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 5.dp)
+                    .padding(bottom = 28.dp),
+                insideMargin = DpSize(20.dp,20.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.os_tips),
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    color = colorScheme.onSurface,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 19.sp
+                )
+                Spacer(Modifier.height(20.dp))
+                Text(
+                    text = stringResource(R.string.os_description),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Start,
+                    color = colorScheme.onSurface,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 15.sp,
+                    style = TextStyle(textIndent = TextIndent(20.sp, 0.sp))
+
+                )
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    text = stringResource(R.string.os1_link),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp).clickable(
+                        onClick = {
+                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/YunZiA/HyperStar")))
+                        },
+                        indication = null,
+                        interactionSource = MutableInteractionSource()
+                    ),
+                    textDecoration = TextDecoration.Underline,
+                    textAlign = TextAlign.End,
+                    color = colorScheme.primary,
                     fontWeight = FontWeight.Medium,
                     fontSize = 13.sp
                 )

@@ -2,6 +2,7 @@ package com.yunzia.hyperstar.hook.app.systemui
 
 import android.view.View
 import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
@@ -22,50 +23,44 @@ class NavigationBarBackground :BaseHooker() {
 
     private fun transparentStatusBarBackground() {
         if (!isTransparentStatusBarBackground) return
-        val PhoneStatusBarTransitions = XposedHelpers.findClass(
-            "com.android.systemui.statusbar.phone.PhoneStatusBarTransitions",
+        val SwitchingProvider = XposedHelpers.findClass(
+            "com.android.systemui.dagger.DaggerReferenceGlobalRootComponent\$StatusBarFragmentComponentImpl\$SwitchingProvider",
             classLoader
         )
+        val BarTransitions = XposedHelpers.findClass(
+            "com.android.systemui.statusbar.phone.BarTransitions",
+            classLoader
+        )
+        XposedHelpers.findAndHookMethod(SwitchingProvider,"get", object : XC_MethodHook() {
+            override fun afterHookedMethod(param: MethodHookParam) {
+                val thisObject = param.thisObject
+                val id = XposedHelpers.getIntField(thisObject, "id")
+                when(id){
+                    4->{
 
-        XposedHelpers.findAndHookConstructor(PhoneStatusBarTransitions, View::class.java,
-            object : XC_MethodHook() {
-                override fun afterHookedMethod(param: MethodHookParam) {
-                    super.afterHookedMethod(param)
-                    val thisObject = param.thisObject
-                    val mView = param.args[0] as View
-                    val mBarBackground = XposedHelpers.getObjectField(thisObject, "mBarBackground")
-//                    val color = XposedHelpers.getIntField(mBarBackground, "mSemiTransparent")
-//                    val gradientDrawable = GradientDrawable(
-//                        GradientDrawable.Orientation.TOP_BOTTOM,
-//                        intArrayOf(
-//                            color,
-//                            color
-//                        )
-//                    ).apply {
-//                        shape = GradientDrawable.RECTANGLE
-//                        cornerRadius = 0f
-//                    }
-                    //val id =mView.context.resources.getIdentifier("status_bar_height","dimen")
-                    //mView.elevation = 3f
-//                    if (mView is ViewGroup){
-//                        val child = mView.getChildAt(0)
-//                        if (child is ViewGroup) {
-//                            starLog.log("mView is ViewGroup ${child.childCount}")
-//                            val c = child.getChildAt(2)
-//                            val padd = 32
-//                            child.background = gradientDrawable
-//                            child.setOutlineProvider(object : ViewOutlineProvider() {
-//                                override fun getOutline(view: View, outline: Outline) {
-//                                    outline.setRoundRect(padd, 20, view.width-padd, view.height-10,50f)
-//                                }
-//                            })
-//                            child.setClipToOutline(true) //开启裁剪到轮廓
-//                        }
-//                    }
-                    //Object mSemiTransparent = XposedHelpers.getIntField(thisObject,"mSemiTransparent");
-                    XposedHelpers.setIntField(mBarBackground, "mSemiTransparent", 0)
+                        val result = param.result
+                        val mBarBackground = XposedHelpers.getObjectField(result, "mBarBackground")
+
+                        XposedHelpers.setIntField(mBarBackground, "mSemiTransparent", 0)
+
+                    }
                 }
-            })
+
+
+            }
+        })
+
+//        XposedHelpers.findAndHookConstructor(PhoneStatusBarTransitions, View::class.java,
+//            object : XC_MethodHook() {
+//                override fun afterHookedMethod(param: MethodHookParam) {
+//                    super.afterHookedMethod(param)
+//                    val thisObject = param.thisObject
+//                    val mView = param.args[0] as View
+//                    val mBarBackground = XposedHelpers.getObjectField(thisObject, "mBarBackground")
+//
+//                    XposedHelpers.setIntField(mBarBackground, "mSemiTransparent", 0)
+//                }
+//            })
     }
 
     private fun transparentNavigationBarBackground() {
@@ -79,14 +74,14 @@ class NavigationBarBackground :BaseHooker() {
             "com.android.systemui.navigationbar.NavigationBarView",
             classLoader
         )
-        val LightBarTransitionsControllerFactory = XposedHelpers.findClass(
-            "com.android.systemui.statusbar.phone.LightBarTransitionsController\$Factory",
+        val SwitchingProvider9 = XposedHelpers.findClass(
+            "com.android.systemui.dagger.DaggerReferenceGlobalRootComponent\$ReferenceSysUIComponentImpl\$SwitchingProvider\$9",
             classLoader
         )
         val DisplayTracker = XposedHelpers.findClass("com.android.systemui.settings.DisplayTracker", classLoader)
 
 
-        XposedHelpers.findAndHookConstructor(NavigationBarTransitions, NavigationBarView, LightBarTransitionsControllerFactory, DisplayTracker,
+        XposedHelpers.findAndHookConstructor(NavigationBarTransitions, NavigationBarView, SwitchingProvider9, DisplayTracker,
             object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam) {
                     super.afterHookedMethod(param)

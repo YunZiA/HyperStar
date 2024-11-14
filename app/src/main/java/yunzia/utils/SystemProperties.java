@@ -1,10 +1,12 @@
 package yunzia.utils;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+@SuppressLint("PrivateApi")
 public class SystemProperties {
     public static final int PROP_NAME_MAX = 31;
     public static final int PROP_VALUE_MAX = 91;
@@ -25,29 +27,31 @@ public class SystemProperties {
         if (classSystemProperties != null) {
             isSupportSet = true;
             try {
-                isSupportGet = classSystemProperties.getMethod("get", String.class, String.class) != null;
+                classSystemProperties.getMethod("get", String.class, String.class);
+                isSupportGet = true;
             } catch (Exception e2) {
                 isSupportGet = false;
             }
             try {
-                isSupportGetInt = classSystemProperties.getMethod("getInt", String.class, Integer.TYPE) != null;
+                classSystemProperties.getMethod("getInt", String.class, Integer.TYPE);
+                isSupportGetInt = true;
             } catch (Exception e3) {
                 isSupportGetInt = false;
             }
             try {
-                isSupportGetLong = classSystemProperties.getMethod("getLong", String.class, Long.TYPE) != null;
+                classSystemProperties.getMethod("getLong", String.class, Long.TYPE);
+                isSupportGetLong = true;
             } catch (Exception e4) {
                 isSupportGetLong = false;
             }
             try {
-                isSupportGetBoolean = classSystemProperties.getMethod("getBoolean", String.class, Boolean.TYPE) != null;
+                classSystemProperties.getMethod("getBoolean", String.class, Boolean.TYPE);
+                isSupportGetBoolean = true;
             } catch (Exception e5) {
                 isSupportGetBoolean = false;
             }
             try {
-                if (classSystemProperties.getMethod("set", String.class, String.class) == null) {
-                    isSupportSet = false;
-                }
+                classSystemProperties.getMethod("set", String.class, String.class);
             } catch (Exception e6) {
                 isSupportSet = false;
             }

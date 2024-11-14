@@ -175,4 +175,8 @@
     <string name="power_menu">电源菜单</string>
     <string name="title_qs_detail_app_icon_radius">禁止裁切应用图标</string>
     <string name="title_qs_detail_progress_bg_radius">圆角矩形音量进度条</string>
+    <string name="os_description">检测到当前OS版本不是2.0，已经停用此模块</string>
+    <string name="os_tips">已停用</string>
+    <string name="os1_link"><![CDATA[OS1.0 >>]]></string>
+    <string name="os_ver_tips">OS版本不符，已停用！</string>
 </resources>

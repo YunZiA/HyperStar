@@ -56,6 +56,8 @@
     <dimen name="miui_volume_timer_seekbar_width_4stream">196.0dp</dimen>
     <dimen name="miui_volume_timer_time_text_size">13.0dp</dimen>
     <dimen name="logo_area_height">416dp</dimen>
+    <dimen name="no">0.dp</dimen>
+    <dimen name="miplay_seekbar_progress_bg_corner_radiu">8.dp</dimen>
 
 
 </resources>

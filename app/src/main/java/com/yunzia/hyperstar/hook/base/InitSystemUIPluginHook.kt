@@ -17,6 +17,7 @@ import com.yunzia.hyperstar.hook.app.plugin.QSMediaCoverBackground
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaDefaultApp
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaDeviceName
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaView
+import com.yunzia.hyperstar.hook.app.plugin.QSMiplayAppIconRadius
 import com.yunzia.hyperstar.hook.app.plugin.QSToggleSliderRadius
 import com.yunzia.hyperstar.hook.app.plugin.QSVolumeOrBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurVolumeManager
@@ -59,8 +60,9 @@ class InitSystemUIPluginHook() : BaseHooker() {
         modRes: XModuleResources?
     ) {
         super.doResources(resparam, modRes)
-        qsControlCenterColor.doResources(resparam, modRes)
-        powerMenu.doResources(resparam, modRes)
+        doResources(qsControlCenterColor)
+        doResources(powerMenu)
+        doResources(QSMiplayAppIconRadius())
 
 
     }

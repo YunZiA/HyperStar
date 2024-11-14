@@ -11,8 +11,10 @@ import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import yunzia.utils.DensityUtil.Companion.dpToPx
 import com.yunzia.hyperstar.hook.base.BaseHooker
@@ -46,6 +48,72 @@ class QSListView : BaseHooker() {
         startMethodsHook()
         qsTileRadius()
         fixTileIcon()
+        fixBrightnessIcon()
+    }
+
+
+    private fun fixBrightnessIcon() {
+        if ( labelMode != 0 ){
+            val BrightnessPanelTilesController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.brightness.BrightnessPanelTilesController",classLoader)
+
+            XposedHelpers.findAndHookMethod(BrightnessPanelTilesController,"getQSTileItemView",String::class.java,object :XC_MethodHook(){
+                override fun afterHookedMethod(param: MethodHookParam?) {
+                    super.afterHookedMethod(param)
+                    val inflate = param?.result as ViewGroup
+                    val iconFrame = inflate.findViewByIdName("icon_frame") as FrameLayout
+                    val iconView = iconFrame.getChildAt(0) as LinearLayout
+                    val icon = iconView.getChildAt(0) as ImageView
+                    val dra = icon.drawable
+                    starLog.log("${dra}")
+                    if (dra is LayerDrawable){
+
+                        val num = dra.numberOfLayers
+
+                        starLog.log("${num}")
+
+                        val index = num - 1
+                        val disabledBg = dra.getDrawable(0)
+
+                        val invisibleDrawableCompat = dra.getDrawable(index)
+
+                        val icons: LayerDrawable
+
+                        when (num) {
+                            2 -> {
+                                icons = LayerDrawable(arrayOf(disabledBg, invisibleDrawableCompat))
+
+                            }
+                            3 -> {
+                                val enabledBg = dra.getDrawable(1)
+                                icons = LayerDrawable(
+                                    arrayOf(
+                                        disabledBg,
+                                        enabledBg,
+                                        invisibleDrawableCompat
+                                    )
+                                )
+
+                            }
+                            else -> {
+                                return
+                            }
+                        }
+
+                        val height  = dra.getLayerHeight(index)
+                        val width = dra.getLayerWidth(index)
+
+                        icons.setLayerGravity(index, Gravity.CENTER)
+                        icons.setLayerInsetBottom(index, 0)
+                        icons.setLayerSize(index, width, height)
+
+                        icon.setImageDrawable(icons)
+                    }
+                    param.result = inflate
+
+                }
+            })
+
+        }
     }
 
     private fun fixTileIcon() {
@@ -143,7 +211,9 @@ class QSListView : BaseHooker() {
 
         if (labelMarquee || labelMode!=0 ){
 
-            XposedHelpers.findAndHookConstructor(QSItemViewHolder,QSItemView,object : XC_MethodHook(){
+            val MainPanelController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.MainPanelController",classLoader)
+
+            XposedHelpers.findAndHookConstructor(QSItemViewHolder,QSItemView,MainPanelController,object : XC_MethodHook(){
                 override fun afterHookedMethod(param: MethodHookParam?) {
                     super.afterHookedMethod(param)
                     val thisObj = param?.thisObject
@@ -157,10 +227,11 @@ class QSListView : BaseHooker() {
                         qSItemView.removeView(icon)
                         qSItemView.addView(icon,0)
                         qSItemView.addView(label,1)
-                        label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 8f)
+                        label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9f)
 
                         val layoutParam =  label.layoutParams
-                        layoutParam.width = icon.layoutParams.width/10*9
+                        icon.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+                        layoutParam.width = icon.measuredWidth/9*8
                         label.layoutParams = layoutParam
                     } else if (labelMode == 2){
                         qSItemView.removeView(label)
@@ -216,7 +287,7 @@ class QSListView : BaseHooker() {
                             }
                             1 -> {
 
-                                y = 2f
+                                y = -2f
 
                             }
                             else -> {
@@ -233,7 +304,9 @@ class QSListView : BaseHooker() {
                         CommonUtils,Class.forName("android.view.View"), Int::class.java, Boolean::class.java,Int::class.java,Object::class.java
                     )
 
-                    setLayoutHeight.invoke(CommonUtils.newInstance(),CommonUtils.newInstance(), thisObj, space, false, 2, null)
+                    val INSTANCE = XposedHelpers.getStaticObjectField(CommonUtils,"INSTANCE")
+
+                    setLayoutHeight.invoke(CommonUtils,INSTANCE, thisObj, space, false, 2, null)
 
                     return null;
                 }

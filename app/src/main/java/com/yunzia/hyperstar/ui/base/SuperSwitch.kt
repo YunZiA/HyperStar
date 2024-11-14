@@ -15,6 +15,8 @@ import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.Switch
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
+
+
 @Composable
 fun SuperSwitch(
     title: String,
@@ -28,6 +30,7 @@ fun SuperSwitch(
     insideMargin: DpSize = DpSize(16.dp, 16.dp),
     enabled: Boolean = true
 ) {
+
     var isChecked by remember { mutableStateOf(checked) }
     val updatedOnCheckedChange by rememberUpdatedState(onCheckedChange)
 

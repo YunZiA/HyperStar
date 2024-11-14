@@ -1,27 +1,17 @@
 package com.yunzia.hyperstar.ui.pagers
 
 import android.annotation.SuppressLint
-import android.graphics.Color
-import android.graphics.Typeface
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
-import android.view.View
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -35,7 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -43,14 +35,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.fontscaling.MathUtils.lerp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.graphics.toColor
+import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.ui.base.LinearImage
 import com.yunzia.hyperstar.ui.base.SuperIntentArrow
 import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
-import com.yunzia.hyperstar.ui.base.view.BgEffectPainter
+import com.yunzia.hyperstar.ui.base.view.BgEffectView
 import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.flow.onEach
 import top.yukonga.miuix.kmp.basic.Box
@@ -59,18 +54,20 @@ import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.getWindowSize
-import yunzia.utils.MiuiBlurUtils
-import yunzia.utils.ViewUtils
 
-private fun enableTextBlur(view: View, z: Boolean, iArr: IntArray, iArr2: IntArray) {
-    if (z) {
-        MiuiBlurUtils.setViewBlurMode(view, 3)
-        for (i in iArr.indices) {
-            MiuiBlurUtils.addBackgroundBlenderColor(view, iArr[i], iArr2[i])
-        }
+
+private fun getColorList(
+    colorMode: Int):  List<Color>{
+    if (colorMode == 2) {
+        return listOf(
+            Color("#D0A279ED".toColorInt()),
+            Color("#D0E3BCB1".toColorInt())
+        )
     } else {
-        MiuiBlurUtils.setViewBlurMode(view, 0)
-        MiuiBlurUtils.clearBackgroundBlenderColor(view)
+        return listOf(
+            Color("#D03A18AD".toColorInt()),
+            Color("#D0A56138".toColorInt())
+        )
     }
 }
 
@@ -86,6 +83,13 @@ fun ThirdPage(
     colorMode: MutableState<Int>
 ) {
 
+    val darkTheme = isSystemInDarkTheme()
+    val colorsMode = when (colorMode.value) {
+        1 -> 1
+        2 -> 2
+        else -> if (darkTheme) 2 else 1
+    }
+
     val hazeState = remember { HazeState() }
     val density = LocalDensity.current
     val min = with(density) { 0.dp.toPx() }
@@ -94,7 +98,6 @@ fun ThirdPage(
     val mainHeight = main-sec
 
     val bgHeight = with(density) {  332.dp.toPx() }
-
 
     val bgAlpha = remember { mutableFloatStateOf(1f) }
 
@@ -139,45 +142,16 @@ fun ThirdPage(
 
     Box(Modifier.clip(RoundedCornerShape(0.dp))) {
 
-        val mHandler = Handler(Looper.getMainLooper());
         AndroidView(
-            modifier = Modifier.fillMaxSize(), // Occupy the max size in the Compose UI tree
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(430.dp), // Occupy the max size in the Compose UI tree
             factory = { context ->
-                val res = context.resources
-                val view = LinearLayout(context).apply {
-                    setBackgroundColor(Color.TRANSPARENT)
-                }
-                val startTime = System.nanoTime()
-                var mBgEffectPainter = BgEffectPainter(context)
-                val runnableBgEffect: Runnable = object : Runnable {
-                    override fun run() {
-                        mBgEffectPainter.setAnimTime(
-                            (((System.nanoTime().toFloat()) - startTime) / 1.0E9f) % 62.831852f
-                        )
-                        mBgEffectPainter.setResolution(
-                            floatArrayOf(
-                                view.width.toFloat(),
-                                view.height.toFloat()
-                            )
-                        )
-                        mBgEffectPainter.updateMaterials()
-                        view.setRenderEffect(mBgEffectPainter.renderEffect)
-                        mHandler.postDelayed(this, 16L)
-                    }
-                }
-                view.post {
-                    mBgEffectPainter = BgEffectPainter(context)
-                    mBgEffectPainter.showRuntimeShader(
-                        view.context,
-                        view
-                    )
-
-                    mHandler.post(runnableBgEffect)
-                }
-                return@AndroidView view
+                BgEffectView(context,colorsMode)
 
             }
         ) {
+            it.updateMode(colorsMode)
             it.alpha = bgAlpha.floatValue
 
         }
@@ -186,104 +160,21 @@ fun ThirdPage(
 
         Column(
             modifier = Modifier
-                .padding(top = 35.dp)
+                .padding(top = 36.dp)
                 .fillMaxWidth()
                 .height(420.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .scale(mainScale.floatValue)
-                    .alpha(mainAlpha.floatValue),
-                verticalAlignment= Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
 
-                AndroidView(
-                    modifier = Modifier.wrapContentSize(),
-                    factory = { context ->
-                        val res = context.resources
+            LinearImage(
+                contentDescription = "",
+                painter = painterResource(R.drawable.hyperstar2),
+                alpha = mainAlpha.floatValue,
+                colors = getColorList(colorMode = colorsMode),
+                modifier = Modifier.width(260.dp).scale(mainScale.floatValue),
+            )
 
-                        val a = FrameLayout(context).apply {
-
-                            setBackgroundColor(Color.TRANSPARENT)
-                        }
-
-                        val version = TextView(context).apply {
-                            text = "HyperStar 2.0"
-                            textSize = 38f
-                            setTextColor(Color.WHITE)
-                            typeface = Typeface.DEFAULT_BOLD
-                        }
-
-                        val versions = ImageView(context).apply {
-                            setBackgroundColor(Color.TRANSPARENT)
-
-                        }
-
-                        if (MiuiBlurUtils.isEnable() && MiuiBlurUtils.isEffectEnable(context)) {
-                            MiuiBlurUtils.setBackgroundBlur(
-                                a,
-                                ((res.displayMetrics.density * 50.0f) + 0.5f).toInt()
-                            )
-                            MiuiBlurUtils.setViewBlurMode(a, 0)
-                            val iArr = intArrayOf(
-                                res.getColor(R.color.logo_color1,res.newTheme()),
-                                res.getColor(R.color.logo_color2,res.newTheme()),
-                                res.getColor(R.color.logo_color3,res.newTheme())
-                            )
-                            val modeValue = if (ViewUtils.isNightMode(context)) 18 else 19
-                            enableTextBlur(
-                                version,
-                                true,
-                                iArr,
-                                intArrayOf(modeValue, 106, 100)
-                            )
-                            version.setTextColor(Color.WHITE)
-                            versions.setImageResource(R.drawable.cc)
-                            //version.setTextColor(Color.)
-                            Log.d("VersionCard", "start logoBlur: ")
-                        } else {
-                            version.setTextColor(Color.BLACK)
-                        }
-
-                        a.addView(version)
-
-                        return@AndroidView a
-
-                    }
-                ) {
-                    //it.alpha = bgAlpha.floatValue
-
-                }
-
-//                Text(
-//                    text = "Hyper",
-//                    fontSize = 38.sp,
-//                    fontWeight = FontWeight(580),
-//                    textAlign = TextAlign.Center
-//                )
-//
-//                Text(
-//                    text = "Star",
-//                    fontSize = 38.sp,
-//                    fontWeight = FontWeight(580),
-//                    textAlign = TextAlign.Center,
-//                    color = colorResource(R.color.blue),
-//                )
-//
-//                Text(
-//                    modifier=Modifier.padding(start = 10.dp),
-//                    text = "2.0",
-//                    fontSize = 38.sp,
-//                    fontWeight = FontWeight(580),
-//                    textAlign = TextAlign.Center,
-//                    color = colorResource(R.color.blue),
-//                )
-
-            }
 
             Text(
                 text = stringResource(id = R.string.xposed_desc),
@@ -292,7 +183,7 @@ fun ThirdPage(
                     .fillMaxWidth()
                     .scale(secScale.floatValue)
                     .alpha(secAlpha.floatValue)
-                    .padding(top = 15.dp),
+                    .padding(top = 18.dp),
                 fontWeight = FontWeight.Medium,
                 color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
                 textAlign = TextAlign.Center

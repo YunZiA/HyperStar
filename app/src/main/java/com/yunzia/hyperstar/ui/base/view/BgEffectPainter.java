@@ -171,6 +171,21 @@ public class BgEffectPainter {
             setPhoneLight(this.bound);
         }
     }
+    public void showRuntimeShader(Context context, View view,int mode) {
+        calcAnimationBound(context, view);
+        if (mode == 2) {
+            setPhoneDark(this.bound);
+        } else {
+            setPhoneLight(this.bound);
+        }
+    }
+    public void updateMode(int mode) {
+        if (mode == 2) {
+            setPhoneDark(this.bound);
+        } else {
+            setPhoneLight(this.bound);
+        }
+    }
 
     private void calcAnimationBound(Context context, View view) {
         float height =  context.getResources().getDimensionPixelSize(R.dimen.logo_area_height);

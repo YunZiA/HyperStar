@@ -41,6 +41,11 @@ public abstract class BaseHooker {
         this.resparam = resparam;
         this.modRes = modRes;
     }
+
+    public void doResources(BaseHooker baseHooker){
+
+        baseHooker.doResources(resparam,modRes);
+    };
     public void doMethods(ClassLoader classLoader){
         this.classLoader = classLoader;
     };

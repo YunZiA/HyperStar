@@ -18,6 +18,7 @@ import com.yunzia.hyperstar.hook.app.plugin.QSMediaCoverBackground
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaDefaultApp
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaDeviceName
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaView
+import com.yunzia.hyperstar.hook.app.plugin.QSMiplayAppIconRadius
 import com.yunzia.hyperstar.hook.app.plugin.QSToggleSliderRadius
 import com.yunzia.hyperstar.hook.app.plugin.QSVolumeOrBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurVolumeManager
@@ -30,18 +31,10 @@ import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
 class InitSystemUIPluginHook() : BaseHooker() {
 
-    private val qsMediaCoverBackground: QSMediaCoverBackground
-    private val padVolume: PadVolume
-    private val qsControlCenterColor: QSControlCenterColor
-    private val powerMenu: PowerMenu
-
-    init {
-        qsMediaCoverBackground = QSMediaCoverBackground()
-        padVolume = PadVolume()
-        qsControlCenterColor = QSControlCenterColor()
-        powerMenu = PowerMenu()
-
-    }
+    private val qsMediaCoverBackground: QSMediaCoverBackground = QSMediaCoverBackground()
+    private val padVolume: PadVolume = PadVolume()
+    private val qsControlCenterColor: QSControlCenterColor = QSControlCenterColor()
+    private val powerMenu: PowerMenu = PowerMenu()
 
     override fun getLocalRes(res: Resources?) {
         super.getLocalRes(res)
@@ -62,9 +55,10 @@ class InitSystemUIPluginHook() : BaseHooker() {
         modRes: XModuleResources?
     ) {
         super.doResources(resparam, modRes)
-        padVolume.doResources(resparam,modRes)
-        qsControlCenterColor.doResources(resparam, modRes)
-        powerMenu.doResources(resparam, modRes)
+        doResources(powerMenu)
+        doResources(padVolume)
+        doResources(qsControlCenterColor)
+        doResources(QSMiplayAppIconRadius())
 
 
     }

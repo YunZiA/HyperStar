@@ -173,4 +173,6 @@
     <string name="is_power_menu_nav_show_title">Show the Navigation Bar</string>
     <string name="is_use_power_menu_plus_title">Expanded power menu</string>
     <string name="power_menu">Power Menu</string>
+    <string name="title_qs_detail_app_icon_radius">Disable app icon clipping</string>
+    <string name="title_qs_detail_progress_bg_radius">Rounded rectangle volume progress bar</string>
 </resources>

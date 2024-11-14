@@ -173,4 +173,6 @@
     <string name="is_power_menu_nav_show_title">拒绝隐藏小白条</string>
     <string name="is_use_power_menu_plus_title">扩展电源菜单</string>
     <string name="power_menu">电源菜单</string>
+    <string name="title_qs_detail_app_icon_radius">禁止裁切应用图标</string>
+    <string name="title_qs_detail_progress_bg_radius">圆角矩形音量进度条</string>
 </resources>

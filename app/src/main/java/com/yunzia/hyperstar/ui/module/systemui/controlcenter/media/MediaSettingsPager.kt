@@ -130,6 +130,14 @@ fun MediaSettingsPager(
             title = R.string.miplayer_expand,
             top = 12.dp,
         ){
+            XSuperSwitch(
+                title = stringResource(R.string.title_qs_detail_app_icon_radius),
+                key = "qs_detail_app_icon_radius"
+            )
+            XSuperSwitch(
+                title = stringResource(R.string.title_qs_detail_progress_bg_radius),
+                key = "qs_detail_progress_bg_radius"
+            )
             XSuperDropdown(
                 title = stringResource(R.string.is_local_speaker_title),
                 key = "is_local_speaker",

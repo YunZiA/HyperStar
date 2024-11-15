@@ -154,6 +154,8 @@
     <string name="media_button_disabled">Disabled state Button</string>
     <string name="toggle_slider_color">Toggle slider color</string>
     <string name="progress_bar">Progress bar</string>
+    <string name="sidebar_mode">Sidebar Mode</string>
+    <string name="expanded_mode">Expanded Mode</string>
     <string name="toggle_slider_value">Progress value</string>
     <string name="unlock">Unlock</string>
     <string name="cover_anciently_title">Enable vintage filter</string>
@@ -179,4 +181,13 @@
     <string name="os_tips">Disabled</string>
     <string name="os1_link"><![CDATA[OS1.0 >>]]></string>
     <string name="os_ver_tips">The OS version does not match, and it has been deactivated!</string>
+    <string name="title_standardview_hide">Hide Silent and DND Buttons</string>
+    <string name="title_press_expand_volume">Press to expand secondary volume bar</string>
+    <string name="summary_press_expand_volume">Enabling this feature will disable the expand button</string>
+    <string name="PORTRAIT">Portrait</string>
+    <string name="LANDSCAPE">Landscape</string>
+    <string name="title_volume_height_collapsed">Volume height</string>
+    <string name="title_volume_offset_top_collapsed">Volume offset top</string>
+    <string name="title_volume_shadow_height_collapsed">Shadow height</string>
+    <string name="title_volume_shadow_margin_top_collapsed">Shadow margin top</string>
 </resources>

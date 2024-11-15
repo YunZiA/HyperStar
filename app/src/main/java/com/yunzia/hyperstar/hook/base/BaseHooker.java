@@ -127,9 +127,6 @@ public abstract class BaseHooker {
     }
 
 
-    public void setmXModuleResources(XModuleResources mXModuleResources) {
-        //this.mXModuleResources = mXModuleResources;
-    }
 
 
     public interface MethodHook{

@@ -207,6 +207,155 @@ fun XMiuixSlider(
 
 }
 
+@OptIn(ExperimentalWearMaterialApi::class)
+@Composable
+fun XSuperSliders(
+    title : String,
+    key : String,
+    unit : Any = "",
+    insideMargin: DpSize? = null,
+    minValue: Float = 0f,
+    maxValue: Float = 1f,
+    progress: Float = 0.5f,
+    enabled : Boolean = true,
+    x_progress : MutableFloatState = remember { mutableFloatStateOf(SPUtils.getFloat(key, progress)) },
+    decimalPlaces : Int = 0
+
+) {
+
+    val effect = PreferencesUtil.getBoolean("is_progress_effect", false)
+    //var x_progress by remember { mutableStateOf(SPUtils.getFloat(key, progress)) }
+    val dialog = remember { mutableStateOf(false) }
+    //ValueDialog(dialog)
+    val swappableState = rememberSwipeableState(Status.CLOSE)
+    @Suppress("NAME_SHADOWING")
+    val insideMargin = remember { insideMargin } ?: remember { DpSize(24.dp, 15.dp) }
+    //Dialog(dialog,unit)
+    val enable = enabled && swappableState.targetValue == Status.CLOSE
+    val titleColor = if (enable) colorScheme.onSurface else colorScheme.disabledOnSecondaryVariant
+    val valueColor = if (enable) colorScheme.onSurfaceVariantSummary else colorScheme.disabledOnSecondaryVariant
+    val squareSize = 120.dp+insideMargin.width
+
+    val sizePx = with(LocalDensity.current) { -squareSize.toPx() }
+    val anchors = mapOf(0f to Status.CLOSE, sizePx to Status.OPEN)
+    val scope = rememberCoroutineScope()
+    Box(
+        Modifier
+            .height(IntrinsicSize.Max)
+            .fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .fillMaxHeight()
+                .width(squareSize)
+                .offset {
+                    IntOffset(
+                        (squareSize.toPx() + swappableState.offset.value).toInt(),
+                        0
+                    )
+                },
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            MiniTextButton(
+                text = stringResource(R.string.default_it),
+                textColor = colorScheme.onPrimaryContainer,
+                modifier = Modifier.size(56.dp, 48.5.dp),
+                radius = 12.dp,
+                color = colorScheme.primary,
+                onClick = {
+                    scope.launch {
+                        swappableState.animateTo(Status.CLOSE)
+                    }
+                    x_progress.floatValue = progress
+                    SPUtils.setFloat(key, x_progress.floatValue)
+
+                }
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            MiniTextButton(
+                text = stringResource(R.string.cancel),
+                modifier = Modifier.size(56.dp, 48.5.dp),
+                radius = 12.dp,
+                color = colorScheme.secondary,
+                onClick = {
+
+                    scope.launch {
+                        swappableState.animateTo(Status.CLOSE)
+                    }
+
+                },
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = insideMargin.height)
+                .offset { IntOffset(swappableState.offset.value.roundToInt(), 0) }
+        ){
+
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth()
+                    .padding(horizontal = insideMargin.width)
+                    .swipeable(
+                        state = swappableState,
+                        anchors = anchors,
+                        enabled = enabled,
+                        thresholds = { _, _ -> FractionalThreshold(0.3f) },
+                        orientation = Orientation.Horizontal,
+                        //enabled = false
+                    )
+
+            ) {
+                Text(
+                    modifier = Modifier.weight(1f),
+                    text = title,
+                    fontWeight = FontWeight.Medium,
+                    color = titleColor,
+                    fontSize = TextUnit.Unspecified
+                )
+                Text(
+                    modifier = Modifier.clickable {
+                        dialog.value = true
+                    },
+                    color = valueColor,
+                    text = if (x_progress.floatValue == progress) stringResource(R.string.default_value)
+                    else if (decimalPlaces == 0) x_progress.floatValue.coerceIn(0f, 100f).toInt().toString() + unit
+                    else x_progress.floatValue.toString() + unit,
+                    textAlign = TextAlign.End,
+                    fontSize = 14.sp
+                )
+            }
+            Slider(
+                progress = x_progress.floatValue,
+                onProgressChange = { newProgress ->
+                    x_progress.floatValue = newProgress
+                    SPUtils.setFloat(key, x_progress.floatValue)
+                },
+                effect = effect,
+                maxValue = maxValue,
+                minValue = minValue,
+                //dragShow = true,
+                decimalPlaces = decimalPlaces,
+                modifier = Modifier
+                    .padding(horizontal = insideMargin.width)
+                    .padding(top = 10.dp),
+                enabled = enable
+            )
+        }
+
+    }
+
+
+}
+
 @Composable
 fun XMiuixSliders(
     title: String,

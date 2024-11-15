@@ -1,8 +1,16 @@
 package com.yunzia.hyperstar.hook.base
 
 import android.content.Context
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.content.res.XModuleResources
+import android.content.res.XResources
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.Drawable
+import android.util.DisplayMetrics
+import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTile
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTileList
@@ -64,6 +72,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         doResources(qsControlCenterColor)
         doResources(powerMenu)
         doResources(QSMiplayAppIconRadius())
+
 
 
     }
@@ -136,7 +145,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         doSecMethods(QSControlCenterList())
         doSecMethods(VolumeColumnProgressRadius())
         doSecMethods(powerMenu)
-        //doSecMethods(VolumeView())
+        doSecMethods(VolumeView())
     }
 
 

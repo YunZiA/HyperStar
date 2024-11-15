@@ -179,4 +179,15 @@
     <string name="os_tips">已停用</string>
     <string name="os1_link"><![CDATA[OS1.0 >>]]></string>
     <string name="os_ver_tips">OS版本不符，已停用！</string>
+    <string name="sidebar_mode">侧边状态</string>
+    <string name="expanded_mode">展开状态</string>
+    <string name="title_standardview_hide">隐藏静音勿扰按钮</string>
+    <string name="title_press_expand_volume">按压展开二级音量条</string>
+    <string name="summary_press_expand_volume">启用此功能后，会关闭展开按钮</string>
+    <string name="PORTRAIT">竖屏</string>
+    <string name="LANDSCAPE">横屏</string>
+    <string name="title_volume_height_collapsed">音量条长度</string>
+    <string name="title_volume_offset_top_collapsed">音量条上边距</string>
+    <string name="title_volume_shadow_height_collapsed">阴影长度</string>
+    <string name="title_volume_shadow_margin_top_collapsed">阴影上边距</string>
 </resources>

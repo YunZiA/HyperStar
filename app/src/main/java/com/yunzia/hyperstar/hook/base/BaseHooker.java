@@ -5,6 +5,8 @@ import android.content.res.XModuleResources;
 import android.graphics.Color;
 import android.util.Log;
 
+import com.yunzia.hyperstar.hook.tool.starLog;
+
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -36,7 +38,8 @@ public abstract class BaseHooker {
 
     //public String modulePath;
 
-    public void getLocalRes(Resources res){};
+    public void getLocalRes(Resources res){}
+
     public void doResources(XC_InitPackageResources.InitPackageResourcesParam resparam,XModuleResources modRes){
         this.resparam = resparam;
         this.modRes = modRes;
@@ -44,30 +47,33 @@ public abstract class BaseHooker {
     public void doResources(BaseHooker baseHooker){
 
         baseHooker.doResources(resparam,modRes);
-    };
+    }
+
     public void doMethods(ClassLoader classLoader){
         this.classLoader = classLoader;
-    };
+    }
+
     public void doMethodsHook(ClassLoader classLoader){
         this.classLoader = classLoader;
     }
     public void doBaseMethods(BaseHooker baseHooker){
 
         baseHooker.doMethods(classLoader);
-    };
+    }
 
-    public void doSecMethods(BaseHooker baseHooker){
-
+    public void doSecMethods(BaseHooker baseHooker)  {
         baseHooker.doMethods(secClassLoader);
-    };
+
+    }
 
     public void doHook(ClassLoader classLoader){
         Log.d("ggc", "doHook: super");
         this.secClassLoader = classLoader;
-    };
+    }
 
     public void doMethods(XC_LoadPackage.LoadPackageParam lpparam){
-    };
+    }
+
     public void doRes(XC_InitPackageResources.InitPackageResourcesParam resparam){}
 
     public void ReplaceColor(String color,String colorValue){

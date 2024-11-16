@@ -428,7 +428,7 @@ class QSControlCenterColor :BaseHooker() {
 
         if (iconColor != "null"){
 
-            XposedHelpers.findAndHookMethod(BrightnessSliderController,"updateIconB",object : XC_MethodHook(){
+            XposedHelpers.findAndHookMethod(BrightnessSliderController,"updateIcon",object : XC_MethodHook(){
                 override fun afterHookedMethod(param: MethodHookParam?) {
                     super.afterHookedMethod(param)
                     val thisObj = param?.thisObject
@@ -443,7 +443,7 @@ class QSControlCenterColor :BaseHooker() {
                 }
             })
 
-            XposedHelpers.findAndHookMethod(VolumeSliderController,"updateIconB",object : XC_MethodHook(){
+            XposedHelpers.findAndHookMethod(VolumeSliderController,"updateIcon",Boolean::class.java,object : XC_MethodHook(){
                 override fun afterHookedMethod(param: MethodHookParam?) {
                     super.afterHookedMethod(param)
                     val thisObj = param?.thisObject

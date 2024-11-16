@@ -58,7 +58,7 @@ class VolumeView: BaseHooker() {
     private fun startCollpasedColumn() {
 
 
-        val Builder = XposedHelpers.findClass("com.android.systemui.miui.ViewStateGroup.Builder",classLoader)
+        val Builder = XposedHelpers.findClass("com.android.systemui.miui.ViewStateGroup\$Builder",classLoader)
 
 
         XposedHelpers.findAndHookMethod(Builder,"addStateWithIntDimen",Int::class.java,Int::class.java,Int::class.java,object :XC_MethodHook(){

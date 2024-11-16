@@ -20,8 +20,6 @@ class QSEditButton : BaseHooker() {
     private fun startMethodsHook() {
 
         XposedHelpers.findAndHookMethod("miui.systemui.controlcenter.panel.main.qs.EditButtonController", classLoader, "available", Boolean::class.java, returnConstant(false));
-        XposedHelpers.findAndHookMethod("miui.systemui.controlcenter.panel.main.qs.EditButtonController", classLoader, "available", Boolean::class.java, "miui.systemui.controlcenter.panel.main.MainPanelModeController\$MainPanelMode", returnConstant(false));
-
 
 
     }

@@ -134,14 +134,14 @@ fun UITest(
     val enablePageUserScroll = remember { mutableStateOf(PreferencesUtil.getBoolean("page_user_scroll",false)) }
 
     val show = remember { mutableStateOf(false) }
-
+    val showBlurs = remember { mutableStateOf(false) }
     val view = LocalView.current
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                modifier = Modifier.showBlur(hazeState),
+                modifier = if (targetPage == 2 && !showBlurs.value) Modifier else Modifier.showBlur(hazeState),
                 color = Color.Transparent,
                 title = pagerTitle,
                 largeTitle = if (targetPage == 2) "" else pagerTitle,
@@ -193,6 +193,7 @@ fun UITest(
             topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
             padding = padding,
             showFPSMonitor = showFPSMonitor,
+            showBlurs = showBlurs,
             enablePageUserScroll = enablePageUserScroll
         )
 
@@ -388,6 +389,7 @@ fun AppHorizontalPager(
     topAppBarScrollBehaviorList: List<ScrollBehavior>,
     padding: PaddingValues,
     showFPSMonitor: MutableState<Boolean>,
+    showBlurs: MutableState<Boolean>,
     enablePageUserScroll: MutableState<Boolean>
 ) {
     HorizontalPager(
@@ -430,6 +432,7 @@ fun AppHorizontalPager(
                         activity = activity,
                         navController = navController,
                         topAppBarScrollBehavior = topAppBarScrollBehaviorList[2],
+                        showBlurs = showBlurs,
                         padding = padding,
 
                     )

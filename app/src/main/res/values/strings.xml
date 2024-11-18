@@ -177,6 +177,19 @@
     <string name="os_ver_tips">The OS version does not match, and it has been deactivated!</string>
     <string name="title_qs_detail_progress_bg_radius">Rounded rectangle volume progress bar</string>
     <string name="os_description">The current OS version is not 1.0, and this module has been deactivated.</string>
-    <string name="os_tips">已停用</string>
+    <string name="os_tips">Disabled</string>
     <string name="os2_link"><![CDATA[OS2.0 >>]]></string>
+    <string name="donation">Donation</string>
+    <string name="donate_tip_one">Your donation is the biggest motivation for Dongdong\'s updates</string>
+    <string name="donate_tip_two">Donating, donating, feels so great!</string>
+    <string name="alipay">Alipay</string>
+    <string name="qr_code_save">Long press the QR code to save it locally</string>
+    <string name="wechat">Wechat</string>
+    <string name="go_scaner">Navigate to the Scan Function</string>
+    <string name="quick_donation">Quick donation</string>
+    <string name="thank_donation">Thank you for your donation °˖✧◝( ⁰ ▿ ⁰ )◜✧˖°</string>
+    <string name="no_alipay">It seems like you don\'t have Alipay on your device!  ｡ﾟ(*´□`)ﾟ｡</string>
+    <string name="no_wechat">It seems like you don\'t have WeChat on your device!  ｡ﾟ(*´□`)ﾟ｡</string>
+    <string name="save_success">Saved successfully!!!</string>
+    <string name="save_fail">Save failed!!!</string>
 </resources>

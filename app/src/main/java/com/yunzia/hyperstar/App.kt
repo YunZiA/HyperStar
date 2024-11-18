@@ -27,6 +27,7 @@ import com.yunzia.hyperstar.ui.module.systemui.controlcenter.card.QSCardListPage
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.devicecenter.DeviceCenterColorPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.slider.ToggleSliderColorsPager
 import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.PowerMenuStylePager
+import com.yunzia.hyperstar.ui.pagers.DonationPage
 import com.yunzia.hyperstar.ui.pagers.ReferencesPager
 import com.yunzia.hyperstar.ui.pagers.UITest
 
@@ -82,6 +83,8 @@ fun App(
 
                 composable(PagerList.TRANSLATOR) { TranslatorPager(navController) }
 
+                composable(PagerList.DONATION) { DonationPage(navController)  }
+
                 composable(PagerList.REFERENCES) { ReferencesPager(navController)  }
 
                 composable(PagerList.BETA_HOME) { BetaHomePager(navController) }
@@ -128,10 +131,12 @@ object PagerList {
     const val MAIN = "main"
     //系统界面更多
     const val BETA_HOME = "beta_home"
-    //系统界面更多
+    //翻译
     const val TRANSLATOR = "translator"
     //
     const val REFERENCES = "references"
+    //投喂
+    const val DONATION = "donation"
 }
 
 object SystemUIPagerList {

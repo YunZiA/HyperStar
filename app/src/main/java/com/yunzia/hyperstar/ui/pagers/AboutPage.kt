@@ -64,7 +64,7 @@ fun ThirdPage(
     val main = with(density) { 150.dp.toPx() }
     val mainHeight = main-sec
 
-    val bgHeight = with(density) {  322.dp.toPx() }
+    val bgHeight = with(density) {  312.dp.toPx() }
 
     val bgAlpha = remember { mutableFloatStateOf(1f) }
 

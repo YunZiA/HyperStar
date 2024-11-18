@@ -4,15 +4,16 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
+import android.content.res.XModuleResources
 import android.os.Handler
 import android.os.Looper
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.base.BaseHooker
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
@@ -20,6 +21,8 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
+import de.robv.android.xposed.callbacks.XC_InitPackageResources
+import de.robv.android.xposed.callbacks.XC_LayoutInflated
 import yunzia.utils.DensityUtil.Companion.dpToPx
 
 
@@ -40,8 +43,6 @@ class VolumeView: BaseHooker() {
 
     val ShadowHeightP = XSPUtils.getFloat("volume_shadow_height_collapsed_p",-1f)
     val ShadowHeightL = XSPUtils.getFloat("volume_shadow_height_collapsed_l",-1f)
-
-
 
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
@@ -160,28 +161,57 @@ class VolumeView: BaseHooker() {
             }
         })
 
-
         val DndPopupWindow = XposedHelpers.findClass("com.android.systemui.miui.volume.DndPopupWindow",classLoader)
 
-//        XposedHelpers.findAndHookMethod(DndPopupWindow,"getPositionY",Int::class.java,object :XC_MethodReplacement(){
-//
-//            override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-//                val thisObj = param?.thisObject
-//                val i = param?.args?.get(0) as Int
-//                val mContext = XposedHelpers.getObjectField(thisObj, "mContext") as Context
-//                val res = mContext.theme.resources
-////                dpToPx(res, 40f).toInt()
-////                dpToPx(res, 150f).toInt()
-//
-//                val miuiVolumeOffsetTopCollapsed = res.getIdentifier("miui_volume_offset_top_collapsed","dimen",plugin)
-//                val miuiVolumeFooterMarginTop = res.getIdentifier("miui_volume_footer_margin_top","dimen",plugin)
-//                val miuiVolumeColumnHeight = res.getIdentifier("miui_volume_column_height","dimen",plugin)
-//                param.result =(((res.getDimensionPixelSize(miuiVolumeOffsetTopCollapsed) + res.getDimensionPixelSize(miuiVolumeColumnHeight))
-//                        + ((dpToPx(res, 150f) * 1.5)))
-//                        + (res.getDimensionPixelSize(miuiVolumeFooterMarginTop) * 2)) - (i * 0.8f)
-//                return null
-//            }
-//        })
+        XposedHelpers.findAndHookMethod(DndPopupWindow,"getPositionY",Int::class.java,object :XC_MethodReplacement(){
+
+            override fun replaceHookedMethod(param: MethodHookParam?): Any {
+                val thisObj = param?.thisObject
+                val i = param?.args?.get(0) as Int
+                val mContext = XposedHelpers.getObjectField(thisObj, "mContext") as Context
+                val res = mContext.theme.resources
+//                dpToPx(res, 40f).toInt()
+//                dpToPx(res, 150f).toInt()
+
+                var miuiVolumeOffsetTopCollapsed = res.getIdentifier("miui_volume_offset_top_collapsed","dimen",plugin)
+
+                if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+                    if (VolumeHeightCollapsedP != -1f) {
+
+                        miuiVolumeOffsetTopCollapsed = dpToPx(res,VolumeHeightCollapsedP).toInt()
+
+                    }
+                } else {
+                    if (VolumeHeightCollapsedL != -1f){
+
+                        miuiVolumeOffsetTopCollapsed= dpToPx(res,VolumeHeightCollapsedL).toInt()
+
+                    }
+                }
+                val miuiVolumeFooterMarginTop = res.getIdentifier("miui_volume_footer_margin_top","dimen",plugin)
+                val miuiVolumeSilenceButtonHeight = res.getIdentifier("miui_volume_silence_button_height","dimen",plugin)
+                var miuiVolumeColumnHeight = res.getDimensionPixelSize(res.getIdentifier("miui_volume_column_height","dimen",plugin))
+                if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+                    if (VolumeHeightCollapsedP != -1f){
+
+                        miuiVolumeColumnHeight = dpToPx(res,VolumeHeightCollapsedP).toInt()
+
+                    }
+                } else {
+                    if (VolumeHeightCollapsedL != -1f){
+
+                        miuiVolumeColumnHeight =  dpToPx(res,VolumeHeightCollapsedL).toInt()
+
+                    }
+                }
+
+                val result = (((miuiVolumeOffsetTopCollapsed + miuiVolumeColumnHeight)
+                        + ((res.getDimensionPixelSize(miuiVolumeSilenceButtonHeight)  * 1.5)))
+                        + (res.getDimensionPixelSize(miuiVolumeFooterMarginTop) * 2)) - (i * 0.8f)
+                return result.toInt()
+            }
+        })
+
         val VolumePanelViewController = XposedHelpers.findClass("com.android.systemui.miui.volume.VolumePanelViewController",classLoader)
 
         XposedHelpers.findAndHookMethod(VolumePanelViewController,"updateColumnsSizeH",View::class.java,object :XC_MethodHook(){
@@ -237,6 +267,7 @@ class VolumeView: BaseHooker() {
                         marginLayoutParams.height = height
 
                     }
+                    XposedHelpers.setObjectField(thisObj,"mHeight",height)
                     view.layoutParams = marginLayoutParams
                 }
 
@@ -353,6 +384,7 @@ class VolumeView: BaseHooker() {
                     addListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
                             super.onAnimationEnd(animation)
+                            mVolumeView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                             val mVolumeExpandCollapsedAnimator = XposedHelpers.getObjectField(thisObj, "mVolumeExpandCollapsedAnimator")
                             val mCallback = XposedHelpers.getObjectField(thisObj, "mCallback")
                             XposedHelpers.callMethod(mVolumeExpandCollapsedAnimator,"calculateFromViewValues",true)
@@ -393,9 +425,9 @@ class VolumeView: BaseHooker() {
                             val handler = Handler(Looper.getMainLooper())
                             handler.postDelayed({
                                 val mMoveY = XposedHelpers.getFloatField(thisObj, "mMoveY")
-                                if (longClick && mMoveY<= 20f){
+                                if (longClick){
                                     thisObj as View
-                                    thisObj.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                                    //thisObj.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                                     XposedHelpers.callMethod(mSeekBarOnclickListener, "onClick")
                                 }
                             }, 300L)

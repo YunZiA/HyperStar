@@ -253,39 +253,12 @@ fun ThirdPage(
                     navController = navController,
                     url = "https://github.com/YunZiA/HyperStar2.0"
                 )
-            }
 
-            classes(
-                title = R.string.others
-            ) {
                 SuperNavHostArrow(
-                    title = stringResource(R.string.references_title),
+                    title = stringResource(R.string.donation),
                     navController = navController,
-                    route = PagerList.REFERENCES
+                    route = PagerList.DONATION
 
-                )
-                SuperIntentArrow(
-                    title = stringResource(R.string.project_address),
-                    summary = stringResource(R.string.open_source_statement),
-                    navController = navController,
-                    url = "https://github.com/YunZiA/HyperStar2.0"
-                )
-            }
-
-            classes(
-                title = R.string.others
-            ) {
-                SuperNavHostArrow(
-                    title = stringResource(R.string.references_title),
-                    navController = navController,
-                    route = PagerList.REFERENCES
-
-                )
-                SuperIntentArrow(
-                    title = stringResource(R.string.project_address),
-                    summary = stringResource(R.string.open_source_statement),
-                    navController = navController,
-                    url = "https://github.com/YunZiA/HyperStar2.0"
                 )
             }
 

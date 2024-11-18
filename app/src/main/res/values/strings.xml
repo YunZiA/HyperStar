@@ -190,4 +190,17 @@
     <string name="title_volume_offset_top_collapsed">Volume offset top</string>
     <string name="title_volume_shadow_height_collapsed">Shadow height</string>
     <string name="title_volume_shadow_margin_top_collapsed">Shadow margin top</string>
+    <string name="donation">Donation</string>
+    <string name="donate_tip_one">Your donation is the biggest motivation for Dongdong\'s updates</string>
+    <string name="donate_tip_two">Donating, donating, feels so great!</string>
+    <string name="alipay">Alipay</string>
+    <string name="qr_code_save">Long press the QR code to save it locally</string>
+    <string name="wechat">Wechat</string>
+    <string name="go_scaner">Navigate to the Scan Function</string>
+    <string name="quick_donation">Quick donation</string>
+    <string name="thank_donation">Thank you for your donation °˖✧◝( ⁰ ▿ ⁰ )◜✧˖°</string>
+    <string name="no_alipay">It seems like you don\'t have Alipay on your device!  ｡ﾟ(*´□`)ﾟ｡</string>
+    <string name="no_wechat">It seems like you don\'t have WeChat on your device!  ｡ﾟ(*´□`)ﾟ｡</string>
+    <string name="save_success">Saved successfully!!!</string>
+    <string name="save_fail">Save failed!!!</string>
 </resources>

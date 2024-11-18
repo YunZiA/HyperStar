@@ -190,4 +190,17 @@
     <string name="title_volume_offset_top_collapsed">音量条上边距</string>
     <string name="title_volume_shadow_height_collapsed">阴影长度</string>
     <string name="title_volume_shadow_margin_top_collapsed">阴影上边距</string>
+    <string name="donation">投喂东东</string>
+    <string name="donate_tip_one">您的投喂就是东东更新的最大动力</string>
+    <string name="donate_tip_two">投喂，投喂，嘿嘿（¯﹃¯）（¯﹃¯）~</string>
+    <string name="alipay">支付宝</string>
+    <string name="qr_code_save">长按收款码，保存到本地</string>
+    <string name="wechat">微信</string>
+    <string name="go_scaner">跳转扫一扫</string>
+    <string name="quick_donation">快速投喂</string>
+    <string name="thank_donation">感谢您的投喂 °˖✧◝( ⁰ ▿ ⁰ )◜✧˖°</string>
+    <string name="no_alipay">您的设备上好像没有支付宝诶！  ｡ﾟ(*´□`)ﾟ｡</string>
+    <string name="no_wechat">您的设备上好像没有微信诶！  ｡ﾟ(*´□`)ﾟ｡</string>
+    <string name="save_success">保存成功!!!</string>
+    <string name="save_fail">保存失败!!!</string>
 </resources>

@@ -23,6 +23,7 @@ import com.yunzia.hyperstar.utils.XSPUtils
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
+import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 
 
@@ -323,6 +324,27 @@ class QSListView : BaseHooker() {
                     return null
                 }
             })
+
+            val updateTextSizeForKDDI = XposedHelpers.findMethodExactIfExists(QSTileItemView, "updateTextSizeForKDDI")
+            if (updateTextSizeForKDDI != null){
+                XposedBridge.hookMethod(updateTextSizeForKDDI, object : XC_MethodReplacement() {
+
+                    override fun replaceHookedMethod(param: MethodHookParam?): Any? {
+
+                        return null
+                    }
+                })
+
+            }
+
+
+//            XposedHelpers.findAndHookMethod(QSTileItemView, "updateTextSizeForKDDI", object : XC_MethodReplacement() {
+//
+//                override fun replaceHookedMethod(param: MethodHookParam?): Any? {
+//
+//                    return null
+//                }
+//            })
 
         }
 

@@ -4,16 +4,15 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
-import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
 import com.yunzia.hyperstar.hook.base.BaseHooker
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
@@ -22,9 +21,6 @@ import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import yunzia.utils.DensityUtil.Companion.dpToPx
-import java.lang.reflect.Method
-import java.util.Timer
-import java.util.TimerTask
 
 
 class VolumeView: BaseHooker() {
@@ -357,7 +353,6 @@ class VolumeView: BaseHooker() {
                     addListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
                             super.onAnimationEnd(animation)
-                            mVolumeView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                             val mVolumeExpandCollapsedAnimator = XposedHelpers.getObjectField(thisObj, "mVolumeExpandCollapsedAnimator")
                             val mCallback = XposedHelpers.getObjectField(thisObj, "mCallback")
                             XposedHelpers.callMethod(mVolumeExpandCollapsedAnimator,"calculateFromViewValues",true)
@@ -393,20 +388,16 @@ class VolumeView: BaseHooker() {
                         0 -> {
 
                             longClick = true
-                            val mMoveY = XposedHelpers.getFloatField(thisObj,
-                                "mMoveY"
-                            )
                             XposedHelpers.setLongField(thisObj,"mCurrentMS",0L)
 
                             val handler = Handler(Looper.getMainLooper())
                             handler.postDelayed({
-                                if (!longClick && mMoveY >= 20f){
-                                    return@postDelayed
-                                }else{
+                                val mMoveY = XposedHelpers.getFloatField(thisObj, "mMoveY")
+                                if (longClick && mMoveY<= 20f){
+                                    thisObj as View
+                                    thisObj.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                                     XposedHelpers.callMethod(mSeekBarOnclickListener, "onClick")
-
                                 }
-
                             }, 300L)
 
                         }
@@ -424,7 +415,6 @@ class VolumeView: BaseHooker() {
 
                 }
             }
-
 
         })
 

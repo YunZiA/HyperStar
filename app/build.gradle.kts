@@ -7,8 +7,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
-
-    //id ("kotlin-android-extensions")
+    id ("kotlin-parcelize")
 }
 
 android {
@@ -61,11 +60,11 @@ android {
     }
     //outputFileName = "${defaultConfig.applicationId}${buildType.applicationIdSuffix}-${defaultConfig.versionName}${buildType.versionNameSuffix}.apk"
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "21"
     }
     buildFeatures {
         compose = true
@@ -81,6 +80,8 @@ android {
 }
 
 dependencies {
+
+    implementation("com.google.code.gson:gson:2.11.0")
 
     implementation(libs.androidx.navigation.compose)
     implementation("com.github.skydoves:cloudy:0.2.3")

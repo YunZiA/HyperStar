@@ -6,16 +6,14 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.yunzia.hyperstar.ui.base.SuperSwitch
-import com.yunzia.hyperstar.ui.base.XMiuixSlider
 import com.yunzia.hyperstar.utils.SPUtils
 
 @Composable
@@ -40,7 +38,7 @@ fun XMiuixSuperSliderSwitch(
         title = switchTitle,
         summary = switchSummary,
         checked = MiuixSuperSwitchState,
-        insideMargin = DpSize(24.dp, 16.dp),
+        insideMargin = PaddingValues(24.dp, 16.dp),
         onCheckedChange = {
             MiuixSuperSwitchState = it
             SPUtils.setBoolean(switchKey,MiuixSuperSwitchState)
@@ -71,7 +69,7 @@ fun SwitchContentFolder(
     switchTitle: String,
     switchKey: String,
     contrary: Boolean = false,
-    insideMargin : DpSize = DpSize(24.dp, 16.dp),
+    insideMargin : PaddingValues = PaddingValues(24.dp, 16.dp),
     content: @Composable (() -> Unit),
 ) {
     var MiuixSuperSwitchState by remember { mutableStateOf(SPUtils.getBoolean(switchKey,false)) }

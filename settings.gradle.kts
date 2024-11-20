@@ -9,6 +9,8 @@ pluginManagement {
         }
         mavenCentral()
         maven("https://api.xposed.info")
+
+        //maven("http://maven.aliyun.com/nexus/content/groups/public/")
         gradlePluginPortal()
     }
 }
@@ -17,6 +19,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        //maven("http://maven.aliyun.com/nexus/content/groups/public/")
         maven("https://api.xposed.info")
     }
 }

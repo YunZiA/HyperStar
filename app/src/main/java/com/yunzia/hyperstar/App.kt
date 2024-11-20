@@ -7,9 +7,13 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.yunzia.hyperstar.ui.base.navtype.PagersModel
+import com.yunzia.hyperstar.ui.base.navtype.pagersJson
 import com.yunzia.hyperstar.ui.module.betahome.BetaHomePager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.list.QSListColorPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.list.QsListViewPager
@@ -27,6 +31,7 @@ import com.yunzia.hyperstar.ui.module.systemui.controlcenter.card.QSCardListPage
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.devicecenter.DeviceCenterColorPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.slider.ToggleSliderColorsPager
 import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.PowerMenuStylePager
+import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.SelectFunPager
 import com.yunzia.hyperstar.ui.pagers.DonationPage
 import com.yunzia.hyperstar.ui.pagers.ReferencesPager
 import com.yunzia.hyperstar.ui.pagers.UITest
@@ -115,6 +120,16 @@ fun App(
 
                 composable(SystemUIPagerList.POWERMENU){ PowerMenuStylePager(navController) }
 
+                composable(
+                    FunList.SELECT_LIST+"/{pagersJson}",
+                    listOf(
+                        navArgument("pagersJson") {
+                            type = pagersJson<PagersModel>()
+                        }
+                    )
+                ){ SelectFunPager(navController,it) }
+
+
             }
 
 
@@ -161,6 +176,12 @@ object SystemUIPagerList {
     const val MORE = "more"
 
     const val POWERMENU = "powermenu"
+}
+
+object FunList {
+
+    //控制中心
+    const val SELECT_LIST = "selectList"
 }
 
 object CenterColorList {

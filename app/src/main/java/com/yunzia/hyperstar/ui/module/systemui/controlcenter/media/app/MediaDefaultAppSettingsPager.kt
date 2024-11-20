@@ -48,6 +48,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
@@ -286,7 +287,7 @@ fun MediaAppSettingsPager(
                     modifier = Modifier
                         .padding(bottom = 10.dp)
                         .padding(horizontal = 24.dp),
-                    insideMargin = DpSize(5.dp,5.dp),
+                    insideMargin = PaddingValues(5.dp,5.dp),
                     cornerRadius = 18.dp
                 ) {
                     Row(
@@ -403,11 +404,7 @@ private fun AppItem(
             .fillMaxWidth()
             .padding(horizontal = 28.dp)
             .padding(top = 10.dp)
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            },
-
+            .scale(scale),
         color = if (isSelect) colorScheme.tertiaryContainer  else colorScheme.surfaceVariant
     ) {
 
@@ -418,7 +415,6 @@ private fun AppItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    EventState.Idle
                     isApp.value = if (isSelect) "" else packageName
                     isSelect = !isSelect
                     SPUtils.setString("media_default_app_package", isApp.value)

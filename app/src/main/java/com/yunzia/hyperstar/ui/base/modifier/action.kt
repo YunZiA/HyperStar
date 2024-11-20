@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -29,6 +30,28 @@ import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
 
+fun Modifier.bounceClick() = composed {
+    var buttonState by remember { mutableStateOf(EventState.Idle) }
+    val scale by animateFloatAsState(if (buttonState == EventState.Pressed) 0.75f else 1f)
+
+    this
+        .graphicsLayer {
+            scaleX = scale
+            scaleY = scale
+        }
+        .pointerInput(buttonState) {
+            awaitPointerEventScope {
+                buttonState = if (buttonState == EventState.Pressed) {
+                    waitForUpOrCancellation()
+                    EventState.Idle
+                } else {
+                    awaitFirstDown(false)
+                    EventState.Pressed
+                }
+            }
+        }
+}
+
 fun Modifier.bounceClick(
     onClick: () -> Unit
 ) = composed {
@@ -41,12 +64,8 @@ fun Modifier.bounceClick(
         dampingRatio = Spring.DampingRatioLowBouncy,
         stiffness = Spring.StiffnessMediumLow
     ), finishedListener = {
-//        if (it == 1f && click){
-//            onClick(click)
-//            click = false
-//        }  //else eventState = EventState.Idle
-    }
-    )
+        onClick()
+    })
     this
         .graphicsLayer {
             scaleX = scale
@@ -57,9 +76,6 @@ fun Modifier.bounceClick(
             detectTapGestures(
                 onTap = {
                     click = true
-                    coroutineScope.launch {
-                        onClick()
-                    }
                 },
                 onPress = { offset ->
                     val press = PressInteraction.Press(offset)
@@ -94,13 +110,7 @@ fun Modifier.bounceClicks(
         dampingRatio = Spring.DampingRatioLowBouncy,
         stiffness = Spring.StiffnessHigh
     ), finishedListener = {
-//        if (it == 0.7f && !click){
-//            eventState = EventState.Idle
-//        }
-//
-//        if (it >= 0.95f && click ){
-//            click = false
-//        }  //else eventState = EventState.Idle
+
         if (eventState == EventState.Pressed && click){
             eventState = EventState.Idle
             click = false
@@ -142,40 +152,40 @@ fun Modifier.bounceClicks(
 
 }
 
-fun Modifier.bounceClick() = composed {
-    var press by remember { mutableStateOf(false) }
-    var eventState by remember { mutableStateOf(EventState.Idle) }
-    val scale by animateFloatAsState(if (eventState == EventState.Pressed) 0.70f else 1f,animationSpec = spring(
-        dampingRatio = Spring.DampingRatioLowBouncy,
-        stiffness = Spring.StiffnessMediumLow
-    ), finishedListener = {
-
-        if (press && it != 1f && eventState == EventState.Idle) eventState = EventState.Idle
-    }
-    )
-    val coroutineScope = rememberCoroutineScope()
-    this
-        .graphicsLayer {
-            scaleX = scale
-            scaleY = scale
-        }
-        .pointerInput(eventState) {
-            awaitPointerEventScope {
-                if (eventState == EventState.Pressed){
-                    waitForUpOrCancellation()
-                    eventState = EventState.Idle
-
-                }else {
-                    awaitFirstDown(false)
-                    eventState = EventState.Pressed
-
-
-                }
-
-
-            }
-        }
-}
+//fun Modifier.bounceClick() = composed {
+//    var press by remember { mutableStateOf(false) }
+//    var eventState by remember { mutableStateOf(EventState.Idle) }
+//    val scale by animateFloatAsState(if (eventState == EventState.Pressed) 0.70f else 1f,animationSpec = spring(
+//        dampingRatio = Spring.DampingRatioLowBouncy,
+//        stiffness = Spring.StiffnessMediumLow
+//    ), finishedListener = {
+//
+//        if (press && it != 1f && eventState == EventState.Idle) eventState = EventState.Idle
+//    }
+//    )
+//    val coroutineScope = rememberCoroutineScope()
+//    this
+//        .graphicsLayer {
+//            scaleX = scale
+//            scaleY = scale
+//        }
+//        .pointerInput(eventState) {
+//            awaitPointerEventScope {
+//                if (eventState == EventState.Pressed){
+//                    waitForUpOrCancellation()
+//                    eventState = EventState.Idle
+//
+//                }else {
+//                    awaitFirstDown(false)
+//                    eventState = EventState.Pressed
+//
+//
+//                }
+//
+//
+//            }
+//        }
+//}
 
 fun Modifier.scroll(
 

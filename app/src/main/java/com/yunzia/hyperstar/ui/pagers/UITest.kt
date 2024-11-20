@@ -55,6 +55,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
@@ -91,7 +92,7 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 @OptIn(FlowPreview::class)
 @Composable
 fun UITest(
-    navController: NavController,
+    navController: NavHostController,
     activity: MainActivity,
     colorMode: MutableState<Int>,
 ) {
@@ -382,7 +383,7 @@ fun  ItemPopu(show: MutableState<Boolean>) {
 @Composable
 fun AppHorizontalPager(
     activity: MainActivity,
-    navController: NavController,
+    navController: NavHostController,
     colorMode: MutableState<Int>,
     modifier: Modifier = Modifier,
     pagerState: PagerState,

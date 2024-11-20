@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.fontscaling.MathUtils.lerp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.SuperIntentArrow
@@ -52,7 +53,7 @@ import top.yukonga.miuix.kmp.utils.getWindowSize
 @Composable
 fun ThirdPage(
     activity : ComponentActivity,
-    navController: NavController,
+    navController: NavHostController,
     topAppBarScrollBehavior: ScrollBehavior,
     showBlurs: MutableState<Boolean>,
     padding: PaddingValues

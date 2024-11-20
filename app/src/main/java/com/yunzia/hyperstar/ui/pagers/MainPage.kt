@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.SystemUIPagerList
@@ -31,7 +32,7 @@ import yunzia.utils.SystemProperties
 @Composable
 fun MainPage(
     activity : ComponentActivity,
-    navController: NavController,
+    navController: NavHostController,
     topAppBarScrollBehavior: ScrollBehavior,
     padding: PaddingValues
 ) {

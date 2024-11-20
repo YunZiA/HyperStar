@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.base
 
+import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.ui.base.modifier.blur
 import com.yunzia.hyperstar.ui.base.modifier.showBlur
 import com.yunzia.hyperstar.ui.pagers.FPSMonitor
@@ -108,6 +110,7 @@ fun ModulePager(
 fun ModuleNavPagers(
     activityTitle: String,
     navController: NavController,
+    startClick: () -> Unit =  { navController.popBackStack() },
     endClick: () -> Unit,
     endIcon :  @Composable () -> Unit = {},
     content: LazyListScope.() -> Unit
@@ -116,6 +119,7 @@ fun ModuleNavPagers(
     ModuleNavPager(
         activityTitle = activityTitle,
         navController = navController,
+        startClick = startClick,
         endClick = endClick,
         endIcon = endIcon,
     ){ topAppBarScrollBehavior,padding->
@@ -134,6 +138,7 @@ fun ModuleNavPagers(
 fun ModuleNavPager(
     activityTitle: String,
     navController: NavController,
+    startClick: () -> Unit = { navController.popBackStack() },
     endClick: () -> Unit,
     endIcon :  @Composable () -> Unit = {},
     contents: @Composable ((ScrollBehavior, PaddingValues) -> Unit)? = null
@@ -154,7 +159,7 @@ fun ModuleNavPager(
                 color = Color.Transparent,
                 title = activityTitle,
                 scrollBehavior = topAppBarScrollBehavior,
-                navController = navController,
+                startClick = startClick,
                 endIcon = endIcon,
                 endClick = {
                     endClick()
@@ -184,6 +189,31 @@ fun ModuleNavPager(
     }
 
 
+}
+
+fun NavHostController.goBackRouteWithParams(
+    route: String,
+    autoPop: Boolean = true,
+    callback: (Bundle.() -> Unit)? = null,
+) {
+    getBackStackEntry(route).arguments?.let {
+        callback?.invoke(it)
+    }
+    if (autoPop) {
+        popBackStack()
+    }
+}
+
+fun NavHostController.goBackWithParams(
+    autoPop: Boolean = true,
+    callback: (Bundle.() -> Unit)? = null,
+) {
+    previousBackStackEntry?.arguments?.let {
+        callback?.invoke(it)
+    }
+    if (autoPop) {
+        popBackStack()
+    }
 }
 
 @Composable

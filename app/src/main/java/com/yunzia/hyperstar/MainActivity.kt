@@ -162,7 +162,7 @@ fun RootDialog(showDialog: Boolean) {
                     .fillMaxWidth()
                     .padding(horizontal = 28.dp)
                     .padding(bottom = 28.dp),
-                insideMargin = DpSize(20.dp,20.dp)
+                insideMargin = PaddingValues(20.dp)
             ) {
                 Text(
                     text = stringResource(R.string.tips),
@@ -182,15 +182,13 @@ fun RootDialog(showDialog: Boolean) {
                 Spacer(Modifier.height(23.dp))
 
                 Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(R.string.sure),
-                    submit = true,
-                    cornerRadius = 14.dp,
                     onClick = {
                         //dismissDialog()
                         showDialogs.value = false
-                    }
-                )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 14.dp
+                ){}
 
 
             }
@@ -214,7 +212,7 @@ fun VerDialog(showDialog: Boolean,context:Context) {
                     .fillMaxWidth()
                     .padding(horizontal = 5.dp)
                     .padding(bottom = 28.dp),
-                insideMargin = DpSize(20.dp,20.dp)
+                insideMargin = PaddingValues(20.dp)
             ) {
                 Text(
                     text = stringResource(R.string.os_tips),
@@ -254,14 +252,12 @@ fun VerDialog(showDialog: Boolean,context:Context) {
 
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(R.string.sure),
-                    submit = true,
                     cornerRadius = 14.dp,
                     onClick = {
                         //dismissDialog()
                         showDialogs.value = false
                     }
-                )
+                ){}
 
 
             }

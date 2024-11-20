@@ -49,6 +49,7 @@ import yunzia.colorpicker.ColorPickerDialog
 import yunzia.colorpicker.colorFromHex
 import yunzia.colorpicker.toHex
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.ui.base.modifier.bounceClick
 import com.yunzia.hyperstar.utils.SPUtils
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Text

@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -61,18 +65,20 @@ enum class Status{
 @OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun XMiuixSlider(
-    title : String,
-    key : String,
-    unit : Any = "",
-    insideMargin: DpSize? = null,
+    title: String,
+    key: String,
+    unit: Any = "",
+    paddingValues: PaddingValues? = null,
     minValue: Float = 0f,
     maxValue: Float = 1f,
     progress: Float = 0.5f,
-    enabled : Boolean = true,
-    x_progress : MutableFloatState = remember { mutableFloatStateOf(SPUtils.getFloat(key, progress).coerceIn(minValue, maxValue)) },
-    decimalPlaces : Int = 0
+    enabled: Boolean = true,
+    x_progress: MutableFloatState = remember { mutableFloatStateOf(SPUtils.getFloat(key, progress).coerceIn(minValue, maxValue)) },
+    decimalPlaces: Int = 0
 
 ) {
+
+    val layoutDirection = LocalLayoutDirection.current
 
     val effect = PreferencesUtil.getBoolean("is_progress_effect", false)
     //var x_progress by remember { mutableStateOf(SPUtils.getFloat(key, progress)) }
@@ -80,12 +86,12 @@ fun XMiuixSlider(
     //ValueDialog(dialog)
     val swappableState = rememberSwipeableState(Status.CLOSE)
     @Suppress("NAME_SHADOWING")
-    val insideMargin = remember { insideMargin } ?: remember { DpSize(24.dp, 15.dp) }
+    val paddingValues = remember { paddingValues } ?: remember { PaddingValues(24.dp, 15.dp) }
     //Dialog(dialog,unit)
     val enable = enabled && swappableState.targetValue == Status.CLOSE
     val titleColor = if (enable) colorScheme.onSurface else colorScheme.disabledOnSecondaryVariant
     val valueColor = if (enable) colorScheme.onSurfaceVariantSummary else colorScheme.disabledOnSecondaryVariant
-    val squareSize = 120.dp+insideMargin.width
+    val squareSize = 120.dp+paddingValues.calculateEndPadding(layoutDirection)
 
     val sizePx = with(LocalDensity.current) { -squareSize.toPx() }
     val anchors = mapOf(0f to Status.CLOSE, sizePx to Status.OPEN)
@@ -144,7 +150,7 @@ fun XMiuixSlider(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = insideMargin.height)
+                .padding(top = paddingValues.calculateTopPadding(), bottom = paddingValues.calculateBottomPadding())
                 .offset { IntOffset(swappableState.offset.value.roundToInt(), 0) }
         ){
 
@@ -154,7 +160,7 @@ fun XMiuixSlider(
                 modifier = Modifier
                     .wrapContentHeight()
                     .fillMaxWidth()
-                    .padding(horizontal = insideMargin.width)
+                    .padding(start = paddingValues.calculateStartPadding(layoutDirection), end = paddingValues.calculateEndPadding(layoutDirection))
                     .swipeable(
                         state = swappableState,
                         anchors = anchors,
@@ -196,7 +202,7 @@ fun XMiuixSlider(
                 //dragShow = true,
                 decimalPlaces = decimalPlaces,
                 modifier = Modifier
-                    .padding(horizontal = insideMargin.width)
+                    .padding(start = paddingValues.calculateStartPadding(layoutDirection), end = paddingValues.calculateEndPadding(layoutDirection))
                     .padding(top = 10.dp),
                 enabled = enable
             )
@@ -297,22 +303,23 @@ fun ValueDialog(
             ) {
                 Button(
                     modifier = Modifier.weight(1f),
-                    text = "Cancel",
                     onClick = {
                         dismissDialog()
                         showDialog.value = false
                     }
-                )
+                ){
+                    Text("Cancel")
+                }
                 Spacer(Modifier.width(20.dp))
                 Button(
                     modifier = Modifier.weight(1f),
-                    text = "Confirm",
-                    submit = true,
                     onClick = {
                         dismissDialog()
                         showDialog.value = false
                     }
-                )
+                ){
+                    Text("Confirm")
+                }
             }
         }
     }

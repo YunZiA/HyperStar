@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.ui.base
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
@@ -90,7 +91,7 @@ fun Classes(
     content: @Composable (() -> Unit),
 ){
 
-    val insideMargin = if (title != null || summary != null ) DpSize(0.dp,14.dp)  else DpSize(0.dp,0.dp)
+    val insideMargin = if (title != null || summary != null ) PaddingValues(0.dp,14.dp)  else PaddingValues(0.dp,0.dp)
 
     Card(
         modifier = Modifier

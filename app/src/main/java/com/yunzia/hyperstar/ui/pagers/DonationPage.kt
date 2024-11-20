@@ -19,6 +19,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -49,6 +50,7 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.Classes
 import com.yunzia.hyperstar.ui.base.NavPager
 import com.yunzia.hyperstar.ui.base.classes
+import com.yunzia.hyperstar.ui.base.modifier.bounceClick
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.SuperArrow
@@ -144,7 +146,7 @@ fun DonationPage(
             SuperArrow(
                 modifier = Modifier,
                 title = stringResource(R.string.go_scaner),
-                insideMargin = DpSize(24.dp, 16.dp),
+                insideMargin = PaddingValues(24.dp, 16.dp),
                 summary = null,
                 onClick = {
 
@@ -167,7 +169,7 @@ fun DonationPage(
             SuperArrow(
                 modifier = Modifier,
                 title = stringResource(R.string.quick_donation),
-                insideMargin = DpSize(24.dp, 16.dp),
+                insideMargin = PaddingValues(24.dp, 16.dp),
                 summary = null,
                 onClick = {
                     val intentFullUrl = "alipays://platformapi/startapp?appId=20000067&url=$apCode"
@@ -210,7 +212,7 @@ fun DonationPage(
             SuperArrow(
                 modifier = Modifier,
                 title = stringResource(R.string.go_scaner),
-                insideMargin = DpSize(24.dp, 16.dp),
+                insideMargin = PaddingValues(24.dp, 16.dp),
                 summary = null,
                 onClick = {
                     val intent = Intent()

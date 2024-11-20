@@ -1,17 +1,13 @@
 package com.yunzia.hyperstar.ui.module.systemui.other.powermenu
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,30 +23,30 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 @Composable
 fun PowerMenuStyleA() {
     Row(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.height(488.dp).width(218.dp).bg(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
 
         Box(
-            modifier = Modifier.width(100.dp)
-                .height(50.dp)
-                .clip(RoundedCornerShape(30.dp))
+            modifier = Modifier.width(60.dp)
+                .height(32.dp)
+                .clip(RoundedCornerShape(20.dp))
                 .background(colorScheme.secondary),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = "Recovery",
                 fontWeight = FontWeight(450),
-                fontSize = 11.sp
+                fontSize = 8.sp
                 )
 
         }
 
         Box(
-            modifier = Modifier.width(100.dp)
+            modifier = Modifier.width(80.dp)
                 .padding(horizontal = 10.dp)
-                .height(300.dp)
+                .height(225.dp)
                 .clip(RoundedCornerShape(40.dp))
                 .background(colorScheme.secondary),
             contentAlignment = Alignment.Center
@@ -60,16 +56,16 @@ fun PowerMenuStyleA() {
         }
 
         Box(
-            modifier = Modifier.width(100.dp)
-                .height(50.dp)
-                .clip(RoundedCornerShape(30.dp))
+            modifier = Modifier.width(60.dp)
+                .height(32.dp)
+                .clip(RoundedCornerShape(20.dp))
                 .background(colorScheme.secondary),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = "Bootloader",
                 fontWeight = FontWeight(450),
-                fontSize = 11.sp
+                fontSize = 8.sp
             )
 
         }

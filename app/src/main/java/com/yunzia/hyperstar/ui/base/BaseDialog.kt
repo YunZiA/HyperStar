@@ -37,7 +37,7 @@ fun ShowDialog(
 /**
  * Dismiss the dialog.
  */
-fun dismissDialog() {
+private fun dismissDialog() {
     isDialogShowing.value = false
 }
 

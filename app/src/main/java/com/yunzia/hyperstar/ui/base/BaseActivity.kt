@@ -11,8 +11,13 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.core.view.WindowCompat
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yunzia.hyperstar.ui.base.theme.HyperStarTheme
 import com.yunzia.hyperstar.utils.LanguageHelper
 import com.yunzia.hyperstar.utils.LanguageHelper.Companion.getIndexLanguage
@@ -44,24 +49,38 @@ abstract class BaseActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         initData(savedInstanceState)
         setContent {
 //
             val colorMode = remember { mutableIntStateOf(PreferencesUtil.getInt("color_mode",0)) }
 
             val darkMode = colorMode.intValue == 2 || (isSystemInDarkTheme() && colorMode.intValue == 0)
-            DisposableEffect(darkMode) {
-                enableEdgeToEdge(
-                    statusBarStyle = SystemBarStyle.auto(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT) { darkMode },
-                    navigationBarStyle = SystemBarStyle.auto(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT) { darkMode },)
-                window.isNavigationBarContrastEnforced = false  // Xiaomi moment, this code must be here
-                onDispose {}
+
+            val systemUiController = rememberSystemUiController()
+
+            SideEffect {
+                systemUiController.setSystemBarsColor(
+                    color = Color.Transparent,
+                    darkIcons = !darkMode,
+                    isNavigationBarContrastEnforced = false
+                )
+
             }
+
+
             HyperStarTheme(colorMode.intValue) {
                 InitView(colorMode)
             }
         }
     }
+
+//    override fun recreate() {
+//        super.recreate()
+//
+//
+//    }
 
 
 
@@ -72,7 +91,8 @@ abstract class BaseActivity : ComponentActivity() {
             super.attachBaseContext(newBase)
             return
         }
-        super.attachBaseContext(LanguageHelper.wrap(newBase));
+        super.attachBaseContext(LanguageHelper.wrap(newBase))
+
 
     }
 
@@ -87,6 +107,8 @@ abstract class BaseActivity : ComponentActivity() {
         res.updateConfiguration(configuration,metrics)
 
     }
+
+
 
 
 }

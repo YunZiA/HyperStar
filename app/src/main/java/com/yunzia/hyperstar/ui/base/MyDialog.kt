@@ -89,7 +89,6 @@ fun MSuperDialog(
             .fillMaxSize()
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
-                    dismissDialog(show)
                     onDismissRequest()
                 })
             }

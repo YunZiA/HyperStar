@@ -4,22 +4,17 @@ package com.yunzia.hyperstar.hook.app.plugin.powermenu
 import android.content.Context
 import android.content.res.XModuleResources
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.Action.Companion.apCode
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.Action.Companion.apScan
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.Action.Companion.bootloader
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.Action.Companion.recovery
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.Action.Companion.screenshot
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.Action.Companion.wcCode
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.Action.Companion.wcScaner
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.Action.Companion.xiaoai
 import com.yunzia.hyperstar.hook.base.BaseHooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
+import java.lang.reflect.InvocationHandler
+import java.lang.reflect.Proxy
 
 
 class PowerMenu : BaseHooker() {
@@ -68,6 +63,12 @@ class PowerMenu : BaseHooker() {
         super.doMethods(classLoader)
 
         val MiuiGlobalActionsDialog = XposedHelpers.findClass("com.android.systemui.miui.globalactions.MiuiGlobalActionsDialog",classLoader)
+        val VolumeUtil = XposedHelpers.findClass("com.android.systemui.miui.volume.VolumeUtil",classLoader)
+
+        val callback = XposedHelpers.findClass("com.android.systemui.miui.globalactions.SliderView\$Callback",classLoader)
+        val SliderViews = XposedHelpers.findClass("com.android.systemui.miui.globalactions.SliderView",classLoader)
+        val callbacks = callback::class.java
+
 
         if (isPowerMenuNavShow){
             XposedHelpers.findAndHookMethod(MiuiGlobalActionsDialog,"initDialog",object : XC_MethodHook() {
@@ -98,24 +99,41 @@ class PowerMenu : BaseHooker() {
 
                 val s = mSliderView.layoutParams as FrameLayout.LayoutParams
                 //mSliderView.translationX = 250f
-
-                val items1: List<Item?> = listOf(
-                    recovery(mContext,icRecovery),
-                    bootloader(mContext,icBootloader),
-                    xiaoai(mContext,icAirplaneOn),
-                    screenshot(mContext,icQsScreenshot),
-                    wcScaner(mContext,wechatScan),
-                    wcCode(mContext,wechatPay),
-                    apScan(mContext,alipayScan),
-                    apCode(mContext,alipayPay)
+                val action = Action(
+                    mContext, icBootloader, icRecovery, icAirplaneOn, icAirplaneOff,
+                    icSilentOn, icSilentOff, icQsScreenshot, alipayPay, wechatScan, alipayScan, wechatPay , VolumeUtil
                 )
+
+
+
+
                 when(isPowerMenuStyle){
                     1->{
+
+                        val items1: List<Item?> = listOf(
+                            action.getAction("recovery"),
+                            action.getAction("bootloader"),
+                        )
+
                         group = menuB(
                             mContext,thisObj,items1,mTalkbackLayout,mSliderView
                         )
                     }
                     2->{
+
+                        var items1: List<Item?> = emptyList()
+                        val items1m  = items1.toMutableList()
+                        for (i in 0..7){
+                            val type = XSPUtils.getString("power_menu_style_b_$i","null").toString()
+                            if (type != "null"){
+                                items1m.add(action.getAction(type))
+
+                            }
+
+                        }
+                        items1 = items1m.toList()
+
+
                         group = menuA(
                             mContext,thisObj,items1,mTalkbackLayout,mSliderView
                         )

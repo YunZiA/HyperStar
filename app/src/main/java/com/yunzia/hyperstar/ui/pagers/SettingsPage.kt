@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.ui.pagers
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,21 +38,20 @@ fun SettingsPage(
 
     val language = remember { mutableIntStateOf(PreferencesUtil.getInt("app_language",0)) }
 
-    val state = remember {
-        mutableStateOf(activity.state)
-    }
-    val paddinged by remember { mutableStateOf(activity.paddings)}
-    LaunchedEffect(padding) {
-        if (state.value == State.Recreate){
-            state.value = State.Start
-        }
-
-    }
+//    val state = remember {
+//        mutableStateOf(activity.state)
+//    }
+//    val paddinged by remember { mutableStateOf(activity.paddings)}
+//    LaunchedEffect(padding) {
+//        if (state.value == State.Recreate){
+//            state.value = State.Start
+//        }
+//
+//    }
 
     LazyColumn(
-        modifier = Modifier.height(getWindowSize().height.dp),
-        contentPadding =if (state.value == State.Recreate) PaddingValues(top = paddinged.calculateTopPadding()+14.dp, bottom = paddinged.calculateBottomPadding()+14.dp)
-        else PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+14.dp),
+        modifier = Modifier.fillMaxHeight(),
+        contentPadding =PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+14.dp),
         topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {
         firstClasses(
@@ -68,7 +68,8 @@ fun SettingsPage(
                 onSelectedIndexChange = {
                     language.intValue = it
                     PreferencesUtil.putInt("app_language",language.intValue)
-                    activity.savePadding(padding)
+                    //activity.changeL()
+                    //activity.savePadding(padding)
                     activity.recreate()
                 }
             )

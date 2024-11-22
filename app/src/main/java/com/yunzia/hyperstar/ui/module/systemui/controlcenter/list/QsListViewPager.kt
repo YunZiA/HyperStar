@@ -32,7 +32,7 @@ fun QsListViewPager(
                 unit = "dp",
                 maxValue = 25f,
                 minValue = 0f,
-                progress = 13f,
+                defValue = 13f,
                 decimalPlaces = 2
             )
 
@@ -42,7 +42,7 @@ fun QsListViewPager(
                 unit = "%",
                 maxValue = 100f,
                 minValue = 0f,
-                progress = 100f
+                defValue = 100f
             )
 
         }
@@ -55,7 +55,7 @@ fun QsListViewPager(
                 unit = "%",
                 maxValue = 150f,
                 minValue = 0f,
-                progress = 100f
+                defValue = 100f
             )
 
             XMiuixSlider(
@@ -64,7 +64,7 @@ fun QsListViewPager(
                 unit = "%",
                 maxValue = 150f,
                 minValue = 0f,
-                progress = 100f
+                defValue = 100f
             )
 
         }
@@ -79,7 +79,7 @@ fun QsListViewPager(
                 unit = "%",
                 maxValue = 50F,
                 minValue = -50f,
-                progress = 0f
+                defValue = 0f
             )
 
             XMiuixSlider(
@@ -88,7 +88,7 @@ fun QsListViewPager(
                 unit = "dp",
                 maxValue = 100f,
                 minValue = -100f,
-                progress = 0f,
+                defValue = 0f,
                 decimalPlaces = 1
             )
 

@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
 
-    //id ("kotlin-android-extensions")
+    id ("kotlin-parcelize")
 }
 
 android {
@@ -61,11 +61,11 @@ android {
     }
     //outputFileName = "${defaultConfig.applicationId}${buildType.applicationIdSuffix}-${defaultConfig.versionName}${buildType.versionNameSuffix}.apk"
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "21"
     }
     buildFeatures {
         compose = true
@@ -81,16 +81,19 @@ android {
 }
 
 dependencies {
+    // 系统UI控制库，实现沉浸式状态栏
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.31.0-alpha")
 
+    implementation(libs.gson)
     implementation(libs.androidx.navigation.compose)
     implementation("com.github.skydoves:cloudy:0.2.3")
     implementation(libs.haze)
     //implementation ("com.android.support:palette-v7:29.0.0")
 
-    implementation ("androidx.palette:palette-ktx:1.0.0")
+    implementation (libs.androidx.palette.ktx)
 
     //implementation ("com.godaddy.android.colorpicker:compose-color-picker-android:0.7.0")
-    implementation("com.github.ajalt.colormath:colormath-ext-jetpack-compose:3.6.0")
+    implementation(libs.github.colormath.ext.jetpack.compose)
     implementation(libs.androidx.profileinstaller)
     implementation (libs.androidx.constraintlayout.compose)
     implementation (libs.accompanist.drawablepainter)

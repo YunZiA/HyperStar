@@ -23,6 +23,37 @@
         <item>Cover color</item>
         <item>Cover</item>
     </string-array>
+
+    <string-array name="power_fun_types">
+        <item>null</item>
+        <item>empty</item>
+        <item>recovery</item>
+        <item>bootloader</item>
+        <item>xiaoai</item>
+        <item>screenshot</item>
+        <item>silentMode</item>
+        <item>airPlane</item>
+        <item>wcScan</item>
+        <item>wcCode</item>
+        <item>apScan</item>
+        <item>apCode</item>
+    </string-array>
+
+
+    <string-array name="power_fun_titles">
+        <item>Empty</item>
+        <item>Fill in a Position</item>
+        <item>Recovery</item>
+        <item>Bootloader</item>
+        <item>Xiao Ai</item>
+        <item>Screenshot</item>
+        <item>Silent mode</item>
+        <item>Airplane</item>
+        <item>Wechat scan</item>
+        <item>Wechat money</item>
+        <item>Alipay scan</item>
+        <item>Alipay money</item>
+    </string-array>
     
     <array name="control_center_item_list">
         <item>cards</item>

@@ -81,12 +81,19 @@ fun ColorPickerDialog(
                 show = showDialog,
                 onFocus = {
                     kc?.hide()
-                    //doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
+                    focusManager.clearFocus()
                 },
                 onDismissRequest = {
-                    showDialog.value = false
-                    doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
-                    color.value = HsvColor.from(fColor)
+                    if (hasFocus){
+                        kc?.hide()
+                        focusManager.clearFocus()
+                        return@MSuperDialog
+                    }
+                    if (doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)){
+
+                        color.value = HsvColor.from(fColor)
+                        dismissDialog(showDialog)
+                    }
                 },
             ) {
                 Column(
@@ -203,10 +210,10 @@ fun trueTextFieldValue(
 
     val local = value.text
 
-    if ((local.length != 7) && (local.length != 9)) {
-        return false
+    return if ((local.length != 7) && (local.length != 9)) {
+        false
     }else{
-        return true
+        true
     }
 }
 
@@ -218,10 +225,10 @@ fun doTextFieldValue(
     focusManager: FocusManager,
     color : MutableState<HsvColor>,
     context : Context
-){
-    if (!hasFocus) {
-        return
-    }
+):Boolean{
+//    if (!hasFocus) {
+//        return
+//    }
     val local = value.text
 
     if ((local.length != 7) && (local.length != 9)) {
@@ -230,11 +237,12 @@ fun doTextFieldValue(
             "[长度不对]请重新输入！",
             Toast.LENGTH_SHORT
         ).show()
-        return
+        return false
     }
 
     focusManager.clearFocus()
     color.value = HsvColor.from(local.colorFromHex())
+    return true
 
 }
 

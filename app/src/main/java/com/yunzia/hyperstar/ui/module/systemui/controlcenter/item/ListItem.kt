@@ -29,6 +29,7 @@ import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 
@@ -60,7 +61,7 @@ fun ListItem(
                 showAction = true,
                 color = colorScheme.background,
                 onDismissRequest = {
-                    showDialog.value = false
+                    dismissDialog(showDialog)
                 }
             ) {
 

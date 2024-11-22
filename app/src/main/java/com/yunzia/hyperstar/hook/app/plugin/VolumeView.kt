@@ -6,14 +6,14 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.res.Configuration
-import android.content.res.XModuleResources
 import android.os.Handler
 import android.os.Looper
+import android.util.DisplayMetrics
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
+import android.view.WindowManager
 import com.yunzia.hyperstar.hook.base.BaseHooker
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
@@ -21,8 +21,6 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
-import de.robv.android.xposed.callbacks.XC_InitPackageResources
-import de.robv.android.xposed.callbacks.XC_LayoutInflated
 import yunzia.utils.DensityUtil.Companion.dpToPx
 
 
@@ -37,6 +35,9 @@ class VolumeView: BaseHooker() {
 
     val VolumeHeightCollapsedP = XSPUtils.getFloat("volume_height_collapsed_p",-1f)
     val VolumeHeightCollapsedL = XSPUtils.getFloat("volume_height_collapsed_l",-1f)
+
+//    val volumeWidthCollapsedP = XSPUtils.getFloat("volume_width_collapsed_p",-1f)
+//    val volumeWidthCollapsedL = XSPUtils.getFloat("volume_width_collapsed_l",-1f)
 
     val ShadowMarginTopP = XSPUtils.getFloat("volume_shadow_margin_top_collapsed_p",-1f)
     val ShadowMarginTopL = XSPUtils.getFloat("volume_shadow_margin_top_collapsed_l",-1f)
@@ -121,12 +122,6 @@ class VolumeView: BaseHooker() {
                 val mRingerModeLayout = XposedHelpers.getObjectField(thisObj,"mRingerModeLayout") as View
                 val shadowHeight:Float
                 val layoutParams = mShadowView.layoutParams as ViewGroup.MarginLayoutParams
-//                var top: Int
-//                if (XposedHelpers.callMethod(thisObj,"isLandscape") as Boolean){
-//                    return
-////                    val miuiVolumeDialogShadowTopOffset = res.getIdentifier("miui_volume_dialog_shadow_top_offset","dimen",plugin)
-////                    top= mVolumeView.top - res.getDimensionPixelSize(miuiVolumeDialogShadowTopOffset)
-//                }
 
                 if (!(XposedHelpers.callMethod(thisObj,"isLandscape") as Boolean)){
                     if (ShadowMarginTopP == -1f) return
@@ -161,6 +156,51 @@ class VolumeView: BaseHooker() {
             }
         })
 
+//        XposedHelpers.findAndHookMethod(MiuiVolumeDialogMotion,"updateShadowState",object :XC_MethodReplacement(){
+//            override fun replaceHookedMethod(param: MethodHookParam?): Any {
+//                val thisObj = param?.thisObject
+//                val mContext = XposedHelpers.getObjectField(thisObj, "mContext") as Context
+//                val res = mContext.theme.resources
+//
+//                val miui_volume_column_width = res.getIdentifier("miui_volume_column_width","dimen",plugin)
+//                var width = res.getDimensionPixelSize(miui_volume_column_width);
+//
+//                if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+//                    if (volumeWidthCollapsedP != -1f) {
+//                        width = dpToPx(res,volumeWidthCollapsedP).toInt()
+//                    }
+//                } else {
+//                    if (volumeWidthCollapsedL != -1f){
+//                        width= dpToPx(res,volumeWidthCollapsedL).toInt()
+//
+//                    }
+//                }
+//
+//
+//                val widthPixels = (XposedHelpers.callMethod(thisObj,"provideDisplayMetrics") as DisplayMetrics).widthPixels
+//                val mVisibleNumber = XposedHelpers.getIntField(thisObj,"mVisibleNumber")
+//                var i3 = widthPixels - (width * mVisibleNumber)
+//
+//                if (width == 2) {
+//                    val miui_volume_temp_margin_active = res.getIdentifier("miui_volume_temp_margin_active","dimen",plugin)
+//                    i3 -= res.getDimensionPixelSize(miui_volume_temp_margin_active);
+//                }
+//
+//                var seekbarMarginRight = i3 - (XposedHelpers.callMethod(thisObj,"getSeekbarMarginRight") as Int)
+//                if (XposedHelpers.callMethod(thisObj,"volumeShowLeft") as Boolean) {
+//                    seekbarMarginRight = XposedHelpers.callMethod(thisObj,"getSeekbarMarginRight") as Int
+//                }
+//                return if(
+//                    XposedHelpers.callMethod(thisObj,"isLandscape") as Boolean){
+//                    seekbarMarginRight - (XposedHelpers.callMethod(thisObj,"getInsetRight")as Int )
+//                } else{
+//                    seekbarMarginRight
+//                }
+//
+//            }
+//
+//        })
+
         val DndPopupWindow = XposedHelpers.findClass("com.android.systemui.miui.volume.DndPopupWindow",classLoader)
 
         XposedHelpers.findAndHookMethod(DndPopupWindow,"getPositionY",Int::class.java,object :XC_MethodReplacement(){
@@ -170,8 +210,6 @@ class VolumeView: BaseHooker() {
                 val i = param?.args?.get(0) as Int
                 val mContext = XposedHelpers.getObjectField(thisObj, "mContext") as Context
                 val res = mContext.theme.resources
-//                dpToPx(res, 40f).toInt()
-//                dpToPx(res, 150f).toInt()
 
                 var miuiVolumeOffsetTopCollapsed = res.getIdentifier("miui_volume_offset_top_collapsed","dimen",plugin)
 
@@ -211,6 +249,35 @@ class VolumeView: BaseHooker() {
                 return result.toInt()
             }
         })
+
+//        XposedHelpers.findAndHookMethod(DndPopupWindow,"init",object :XC_MethodHook(){
+//            override fun afterHookedMethod(param: MethodHookParam?) {
+//                super.afterHookedMethod(param)
+//                val thisObj = param?.thisObject
+//                val mContext = XposedHelpers.getObjectField(thisObj, "mContext") as Context
+//                val res = mContext.theme.resources
+//                val mParams = XposedHelpers.getObjectField(thisObj,"mParams") as WindowManager.LayoutParams
+//                val miui_volume_offset_end = res.getIdentifier("miui_volume_offset_end","dimen",plugin)
+//                val miui_volume_column_width = res.getIdentifier("miui_volume_column_width","dimen",plugin)
+//
+//                val end = res.getDimensionPixelSize(miui_volume_offset_end) * 2
+//                var width = res.getDimensionPixelSize(miui_volume_column_width)
+//                if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+//                    if (volumeWidthCollapsedP != -1f){
+//                        width = dpToPx(res,volumeWidthCollapsedP).toInt()
+//
+//                    }
+//                } else {
+//                    if (volumeWidthCollapsedL != -1f){
+//                        width = dpToPx(res,volumeWidthCollapsedL).toInt()
+//
+//                    }
+//                }
+//                mParams.x = end + width
+//
+//            }
+//
+//        })
 
         val VolumePanelViewController = XposedHelpers.findClass("com.android.systemui.miui.volume.VolumePanelViewController",classLoader)
 

@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.ui.module.systemui.other.powermenu
 
-import android.view.HapticFeedbackConstants
 import androidx.annotation.ArrayRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -26,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
@@ -37,8 +35,6 @@ import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.ModuleNavPager
 import com.yunzia.hyperstar.ui.base.enums.EventState
-import com.yunzia.hyperstar.ui.base.modifier.bounceClick
-import com.yunzia.hyperstar.ui.base.modifier.bounceScale
 import com.yunzia.hyperstar.ui.base.navtype.PagersModel
 import com.yunzia.hyperstar.utils.SPUtils
 import com.yunzia.hyperstar.utils.Utils
@@ -122,23 +118,34 @@ fun FunItem(
 
     var isSelect = selectFun.value == type
 
-    val eventState = remember { mutableStateOf(EventState.Idle) }
-    val view = LocalView.current
+    var eventState by remember { mutableStateOf(EventState.Idle) }
+    val scale by animateFloatAsState(if (eventState == EventState.Pressed) 0.90f else 1f)
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 28.dp)
             .padding(top = 10.dp)
-            .bounceScale(eventState)
+            .scale(scale)
             .clip(SmoothRoundedCornerShape(16.dp))
             .background(if (isSelect) colorScheme.tertiaryContainer  else colorScheme.surfaceVariant)
             .clickable {
-                view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                 selectFun.value = if (isSelect) "" else type
                 isSelect = !isSelect
                 SPUtils.setString(key, type)
-            }.bounceClick(eventState),
+            }
+            .pointerInput(eventState) {
+
+                awaitPointerEventScope {
+                    eventState = if (eventState == EventState.Pressed) {
+                        waitForUpOrCancellation()
+                        EventState.Idle
+                    } else {
+                        awaitFirstDown(false)
+                        EventState.Pressed
+                    }
+                }
+            },
         contentAlignment = Alignment.Center
     ) {
 

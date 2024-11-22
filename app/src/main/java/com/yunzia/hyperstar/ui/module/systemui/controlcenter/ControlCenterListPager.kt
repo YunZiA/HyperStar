@@ -6,6 +6,7 @@ import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -38,6 +39,7 @@ import com.yunzia.hyperstar.ui.base.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.TopButton
 import com.yunzia.hyperstar.ui.base.XMiuixSlider
 import com.yunzia.hyperstar.ui.base.XSuperDialogDropdown
+import com.yunzia.hyperstar.ui.base.XSuperDropdown
 import com.yunzia.hyperstar.ui.base.XSuperSwitch
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.item.BrightnessItem
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.item.CardItem
@@ -52,6 +54,7 @@ import com.yunzia.hyperstar.utils.Utils
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Switch
 import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 private fun getLists(): List<String> {
@@ -207,7 +210,7 @@ fun ControlCenterListPager(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                insideMargin = DpSize(0.dp,14.dp),
+                insideMargin =  PaddingValues(0.dp,14.dp),
                 cornerRadius = 21.dp
             ) {
 
@@ -319,7 +322,7 @@ fun getHeight(
 
 }
 
-val insideMargin  = DpSize(16.dp, 16.dp)
+val insideMargin  =  PaddingValues(16.dp, 16.dp)
 
 @Composable
 fun EnableItemDropdown(
@@ -336,14 +339,24 @@ fun EnableItemDropdown(
         insideMargin = insideMargin
     )
 
-    XSuperDialogDropdown(
+    XSuperDropdown(
         title = stringResource(R.string.land_rightOrLeft),
         enabled = state.value,
         insideMargin = insideMargin,
         key = key,
         dfOpt = dfOpt,
         option = R.array.land_rightOrLeft_entire
+
     )
+
+//    XSuperDialogDropdown(
+//        title = stringResource(R.string.land_rightOrLeft),
+//        enabled = state.value,
+//        insideMargin = insideMargin,
+//        key = key,
+//        dfOpt = dfOpt,
+//        option = R.array.land_rightOrLeft_entire
+//    )
 
 
 }
@@ -370,12 +383,13 @@ fun EnableItemSlider(
     XMiuixSlider(
         title = stringResource(R.string.span_size),
         key = key,
+        isDialog = true,
         enabled = state.value,
-        insideMargin = insideMargin,
+        paddingValues = insideMargin,
         maxValue = 4f,
         minValue = 1f,
-        progress = progress,
-        x_progress = progressState
+        defValue = progress,
+        progress = progressState
     )
 
 }

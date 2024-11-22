@@ -4,11 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.ColorPickerTool
 import com.yunzia.hyperstar.ui.base.ContentFolder
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
-import com.yunzia.hyperstar.ui.base.XMiuixSlider
-import com.yunzia.hyperstar.ui.base.XMiuixSliders
 import com.yunzia.hyperstar.ui.base.XMiuixSuperSliderSwitch
 import com.yunzia.hyperstar.ui.base.XSuperDropdown
 import com.yunzia.hyperstar.ui.base.XSuperSliders
@@ -60,16 +57,16 @@ fun VolumePager(
                 title = stringResource(R.string.title_standardview_hide),
                 key = "is_hide_StandardView"
             )
-            orientationDimBarFolder(
+            OrientationDimBarFolder(
                 stringResource(R.string.title_volume_height_collapsed),"volume_height_collapsed",300f
             )
-            orientationDimBarFolder(
+            OrientationDimBarFolder(
                 stringResource(R.string.title_volume_offset_top_collapsed),"volume_offset_top_collapsed",250f
             )
-            orientationDimBarFolder(
+            OrientationDimBarFolder(
                 stringResource(R.string.title_volume_shadow_height_collapsed),"volume_shadow_height_collapsed",300f
             )
-            orientationDimBarFolder(
+            OrientationDimBarFolder(
                 stringResource(R.string.title_volume_shadow_margin_top_collapsed),"volume_shadow_margin_top_collapsed",450f
             )
 
@@ -80,7 +77,7 @@ fun VolumePager(
 
 
 @Composable
-fun orientationDimBarFolder(
+fun OrientationDimBarFolder(
     title:String,
     key:String,
     maxValue: Float
@@ -88,9 +85,10 @@ fun orientationDimBarFolder(
     ContentFolder(title){
 
         XSuperSliders(
+            host = title,
             title = stringResource(R.string.PORTRAIT),
             key = key+"_p",
-            progress = -1f,
+            defValue = -1f,
             maxValue = maxValue,
             minValue = 0f,
             unit = "dp",
@@ -99,9 +97,10 @@ fun orientationDimBarFolder(
 
 
         XSuperSliders(
+            host = title,
             title = stringResource(R.string.LANDSCAPE),
             key = key+"_l",
-            progress = -1f,
+            defValue = -1f,
             maxValue = maxValue,
             minValue = 0f,
             unit = "dp",

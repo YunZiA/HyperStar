@@ -71,6 +71,22 @@
         <item>封面</item>
     </string-array>
 
+
+    <string-array name="power_fun_titles">
+        <item>无</item>
+        <item>占格</item>
+        <item>recovery</item>
+        <item>bootloader</item>
+        <item>小爱</item>
+        <item>截屏</item>
+        <item>静音模式</item>
+        <item>飞行模式</item>
+        <item>微信扫一扫</item>
+        <item>微信付款码</item>
+        <item>阿里扫一扫</item>
+        <item>阿里付款码</item>
+    </string-array>
+
     <string-array name="seekbar_value_style_entire">
         <item>百分比</item>
         <item>原始值</item>

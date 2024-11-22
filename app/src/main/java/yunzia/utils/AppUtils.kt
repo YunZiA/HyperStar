@@ -7,10 +7,10 @@ import android.util.Log
 
 class AppUtils(context: Context) {
     val mContext  = context
-    fun isAppInstalled(PackageName : String  ):Boolean {
+    fun isAppInstalled(packageName : String  ):Boolean {
         val packageManager = mContext.packageManager;
         try {
-            val info = packageManager.getPackageInfo(PackageName, 0);
+            val info = packageManager.getPackageInfo(packageName, 0);
             return info!=null
         } catch (e: PackageManager.NameNotFoundException ) {
             Log.e("ggc", "isAppInstalled: ", e)

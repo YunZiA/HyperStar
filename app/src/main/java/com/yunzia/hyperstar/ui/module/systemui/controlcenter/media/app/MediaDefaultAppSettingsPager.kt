@@ -286,7 +286,7 @@ fun MediaAppSettingsPager(
                     modifier = Modifier
                         .padding(bottom = 10.dp)
                         .padding(horizontal = 24.dp),
-                    insideMargin = DpSize(5.dp,5.dp),
+                    insideMargin = PaddingValues(5.dp,5.dp),
                     cornerRadius = 18.dp
                 ) {
                     Row(

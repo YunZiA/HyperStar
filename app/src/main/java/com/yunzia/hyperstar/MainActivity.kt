@@ -1,11 +1,13 @@
 package com.yunzia.hyperstar
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
@@ -37,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.profileinstaller.ProfileInstaller
 import com.yunzia.hyperstar.ui.base.BaseActivity
+import com.yunzia.hyperstar.utils.LanguageHelper.Companion.getIndexLanguage
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.SPUtils
 import com.yunzia.hyperstar.utils.Utils
@@ -71,16 +74,16 @@ class MainActivity : BaseActivity() {
     }
 
     override fun initData(savedInstanceState: Bundle?) {
-        val state = savedInstanceState?.getString("state")
-        if (state != null){
-            this.state = State.valueOf(state)
-
-        }
-        val paddingData = savedInstanceState?.getSerializable("paddings",PaddingData::class.java)
-        if (paddingData != null){
-            paddings = paddingData.toPaddingValues()
-
-        }
+//        val state = savedInstanceState?.getString("state")
+//        if (state != null){
+//            this.state = State.valueOf(state)
+//
+//        }
+//        val paddingData = savedInstanceState?.getSerializable("paddings",PaddingData::class.java)
+//        if (paddingData != null){
+//            paddings = paddingData.toPaddingValues()
+//
+//        }
         ProfileInstaller.writeProfile(this)
         if (isModuleActive()){
             SPUtils.getInstance().init(this);
@@ -104,9 +107,18 @@ class MainActivity : BaseActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val paddingData = PaddingData(paddings.calculateTopPadding().value,  paddings.calculateBottomPadding().value)
-        outState.putString("state",state.name)
-        outState.putSerializable("paddings",paddingData)
+//        val paddingData = PaddingData(paddings.calculateTopPadding().value,  paddings.calculateBottomPadding().value)
+//        outState.putString("state",state.name)
+//        outState.putSerializable("paddings",paddingData)
+    }
+    fun changeL() {
+        val res = this.resources;
+        val configuration = res.configuration;
+        val metrics: DisplayMetrics = res.displayMetrics
+        val index = PreferencesUtil.getInt("app_language",0)
+
+        configuration.setLocale(getIndexLanguage(index))
+        res.updateConfiguration(configuration,metrics)
     }
 
 
@@ -160,7 +172,7 @@ fun RootDialog(showDialog: Boolean) {
                     .fillMaxWidth()
                     .padding(horizontal = 28.dp)
                     .padding(bottom = 28.dp),
-                insideMargin = DpSize(20.dp,20.dp)
+                insideMargin = PaddingValues(20.dp,20.dp)
             ) {
                 Text(
                     text = stringResource(R.string.tips),
@@ -181,14 +193,14 @@ fun RootDialog(showDialog: Boolean) {
 
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(R.string.sure),
-                    submit = true,
                     cornerRadius = 14.dp,
                     onClick = {
                         //dismissDialog()
                         showDialogs.value = false
                     }
-                )
+                ){
+                    Text(stringResource(R.string.sure))
+                }
 
 
             }
@@ -197,6 +209,7 @@ fun RootDialog(showDialog: Boolean) {
     }
 }
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun VerDialog(showDialog: Boolean,context: Context) {
     val showDialogs = remember{ mutableStateOf(showDialog)}
@@ -211,7 +224,7 @@ fun VerDialog(showDialog: Boolean,context: Context) {
                     .fillMaxWidth()
                     .padding(horizontal = 5.dp)
                     .padding(bottom = 28.dp),
-                insideMargin = DpSize(20.dp,20.dp)
+                insideMargin =  PaddingValues(20.dp,20.dp)
             ) {
                 Text(
                     text = stringResource(R.string.os_tips),
@@ -251,14 +264,14 @@ fun VerDialog(showDialog: Boolean,context: Context) {
 
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(R.string.sure),
-                    submit = true,
                     cornerRadius = 14.dp,
                     onClick = {
                         //dismissDialog()
                         showDialogs.value = false
                     }
-                )
+                ){
+                    Text(stringResource(R.string.sure))
+                }
 
 
             }

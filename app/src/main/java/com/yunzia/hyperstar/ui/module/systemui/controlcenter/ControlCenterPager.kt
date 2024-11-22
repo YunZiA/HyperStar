@@ -82,7 +82,7 @@ fun ControlCenterPager(
                 XMiuixSlider(
                     title = stringResource(R.string.header_show_message_millis_title),
                     key = "header_show_message_millis",
-                    progress = 1f,
+                    defValue = 1f,
                     maxValue = 5f,
                     minValue = 0.1f,
                     unit = "s",

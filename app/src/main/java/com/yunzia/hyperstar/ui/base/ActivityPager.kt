@@ -87,7 +87,7 @@ fun ModulePager(
 
         ) { padding ->
         if (contents != null) {
-            Box(Modifier.blur(hazeState)) {
+            Box(modifier = Modifier.blur(hazeState)) {
                 contents(topAppBarScrollBehavior,padding)
 
             }
@@ -165,7 +165,9 @@ fun ModuleNavPager(
 
         ) { padding ->
         if (contents != null) {
-            Box(Modifier.blur(hazeState)) {
+            Box(
+                modifier = Modifier.blur(hazeState)
+            ) {
                 contents(topAppBarScrollBehavior,padding)
 
             }

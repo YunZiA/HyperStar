@@ -203,4 +203,6 @@
     <string name="no_wechat">It seems like you don\'t have WeChat on your device!  ｡ﾟ(*´□`)ﾟ｡</string>
     <string name="save_success">Saved successfully!!!</string>
     <string name="save_fail">Save failed!!!</string>
+    <string name="button">Button</string>
+    <string name="range_des">Range:%1$s%2$s~%3$s%4$s</string>
 </resources>

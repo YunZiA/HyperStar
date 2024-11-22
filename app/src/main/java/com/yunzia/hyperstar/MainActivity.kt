@@ -1,11 +1,15 @@
 package com.yunzia.hyperstar
 
+import android.Manifest
+import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
@@ -31,10 +35,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextIndent
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.profileinstaller.ProfileInstaller
 import com.yunzia.hyperstar.ui.base.BaseActivity
 import com.yunzia.hyperstar.utils.PreferencesUtil
@@ -44,7 +49,6 @@ import top.yukonga.miuix.kmp.basic.Button
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.theme.MiuixTheme.textStyles
 import yunzia.utils.SystemProperties
 import java.io.Serializable
 
@@ -53,7 +57,7 @@ class MainActivity : BaseActivity() {
 
     var paddings = PaddingValues(0.dp)
     var state = State.Start
-
+    private val WRITE_EXTERNAL_STORAGE_PERMISSION_CODE: Int = 1
     private fun isModuleActive() : Boolean{
         return false;
     }
@@ -70,6 +74,8 @@ class MainActivity : BaseActivity() {
             App(this,colorMode)
         }
     }
+
+
 
     override fun initData(savedInstanceState: Bundle?) {
         val state = savedInstanceState?.getString("state")
@@ -103,6 +109,26 @@ class MainActivity : BaseActivity() {
 
     }
 
+    fun goManagerFileAccess():Boolean {
+
+        //判断是否有管理外部存储的权限
+        if (!Environment.isExternalStorageManager()) {
+            val appIntent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+            appIntent.setData(Uri.parse("package:$packageName"))
+            try {
+                this.startActivity(appIntent)
+            } catch (ex: ActivityNotFoundException) {
+                ex.printStackTrace()
+                val allFileIntent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+                this.startActivity(allFileIntent)
+            }
+
+        }
+        return Environment.isExternalStorageManager()
+    }
+
+
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -131,6 +157,7 @@ class MainActivity : BaseActivity() {
 
 
 }
+
 
 enum class State{
     Start,Recreate
@@ -235,13 +262,21 @@ fun VerDialog(showDialog: Boolean,context:Context) {
                 Spacer(Modifier.height(12.dp))
                 Text(
                     text = stringResource(R.string.os2_link),
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp).clickable(
-                        onClick = {
-                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/YunZiA/HyperStar2.0")))
-                        },
-                        indication = null,
-                        interactionSource = MutableInteractionSource()
-                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
+                        .clickable(
+                            onClick = {
+                                context.startActivity(
+                                    Intent(
+                                        Intent.ACTION_VIEW,
+                                        Uri.parse("https://github.com/YunZiA/HyperStar2.0")
+                                    )
+                                )
+                            },
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ),
                     textDecoration = TextDecoration.Underline,
                     textAlign = TextAlign.End,
                     color = colorScheme.primary,

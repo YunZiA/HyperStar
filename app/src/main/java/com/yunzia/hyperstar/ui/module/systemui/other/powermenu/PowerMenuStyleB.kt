@@ -17,8 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.yunzia.hyperstar.R
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -27,7 +30,10 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 fun PowerMenuStyleB() {
 
     Column(
-        modifier = Modifier.height(488.dp).width(218.dp).bg(),
+        modifier = Modifier
+            .height(488.dp)
+            .width(218.dp)
+            .bg(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -55,14 +61,19 @@ fun PowerMenuStyleB() {
 
         }
         Box(
-            modifier = Modifier.width(60.dp)
+            modifier = Modifier
+                .width(60.dp)
                 .padding(vertical = 10.dp)
                 .height(235.dp)
                 .clip(RoundedCornerShape(40.dp))
                 .background(colorScheme.secondary),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "样式2")
+            Text(
+                text = stringResource(R.string.menu_style_2),
+                modifier = Modifier.padding(horizontal = 5.dp),
+                textAlign = TextAlign.Center
+            )
 
         }
         LazyVerticalGrid(

@@ -152,9 +152,7 @@ fun FunItem(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp)
+            modifier = Modifier.fillMaxSize().padding(20.dp)
         ) {
 
             Text(

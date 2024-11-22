@@ -35,6 +35,9 @@ open class BaseFieldFilter() {
         return null
     }
 
+    fun setInputValue(value: String) {
+        inputValue.value = TextFieldValue(value, TextRange(value.lastIndex+1))
+    }
 
     fun getInputValue(): TextFieldValue {
         return inputValue.value

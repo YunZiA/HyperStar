@@ -1,5 +1,19 @@
 package com.yunzia.hyperstar.ui.pagers
 
+import android.content.ContentResolver
+import android.content.ContentUris
+import android.content.Context
+import android.content.Intent
+import android.database.Cursor
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.DocumentsContract
+import android.provider.MediaStore
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -10,19 +24,28 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.State
+import com.yunzia.hyperstar.ui.base.BaseArrow
 import com.yunzia.hyperstar.ui.base.PMiuixSuperDropdown
 import com.yunzia.hyperstar.ui.base.PMiuixSuperSwitch
+import com.yunzia.hyperstar.ui.base.SuperWarnDialogArrow
+import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
+import com.yunzia.hyperstar.utils.JBUtil
 import com.yunzia.hyperstar.utils.PreferencesUtil
+import com.yunzia.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.utils.getWindowSize
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun SettingsPage(
@@ -34,6 +57,19 @@ fun SettingsPage(
     showFPSMonitor: MutableState<Boolean>,
     enablePageUserScroll:MutableState<Boolean>,
 ) {
+
+    val context = LocalContext.current
+
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { result ->
+        if (result == null) return@rememberLauncherForActivityResult
+        JBUtil.readGson(context, result)
+        activity.recreate()
+
+    }
+    val launcher2 = rememberLauncherForActivityResult(contract = ActivityResultContracts.CreateDocument("application/json")) { result ->
+        if (result == null) return@rememberLauncherForActivityResult
+        JBUtil.saveToLocal(context, result)
+    }
 
     val language = remember { mutableIntStateOf(PreferencesUtil.getInt("app_language",0)) }
 
@@ -100,25 +136,66 @@ fun SettingsPage(
                     PreferencesUtil.putBoolean("page_user_scroll",enablePageUserScroll.value)
                 }
             )
-//            PMiuixSuperSwitch(
-//                title = stringResource(R.string.over_scroll_title),
-//                checked = if (enableOverscroll()) enableOverScroll.value else false,
-//                onCheckedChange = {
-//                    enableOverScroll.value = it
-//                    PreferencesUtil.putBoolean("over_scroll",enableOverScroll.value)
-//                },
-//                enabled = enableOverscroll(),
-//            )
             PMiuixSuperSwitch(
                 title = stringResource(R.string.progress_effect_title),
                 key = "is_progress_effect"
             )
 
         }
+        classes(
+            title = context.getString(R.string.backup_restore)
+        ) {
+
+            BaseArrow(
+                title = stringResource(R.string.backup_settings),
+                onClick = {
+                    if (activity.goManagerFileAccess()){
+                        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+
+                        JBUtil.saveFile(launcher2,"HyperStar_backup_${dateFormat.format(Date())}.json")
+                    }
+
+                }
+            )
+            BaseArrow(
+                title = stringResource(R.string.restore_settings),
+                onClick = {
+                    if (activity.goManagerFileAccess()){
+                        JBUtil.openFile(launcher)
+
+                    }
+
+                }
+            )
+
+            SuperWarnDialogArrow(
+                title = stringResource(R.string.clear_settings),
+                warnTitle = stringResource(R.string.clear_settings_warning_title),
+                warnDes = stringResource(R.string.clear_settings_warning_description)
+            ){
+                val b1 = PreferencesUtil.clearPreferences()
+                val b2 = SPUtils.clearPreferences()
+                if ( b1 && b2 ){
+                    Toast.makeText(activity,
+                        context.getString(R.string.clear_success),Toast.LENGTH_SHORT).show()
+                    activity.recreate()
+                }else{
+                    if (b1 || b2) {
+                        Toast.makeText(activity,
+                            context.getString(R.string.partial_clear_successful),Toast.LENGTH_SHORT).show()
+                        activity.recreate()
+                    }else{
+                        Toast.makeText(activity,
+                            context.getString(R.string.clear_fail),Toast.LENGTH_SHORT).show()
+
+                    }
+                }
+            }
+
+        }
 
     }
 }
-
 
 
 

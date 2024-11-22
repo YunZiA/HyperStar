@@ -73,6 +73,7 @@
 
     <string-array name="power_fun_titles">
         <item>无</item>
+        <item>占格</item>
         <item>recovery</item>
         <item>bootloader</item>
         <item>小爱</item>

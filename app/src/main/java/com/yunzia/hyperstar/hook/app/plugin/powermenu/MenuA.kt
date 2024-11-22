@@ -20,6 +20,7 @@ private val plugin = "miui.systemui.plugin"
 
 fun menuA(mContext: Context, thisObj: Any?, items: List<Item?>,mTalkbackLayout:FrameLayout,mSliderView: FrameLayout): View {
     val res = mContext.resources
+    val num = items.size
 
     val drawable = GradientDrawable().apply {
         shape = GradientDrawable.RECTANGLE
@@ -31,29 +32,38 @@ fun menuA(mContext: Context, thisObj: Any?, items: List<Item?>,mTalkbackLayout:F
 
     //drawable.setSize(100, 100) // 设置大小，单位为像素
     //val padding = dpToPx(res,10.7f).toInt()
+    val items1 = if ( num > 4 ){
+        items.subList(0,4)
+    }else{
+        items
+    }
+
 
     val menu1 = GridView(mContext).apply {
-        numColumns = 4
-        //stretchMode = GridView.STRETCH_COLUMN_WIDTH
+        gravity = Gravity.CENTER
+        numColumns = items1.size
         horizontalSpacing = dpToPx(res,10f).toInt()
         //verticalSpacing = dpToPx(res,14f).toInt()
-        adapter = GridAdapter(mContext,items.subList(0,4)){
+        adapter = GridAdapter(mContext,items1){
             Handler(Looper.getMainLooper()).postDelayed({
                 XposedHelpers.callMethod(thisObj,"dismiss",1)
             }, 100)
         }
     }
-
-    val menu2 = GridView(mContext).apply {
-        numColumns = 4
-        //stretchMode = GridView.STRETCH_COLUMN_WIDTH
-        horizontalSpacing = dpToPx(res,10f).toInt()
-        //verticalSpacing = dpToPx(res,14f).toInt()
-        adapter = GridAdapter(mContext,items.subList(4,8)){
-            Handler(Looper.getMainLooper()).postDelayed({
-                XposedHelpers.callMethod(thisObj,"dismiss",1)
-            }, 100)
+    val menu2 = if ( num > 4 ){
+        GridView(mContext).apply {
+            gravity = Gravity.CENTER
+            numColumns = num-4
+            horizontalSpacing = dpToPx(res,10f).toInt()
+            adapter = GridAdapter(mContext,items.subList(4,num)){
+                Handler(Looper.getMainLooper()).postDelayed({
+                    XposedHelpers.callMethod(thisObj,"dismiss",1)
+                }, 100)
+            }
         }
+
+    }else{
+        View(mContext)
     }
 
     val m1 = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT )

@@ -395,10 +395,6 @@ private fun AppItem(
     val scale by animateFloatAsState(if (eventState == EventState.Pressed) 0.90f else 1f)
 
 
-    val view = LocalView.current
-
-    //if (isSelect) view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-
     Card(
         modifier = Modifier
             .fillMaxWidth()

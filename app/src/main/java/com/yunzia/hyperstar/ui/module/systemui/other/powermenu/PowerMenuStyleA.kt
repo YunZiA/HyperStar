@@ -13,9 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.yunzia.hyperstar.R
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -23,13 +26,17 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 @Composable
 fun PowerMenuStyleA() {
     Row(
-        modifier = Modifier.height(488.dp).width(218.dp).bg(),
+        modifier = Modifier
+            .height(488.dp)
+            .width(218.dp)
+            .bg(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
 
         Box(
-            modifier = Modifier.width(60.dp)
+            modifier = Modifier
+                .width(60.dp)
                 .height(32.dp)
                 .clip(RoundedCornerShape(20.dp))
                 .background(colorScheme.secondary),
@@ -44,19 +51,25 @@ fun PowerMenuStyleA() {
         }
 
         Box(
-            modifier = Modifier.width(80.dp)
+            modifier = Modifier
+                .width(80.dp)
                 .padding(horizontal = 10.dp)
                 .height(225.dp)
                 .clip(RoundedCornerShape(40.dp))
                 .background(colorScheme.secondary),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "样式1")
+            Text(
+                text = stringResource(R.string.menu_style_1),
+                modifier = Modifier.padding(horizontal = 5.dp),
+                textAlign = TextAlign.Center
+            )
 
         }
 
         Box(
-            modifier = Modifier.width(60.dp)
+            modifier = Modifier
+                .width(60.dp)
                 .height(32.dp)
                 .clip(RoundedCornerShape(20.dp))
                 .background(colorScheme.secondary),

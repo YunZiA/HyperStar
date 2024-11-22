@@ -371,12 +371,13 @@ fun EnableItemSlider(
     XMiuixSlider(
         title = stringResource(R.string.span_size),
         key = key,
+        isDialog = true,
         enabled = state.value,
         paddingValues = insideMargin,
         maxValue = 4f,
         minValue = 1f,
-        progress = progress,
-        x_progress = progressState
+        defValue = progress,
+        progress = progressState
     )
 
 }

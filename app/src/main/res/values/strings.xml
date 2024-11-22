@@ -192,4 +192,21 @@
     <string name="no_wechat">It seems like you don\'t have WeChat on your device!  ｡ﾟ(*´□`)ﾟ｡</string>
     <string name="save_success">Saved successfully!!!</string>
     <string name="save_fail">Save failed!!!</string>
+    <string name="button">Button</string>
+    <string name="range_des">Range:%1$s%2$s~%3$s%4$s</string>
+    <string name="warning">Waring</string>
+    <string name="backup_restore">Backup and restore</string>
+    <string name="backup_settings">Backup module settings</string>
+    <string name="restore_settings">Restore module settings</string>
+    <string name="clear_settings">Clear module settings</string>
+    <string name="clear_settings_warning_title">Should Module Settings Be Cleared?</string>
+    <string name="clear_settings_warning_description">This operation will delete all configurations of this module, including module hook configuration data, internal function settings, and other related data.</string>
+    <string name="clear_success">Clear successfully！</string>
+    <string name="partial_clear_successful">Partial clear successful！</string>
+    <string name="clear_fail">Clearing failure！</string>
+    <string name="file_not_exist">File does not exist</string>
+    <string name="restore_success">Restore success！！</string>
+    <string name="power_menu_extra">Menu extensions</string>
+    <string name="menu_style_1">Style 1</string>
+    <string name="menu_style_2">Style 2</string>
 </resources>

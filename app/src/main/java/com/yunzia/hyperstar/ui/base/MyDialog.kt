@@ -89,7 +89,6 @@ fun MSuperDialog(
             .fillMaxSize()
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
-                    dismissDialog(show)
                     onDismissRequest()
                 })
             }
@@ -131,7 +130,7 @@ fun MSuperDialog(
                                 .padding(bottom = 20.dp),
                             onClick = {
                                 view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                                dismissDialog(show)
+                                //dismissDialog(show)
                                 onDismissRequest()
                             }
                         ) {

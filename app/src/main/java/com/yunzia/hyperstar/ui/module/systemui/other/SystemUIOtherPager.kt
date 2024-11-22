@@ -50,7 +50,7 @@ fun SystemUIOtherPager(
                 key = "is_power_menu_nav_show"
             )
             SuperNavHostArrow(
-                title = "电源菜单样式",
+                title = stringResource(R.string.power_menu_extra),
                 navController = navController,
                 route = SystemUIPagerList.POWERMENU
 

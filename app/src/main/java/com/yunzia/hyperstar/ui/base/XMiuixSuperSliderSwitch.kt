@@ -53,7 +53,7 @@ fun XMiuixSuperSliderSwitch(
         XMiuixSlider(
             title = title,
             key = key,
-            progress = progress,
+            defValue = progress,
             maxValue = maxValue,
             minValue = minValue,
             unit = unit,

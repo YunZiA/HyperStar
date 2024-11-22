@@ -42,100 +42,98 @@ fun App(
     activity: MainActivity?,
     colorMode: MutableState<Int>,
 ) {
-    HyperStarTheme(
-        colorMode = colorMode.value
-    ) {
-
-        var pager = "null"
-
-        val navController = rememberNavController()
-        //val nav = remember
-        val easing = CubicBezierEasing(0.12f, 0.38f, 0.2f, 1f)
-        activity?.let {
-            NavHost(
-                navController = navController,
-                startDestination = PagerList.MAIN,
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(durationMillis = 500, easing = easing)
-                    )
-                },
-                exitTransition = {
-
-                    slideOutHorizontally(
-                        targetOffsetX = { -it / 5 },
-                        animationSpec = tween(durationMillis = 500, easing = easing)
-                    )
-                },
-                popEnterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { -it / 5 },
-                        animationSpec = tween(durationMillis = 500, easing = easing)
-                    )
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(durationMillis = 500, easing = easing)
-                    )
-                }
-            ) {
-
-                composable(PagerList.MAIN) { UITest(navController, activity,colorMode) }
-
-                composable(SystemUIPagerList.CONTROL_CENTER) { ControlCenterPager(navController) };
-
-                composable(PagerList.TRANSLATOR) { TranslatorPager(navController) }
-
-                composable(PagerList.DONATION) { DonationPage(navController)  }
-
-                composable(PagerList.REFERENCES) { ReferencesPager(navController)  }
-
-                composable(PagerList.BETA_HOME) { BetaHomePager(navController) }
-
-                composable(SystemUIPagerList.COLOR_EDIT) { ControlCenterColorPager(navController) }
-
-                composable(SystemUIPagerList.LAYOUT_ARRANGEMENT) { ControlCenterListPager(navController) }
-
-                composable(SystemUIPagerList.MEDIA) { MediaSettingsPager(navController) }
-
-                composable(SystemUIPagerList.CARD_LIST) { QSCardListPager(navController) }
-
-                composable(SystemUIPagerList.TILE_LAYOUT) { QsListViewPager(navController) }
-
-                composable(CenterColorList.CARD_TILE) { QSCardColorPager(navController) }
-
-                composable(CenterColorList.TOGGLE_SLIDER) { ToggleSliderColorsPager(navController) }
-
-                composable(CenterColorList.DEVICE_CENTER) { DeviceCenterColorPager(navController) }
-
-                composable(CenterColorList.LIST_COLOR) { QSListColorPager(navController) }
-
-                composable(SystemUIPagerList.VOLUME_DIALOG) { VolumePager(navController) }
-
-                composable(SystemUIPagerList.MORE) { SystemUIOtherPager(navController) }
-
-                composable(SystemUIPagerList.MEDIA_APP) { MediaAppSettingsPager(navController) }
-
-                composable(SystemUIPagerList.POWERMENU){ PowerMenuStylePager(navController) }
-
-                composable(
-                    FunList.SELECT_LIST+"/{pagersJson}",
-                    listOf(
-                        navArgument("pagersJson") {
-                            type = pagersJson<PagersModel>()
-                        }
-                    )
-                ){ SelectFunPager(navController,it) }
 
 
+    var pager = "null"
+
+    val navController = rememberNavController()
+    //val nav = remember
+    val easing = CubicBezierEasing(0.12f, 0.38f, 0.2f, 1f)
+    activity?.let {
+        NavHost(
+            navController = navController,
+            startDestination = PagerList.MAIN,
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(durationMillis = 500, easing = easing)
+                )
+            },
+            exitTransition = {
+
+                slideOutHorizontally(
+                    targetOffsetX = { -it / 5 },
+                    animationSpec = tween(durationMillis = 500, easing = easing)
+                )
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { -it / 5 },
+                    animationSpec = tween(durationMillis = 500, easing = easing)
+                )
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(durationMillis = 500, easing = easing)
+                )
             }
+        ) {
+
+            composable(PagerList.MAIN) { UITest(navController, activity,colorMode) }
+
+            composable(SystemUIPagerList.CONTROL_CENTER) { ControlCenterPager(navController) };
+
+            composable(PagerList.TRANSLATOR) { TranslatorPager(navController) }
+
+            composable(PagerList.DONATION) { DonationPage(navController)  }
+
+            composable(PagerList.REFERENCES) { ReferencesPager(navController)  }
+
+            composable(PagerList.BETA_HOME) { BetaHomePager(navController) }
+
+            composable(SystemUIPagerList.COLOR_EDIT) { ControlCenterColorPager(navController) }
+
+            composable(SystemUIPagerList.LAYOUT_ARRANGEMENT) { ControlCenterListPager(navController) }
+
+            composable(SystemUIPagerList.MEDIA) { MediaSettingsPager(navController) }
+
+            composable(SystemUIPagerList.CARD_LIST) { QSCardListPager(navController) }
+
+            composable(SystemUIPagerList.TILE_LAYOUT) { QsListViewPager(navController) }
+
+            composable(CenterColorList.CARD_TILE) { QSCardColorPager(navController) }
+
+            composable(CenterColorList.TOGGLE_SLIDER) { ToggleSliderColorsPager(navController) }
+
+            composable(CenterColorList.DEVICE_CENTER) { DeviceCenterColorPager(navController) }
+
+            composable(CenterColorList.LIST_COLOR) { QSListColorPager(navController) }
+
+            composable(SystemUIPagerList.VOLUME_DIALOG) { VolumePager(navController) }
+
+            composable(SystemUIPagerList.MORE) { SystemUIOtherPager(navController) }
+
+            composable(SystemUIPagerList.MEDIA_APP) { MediaAppSettingsPager(navController) }
+
+            composable(SystemUIPagerList.POWERMENU){ PowerMenuStylePager(navController) }
+
+            composable(
+                FunList.SELECT_LIST+"/{pagersJson}",
+                listOf(
+                    navArgument("pagersJson") {
+                        type = pagersJson<PagersModel>()
+                    }
+                )
+            ){ SelectFunPager(navController,it) }
 
 
         }
 
+
     }
+
+
 }
 
 

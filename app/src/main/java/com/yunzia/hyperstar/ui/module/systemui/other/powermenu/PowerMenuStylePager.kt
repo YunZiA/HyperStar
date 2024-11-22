@@ -2,6 +2,10 @@ package com.yunzia.hyperstar.ui.module.systemui.other.powermenu
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -35,7 +39,9 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.FunList
@@ -48,6 +54,7 @@ import com.yunzia.hyperstar.ui.base.TopButton
 import com.yunzia.hyperstar.ui.base.XSuperDropdown
 import com.yunzia.hyperstar.utils.SPUtils
 import com.yunzia.hyperstar.utils.Utils
+import kotlinx.coroutines.Dispatchers
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -65,10 +72,9 @@ fun PowerMenuStylePager(
     val funTypes = stringArrayResource(R.array.power_fun_types).toList()
     val funTitles = stringArrayResource(R.array.power_fun_titles).toList()
 
-    val styleBFunList = (0..7).toList()
 
     ModuleNavPagers(
-        activityTitle = "电源菜单",
+        activityTitle = stringResource(R.string.power_menu_extra),
         navController = navController,
         endIcon = {
 
@@ -113,32 +119,49 @@ fun PowerMenuStylePager(
                 when (page) {
 
                     0 -> {
-                        val imgScale by animateFloatAsState(targetValue = if (pagerState.currentPage == 0) 1f else 0.8f, animationSpec = tween(350), label = "")
+                        val imgScale by animateFloatAsState(
+                            targetValue = if (pagerState.currentPage == 0) 1f else 0.8f,
+                            animationSpec = TweenSpec(400,0,LinearOutSlowInEasing),
+                            label = ""
+                        )
 
-                        val selectColor by animateColorAsState(targetValue = if (pagerState.currentPage == 0) Color(
-                            0xff3988FF
-                        ) else Color.Transparent, animationSpec = tween(300), label = "")
+                        val selectColor by animateColorAsState(
+                            targetValue = if (pagerState.currentPage == 0)
+                                Color(0xff3988FF)
+                            else Color.Transparent,
+                            animationSpec = TweenSpec(400),
+                            label = ""
+                        )
                         Box(
-                            Modifier.scale(imgScale)
+                            Modifier
+                                .scale(imgScale)
                                 .fillMaxHeight()
-                                .border(3.dp,selectColor,SmoothRoundedCornerShape(21.2.dp))
+                                .border(3.dp, selectColor, SmoothRoundedCornerShape(21.2.dp))
                                 .width(260.dp),
                             contentAlignment = Alignment.Center,
                         ) {
                             Row(
-                                modifier = Modifier.height(488.dp).width(218.dp).bg(),
+                                modifier = Modifier
+                                    .height(488.dp)
+                                    .width(218.dp)
+                                    .bg(),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
                             ) {
 
                                 Box(
-                                    modifier = Modifier.width(60.dp)
+                                    modifier = Modifier
+                                        .width(60.dp)
                                         .height(225.dp)
                                         .clip(RoundedCornerShape(40.dp))
                                         .background(colorScheme.secondary),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Text(text = "默认")
+                                    Text(
+                                        text = stringResource(R.string.default_it),
+                                        modifier = Modifier.padding(horizontal = 5.dp),
+                                        textAlign = TextAlign.Center
+                                    )
 
                                 }
 
@@ -150,14 +173,24 @@ fun PowerMenuStylePager(
                     }
 
                     1 -> {
-                        val imgScale by animateFloatAsState(targetValue = if (pagerState.currentPage == 1) 1f else 0.8f,
-                            animationSpec = tween(350), label = ""
+                        val imgScale by animateFloatAsState(
+                            targetValue = if (pagerState.currentPage == 1) 1f else 0.8f,
+                            animationSpec = TweenSpec(400,0,LinearOutSlowInEasing),
+                            label = ""
                         )
-                        val selectColor by animateColorAsState(targetValue = if (pagerState.currentPage == 1) Color(
-                            0xff3988FF
-                        ) else Color.Transparent, animationSpec = tween(300), label = "")
+                        val selectColor by animateColorAsState(
+                            targetValue = if (pagerState.currentPage == 1)
+                                Color(0xff3988FF)
+                            else Color.Transparent,
+                            animationSpec = TweenSpec(400),
+                            label = ""
+                        )
                         Box(
-                            Modifier.scale(imgScale).fillMaxHeight().border(3.dp,selectColor,SmoothRoundedCornerShape(21.2.dp)).width(260.dp),
+                            Modifier
+                                .scale(imgScale)
+                                .fillMaxHeight()
+                                .border(3.dp, selectColor, SmoothRoundedCornerShape(21.2.dp))
+                                .width(260.dp),
                             contentAlignment = Alignment.Center,
                         ) {
 
@@ -166,14 +199,24 @@ fun PowerMenuStylePager(
                     }
 
                     2 -> {
-                        val imgScale by animateFloatAsState(targetValue = if (pagerState.currentPage == 2) 1f else 0.8f,
-                            animationSpec = tween(350), label = ""
+                        val imgScale by animateFloatAsState(
+                            targetValue = if (pagerState.currentPage == 2) 1f else 0.8f,
+                            animationSpec = TweenSpec(400,0,LinearOutSlowInEasing),
+                            label = ""
                         )
-                        val selectColor by animateColorAsState(targetValue = if (pagerState.currentPage == 2) Color(
-                            0xff3988FF
-                        ) else Color.Transparent, animationSpec = tween(300), label = "")
+                        val selectColor by animateColorAsState(
+                            targetValue = if (pagerState.currentPage == 2)
+                                Color(0xff3988FF )
+                            else Color.Transparent,
+                            animationSpec = TweenSpec(400),
+                            label = ""
+                        )
                         Box(
-                            modifier = Modifier.scale(imgScale).fillMaxHeight().border(3.dp,selectColor,SmoothRoundedCornerShape(21.2.dp)).width(260.dp),
+                            modifier = Modifier
+                                .scale(imgScale)
+                                .fillMaxHeight()
+                                .border(3.dp, selectColor, SmoothRoundedCornerShape(21.2.dp))
+                                .width(260.dp),
                             contentAlignment = Alignment.Center,
                         ) {
                             PowerMenuStyleB()
@@ -240,16 +283,64 @@ fun PowerMenuStylePager(
                 }
                 2->{
                     Classes{
-                        styleBFunList.forEachIndexed { _, num ->
-                            SuperArgNavHostArrow(
-                                title = "按钮$num",
-                                navController = navController,
-                                route = FunList.SELECT_LIST,
-                                key = "power_menu_style_b_$num",
-                                rightDo = { getFunTitle(funTypes,funTitles,it) }
-                            )
 
-                        }
+                        SuperArgNavHostArrow(
+                            title = stringResource(R.string.button)+0,
+                            navController = navController,
+                            route = FunList.SELECT_LIST,
+                            key = "power_menu_style_b_0",
+                            rightDo = { getFunTitle(funTypes,funTitles,it) }
+                        )
+                        SuperArgNavHostArrow(
+                            title = stringResource(R.string.button)+1,
+                            navController = navController,
+                            route = FunList.SELECT_LIST,
+                            key = "power_menu_style_b_1",
+                            rightDo = { getFunTitle(funTypes,funTitles,it) }
+                        )
+                        SuperArgNavHostArrow(
+                            title = stringResource(R.string.button)+2,
+                            navController = navController,
+                            route = FunList.SELECT_LIST,
+                            key = "power_menu_style_b_2",
+                            rightDo = { getFunTitle(funTypes,funTitles,it) }
+                        )
+                        SuperArgNavHostArrow(
+                            title = stringResource(R.string.button)+3,
+                            navController = navController,
+                            route = FunList.SELECT_LIST,
+                            key = "power_menu_style_b_3",
+                            rightDo = { getFunTitle(funTypes,funTitles,it) }
+                        )
+                        SuperArgNavHostArrow(
+                            title = stringResource(R.string.button)+4,
+                            navController = navController,
+                            route = FunList.SELECT_LIST,
+                            key = "power_menu_style_b_4",
+                            rightDo = { getFunTitle(funTypes,funTitles,it) }
+                        )
+                        SuperArgNavHostArrow(
+                            title = stringResource(R.string.button)+5,
+                            navController = navController,
+                            route = FunList.SELECT_LIST,
+                            key = "power_menu_style_b_5",
+                            rightDo = { getFunTitle(funTypes,funTitles,it) }
+                        )
+                        SuperArgNavHostArrow(
+                            title = stringResource(R.string.button)+6,
+                            navController = navController,
+                            route = FunList.SELECT_LIST,
+                            key = "power_menu_style_b_6",
+                            rightDo = { getFunTitle(funTypes,funTitles,it) }
+                        )
+                        SuperArgNavHostArrow(
+                            title = stringResource(R.string.button)+7,
+                            navController = navController,
+                            route = FunList.SELECT_LIST,
+                            key = "power_menu_style_b_7",
+                            rightDo = { getFunTitle(funTypes,funTitles,it) }
+                        )
+
 
                     }
 
@@ -276,5 +367,6 @@ private fun getFunTitle(
 
 
 @Composable
-fun Modifier.bg() = this.background(color = colorScheme.surface, shape = SmoothRoundedCornerShape(16.dp))
+fun Modifier.bg() = this
+    .background(color = colorScheme.surface, shape = SmoothRoundedCornerShape(16.dp))
     .clip(SmoothRoundedCornerShape(16.dp))

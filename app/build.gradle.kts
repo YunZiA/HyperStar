@@ -18,8 +18,8 @@ android {
         applicationId = "com.yunzia.hyperstar"
         minSdk = 33
         targetSdk = 34
-        versionCode = 1
-        versionName = "0.8.1"
+        versionCode = 3
+        versionName = "0.8.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -82,7 +82,6 @@ android {
 dependencies {
 
     implementation("com.google.code.gson:gson:2.11.0")
-
     implementation(libs.androidx.navigation.compose)
     implementation("com.github.skydoves:cloudy:0.2.3")
     implementation(libs.haze)

@@ -8,7 +8,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +26,7 @@ import androidx.compose.ui.graphics.BlendModeColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.ArrowRight
@@ -39,8 +39,7 @@ fun ContentFolder(
 ) {
 
 
-    val interactionSource =  remember { MutableInteractionSource() }
-    //val indication = createRipple()
+
     val showContent = remember { mutableStateOf(false) }
     val insideMargin = remember { DpSize(24.dp, 14.dp) }
     val paddingModifier = remember(insideMargin) {
@@ -48,7 +47,7 @@ fun ContentFolder(
     }
     val rotating = animateFloatAsState(if (showContent.value ) 90f else -90f, label = "")
     Row(
-        modifier = Modifier
+        modifier = Modifier.bounceAnim()
             .fillMaxWidth()
             .clickable{
                 showContent.value = !showContent.value

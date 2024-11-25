@@ -24,6 +24,7 @@ import com.yunzia.hyperstar.hook.app.plugin.QSVolumeOrBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurWidgetManager
 import com.yunzia.hyperstar.hook.app.plugin.VolumeColumnProgressRadius
+import com.yunzia.hyperstar.hook.app.plugin.VolumeView
 import com.yunzia.hyperstar.hook.tool.starLog
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
@@ -132,6 +133,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         doSecMethods(QSControlCenterList())
         doSecMethods(VolumeColumnProgressRadius())
         doSecMethods(powerMenu)
+        doSecMethods(VolumeView())
     }
 
 

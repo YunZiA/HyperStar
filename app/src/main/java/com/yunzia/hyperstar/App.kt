@@ -33,8 +33,11 @@ import com.yunzia.hyperstar.ui.module.systemui.controlcenter.slider.ToggleSlider
 import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.PowerMenuStylePager
 import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.SelectFunPager
 import com.yunzia.hyperstar.ui.pagers.DonationPage
+import com.yunzia.hyperstar.ui.pagers.GoRootPager
 import com.yunzia.hyperstar.ui.pagers.ReferencesPager
+import com.yunzia.hyperstar.ui.pagers.SettingsShowPage
 import com.yunzia.hyperstar.ui.pagers.UITest
+import com.yunzia.hyperstar.ui.pagers.dialog.FirstDialog
 
 @SuppressLint("RestrictedApi", "StateFlowValueCalledInComposition")
 @Composable
@@ -50,6 +53,10 @@ fun App(
     //val nav = remember
     val easing = CubicBezierEasing(0.12f, 0.38f, 0.2f, 1f)
     activity?.let {
+
+        FirstDialog(activity,navController)
+
+
         NavHost(
             navController = navController,
             startDestination = PagerList.MAIN,
@@ -82,11 +89,15 @@ fun App(
 
             composable(PagerList.MAIN) { UITest(navController, activity,colorMode) }
 
+            composable(PagerList.GO_ROOT){ GoRootPager(navController) }
+
             composable(SystemUIPagerList.CONTROL_CENTER) { ControlCenterPager(navController) };
 
             composable(PagerList.TRANSLATOR) { TranslatorPager(navController) }
 
             composable(PagerList.DONATION) { DonationPage(navController)  }
+
+            composable(PagerList.SHOW){ SettingsShowPage(navController) }
 
             composable(PagerList.REFERENCES) { ReferencesPager(navController)  }
 
@@ -142,6 +153,7 @@ object PagerList {
 
     //主页
     const val MAIN = "main"
+    const val GO_ROOT = "go_root"
     //系统界面更多
     const val BETA_HOME = "beta_home"
     //翻译
@@ -150,6 +162,8 @@ object PagerList {
     const val REFERENCES = "references"
     //投喂
     const val DONATION = "donation"
+    //显示设置
+    const val SHOW = "show"
 }
 
 object SystemUIPagerList {

@@ -9,19 +9,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
-import com.yunzia.hyperstar.ui.base.modifier.bounceClick
+import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.Switch
 import top.yukonga.miuix.kmp.basic.SwitchColors
 import top.yukonga.miuix.kmp.basic.SwitchDefaults
-import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun SuperSwitch(
@@ -45,7 +41,7 @@ fun SuperSwitch(
     if (isChecked != checked) isChecked = checked
 
     BasicComponent(
-        modifier = modifier,
+        modifier = modifier.bounceAnim(),
         insideMargin = insideMargin,
         title = title,
         titleColor = titleColor,

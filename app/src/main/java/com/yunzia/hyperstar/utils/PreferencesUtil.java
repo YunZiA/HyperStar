@@ -139,9 +139,14 @@ public class PreferencesUtil {
         editor.clear();
         return editor.commit();
     }
-    public void cc(){
 
+    public static boolean removePreferences(String key) {
+        SharedPreferences pref = PreferencesUtil.getInstance().sp;
+        SharedPreferences.Editor editor = pref.edit();
+        editor.remove(key);
+        return editor.commit();
     }
+
 
 
     public static void getAllPreferences(ArrayList<SP> preferencesUtil) throws JSONException {

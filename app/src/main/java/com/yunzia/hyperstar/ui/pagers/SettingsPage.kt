@@ -1,17 +1,5 @@
 package com.yunzia.hyperstar.ui.pagers
 
-import android.content.ContentResolver
-import android.content.ContentUris
-import android.content.Context
-import android.content.Intent
-import android.database.Cursor
-import android.net.Uri
-import android.os.Build
-import android.os.Environment
-import android.provider.DocumentsContract
-import android.provider.MediaStore
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,19 +15,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.MainActivity
+import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.State
 import com.yunzia.hyperstar.ui.base.BaseArrow
 import com.yunzia.hyperstar.ui.base.PMiuixSuperDropdown
 import com.yunzia.hyperstar.ui.base.PMiuixSuperSwitch
+import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.base.SuperWarnDialogArrow
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
 import com.yunzia.hyperstar.utils.JBUtil
 import com.yunzia.hyperstar.utils.PreferencesUtil
-import com.yunzia.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.utils.getWindowSize
@@ -50,12 +39,10 @@ import java.util.Locale
 @Composable
 fun SettingsPage(
     activity : MainActivity,
-    navController: NavController,
+    navController: NavHostController,
     topAppBarScrollBehavior: ScrollBehavior,
     padding: PaddingValues,
-    colorMode: MutableState<Int>,
-    showFPSMonitor: MutableState<Boolean>,
-    enablePageUserScroll:MutableState<Boolean>,
+    colorMode: MutableState<Int>
 ) {
 
     val context = LocalContext.current
@@ -120,26 +107,14 @@ fun SettingsPage(
                 }
             )
 
-            PMiuixSuperSwitch(
-                title = stringResource(R.string.show_FPS_Monitor_title),
-                checked = showFPSMonitor.value,
-                onCheckedChange = {
-                    showFPSMonitor.value = it
-                    PreferencesUtil.putBoolean("show_FPS_Monitor",showFPSMonitor.value)
-                }
+            SuperNavHostArrow(
+                title = stringResource(R.string.model_pager_setting),
+                navController = navController,
+                route = PagerList.SHOW
+
             )
-            PMiuixSuperSwitch(
-                title = stringResource(R.string.page_user_scroll_title),
-                checked = enablePageUserScroll.value,
-                onCheckedChange = {
-                    enablePageUserScroll.value = it
-                    PreferencesUtil.putBoolean("page_user_scroll",enablePageUserScroll.value)
-                }
-            )
-            PMiuixSuperSwitch(
-                title = stringResource(R.string.progress_effect_title),
-                key = "is_progress_effect"
-            )
+
+
 
         }
         classes(
@@ -149,21 +124,13 @@ fun SettingsPage(
             BaseArrow(
                 title = stringResource(R.string.backup_settings),
                 onClick = {
-                    if (activity.goManagerFileAccess()){
-                        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-
-                        JBUtil.saveFile(launcher2,"HyperStar_backup_${dateFormat.format(Date())}.json")
-                    }
-
+                    JBUtil.saveFile(activity,launcher2)
                 }
             )
             BaseArrow(
                 title = stringResource(R.string.restore_settings),
                 onClick = {
-                    if (activity.goManagerFileAccess()){
-                        JBUtil.openFile(launcher)
-
-                    }
+                    JBUtil.openFile(activity,launcher)
 
                 }
             )
@@ -173,23 +140,7 @@ fun SettingsPage(
                 warnTitle = stringResource(R.string.clear_settings_warning_title),
                 warnDes = stringResource(R.string.clear_settings_warning_description)
             ){
-                val b1 = PreferencesUtil.clearPreferences()
-                val b2 = SPUtils.clearPreferences()
-                if ( b1 && b2 ){
-                    Toast.makeText(activity,
-                        context.getString(R.string.clear_success),Toast.LENGTH_SHORT).show()
-                    activity.recreate()
-                }else{
-                    if (b1 || b2) {
-                        Toast.makeText(activity,
-                            context.getString(R.string.partial_clear_successful),Toast.LENGTH_SHORT).show()
-                        activity.recreate()
-                    }else{
-                        Toast.makeText(activity,
-                            context.getString(R.string.clear_fail),Toast.LENGTH_SHORT).show()
-
-                    }
-                }
+                JBUtil.clear(activity,context)
             }
 
         }

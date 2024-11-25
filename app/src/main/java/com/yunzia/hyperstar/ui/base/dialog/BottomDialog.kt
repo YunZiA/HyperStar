@@ -1,4 +1,4 @@
-package com.yunzia.hyperstar.ui.base
+package com.yunzia.hyperstar.ui.base.dialog
 
 
 import android.app.DialogFragment

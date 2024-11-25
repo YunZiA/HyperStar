@@ -2,7 +2,8 @@
 
 package com.yunzia.hyperstar.ui.pagers
 
-import android.util.Log
+import android.content.Intent
+import android.net.Uri
 import android.view.HapticFeedbackConstants
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -14,12 +15,15 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -50,18 +54,27 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
+import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.ui.base.BaseButton
+import com.yunzia.hyperstar.ui.base.XScaffold
+import com.yunzia.hyperstar.ui.base.dialog.SuperCTDialogDefaults
+import com.yunzia.hyperstar.ui.base.dialog.SuperDialog
+import com.yunzia.hyperstar.ui.base.dialog.SuperXDialog
+import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.ui.base.modifier.blur
 import com.yunzia.hyperstar.ui.base.modifier.showBlur
-import com.yunzia.hyperstar.ui.pagers.ThirdPage
+import com.yunzia.hyperstar.ui.pagers.dialog.FirstDialog
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.Utils
 import dev.chrisbanes.haze.HazeState
@@ -74,7 +87,6 @@ import top.yukonga.miuix.kmp.basic.HorizontalPager
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.NavigationBar
 import top.yukonga.miuix.kmp.basic.NavigationItem
-import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.Text
@@ -86,8 +98,6 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
-import top.yukonga.miuix.kmp.utils.squircleshape.CornerSmoothing
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 @OptIn(FlowPreview::class)
 @Composable
@@ -138,11 +148,11 @@ fun UITest(
     val showBlurs = remember { mutableStateOf(false) }
     val view = LocalView.current
 
-    Scaffold(
+    XScaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                modifier = if (targetPage == 2 && !showBlurs.value) Modifier else Modifier.showBlur(hazeState),
+                modifier = Modifier.showBlur(hazeState),
                 color = Color.Transparent,
                 title = pagerTitle,
                 largeTitle = if (targetPage == 2) "" else pagerTitle,
@@ -155,7 +165,7 @@ fun UITest(
                         onClick = {
                             view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                             show.value = true
-                            Log.d("ggc", "IconButton: onClick")
+
                         }) {
 
                         Icon(
@@ -193,7 +203,6 @@ fun UITest(
             colorMode = colorMode,
             topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
             padding = padding,
-            showFPSMonitor = showFPSMonitor,
             showBlurs = showBlurs,
             enablePageUserScroll = enablePageUserScroll
         )
@@ -210,8 +219,6 @@ fun UITest(
         )
     }
 
-    //LocalHapticFeedback.current
-
 
 
     AnimatedVisibility(
@@ -219,7 +226,6 @@ fun UITest(
         enter = fadeIn(),
         exit = fadeOut()
     ){
-
 
         val alpha: Float by animateFloatAsState(if (show.value) 0.3f else 0f, label = "")
         Box(
@@ -239,9 +245,6 @@ fun UITest(
     ItemPopu(show)
 
 }
-
-
-
 
 @Composable
 fun  ItemPopu(show: MutableState<Boolean>) {
@@ -389,7 +392,6 @@ fun AppHorizontalPager(
     pagerState: PagerState,
     topAppBarScrollBehaviorList: List<ScrollBehavior>,
     padding: PaddingValues,
-    showFPSMonitor: MutableState<Boolean>,
     showBlurs: MutableState<Boolean>,
     enablePageUserScroll: MutableState<Boolean>
 ) {
@@ -421,9 +423,7 @@ fun AppHorizontalPager(
                         navController = navController,
                         topAppBarScrollBehavior = topAppBarScrollBehaviorList[1],
                         padding = padding,
-                        colorMode = colorMode,
-                        showFPSMonitor = showFPSMonitor,
-                        enablePageUserScroll = enablePageUserScroll,
+                        colorMode = colorMode
 
                     )
                 }

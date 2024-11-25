@@ -136,7 +136,7 @@
     <string name="fast_reboot">快速重启</string>
     <string name="home">系统桌面</string>
     <string name="tips">提示</string>
-    <string name="no_root_description">未获取Root权限</string>
+    <string name="no_root_description">未获取到Root权限！</string>
     <string name="sure">确认</string>
     <string name="not_activated_toast_description">模块未激活!</string>
     <string name="default_value">默认</string>
@@ -209,4 +209,21 @@
     <string name="power_menu_extra">电源菜单扩展</string>
     <string name="menu_style_1">样式1</string>
     <string name="menu_style_2">样式2</string>
+    <string name="PORTRAIT">竖屏</string>
+    <string name="LANDSCAPE">横屏</string>
+    <string name="title_volume_height_collapsed">音量条长度</string>
+    <string name="title_volume_offset_top_collapsed">音量条上边距</string>
+    <string name="title_volume_shadow_height_collapsed">阴影长度</string>
+    <string name="title_volume_shadow_margin_top_collapsed">阴影上边距</string>
+    <string name="title_standardview_hide">隐藏静音勿扰按钮</string>
+    <string name="sidebar_mode">侧边状态</string>
+    <string name="model_pager_setting">模块页面设置</string>
+    <string name="global">全局</string>
+    <string name="setting_item">设置项</string>
+    <string name="click_bounce">点击回弹</string>
+    <string name="no_warning">不再提示</string>
+    <string name="active_faster">快速激活</string>
+    <string name="quick_authorization">快速授权</string>
+    <string name="installed">已安装</string>
+    <string name="uninstalled">未安装</string>
 </resources>

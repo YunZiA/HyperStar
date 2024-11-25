@@ -16,9 +16,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.yunzia.hyperstar.ui.base.modifier.bounceClick
+import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
 import com.yunzia.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.extra.DropDownMode
 import top.yukonga.miuix.kmp.extra.SuperDropdown
@@ -38,7 +37,7 @@ fun XSuperDropdown(
     val dropdownOptions = stringArrayResource(id = option).toList()
 
     SuperDropdown(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
         items = dropdownOptions,
@@ -68,7 +67,7 @@ fun XSuperDialogDropdown(
     val dropdownOptions = stringArrayResource(id = option).toList()
 
     SuperDropdown(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
         items = dropdownOptions,
@@ -101,7 +100,7 @@ fun XMiuixContentDropdown(
 
 
     SuperDropdown(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
         items = dropdownOptions,
@@ -142,7 +141,7 @@ fun SuperContentDropdown(
     val dropdownSelectedOption = remember { mutableStateOf(SPUtils.getInt(key,0)) }
 //    popupHorizontalPadding+insideMargin.width/2
     SuperDropdown(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
         items = dropdownOptions,
@@ -183,7 +182,7 @@ fun PMiuixSuperDropdown(
     val dropdownOptions = stringArrayResource(id = option).toList()
 
     SuperDropdown(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
         items = dropdownOptions,

@@ -23,6 +23,7 @@ import java.util.Locale
 abstract class BaseActivity : ComponentActivity() {
 
     @Composable abstract fun InitView(colorMode: MutableState<Int>?)
+
     abstract fun initData(savedInstanceState: Bundle?)
 
     fun setLocale(
@@ -45,8 +46,6 @@ abstract class BaseActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
 
         initData(savedInstanceState)
         setContent {

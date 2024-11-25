@@ -1,4 +1,4 @@
-package com.yunzia.hyperstar.ui.base
+package com.yunzia.hyperstar.ui.base.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -28,8 +28,6 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
-import top.yukonga.miuix.kmp.utils.squircleshape.CornerSmoothing
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 @Composable
 fun SuperBottomSheetDialog(
@@ -53,7 +51,7 @@ fun SuperBottomSheetDialog(
     val contentAlignment by remember { derivedStateOf { if (getWindowSize.width > getWindowSize.height) Alignment.Center else Alignment.BottomCenter } }
 
     BackHandler(enabled = show.value) {
-        XPopupUtil.dismissDialog()
+        CTPopupUtil.dismissDialog(show)
         onDismissRequest()
     }
 
@@ -62,7 +60,7 @@ fun SuperBottomSheetDialog(
             .fillMaxSize()
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
-                    XPopupUtil.dismissDialog()
+                    CTPopupUtil.dismissDialog(show)
                     onDismissRequest()
                 })
             }

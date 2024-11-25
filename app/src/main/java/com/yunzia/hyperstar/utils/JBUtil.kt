@@ -1,9 +1,7 @@
 package com.yunzia.hyperstar.utils
 
-import android.app.Activity
 import android.content.ContentUris
 import android.content.Context
-import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
@@ -13,7 +11,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import com.google.gson.Gson
+import com.google.gson.JsonIOException
+import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
+import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import org.json.JSONException
 import java.io.File
@@ -21,17 +22,31 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 object JBUtil {
 
     private const val TAG = "ggc"
 
-    fun openFile(launcher: ManagedActivityResultLauncher<String, Uri?>) {
-        launcher.launch("application/json")
+    fun openFile(
+        activity: MainActivity,
+        launcher: ManagedActivityResultLauncher<String, Uri?>
+    ) {
+        if (activity.goManagerFileAccess()) {
+            launcher.launch("application/json")
+        }
     }
 
-    fun saveFile(launcher: ManagedActivityResultLauncher<String, Uri?>, fileName: String) {
-        launcher.launch(fileName)
+    fun saveFile(
+        activity: MainActivity,
+        launcher: ManagedActivityResultLauncher<String, Uri?>
+    ) {
+        if (activity.goManagerFileAccess()) {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            launcher.launch("HyperStar_backup_${dateFormat.format(Date())}.json")
+        }
     }
 
     fun saveToLocal(context: Context,result: Uri) {
@@ -105,89 +120,110 @@ object JBUtil {
         val readJsonFile = readJsonFile(filePath)
 
         val gson = Gson()
-        val spArrayList = gson.fromJson<ArrayList<SP>>(
-            readJsonFile,
-            object : TypeToken<ArrayList<SP?>?>() {}.type
-        )
-        for (sp in spArrayList) {
-            val key = sp.key
-            val value = sp.value
-            when (sp.type) {
-                SP.type_boolean -> when (sp.spType) {
-                    "SPUtils" -> SPUtils.setBoolean(
-                        key,
-                        (value as Boolean)
-                    )
+        try {
+            val spArrayList = gson.fromJson<ArrayList<SP>>(
+                readJsonFile,
+                object : TypeToken<ArrayList<SP?>?>() {}.type
+            )
+            for (sp in spArrayList) {
+                val key = sp.key
+                val value = sp.value
+                when (sp.type) {
+                    SP.type_boolean -> when (sp.spType) {
+                        "SPUtils" -> SPUtils.setBoolean(
+                            key,
+                            (value as Boolean)
+                        )
 
-                    "PreferencesUtil" -> PreferencesUtil.putBoolean(
-                        key,
-                        (value as Boolean)
-                    )
+                        "PreferencesUtil" -> PreferencesUtil.putBoolean(
+                            key,
+                            (value as Boolean)
+                        )
 
-                    else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
+                        else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
+                    }
+
+                    SP.type_float -> when (sp.spType) {
+                        "SPUtils" -> if (value is Double) {
+                            SPUtils.setFloat(key, value.toFloat())
+                        } else {
+                            SPUtils.setFloat(key, (value as Float))
+                        }
+
+                        "PreferencesUtil" -> if (value is Double) {
+                            PreferencesUtil.putFloat(key, value.toFloat())
+                        } else {
+                            PreferencesUtil.putFloat(key, (value as Float))
+                        }
+
+                        else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
+                    }
+
+                    SP.type_int -> when (sp.spType) {
+                        "SPUtils" -> if (value is Double) {
+                            SPUtils.setInt(key, value.toInt())
+                        } else {
+                            SPUtils.setInt(key, value as Int)
+                        }
+
+                        "PreferencesUtil" -> if (value is Double) {
+                            PreferencesUtil.putInt(key, value.toInt())
+                        } else {
+                            PreferencesUtil.putInt(key, value as Int)
+                        }
+
+                        else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
+                    }
+
+                    SP.type_long -> when (sp.spType) {
+                        "SPUtils" -> if (value is Double) {
+                            SPUtils.setLong(key, value.toLong())
+                        } else {
+                            SPUtils.setLong(key, (value as Long))
+                        }
+
+                        "PreferencesUtil" -> if (value is Double) {
+                            PreferencesUtil.putLong(key, value.toLong())
+                        } else {
+                            PreferencesUtil.putLong(key, (value as Long))
+                        }
+
+                        else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
+                    }
+
+                    else -> when (sp.spType) {
+                        "SPUtils" -> SPUtils.setString(key, value as String)
+                        "PreferencesUtil" -> PreferencesUtil.putString(key, value as String)
+                        else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
+                    }
+
                 }
-
-                SP.type_float -> when (sp.spType) {
-                    "SPUtils" -> if (value is Double) {
-                        SPUtils.setFloat(key, value.toFloat())
-                    } else {
-                        SPUtils.setFloat(key, (value as Float))
-                    }
-
-                    "PreferencesUtil" -> if (value is Double) {
-                        PreferencesUtil.putFloat(key, value.toFloat())
-                    } else {
-                        PreferencesUtil.putFloat(key, (value as Float))
-                    }
-
-                    else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
-                }
-
-                SP.type_int -> when (sp.spType) {
-                    "SPUtils" -> if (value is Double) {
-                        SPUtils.setInt(key, value.toInt())
-                    } else {
-                        SPUtils.setInt(key, value as Int)
-                    }
-
-                    "PreferencesUtil" -> if (value is Double) {
-                        PreferencesUtil.putInt(key, value.toInt())
-                    } else {
-                        PreferencesUtil.putInt(key, value as Int)
-                    }
-
-                    else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
-                }
-
-                SP.type_long -> when (sp.spType) {
-                    "SPUtils" -> if (value is Double) {
-                        SPUtils.setLong(key, value.toLong())
-                    } else {
-                        SPUtils.setLong(key, (value as Long))
-                    }
-
-                    "PreferencesUtil" -> if (value is Double) {
-                        PreferencesUtil.putLong(key, value.toLong())
-                    } else {
-                        PreferencesUtil.putLong(key, (value as Long))
-                    }
-
-                    else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
-                }
-
-                else -> when (sp.spType) {
-                    "SPUtils" -> SPUtils.setString(key, value as String)
-                    "PreferencesUtil" -> PreferencesUtil.putString(key, value as String)
-                    else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
-                }
-
             }
+
+            Toast.makeText(context, context.getString(R.string.restore_success),Toast.LENGTH_SHORT).show()
+        } catch (e: JsonSyntaxException) {
+            // 处理 JSON 语法错误
+            // 例如：记录错误、返回错误消息等
+            Toast.makeText(context,"文件错误！",Toast.LENGTH_SHORT).show()
+            Log.e(TAG, "readGson: $e")
+            return
+        } catch (e: JsonIOException) {
+            // 处理 I/O 错误，如读取文件失败
+            // 例如：记录错误、返回错误消息等
+            Toast.makeText(context,"读取文件失败！",Toast.LENGTH_SHORT).show()
+            Log.e(TAG, "readGson: $e")
+            return
+        } catch (e: Exception) {
+            // 处理其他可能的异常（虽然不太可能是 Gson 抛出的）
+            // 例如：记录错误、返回错误消息等
+            Toast.makeText(context,"未知错误！",Toast.LENGTH_SHORT).show()
+            Log.e(TAG, "readGson: $e")
+            return
         }
 
-        Toast.makeText(context, context.getString(R.string.restore_success),Toast.LENGTH_SHORT).show()
     }
 
-    
+
     private fun getPathFromDocumentUri(context: Context, uri: Uri): String? {
         val documentId = DocumentsContract.getDocumentId(uri)
         val split = documentId.split(":").toTypedArray()
@@ -258,4 +294,25 @@ object JBUtil {
     private fun isMediaDocument(uri: Uri): Boolean {
         return "com.android.providers.media.documents" == uri.authority
     }
+
+    fun clear(activity: MainActivity, context: Context) {
+        val b1 = PreferencesUtil.clearPreferences()
+        val b2 = SPUtils.clearPreferences()
+        if ( b1 && b2 ){
+            Toast.makeText(activity,
+                context.getString(R.string.clear_success),Toast.LENGTH_SHORT).show()
+            activity.recreate()
+        }else{
+            if (b1 || b2) {
+                Toast.makeText(activity,
+                    context.getString(R.string.partial_clear_successful),Toast.LENGTH_SHORT).show()
+                activity.recreate()
+            }else{
+                Toast.makeText(activity,
+                    context.getString(R.string.clear_fail),Toast.LENGTH_SHORT).show()
+
+            }
+        }
+    }
+
 }

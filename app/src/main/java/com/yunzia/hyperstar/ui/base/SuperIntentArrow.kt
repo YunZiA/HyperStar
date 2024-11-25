@@ -3,40 +3,36 @@ package com.yunzia.hyperstar.ui.base
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavArgument
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.google.gson.Gson
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.ui.base.dialog.SuperDialog
+import com.yunzia.hyperstar.ui.base.dialog.SuperCTDialogDefaults
+import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
 import com.yunzia.hyperstar.ui.base.navtype.PagersModel
 import com.yunzia.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.SuperArrow
-import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
+import top.yukonga.miuix.kmp.extra.SuperDialogDefaults
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion
 
 
 @Composable
@@ -49,7 +45,7 @@ fun BaseArrow(
 
 
     SuperArrow(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         leftAction = if (leftIcon != null){ {
             Row {
                 Image(
@@ -78,7 +74,7 @@ fun SuperIntentArrow(
 {
 
     SuperArrow(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         leftAction = if (leftIcon != null){ {
             Row {
                 Image(
@@ -110,7 +106,7 @@ fun SuperNavHostArrow(
 
 
     SuperArrow(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         leftAction = if (leftIcon != null){ {
             Row {
                 Image(
@@ -154,7 +150,7 @@ fun SuperArgNavHostArrow(
 
 
     SuperArrow(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         leftAction = if (leftIcon != null){ {
             Row {
                 Image(
@@ -188,7 +184,7 @@ fun SuperActivityArrow(
 ) {
 
     SuperArrow(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         leftAction = if (leftIcon != null){ {
             Row {
                 Image(
@@ -222,7 +218,7 @@ fun SuperWarnDialogArrow(
     val show = remember { mutableStateOf(false) }
 
     SuperArrow(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         leftAction = if (leftIcon != null){ {
             Row {
                 Image(

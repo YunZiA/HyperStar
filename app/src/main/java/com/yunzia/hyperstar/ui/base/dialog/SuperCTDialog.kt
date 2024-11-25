@@ -1,12 +1,10 @@
-package com.yunzia.hyperstar.ui.base
+package com.yunzia.hyperstar.ui.base.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
@@ -27,53 +25,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import com.yunzia.hyperstar.ui.base.dialog.CTPopupUtil.Companion.ShowCTDialog
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showDialog
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getRoundedCorner
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
-/**
- * A dialog with a title, a summary, and other contents.
- *
- * @param show The show state of the [SuperDialog].
- * @param modifier The modifier to be applied to the [SuperDialog].
- * @param title The title of the [SuperDialog].
- * @param titleColor The color of the title.
- * @param summary The summary of the [SuperDialog].
- * @param summaryColor The color of the summary.
- * @param backgroundColor The background color of the [SuperDialog].
- * @param onDismissRequest The callback when the [SuperDialog] is dismissed.
- * @param outsideMargin The margin outside the [SuperDialog].
- * @param insideMargin The margin inside the [SuperDialog].
- * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [SuperDialog].
- * @param content The [Composable] content of the [SuperDialog].
- */
 @Composable
-fun SuperDialog(
+fun SuperCTDialog(
     show: MutableState<Boolean>,
     modifier: Modifier = Modifier,
     title: String? = null,
-    titleColor: Color = SuperDialogDefaults.titleColor(),
+    titleColor: Color = SuperCTDialogDefaults.titleColor(),
     summary: String? = null,
-    summaryColor: Color = SuperDialogDefaults.summaryColor(),
-    backgroundColor: Color = SuperDialogDefaults.backgroundColor(),
+    summaryColor: Color = SuperCTDialogDefaults.summaryColor(),
+    backgroundColor: Color = SuperCTDialogDefaults.backgroundColor(),
     onFocus: () -> Unit = {},
     onDismissRequest: (() -> Unit)? = null,
-    outsideMargin: DpSize = SuperDialogDefaults.outsideMargin,
-    insideMargin: DpSize = SuperDialogDefaults.insideMargin,
+    outsideMargin: DpSize = SuperCTDialogDefaults.outsideMargin,
+    insideMargin: DpSize = SuperCTDialogDefaults.insideMargin,
     defaultWindowInsetsPadding: Boolean = true,
     content: @Composable () -> Unit
 ) {
     if (show.value) {
-        if (!dialogStates.contains(show)) dialogStates.add(show)
+        if (!ctdialogStates.contains(show)) ctdialogStates.add(show)
         LaunchedEffect(show.value) {
             if (show.value) {
-                dialogStates.forEach { state -> if (state != show) state.value = false }
+                ctdialogStates.forEach { state -> if (state != show) state.value = false }
             }
         }
 
@@ -84,22 +66,16 @@ fun SuperDialog(
         val paddingModifier = remember(outsideMargin) { Modifier.padding(horizontal = outsideMargin.width).padding(bottom = outsideMargin.height) }
         val roundedCorner by rememberUpdatedState(getRoundedCorner())//- outsideMargin.width
         val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) roundedCorner-5.dp  else 32.dp } }
-        val contentAlignment by rememberUpdatedState { derivedStateOf { if (windowHeight >= 480.dp && windowWidth >= 840.dp) Alignment.Center else Alignment.BottomCenter } }
+        val contentAlignment by rememberUpdatedState { derivedStateOf { if (windowHeight >= 480.dp && windowWidth >= 840.dp) Alignment.Center else Alignment.Center } }
 
         BackHandler(enabled = show.value) {
             onDismissRequest?.invoke()
         }
 
-        showDialog(
+        ShowCTDialog(
             content = {
                 Box(
-                    modifier = if (defaultWindowInsetsPadding) {
-                        Modifier
-                            .imePadding()
-                            .navigationBarsPadding()
-                    } else {
-                        Modifier
-                    }
+                    modifier = Modifier
                         .fillMaxSize()
                         .pointerInput(Unit) {
                             detectTapGestures(
@@ -166,7 +142,7 @@ fun SuperDialog(
     }
 }
 
-object SuperDialogDefaults {
+object SuperCTDialogDefaults {
 
     /**
      * The default color of the title.
@@ -200,4 +176,4 @@ object SuperDialogDefaults {
 /**
  * Only one dialog is allowed to be displayed at a time.
  */
-val dialogStates = mutableStateListOf<MutableState<Boolean>>()
+val ctdialogStates = mutableStateListOf<MutableState<Boolean>>()

@@ -137,7 +137,7 @@
     <string name="fast_reboot">Quick Reboot</string>
     <string name="home">System Launcher</string>
     <string name="tips">⚠️Warning⚠️</string>
-    <string name="no_root_description">Root Access Has Not Been Granted</string>
+    <string name="no_root_description">Root Access Has Not Been Grante!</string>
     <string name="sure">Confirm</string>
     <string name="not_activated_toast_description">The module is not activated!</string>
     <string name="default_value">Default</string>
@@ -209,4 +209,21 @@
     <string name="power_menu_extra">Menu extensions</string>
     <string name="menu_style_1">Style 1</string>
     <string name="menu_style_2">Style 2</string>
+    <string name="PORTRAIT">Portrait</string>
+    <string name="LANDSCAPE">Landscape</string>
+    <string name="title_volume_height_collapsed">Volume height</string>
+    <string name="title_volume_offset_top_collapsed">Volume offset top</string>
+    <string name="title_volume_shadow_height_collapsed">Shadow height</string>
+    <string name="title_volume_shadow_margin_top_collapsed">Shadow margin top</string>
+    <string name="title_standardview_hide">Hide Silent and DND Buttons</string>
+    <string name="sidebar_mode">Sidebar Mode</string>
+    <string name="model_pager_setting">Module Page Settings</string>
+    <string name="global">Global</string>
+    <string name="setting_item">Setting item</string>
+    <string name="click_bounce">Click bounce</string>
+    <string name="no_warning">Don\'t show again</string>
+    <string name="active_faster">Quick activation</string>
+    <string name="quick_authorization">Quick authorization</string>
+    <string name="installed">Installed</string>
+    <string name="uninstalled">Uninstalled</string>
 </resources>

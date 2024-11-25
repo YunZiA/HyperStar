@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -70,7 +71,7 @@ fun ModulePager(
 
     val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
 
-    Scaffold(
+    XScaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             ModuleTopAppBar(
@@ -149,7 +150,7 @@ fun ModuleNavPager(
 
     val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
 
-    Scaffold(
+    XScaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black),
@@ -221,7 +222,7 @@ fun NavPager(
     activityTitle: String,
     navController: NavController,
     actions: @Composable() (RowScope.() -> Unit) = {},
-    content: (LazyListScope.() -> Unit)? = null
+    content: (LazyListScope.(MutableState<Boolean>) -> Unit)? = null
 ) {
 
     val hazeState = remember { HazeState() }
@@ -230,7 +231,7 @@ fun NavPager(
     val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
 
 
-    Scaffold(
+    XScaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             NavTopAppBar(
@@ -252,7 +253,7 @@ fun NavPager(
                     contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+28.dp),
                     topAppBarScrollBehavior = topAppBarScrollBehavior
                 ) {
-                    content()
+                    content(showFPSMonitor)
                 }
 
             }

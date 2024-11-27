@@ -84,6 +84,6 @@ If you would like to contribute translations to the HyperStar project, please fe
 
 [badge_qgroup]: https://img.shields.io/badge/QQ-群组-4DB8FF?style=for-the-badge&logo=tencentqq
 
-[telegram_url]: https://t.me/+QQWVM0ToHyEyZmRl
+[telegram_url]: https://t.me/Hyperstar_chat
 
 [badge_telegram]: https://img.shields.io/badge/dynamic/json?style=for-the-badge&color=2CA5E0&label=Telegram&logo=telegram&query=%24.data.totalSubs&url=https%3A%2F%2Fapi.spencerwoo.com%2Fsubstats%2F%3Fsource%3Dtelegram%26queryKey%3Dcemiuiler

@@ -127,6 +127,61 @@ fun XMiuixContentDropdown(
 }
 
 @Composable
+fun XMiuixContentDropdown(
+    title : String,
+    option: Int,
+    key : String,
+    showOption : Int,
+    showOptions : Int,
+    summary : String ?= null,
+    insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp),
+    contents: @Composable (() -> Unit),
+    content: @Composable (() -> Unit),
+) {
+
+    val dropdownOptions = stringArrayResource(id = option).toList()
+    val dropdownSelectedOption = remember { mutableStateOf(SPUtils.getInt(key,0)) }
+
+
+    SuperDropdown(
+        modifier = Modifier.bounceAnim(),
+        title = title,
+        summary = summary,
+        items = dropdownOptions,
+        horizontalPadding = 0.dp,
+        mode = DropDownMode.AlwaysOnRight,
+        insideMargin = insideMargin,
+        selectedIndex = dropdownSelectedOption.value,
+        onSelectedIndexChange = { newOption ->
+            dropdownSelectedOption.value = newOption
+            SPUtils.setInt(key,newOption)
+        }
+    )
+
+    AnimatedVisibility (
+        (dropdownSelectedOption.value == showOptions),
+        enter = fadeIn() + expandVertically(),
+        exit = fadeOut() + shrinkVertically()
+    ) {
+        Column{
+            contents()
+
+        }
+    }
+
+    AnimatedVisibility (
+        (dropdownSelectedOption.value == showOption),
+        enter = fadeIn() + expandVertically(),
+        exit = fadeOut() + shrinkVertically()
+    ) {
+        Column{
+            content()
+
+        }
+    }
+}
+
+@Composable
 fun SuperContentDropdown(
     title : String,
     option: Int,

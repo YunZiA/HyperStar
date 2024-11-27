@@ -17,6 +17,7 @@ import android.provider.Settings
 import de.robv.android.xposed.XposedHelpers
 
 class Action(val mContext: Context,
+             var xiaoai:Int,
              var icBootloader:Int,
              var icRecovery :Int,
              var icAirplaneOn :Int,
@@ -46,7 +47,7 @@ class Action(val mContext: Context,
                 return bootloader(mContext,icBootloader)
             }
             "xiaoai"->{
-                return xiaoai(mContext,icAirplaneOn)
+                return xiaoai(mContext,xiaoai)
 
             }
             "screenshot"->{

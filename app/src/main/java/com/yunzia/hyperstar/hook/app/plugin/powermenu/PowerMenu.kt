@@ -24,6 +24,7 @@ class PowerMenu : BaseHooker() {
     var icSilentOff = 0
     var icQsScreenshot = 0
 
+    var xiaoai = 0
     var alipayPay = 0
     var wechatScan = 0
     var alipayScan = 0
@@ -40,7 +41,8 @@ class PowerMenu : BaseHooker() {
         super.doResources(resparam, modRes)
 
 
-        icBootloader = resparam?.res?.addResource(modRes,R.drawable.ic_bootloader)!!
+        xiaoai = resparam?.res?.addResource(modRes,R.drawable.xiaoai)!!
+        icBootloader = resparam.res?.addResource(modRes,R.drawable.ic_bootloader)!!
         icRecovery = resparam.res?.addResource(modRes,R.drawable.ic_recovery)!!
         icAirplaneOn = resparam.res?.addResource(modRes,R.drawable.ic_airplane_on)!!
         icAirplaneOff = resparam.res?.addResource(modRes,R.drawable.ic_airplane_off)!!
@@ -92,7 +94,7 @@ class PowerMenu : BaseHooker() {
                 val s = mSliderView.layoutParams as FrameLayout.LayoutParams
                 //mSliderView.translationX = 250f
                 val action = Action(
-                    mContext, icBootloader, icRecovery, icAirplaneOn, icAirplaneOff,
+                    mContext,xiaoai, icBootloader, icRecovery, icAirplaneOn, icAirplaneOff,
                     icSilentOn, icSilentOff, icQsScreenshot, alipayPay, wechatScan, alipayScan, wechatPay , VolumeUtil
                 )
 

@@ -18,8 +18,8 @@ android {
         applicationId = "com.yunzia.hyperstar"
         minSdk = 33
         targetSdk = 34
-        versionCode = 3
-        versionName = "0.8.9"
+        versionCode = 4
+        versionName = "0.9.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

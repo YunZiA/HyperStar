@@ -99,8 +99,6 @@ class QSHeaderView : BaseHooker() {
                 c_lp.weight = 1f
                 c.layoutParams = c_lp
 
-
-
                 val header = LinearLayout(sysUIContext)
 
                 val headerLp = ViewGroup.LayoutParams(-1,-2)
@@ -117,6 +115,7 @@ class QSHeaderView : BaseHooker() {
                 view.addView(header)
 
                 a.setOnClickListener{
+                    if (view.alpha == 0f) return@setOnClickListener
                     it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     val intent = Intent()
                     intent.setClassName("com.android.settings", "com.android.settings.MainSettings")
@@ -126,6 +125,7 @@ class QSHeaderView : BaseHooker() {
                 }
 
                 b.setOnClickListener{
+                    if (view.alpha == 0f) return@setOnClickListener
                     it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     if (qsListControllerProvider != null){
                         starLog.log("qsListControllerProvider != null")

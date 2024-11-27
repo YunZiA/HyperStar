@@ -3,6 +3,7 @@ package com.yunzia.hyperstar.hook.base
 import android.content.Context
 import android.content.res.Resources
 import android.content.res.XModuleResources
+import com.yunzia.hyperstar.hook.app.plugin.DeviceCenterRow
 import com.yunzia.hyperstar.hook.app.plugin.PadVolume
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTile
@@ -36,6 +37,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
     private val padVolume: PadVolume = PadVolume()
     private val qsControlCenterColor: QSControlCenterColor = QSControlCenterColor()
     private val powerMenu: PowerMenu = PowerMenu()
+    private val deviceCenterRow: DeviceCenterRow = DeviceCenterRow()
 
     override fun getLocalRes(res: Resources?) {
         super.getLocalRes(res)
@@ -60,6 +62,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         doResources(padVolume)
         doResources(qsControlCenterColor)
         doResources(QSMiplayAppIconRadius())
+        doResources(deviceCenterRow)
 
 
     }
@@ -134,6 +137,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         doSecMethods(VolumeColumnProgressRadius())
         doSecMethods(powerMenu)
         doSecMethods(VolumeView())
+        doSecMethods(deviceCenterRow)
     }
 
 

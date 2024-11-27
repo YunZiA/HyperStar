@@ -1,17 +1,32 @@
 package com.yunzia.hyperstar
 
 import android.annotation.SuppressLint
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.zIndex
+import androidx.navigation.NavDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.yunzia.hyperstar.ui.base.enums.EventState
 import com.yunzia.hyperstar.ui.base.navtype.PagersModel
 import com.yunzia.hyperstar.ui.base.navtype.pagersJson
 import com.yunzia.hyperstar.ui.module.betahome.BetaHomePager
@@ -38,6 +53,9 @@ import com.yunzia.hyperstar.ui.pagers.ReferencesPager
 import com.yunzia.hyperstar.ui.pagers.SettingsShowPage
 import com.yunzia.hyperstar.ui.pagers.UITest
 import com.yunzia.hyperstar.ui.pagers.dialog.FirstDialog
+import top.yukonga.miuix.kmp.anim.DecelerateEasing
+import top.yukonga.miuix.kmp.basic.Box
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @SuppressLint("RestrictedApi", "StateFlowValueCalledInComposition")
 @Composable
@@ -50,19 +68,17 @@ fun App(
     var pager = "null"
 
     val navController = rememberNavController()
-    //val nav = remember
+
     val easing = CubicBezierEasing(0.12f, 0.38f, 0.2f, 1f)
     activity?.let {
 
         FirstDialog(activity,navController)
-
-
         NavHost(
             navController = navController,
             startDestination = PagerList.MAIN,
             enterTransition = {
                 slideInHorizontally(
-                    initialOffsetX = { it },
+                    initialOffsetX = { it  },
                     animationSpec = tween(durationMillis = 500, easing = easing)
                 )
             },
@@ -91,7 +107,7 @@ fun App(
 
             composable(PagerList.GO_ROOT){ GoRootPager(navController) }
 
-            composable(SystemUIPagerList.CONTROL_CENTER) { ControlCenterPager(navController) };
+            composable(SystemUIPagerList.CONTROL_CENTER) { ControlCenterPager(navController) }
 
             composable(PagerList.TRANSLATOR) { TranslatorPager(navController) }
 
@@ -140,6 +156,7 @@ fun App(
 
 
         }
+
 
 
     }

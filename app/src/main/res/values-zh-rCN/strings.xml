@@ -230,4 +230,7 @@
     <string name="telegram_group">Telegram 群组</string>
     <string name="wordless_mode">无字模式</string>
     <string name="device_center_ist">设备显示</string>
+    <string name="fast_reboot_systemui_summary">是否快速重启系统界面？</string>
+    <string name="empty_device">空设备状态</string>
+    <string name="device_item">设备项</string>
 </resources>

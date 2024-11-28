@@ -60,7 +60,7 @@ class CTPopupUtil {
          *
          * @param show The show state of the dialog.
          */
-        fun dismissDialog(
+        fun dismissCTDialog(
             show: MutableState<Boolean>,
         ) {
             isDialogShowing.value = false

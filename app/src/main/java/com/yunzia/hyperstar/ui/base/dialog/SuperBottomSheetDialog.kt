@@ -51,7 +51,7 @@ fun SuperBottomSheetDialog(
     val contentAlignment by remember { derivedStateOf { if (getWindowSize.width > getWindowSize.height) Alignment.Center else Alignment.BottomCenter } }
 
     BackHandler(enabled = show.value) {
-        CTPopupUtil.dismissDialog(show)
+        CTPopupUtil.dismissCTDialog(show)
         onDismissRequest()
     }
 
@@ -60,7 +60,7 @@ fun SuperBottomSheetDialog(
             .fillMaxSize()
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
-                    CTPopupUtil.dismissDialog(show)
+                    CTPopupUtil.dismissCTDialog(show)
                     onDismissRequest()
                 })
             }

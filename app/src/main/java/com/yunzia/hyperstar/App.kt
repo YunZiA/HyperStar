@@ -1,35 +1,22 @@
 package com.yunzia.hyperstar
 
 import android.annotation.SuppressLint
-import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.zIndex
-import androidx.navigation.NavDestination
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.yunzia.hyperstar.ui.base.enums.EventState
 import com.yunzia.hyperstar.ui.base.navtype.PagersModel
 import com.yunzia.hyperstar.ui.base.navtype.pagersJson
-import com.yunzia.hyperstar.ui.module.betahome.BetaHomePager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.list.QSListColorPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.list.QsListViewPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.MediaSettingsPager
@@ -37,7 +24,6 @@ import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.app.MediaAppS
 import com.yunzia.hyperstar.ui.module.systemui.other.SystemUIOtherPager
 import com.yunzia.hyperstar.ui.module.systemui.volume.VolumePager
 import com.yunzia.hyperstar.ui.pagers.TranslatorPager
-import com.yunzia.hyperstar.ui.base.theme.HyperStarTheme
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterColorPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterListPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterPager
@@ -47,15 +33,12 @@ import com.yunzia.hyperstar.ui.module.systemui.controlcenter.devicecenter.Device
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.slider.ToggleSliderColorsPager
 import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.PowerMenuStylePager
 import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.SelectFunPager
-import com.yunzia.hyperstar.ui.pagers.DonationPage
+import com.yunzia.hyperstar.ui.pagers.DonationPager
 import com.yunzia.hyperstar.ui.pagers.GoRootPager
 import com.yunzia.hyperstar.ui.pagers.ReferencesPager
 import com.yunzia.hyperstar.ui.pagers.SettingsShowPage
-import com.yunzia.hyperstar.ui.pagers.UITest
+import com.yunzia.hyperstar.ui.pagers.MainPage
 import com.yunzia.hyperstar.ui.pagers.dialog.FirstDialog
-import top.yukonga.miuix.kmp.anim.DecelerateEasing
-import top.yukonga.miuix.kmp.basic.Box
-import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @SuppressLint("RestrictedApi", "StateFlowValueCalledInComposition")
 @Composable
@@ -64,12 +47,10 @@ fun App(
     colorMode: MutableState<Int>,
 ) {
 
-
-    var pager = "null"
-
     val navController = rememberNavController()
 
-    val easing = CubicBezierEasing(0.12f, 0.38f, 0.2f, 1f)
+    val easing = FastOutSlowInEasing
+
     activity?.let {
 
         FirstDialog(activity,navController)
@@ -103,7 +84,7 @@ fun App(
             }
         ) {
 
-            composable(PagerList.MAIN) { UITest(navController, activity,colorMode) }
+            composable(PagerList.MAIN) { MainPage(navController, activity,colorMode) }
 
             composable(PagerList.GO_ROOT){ GoRootPager(navController) }
 
@@ -111,13 +92,13 @@ fun App(
 
             composable(PagerList.TRANSLATOR) { TranslatorPager(navController) }
 
-            composable(PagerList.DONATION) { DonationPage(navController)  }
+            composable(PagerList.DONATION) { DonationPager(navController)  }
 
             composable(PagerList.SHOW){ SettingsShowPage(navController) }
 
             composable(PagerList.REFERENCES) { ReferencesPager(navController)  }
 
-            composable(PagerList.BETA_HOME) { BetaHomePager(navController) }
+            //composable(PagerList.BETA_HOME) { BetaHomePager(navController) }
 
             composable(SystemUIPagerList.COLOR_EDIT) { ControlCenterColorPager(navController) }
 

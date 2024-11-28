@@ -230,4 +230,7 @@
     <string name="telegram_group">Telegram Group</string>
     <string name="wordless_mode">Wordless Mode</string>
     <string name="device_center_ist">Display on device</string>
+    <string name="fast_reboot_systemui_summary">Would you like to quickly restart the SystemUI?</string>
+    <string name="empty_device">Empty Device Status</string>
+    <string name="device_item">Device item</string>
 </resources>

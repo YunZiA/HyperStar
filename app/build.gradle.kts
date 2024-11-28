@@ -18,8 +18,8 @@ android {
         applicationId = "com.yunzia.hyperstar"
         minSdk = 33
         targetSdk = 34
-        versionCode = 4
-        versionName = "0.9.0"
+        versionCode = 5
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -33,9 +33,10 @@ android {
                 val config = project.android.defaultConfig
                 val appName = "HyperStar"
                 val versionName = "v"+config.versionName
-                val formatter = DateTimeFormatter.ofPattern("yyyyMMddHH")
-                val createTime = LocalDateTime.now().format(formatter)
-                this.outputFileName = "${appName}_${versionName}_${createTime}_test.apk"
+//                val formatter = DateTimeFormatter.ofPattern("yyyyMMddHH")
+//                val createTime = LocalDateTime.now().format(formatter)
+//                this.outputFileName = "${appName}_${versionName}_${createTime}_test.apk"
+                this.outputFileName = "${appName}_${versionName}_Release.apk"
             }
         }
     }

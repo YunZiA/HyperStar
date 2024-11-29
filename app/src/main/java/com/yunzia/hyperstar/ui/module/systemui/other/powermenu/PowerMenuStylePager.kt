@@ -2,6 +2,7 @@ package com.yunzia.hyperstar.ui.module.systemui.other.powermenu
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -42,6 +43,7 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.FunList
@@ -119,27 +121,7 @@ fun PowerMenuStylePager(
                 when (page) {
 
                     0 -> {
-                        val imgScale by animateFloatAsState(
-                            targetValue = if (pagerState.currentPage == 0) 1f else 0.8f,
-                            animationSpec = TweenSpec(400,0,LinearOutSlowInEasing),
-                            label = ""
-                        )
-
-                        val selectColor by animateColorAsState(
-                            targetValue = if (pagerState.currentPage == 0)
-                                Color(0xff3988FF)
-                            else Color.Transparent,
-                            animationSpec = TweenSpec(400),
-                            label = ""
-                        )
-                        Box(
-                            Modifier
-                                .scale(imgScale)
-                                .fillMaxHeight()
-                                .border(3.dp, selectColor, SmoothRoundedCornerShape(21.2.dp))
-                                .width(260.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
+                        AnimPager(0,pagerState.currentPage){
                             Row(
                                 modifier = Modifier
                                     .height(488.dp)
@@ -168,60 +150,25 @@ fun PowerMenuStylePager(
 
 
                             }
-
                         }
+
                     }
 
                     1 -> {
-                        val imgScale by animateFloatAsState(
-                            targetValue = if (pagerState.currentPage == 1) 1f else 0.8f,
-                            animationSpec = TweenSpec(400,0,LinearOutSlowInEasing),
-                            label = ""
-                        )
-                        val selectColor by animateColorAsState(
-                            targetValue = if (pagerState.currentPage == 1)
-                                Color(0xff3988FF)
-                            else Color.Transparent,
-                            animationSpec = TweenSpec(400),
-                            label = ""
-                        )
-                        Box(
-                            Modifier
-                                .scale(imgScale)
-                                .fillMaxHeight()
-                                .border(3.dp, selectColor, SmoothRoundedCornerShape(21.2.dp))
-                                .width(260.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
 
+                        AnimPager(1,pagerState.currentPage){
                             PowerMenuStyleA()
                         }
+
                     }
 
                     2 -> {
-                        val imgScale by animateFloatAsState(
-                            targetValue = if (pagerState.currentPage == 2) 1f else 0.8f,
-                            animationSpec = TweenSpec(400,0,LinearOutSlowInEasing),
-                            label = ""
-                        )
-                        val selectColor by animateColorAsState(
-                            targetValue = if (pagerState.currentPage == 2)
-                                Color(0xff3988FF )
-                            else Color.Transparent,
-                            animationSpec = TweenSpec(400),
-                            label = ""
-                        )
-                        Box(
-                            modifier = Modifier
-                                .scale(imgScale)
-                                .fillMaxHeight()
-                                .border(3.dp, selectColor, SmoothRoundedCornerShape(21.2.dp))
-                                .width(260.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            PowerMenuStyleB()
 
+                        AnimPager(2,pagerState.currentPage){
+                            PowerMenuStyleB()
                         }
+
+
                     }
                 }
 
@@ -363,6 +310,44 @@ private fun getFunTitle(
     type: String
 ):String{
     return titles[types.indexOf(type)]
+}
+
+@Composable
+fun AnimPager(
+    page:Int,
+    currentPage:Int,
+    content: @Composable() () -> Unit
+){
+
+    val imgScale by animateFloatAsState(
+        targetValue = if (currentPage == page) 1f else 0.8f,
+        animationSpec =  TweenSpec(400,0,LinearOutSlowInEasing),
+        label = ""
+    )
+    val select by animateDpAsState(
+        targetValue = if (currentPage == page) 3.dp else 0.dp,
+        animationSpec = TweenSpec(400,0,LinearOutSlowInEasing),
+        label = ""
+    )
+
+    val selectColor by animateColorAsState(
+        targetValue = if (currentPage == page)
+            Color(0xff3988FF )
+        else Color.Transparent,
+        animationSpec = TweenSpec(400,0,LinearOutSlowInEasing),
+        label = ""
+    )
+    Box(
+        modifier = Modifier
+            .scale(imgScale)
+            .fillMaxHeight()
+            .border(select, selectColor, SmoothRoundedCornerShape(21.2.dp))
+            .width(260.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        content()
+
+    }
 }
 
 

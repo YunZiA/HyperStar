@@ -59,9 +59,9 @@ fun SuperSwitch(
         },
         onClick = {
             if (enabled) {
+                localHapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                 isChecked = !isChecked
                 updatedOnCheckedChange?.invoke(isChecked)
-                localHapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
             }
         },
         enabled = enabled

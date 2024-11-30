@@ -13,13 +13,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.State
 import com.yunzia.hyperstar.ui.base.BaseArrow
 import com.yunzia.hyperstar.ui.base.PMiuixSuperDropdown
 import com.yunzia.hyperstar.ui.base.PMiuixSuperSwitch
@@ -55,23 +55,10 @@ fun Settings(
         JBUtil.saveToLocal(context, result)
     }
 
-    val language = remember { mutableIntStateOf(PreferencesUtil.getInt("app_language",0)) }
-
-    val state = remember {
-        mutableStateOf(activity.state)
-    }
-    val paddinged by remember { mutableStateOf(activity.paddings)}
-    LaunchedEffect(padding) {
-        if (state.value == State.Recreate){
-            state.value = State.Start
-        }
-
-    }
 
     LazyColumn(
         modifier = Modifier.height(getWindowSize().height.dp),
-        contentPadding =if (state.value == State.Recreate) PaddingValues(top = paddinged.calculateTopPadding()+14.dp, bottom = paddinged.calculateBottomPadding()+14.dp)
-        else PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+14.dp),
+        contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+14.dp),
         topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {
         firstClasses(
@@ -81,18 +68,13 @@ fun Settings(
                 title = stringResource(R.string.is_hide_icon_title),
                 key = "is_hide_icon"
             )
-            PMiuixSuperDropdown(
-                title = stringResource(R.string.language),
-                option = R.array.language_list,
-                selectedIndex = language.intValue,
-                onSelectedIndexChange = {
-                    language.intValue = it
-                    PreferencesUtil.putInt("app_language",language.intValue)
-                    activity.savePadding(padding)
-                    activity.recreate()
-                }
-            )
 
+            SuperNavHostArrow(
+                title = stringResource(R.string.language),
+                navController = navController,
+                route = PagerList.LANGUAGE,
+                rightText = getLanguage()
+            )
 
             PMiuixSuperDropdown(
                 title = stringResource(R.string.color_mode_title),
@@ -143,6 +125,13 @@ fun Settings(
         }
 
     }
+}
+
+@Composable
+fun getLanguage():String{
+    val languageList = stringArrayResource(R.array.language_list).toList()
+
+    return languageList.get(PreferencesUtil.getInt("app_language",0))
 }
 
 

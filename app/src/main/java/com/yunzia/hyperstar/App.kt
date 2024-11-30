@@ -35,6 +35,7 @@ import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.PowerMenuStylePag
 import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.SelectFunPager
 import com.yunzia.hyperstar.ui.pagers.DonationPager
 import com.yunzia.hyperstar.ui.pagers.GoRootPager
+import com.yunzia.hyperstar.ui.pagers.LanguagePager
 import com.yunzia.hyperstar.ui.pagers.ReferencesPager
 import com.yunzia.hyperstar.ui.pagers.SettingsShowPage
 import com.yunzia.hyperstar.ui.pagers.MainPage
@@ -89,6 +90,8 @@ fun App(
             composable(PagerList.GO_ROOT){ GoRootPager(navController) }
 
             composable(SystemUIPagerList.CONTROL_CENTER) { ControlCenterPager(navController) }
+
+            composable(PagerList.LANGUAGE){ LanguagePager(activity,navController) }
 
             composable(PagerList.TRANSLATOR) { TranslatorPager(navController) }
 
@@ -151,6 +154,7 @@ object PagerList {
 
     //主页
     const val MAIN = "main"
+    const val LANGUAGE = "language"
     const val GO_ROOT = "go_root"
     //系统界面更多
     const val BETA_HOME = "beta_home"

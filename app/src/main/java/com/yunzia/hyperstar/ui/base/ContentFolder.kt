@@ -38,8 +38,6 @@ fun ContentFolder(
     content: @Composable (() -> Unit)
 ) {
 
-
-
     val showContent = remember { mutableStateOf(false) }
     val insideMargin = remember { DpSize(24.dp, 14.dp) }
     val paddingModifier = remember(insideMargin) {

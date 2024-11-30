@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<resources>
+    <string-array name="card_list">
+        <item>wifi</item>
+        <item>cell</item>
+        <item>bt</item>
+        <item>настройки</item>
+        <item>полет</item>
+        <item>autobrightness</item>
+        <item>hotspot</item>
+        <item>nfc</item>
+        <item>gps</item>
+        <item>беззвучный</item>
+        <item>вибрация </item>
+        <item>скриншот</item>
+        <item>фонарик</item>
+        <item>вращение</item>
+        <item>блокировка экрана</item>
+        <item>сканер</item>
+        <item>papermode</item>
+        <item>night</item>
+        <item>quietmode</item>
+        <item>экономия заряда батареи</item>
+        <item>aitranslate</item>
+        <item>aisubtitles</item>
+        <item>wirelesspower</item>
+        <item>dolbyatomssound</item>
+        <item>custom(com.milink.service/com.milink.ui.service.MiLinkTileService)</item>
+        <item>custom(com.miui.mishare.connectivity/.tile.MiShareTileService)</item>
+        <item>custom(com.miui.securitycenter/com.miui.superpower.notification.SuperPowerTileService)</item>
+        <item>custom(com.android.camera/com.xiaomi.camera.videocast.VideoCastTileService)</item>
+    </string-array>
+    <string-array name="card_tile_name">
+        <item>Wi-Fi</item>
+        <item>Мобильные сети</item>
+        <item>Bluetooth</item>
+        <item>Настройки</item>
+        <item>Режим полета</item>
+        <item>Автояркость</item>
+        <item>Точка доступа </item>
+        <item>NFC</item>
+        <item>Местоположение</item>
+        <item>Без звука</item>
+        <item>Вибрация </item>
+        <item>Скриншот</item>
+        <item>Фонарик</item>
+        <item>Ориентация экрана блокировки</item>
+        <item>Экран блокировки</item>
+        <item>Сканер</item>
+        <item>Режим чтения</item>
+        <item>Темный режим</item>
+        <item>DND</item>
+        <item>Экономия заряда батареи</item>
+        <item>Mi AI Translate</item>
+        <item>Субтитры AI</item>
+        <item>Реверсивная зарядка</item>
+        <item>Dolby Atoms</item>
+        <item>Cast</item>
+        <item>Mi Share</item>
+        <item>Сверхбыстрая экономия заряда батареи</item>
+        <item>Dual phone</item>
+    </string-array>
+    <string-array name="color_mode_items">
+        <item>Система</item>
+        <item>Светлый</item>
+        <item>Темный</item>
+    </string-array>
+    <string-array name="control_center_item_list">
+        <item>cards</item>
+        <item>media</item>
+        <item>brightness</item>
+        <item>volume</item>
+        <item>deviceControl</item>
+        <item>deviceCenter</item>
+        <item>list</item>
+        <item>edit</item>
+    </string-array>
+    <string-array name="control_center_item_list_name">
+        <item>Карточная плитка</item>
+        <item>Медиаплеер</item>
+        <item>Полоса яркости</item>
+        <item>Полоса громкости</item>
+        <item>Mi Home</item>
+        <item>Xiaomi Smart Hub</item>
+        <item>Стандартная плитка</item>
+        <item>Редактировать</item>
+    </string-array>
+    <string-array name="edit_background_mode_entire">
+        <item>Отдельный</item>
+        <item>Глобальный</item>
+    </string-array>
+    <string-array name="is_device_center_mode_entire">
+        <item>По умолчанию</item>
+        <item>Всегда откл </item>
+        <item>В одну строку</item>
+    </string-array>
+    <string-array name="is_list_label_mode_entire">
+        <item>По умолчанию</item>
+        <item>Внутри</item>
+        <item>Пользовательский </item>
+    </string-array>
+    <string-array name="is_local_speaker_entire">
+        <item>По умолчанию</item>
+        <item>Имя устройства</item>
+    </string-array>
+    <string-array name="is_super_blur_entire">
+        <item>По умолчанию</item>
+        <item>Всегда откл </item>
+        <item>Всегда вкл </item>
+    </string-array>
+    <string-array name="is_wordless_mode_entire">
+        <item>По умолчанию</item>
+        <item>Всегда откл </item>
+        <item>Всегда вкл </item>
+    </string-array>
+    <string-array name="land_rightOrLeft_entire">
+        <item>Левая панель</item>
+        <item>Правая панель</item>
+    </string-array>
+    <string-array name="media_background_style_entire">
+        <item>По умолчанию</item>
+        <item>Цвет обложки</item>
+        <item>Обложка </item>
+    </string-array>
+    <string-array name="module_scope">
+        <item>com.android.systemui</item>
+        <item>miui.systemui.plugin</item>
+    </string-array>
+    <string-array name="power_fun_titles">
+        <item>Пусто</item>
+        <item>Заполните позицию</item>
+        <item>Рекавери</item>
+        <item>Загрузчик</item>
+        <item>Xiao Ai</item>
+        <item>Скриншот</item>
+        <item>Тихий режим</item>
+        <item>Полет</item>
+        <item>Сканер Wechat</item>
+        <item>Wechat деньги</item>
+        <item>Alipay сканер</item>
+        <item>Alipay деньги</item>
+    </string-array>
+    <string-array name="power_fun_types">
+        <item>null</item>
+        <item>пусто</item>
+        <item>рекавери</item>
+        <item>загрузчик</item>
+        <item>xiaoai</item>
+        <item>скриншот</item>
+        <item>silentMode</item>
+        <item>В самолете</item>
+        <item>wcScan</item>
+        <item>wcCode</item>
+        <item>apScan</item>
+        <item>apCode</item>
+    </string-array>
+    <string-array name="power_menu_style">
+        <item>По умолчанию</item>
+        <item>Стиль 1</item>
+        <item>Стиль 2</item>
+    </string-array>
+    <string-array name="qs_list_tile_color_for_state_entire">
+        <item>По умолчанию</item>
+        <item>Следуйте за иконкой</item>
+        <item>Пользовательский </item>
+    </string-array>
+    <string-array name="seekbar_value_style_entire">
+        <item>Процент</item>
+        <item>Фактическое значение</item>
+    </string-array>
+</resources>

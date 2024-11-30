@@ -1,6 +1,8 @@
 package com.yunzia.hyperstar.ui.base.modifier
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.lazy.LazyListState
@@ -24,13 +26,18 @@ import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
 
 
 
-fun Modifier.bounceAnim() = composed {
+fun Modifier.bounceAnim(
+    finishedListener:((Float) -> Unit)? = null
+) = composed {
     val enable = PreferencesUtil.getBoolean("bounce_anim_enable",true)
     val eventState = remember { mutableStateOf(EventState.Idle) }
     if (enable){
-        this.bounceScale(eventState)
+        this.bounceScale(eventState){
+            finishedListener?.invoke(it)
+        }
             .bounceClick(eventState)
     }else{
+        finishedListener?.invoke(1f)
         this
     }
 
@@ -38,12 +45,54 @@ fun Modifier.bounceAnim() = composed {
 }
 
 
+fun Modifier.bounceAnimClickable(
+    finishedListener:((Float) -> Unit)? = null
+) = composed {
 
-fun Modifier.bounceScale(eventState: MutableState<EventState>) = composed {
+    val click = remember { mutableStateOf(false) }
+    val enable = PreferencesUtil.getBoolean("bounce_anim_enable",true)
+    val eventState = remember { mutableStateOf(EventState.Idle) }
+    if (enable){
+        this.bounceScale(eventState){
+            if (click.value){
+                finishedListener?.invoke(it)
+
+            }
+            click.value = false
+        }
+            .bounceClick(eventState)
+            .clickable {
+                click.value = true
+            }
+    }else{
+        finishedListener?.invoke(1f)
+        this
+    }
+
+
+}
+
+fun Modifier.bounceScale(
+    eventState: MutableState<EventState>,
+    canClose:Boolean? = false,
+    finishedListener:((Float) -> Unit)? = null
+) = composed {
+    val enable = PreferencesUtil.getBoolean("bounce_anim_enable",true)
     val scale by animateFloatAsState(if (eventState.value == EventState.Pressed) 0.8f else 1f,
-        label = ""
+        animationSpec = tween(100),
+        label = "", finishedListener ={
+            if (it == 1f){
+                finishedListener?.invoke(it)
+
+            }
+        }
     )
-    this.scale(scale)
+    if (!canClose!! || enable){
+        this.scale(scale)
+
+    }else{
+        this
+    }
 
 }
 
@@ -57,7 +106,6 @@ fun Modifier.bounceClick(buttonState: MutableState<EventState>) = composed {
                     PointerEventType.Press -> {
                         buttonState.value = EventState.Pressed
                     }
-
                     PointerEventType.Release -> {
                         buttonState.value = EventState.Idle
                     }

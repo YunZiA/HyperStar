@@ -59,7 +59,7 @@ import java.util.TimerTask
 
 @Composable
 fun DonationPager(
-    navController: NavController,
+    navController: NavController
 ) {
     val mContext = navController.context
     val appUtils =AppUtils(mContext)

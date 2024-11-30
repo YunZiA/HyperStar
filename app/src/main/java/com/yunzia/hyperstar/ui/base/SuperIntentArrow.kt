@@ -44,8 +44,14 @@ fun BaseArrow(
 ) {
 
 
+    val click = remember { mutableStateOf(false) }
     SuperArrow(
-        modifier = Modifier.bounceAnim(),
+        modifier = Modifier.bounceAnim{
+            if (click.value){
+                onClick?.invoke()
+            }
+            click.value = false
+        },
         leftAction = if (leftIcon != null){ {
             Row {
                 Image(
@@ -59,7 +65,9 @@ fun BaseArrow(
         title = title,
         insideMargin = PaddingValues(24.dp, 16.dp),
         summary = summary,
-        onClick = onClick
+        onClick = {
+            click.value = true
+        }
     )
 }
 
@@ -73,8 +81,14 @@ fun SuperIntentArrow(
 )
 {
 
+    val click = remember { mutableStateOf(false) }
     SuperArrow(
-        modifier = Modifier.bounceAnim(),
+        modifier = Modifier.bounceAnim{
+            if (click.value){
+                navController.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            }
+            click.value = false
+        },
         leftAction = if (leftIcon != null){ {
             Row {
                 Image(
@@ -90,7 +104,7 @@ fun SuperIntentArrow(
         summary = summary,
         onClick = {
 
-            navController.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            click.value = true
         }
     )
 }
@@ -100,13 +114,20 @@ fun SuperNavHostArrow(
     leftIcon:Int ? = null,
     title : String,
     summary : String ? = null,
+    rightText: String? = null,
     navController : NavHostController,
     route: String,
 ) {
 
 
+    val click = remember { mutableStateOf(false) }
     SuperArrow(
-        modifier = Modifier.bounceAnim(),
+        modifier = Modifier.bounceAnim{
+            if (click.value){
+                navController.navigate(route)
+            }
+            click.value = false
+        },
         leftAction = if (leftIcon != null){ {
             Row {
                 Image(
@@ -120,9 +141,9 @@ fun SuperNavHostArrow(
         title = title,
         insideMargin = PaddingValues(24.dp, 16.dp),
         summary = summary,
+        rightText = rightText,
         onClick = {
-
-            navController.navigate(route)
+            click.value = true
         }
     )
 }
@@ -148,9 +169,15 @@ fun SuperArgNavHostArrow(
     }
     val routes = "$route/${Uri.encode(pagersModel)}"
 
+    val click = remember { mutableStateOf(false) }
 
     SuperArrow(
-        modifier = Modifier.bounceAnim(),
+        modifier = Modifier.bounceAnim{
+            if (click.value){
+                navController.navigate(routes)
+            }
+            click.value = false
+        },
         leftAction = if (leftIcon != null){ {
             Row {
                 Image(
@@ -166,8 +193,8 @@ fun SuperArgNavHostArrow(
         insideMargin = PaddingValues(24.dp, 16.dp),
         summary = summary,
         onClick = {
+            click.value = true
 
-            navController.navigate(routes)
         }
     )
 }
@@ -215,10 +242,16 @@ fun SuperWarnDialogArrow(
     onSure:()->Unit
 ) {
 
+    val click = remember { mutableStateOf(false) }
     val show = remember { mutableStateOf(false) }
 
     SuperArrow(
-        modifier = Modifier.bounceAnim(),
+        modifier = Modifier.bounceAnim{
+            if (click.value){
+                show.value = true
+            }
+            click.value = false
+        },
         leftAction = if (leftIcon != null){ {
             Row {
                 Image(
@@ -233,7 +266,7 @@ fun SuperWarnDialogArrow(
         insideMargin = PaddingValues(24.dp, 16.dp),
         summary = summary,
         onClick = {
-            show.value = true
+            click.value = true
         }
     )
 

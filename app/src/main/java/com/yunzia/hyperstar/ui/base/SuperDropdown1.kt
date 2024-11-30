@@ -48,7 +48,8 @@ fun XSuperDropdown(
         selectedIndex = selectedIndex.intValue,
         onSelectedIndexChange = { newOption ->
             selectedIndex.intValue = newOption
-            SPUtils.setInt(key,newOption)}
+            SPUtils.setInt(key,newOption)
+        }
     )
 }
 

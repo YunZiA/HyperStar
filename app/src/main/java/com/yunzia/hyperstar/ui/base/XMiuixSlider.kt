@@ -193,7 +193,7 @@ fun XMiuixSlider(
                     fontSize = TextUnit.Unspecified
                 )
                 Text(
-                    modifier =if (isDialog) Modifier else{
+                    modifier = if (isDialog) Modifier else{
                         Modifier.bounceAnim()
                             .pointerInput(Unit) {
                                 detectTapGestures(

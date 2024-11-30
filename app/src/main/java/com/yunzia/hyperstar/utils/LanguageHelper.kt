@@ -80,6 +80,11 @@ class LanguageHelper {
 
                 }
 
+                3 -> {
+                    setLanguage(activity, "ru")
+
+                }
+
 
             }
         }
@@ -113,6 +118,11 @@ class LanguageHelper {
 
                 2 -> {
                     return getLanguage("en")
+
+                }
+
+                3 -> {
+                    return getLanguage("ru")
 
                 }
 

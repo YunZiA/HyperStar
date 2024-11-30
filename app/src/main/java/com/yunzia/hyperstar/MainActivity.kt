@@ -30,11 +30,7 @@ import java.io.Serializable
 
 class MainActivity : BaseActivity() {
 
-    var paddings = PaddingValues(0.dp)
-    var state = State.Start
     var isRecreate:Boolean = false
-
-    private val WRITE_EXTERNAL_STORAGE_PERMISSION_CODE: Int = 1
 
     fun isModuleActive() : Boolean{
         return false;
@@ -51,18 +47,9 @@ class MainActivity : BaseActivity() {
 
 
     override fun initData(savedInstanceState: Bundle?) {
-        val state = savedInstanceState?.getString("state")
-        if (state != null){
-            this.state = State.valueOf(state)
-        }
         val isRecreate = savedInstanceState?.getBoolean("isRecreate",true)
         if (isRecreate != null && isRecreate){
             this.isRecreate = true
-        }
-        val paddingData = savedInstanceState?.getSerializable("paddings",PaddingData::class.java)
-        if (paddingData != null){
-            paddings = paddingData.toPaddingValues()
-
         }
         ProfileInstaller.writeProfile(this)
 
@@ -75,13 +62,6 @@ class MainActivity : BaseActivity() {
 
     }
 
-    fun savePadding(
-        padding: PaddingValues
-    ){
-        paddings = padding
-        this.state = State.Recreate
-
-    }
 
     fun goManagerFileAccess():Boolean {
 
@@ -106,10 +86,8 @@ class MainActivity : BaseActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val paddingData = PaddingData(paddings.calculateTopPadding().value,  paddings.calculateBottomPadding().value)
-        outState.putString("state",state.name)
         outState.putBoolean("hide_root",true)
-        outState.putSerializable("paddings",paddingData)
+        outState.putBoolean("isRecreate",true)
     }
 
 
@@ -134,32 +112,6 @@ class MainActivity : BaseActivity() {
 }
 
 
-enum class State{
-    Start,Recreate
-}
-
-data class PaddingData(val top: Float, val bottom: Float) :
-    Serializable {
-    // 构造函数、getter/setter等
-
-    fun toPaddingValues(): PaddingValues {
-        return PaddingValues(0.dp, top.dp, 0.dp, bottom.dp)
-    }
-
-}
-
-
-
-
-@Composable
-fun VerDialog(showDialog: Boolean,context:Context) {
-    val showDialogs = remember{ mutableStateOf(!showDialog)}
-
-    val show = remember{ mutableStateOf(PreferencesUtil.getBoolean("no_root_waring",showDialog))}
-
-
-
-}
 
 
 

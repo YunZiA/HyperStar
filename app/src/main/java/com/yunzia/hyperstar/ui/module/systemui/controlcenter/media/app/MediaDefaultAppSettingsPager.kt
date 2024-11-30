@@ -398,6 +398,7 @@ private fun AppItem(
 
     val view = LocalView.current
     val eventState = remember { mutableStateOf(EventState.Idle) }
+    val click = remember { mutableStateOf(false) }
     //val scale by animateFloatAsState(if (eventState == EventState.Pressed) 0.90f else 1f)
 
 
@@ -406,7 +407,15 @@ private fun AppItem(
             .fillMaxWidth()
             .padding(horizontal = 28.dp)
             .padding(top = 10.dp)
-            .bounceScale(eventState),
+            .bounceScale(eventState){
+                if (click.value){
+
+                    isApp.value = if (isSelect) "" else packageName
+                    isSelect = !isSelect
+                    SPUtils.setString("media_default_app_package", isApp.value)
+                }
+                click.value = false
+            },
         color = if (isSelect) colorScheme.tertiaryContainer  else colorScheme.surfaceVariant
     ) {
 
@@ -419,9 +428,7 @@ private fun AppItem(
                 .bounceClick(eventState)
                 .clickable {
                     view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                    isApp.value = if (isSelect) "" else packageName
-                    isSelect = !isSelect
-                    SPUtils.setString("media_default_app_package", isApp.value)
+                    click.value = true
                 }
 
         ) {
@@ -463,9 +470,10 @@ private fun AppItem(
                     enabled = true,
                     checked = isSelect,
                     onCheckedChange = {
-                        isApp.value = if (isSelect) "" else packageName
-                        isSelect = !isSelect
-                        SPUtils.setString("media_default_app_package",isApp.value)
+                        click.value = true
+//                        isApp.value = if (isSelect) "" else packageName
+//                        isSelect = !isSelect
+//                        SPUtils.setString("media_default_app_package",isApp.value)
                     } // 如果需要处理选中变化，可以在这里添加逻辑
                 )
 

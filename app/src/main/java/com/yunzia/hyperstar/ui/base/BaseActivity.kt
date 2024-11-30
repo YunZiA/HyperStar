@@ -26,28 +26,11 @@ abstract class BaseActivity : ComponentActivity() {
 
     abstract fun initData(savedInstanceState: Bundle?)
 
-    fun setLocale(
-        language : String,
-        country: String
-    ){
-        //locale.value=Locale(language,country)
-        val res = this.resources
-        val config = res.configuration
-        Locale.setDefault(Locale(language,country))
-        config.setLocale(Locale(language,country))
-        //attachBaseContext(this)
-        res.updateConfiguration(config,res.displayMetrics)
-
-        recreate()
-
-    }
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         initData(savedInstanceState)
+
         setContent {
 //
             val colorMode = remember { mutableIntStateOf(PreferencesUtil.getInt("color_mode",0)) }

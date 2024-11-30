@@ -18,7 +18,7 @@ android {
         applicationId = "com.yunzia.hyperstar"
         minSdk = 33
         targetSdk = 34
-        versionCode = 5
+        versionCode = 6
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -33,10 +33,10 @@ android {
                 val config = project.android.defaultConfig
                 val appName = "HyperStar"
                 val versionName = "v"+config.versionName
-//                val formatter = DateTimeFormatter.ofPattern("yyyyMMddHH")
-//                val createTime = LocalDateTime.now().format(formatter)
-//                this.outputFileName = "${appName}_${versionName}_${createTime}_test.apk"
-                this.outputFileName = "${appName}_${versionName}_Release.apk"
+                val formatter = DateTimeFormatter.ofPattern("yyyyMMddHH")
+                val createTime = LocalDateTime.now().format(formatter)
+                this.outputFileName = "${appName}_${versionName}_${createTime}_test.apk"
+                //this.outputFileName = "${appName}_${versionName}_Release.apk"
             }
         }
     }

@@ -126,6 +126,11 @@ class LanguageHelper {
 
                 }
 
+                4 -> {
+                    return getLanguage("vi")
+
+                }
+
 
             }
             return getSystemLanguage()

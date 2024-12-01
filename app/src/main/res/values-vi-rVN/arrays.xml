@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<resources>
+    <string-array name="card_tile_name">
+        <item>Wi-fi</item>
+        <item>Dữ liệu di động</item>
+        <item>Bluetooth</item>
+        <item>Cài đặt</item>
+        <item>Chế độ máy bay</item>
+        <item>Độ sáng tự động</item>
+        <item>Điểm phát sóng di động</item>
+        <item>NFC</item>
+        <item>Vị trí</item>
+        <item>Im lặng</item>
+        <item>Rung</item>
+        <item>Chụp ảnh màn hình</item>
+        <item>Đèn pin</item>
+        <item>Tắt xoay</item>
+        <item>Khoá màn hình</item>
+        <item>Máy quét</item>
+        <item>Chế độ đọc sách</item>
+        <item>Chế độ tối</item>
+        <item>Không làm phiền</item>
+        <item>Tiết kiệm pin</item>
+        <item>Mi AI Translate</item>
+        <item>Phụ đề AI </item>
+        <item>Sạc ngược không dây</item>
+        <item>Dolby Atoms</item>
+        <item>Chiếu</item>
+        <item>Mi Share</item>
+        <item>Siêu tiết kiệm pin</item>
+        <item>Dual phone</item>
+    </string-array>
+    <string-array name="color_mode_items">
+        <item>Hệ thống</item>
+        <item>Sáng</item>
+        <item>Tối</item>
+    </string-array>
+    <string-array name="control_center_item_list_name">
+        <item>Tiêu đề ô</item>
+        <item>Đa phương tiện</item>
+        <item>Thanh độ sáng</item>
+        <item>Thanh âm lượng</item>
+        <item>Mi Home</item>
+        <item>Xiaomi Smart Hub</item>
+        <item>Tiêu đề chuẩn</item>
+        <item>Sửa</item>
+    </string-array>
+    <string-array name="edit_background_mode_entire">
+        <item>Separate</item>
+        <item>Global</item>
+    </string-array>
+    <string-array name="is_list_label_mode_entire">
+        <item>Mặc định</item>
+        <item>Bên trong</item>
+        <item>Tùy chỉnh</item>
+    </string-array>
+    <string-array name="is_local_speaker_entire">
+        <item>Mặc định</item>
+        <item>Tên thiết bị</item>
+    </string-array>
+    <string-array name="is_super_blur_entire">
+        <item>Mặc định</item>
+        <item>Luôn tắt</item>
+        <item>Luôn bật</item>
+    </string-array>
+    <string-array name="land_rightOrLeft_entire">
+        <item>Bảng bên trái</item>
+        <item>Bảng bên phải</item>
+    </string-array>
+    <string-array name="media_background_style_entire">
+        <item>Mặc định</item>
+        <item>Màu sắc</item>
+        <item>Ảnh bìa</item>
+    </string-array>
+    <string-array name="power_fun_titles">
+        <item>Trống</item>
+        <item>Điền vào một vị trí</item>
+        <item>Recovery</item>
+        <item>Bootloader</item>
+        <item>Xiao Ai</item>
+        <item>Chụp ảnh màn hình</item>
+        <item>Chế độ im lặng</item>
+        <item>Chế độ máy bay</item>
+        <item>Quét Wechat</item>
+        <item>Ví Wechat</item>
+        <item>Quét Alipay</item>
+        <item>Ví Alipay</item>
+    </string-array>
+    <string-array name="power_menu_style">
+        <item>Default</item>
+        <item>Kiểu 1</item>
+        <item>Kiểu 2</item>
+    </string-array>
+    <string-array name="qs_list_tile_color_for_state_entire">
+        <item>Mặc định</item>
+        <item>Theo biểu tượng</item>
+        <item>Tùy chỉnh</item>
+    </string-array>
+    <string-array name="seekbar_value_style_entire">
+        <item>Phần trăm</item>
+        <item>Giá trị thực</item>
+    </string-array>
+</resources>

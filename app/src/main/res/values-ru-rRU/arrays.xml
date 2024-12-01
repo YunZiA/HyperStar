@@ -1,35 +1,5 @@
 <?xml version='1.0' encoding='utf-8' ?>
 <resources>
-    <string-array name="card_list">
-        <item>wifi</item>
-        <item>cell</item>
-        <item>bt</item>
-        <item>настройки</item>
-        <item>полет</item>
-        <item>autobrightness</item>
-        <item>hotspot</item>
-        <item>nfc</item>
-        <item>gps</item>
-        <item>беззвучный</item>
-        <item>вибрация </item>
-        <item>скриншот</item>
-        <item>фонарик</item>
-        <item>вращение</item>
-        <item>блокировка экрана</item>
-        <item>сканер</item>
-        <item>papermode</item>
-        <item>night</item>
-        <item>quietmode</item>
-        <item>экономия заряда батареи</item>
-        <item>aitranslate</item>
-        <item>aisubtitles</item>
-        <item>wirelesspower</item>
-        <item>dolbyatomssound</item>
-        <item>custom(com.milink.service/com.milink.ui.service.MiLinkTileService)</item>
-        <item>custom(com.miui.mishare.connectivity/.tile.MiShareTileService)</item>
-        <item>custom(com.miui.securitycenter/com.miui.superpower.notification.SuperPowerTileService)</item>
-        <item>custom(com.android.camera/com.xiaomi.camera.videocast.VideoCastTileService)</item>
-    </string-array>
     <string-array name="card_tile_name">
         <item>Wi-Fi</item>
         <item>Мобильные сети</item>
@@ -64,16 +34,6 @@
         <item>Система</item>
         <item>Светлый</item>
         <item>Темный</item>
-    </string-array>
-    <string-array name="control_center_item_list">
-        <item>cards</item>
-        <item>media</item>
-        <item>brightness</item>
-        <item>volume</item>
-        <item>deviceControl</item>
-        <item>deviceCenter</item>
-        <item>list</item>
-        <item>edit</item>
     </string-array>
     <string-array name="control_center_item_list_name">
         <item>Карточная плитка</item>
@@ -121,10 +81,6 @@
         <item>По умолчанию</item>
         <item>Цвет обложки</item>
         <item>Обложка </item>
-    </string-array>
-    <string-array name="module_scope">
-        <item>com.android.systemui</item>
-        <item>miui.systemui.plugin</item>
     </string-array>
     <string-array name="power_fun_titles">
         <item>Пусто</item>

@@ -79,6 +79,8 @@
     <string name="card_list_header_sub_title">Drag added toggles to rearrange them</string>
     <string name="control_center_edit">Layout Arrangement</string>
     <string name="media_settings">Media Player</string>
+    <string name="menu_style_1">Style 1</string>
+    <string name="menu_style_2">Style 2</string>
     <string name="base_settings">Basic settings</string>
     <string name="title_primary">Primary text</string>
     <string name="title_secondary">Secondary text</string>

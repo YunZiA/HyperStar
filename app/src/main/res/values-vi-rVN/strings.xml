@@ -123,7 +123,7 @@ o(╥﹏╥)o</string>
     <string name="no_wechat">Có vẻ như bạn không có WeChat trên thiết bị của mình! ｡ﾟ(*´□`)ﾟ｡</string>
     <string name="not_activated_toast_description">Mô-đun chưa được kích hoạt!</string>
     <string name="open_source_statement">Dự án này là nguồn mở theo giấy phép GPL 3.0</string>
-    <string name="os2_link">OS2.0 &gt;&gt;</string>
+    <string name="os1_link">OS1.0 &gt;&gt;</string>
     <string name="os_description">Phiên bản hệ điều hành hiện tại không phải là 2.0 và mô-đun này đã bị vô hiệu hoá.</string>
     <string name="os_tips">Tắt</string>
     <string name="os_ver_tips">Phiên bản hệ điều hành không khớp và đã bị vô hiệu hoá!</string>
@@ -160,6 +160,7 @@ o(╥﹏╥)o</string>
     <string name="sound_settings">Thanh âm lượng</string>
     <string name="span_size">Diện tích bề ngang</string>
     <string name="status_bar">Thanh trạng thái</string>
+    <string name="summary_press_expand_volume">Bật tính năng này sẽ vô hiệu hóa nút mở rộng</string>
     <string name="sure">Xác nhận</string>
     <string name="systemui">Giao diện hệ thống</string>
     <string name="thank_donation">Cảm ơn bạn vì đã donate °˖✧◝( ⁰ ▿ ⁰ )◜✧˖°</string>
@@ -174,6 +175,7 @@ o(╥﹏╥)o</string>
     <string name="title_color">Màu tiêu đề</string>
     <string name="title_color_in_state">Màu trạng thái tiêu đề</string>
     <string name="title_fix_list_tile_icon_scale">Sửa lỗi tỷ lệ cho một số ô hoạt ảnh</string>
+    <string name="title_press_expand_volume">Nhấn để mở rộng âm lượng thứ cấp</string>
     <string name="title_primary">Văn bản chính</string>
     <string name="title_qs_detail_app_icon_radius">Tắt chức năng cắt biểu tượng ứng dụng</string>
     <string name="title_qs_detail_progress_bg_radius">Bo tròn thanh âm lượng</string>

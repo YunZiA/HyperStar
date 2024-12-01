@@ -57,7 +57,7 @@
     <string name="cover_dim_background_value_title">Dim значение</string>
     <string name="cover_scale_background_value_title">Значение масштаба</string>
     <string name="default_it">По умолчанию</string>
-<!--    <string name="default_popup_window_title">Pop-Up Window</string>-->
+    <!--    <string name="default_popup_window_title">Pop-Up Window</string>-->
     <string name="default_value">По умолчанию</string>
     <string name="delete_warning_toast_description">Не удаляйте его больше! Люди сломают это~
 /(ㄒоㄒ)/~~</string>
@@ -95,8 +95,8 @@ o(╥﹏╥)o</string>
     <string name="header">Заголовок</string>
     <string name="header_show_message_millis_title">Длительность оповещения о состоянии устройства</string>
     <string name="icon">Значки</string>
-<!--    <string name="in_progress">В процессе</string>-->
-<!--    <string name="indeterminate">Partially checked</string>-->
+    <!--    <string name="in_progress">В процессе</string>-->
+    <!--    <string name="indeterminate">Partially checked</string>-->
     <string name="installed">Установленный</string>
     <string name="is_artist_marquee_title"> Прокручивать имя автора</string>
     <string name="is_change_qs_progress_radius_title">Пользовательский индикатор выполнения с закругленными углами</string>
@@ -141,15 +141,15 @@ o(╥﹏╥)o</string>
     <string name="model_pager_setting">Настройки страницы модуля</string>
     <string name="more">Другие настройки </string>
     <string name="navigation_bar">Панель навигации</string>
-<!--    <string name="navigation_menu">Navigation menu</string>-->
+    <!--    <string name="navigation_menu">Navigation menu</string>-->
     <string name="no_alipay">Похоже, у вас нет Alipay на вашем устройстве! ｡ﾟ(*´□`)ﾟ｡</string>
     <string name="no_root_description">Root доступ не предоставлен!</string>
     <string name="no_warning">Больше не показывать</string>
     <string name="no_wechat">Похоже, у вас нет WeChat на вашем устройстве! ｡ﾟ(*´□`)ﾟ｡</string>
     <string name="not_activated_toast_description">Модуль не активирован!</string>
-<!--    <string name="not_selected">Не выбран</string>-->
+    <!--    <string name="not_selected">Не выбран</string>-->
     <string name="open_source_statement">Этот проект имеет открытый исходный код GPL 3.0 license</string>
-    <string name="os2_link">OS2.0 &gt;&gt;</string>
+    <string name="os1_link">OS1.0 &gt;&gt;</string>
     <string name="os_description">Текущая версия ОС не 1.0, и этот модуль деактивирован.</string>
     <string name="os_tips">Откл</string>
     <string name="os_ver_tips">Версия ОС не соответствует и она деактивирована!</string>
@@ -175,8 +175,6 @@ o(╥﹏╥)o</string>
     <string name="quick_authorization">Быстрая авторизация</string>
     <string name="quick_donation">Быстрое пожертвование</string>
     <string name="range_des">Диапазон:%1$s%2$s~%3$s%4$s</string>
-<!--    <string name="range_end">Конец диапазона</string>-->
-<!--    <string name="range_start">Начало диапазона</string>-->
     <string name="references_title">ссылки</string>
     <string name="restore_settings">Восстановление настроек модуля</string>
     <string name="restore_success">Восстановлено！！</string>
@@ -184,7 +182,6 @@ o(╥﹏╥)o</string>
     <string name="save">Сохранить</string>
     <string name="save_fail">Сохранить не удалось!!!</string>
     <string name="save_success">Успешно сохранен!!!</string>
-<!--    <string name="selected">Выбрано</string>-->
     <string name="setting_item">Настройки элементов </string>
     <string name="settings_page_title">Настройки</string>
     <string name="show_FPS_Monitor_title">Показать монитор FPS</string>
@@ -194,18 +191,11 @@ o(╥﹏╥)o</string>
     <string name="song_title">Название песни</string>
     <string name="sound_settings">Панель громкости</string>
     <string name="span_size">Горизонтальное размещение</string>
-<!--    <string name="state_empty">Пусто</string>-->
-<!--    <string name="state_off">Откл</string>-->
-<!--    <string name="state_on">Вкл</string>-->
     <string name="status_bar">Строка состояния</string>
-<!--    <string name="status_bar_notification_info_overflow">999+</string>-->
     <string name="sure">Подтвердить</string>
-<!--    <string name="switch_role">Switch</string>-->
     <string name="systemui">SYSTEM UI</string>
-<!--    <string name="tab">Tab</string>-->
     <string name="telegram_channel">Телеграм-канал</string>
     <string name="telegram_group">Телеграмм Группа</string>
-<!--    <string name="template_percent">%1$d percent.</string>-->
     <string name="thank_donation">Спасибо за пожертвование °˖✧◝( ⁰ ▿ ⁰ )◜✧˖°</string>
     <string name="tile">Стандартная плитка</string>
     <string name="tile_color">Стандартный цвет плитки</string>
@@ -232,8 +222,6 @@ o(╥﹏╥)o</string>
     <string name="title_width">Ширина заголовка</string>
     <string name="toggle_slider_color">Переключение цвета ползунка</string>
     <string name="toggle_slider_value">Значение прогресса</string>
-<!--    <string name="tooltip_description">tooltip</string>-->
-<!--    <string name="tooltip_label">показать всплывающую подсказку</string>-->
     <string name="translator">Переводчик</string>
     <string name="transparent_navigationBar_background">Удалить полупрозрачный фон</string>
     <string name="transparent_statusBar_background">Удалить полупрозрачный фон</string>

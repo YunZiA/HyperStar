@@ -78,6 +78,8 @@
     <string name="card_list_header_sub_title">拖拽已添加的开关调整顺序</string>
     <string name="control_center_edit">控制中心编辑</string>
     <string name="media_settings">妙播设置</string>
+    <string name="menu_style_1">样式1</string>
+    <string name="menu_style_2">样式2</string>
     <string name="base_settings">基础设置</string>
     <string name="title_primary">标题</string>
     <string name="title_secondary">副标题</string>

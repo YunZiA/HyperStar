@@ -115,6 +115,15 @@ class LanguageHelper {
                     return getLanguage("en")
 
                 }
+                3-> {
+                    return getLanguage("ru")
+
+                }
+
+                4-> {
+                    return getLanguage("vi")
+
+                }
 
 
             }

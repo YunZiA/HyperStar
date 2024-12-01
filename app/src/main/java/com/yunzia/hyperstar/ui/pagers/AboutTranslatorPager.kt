@@ -6,6 +6,7 @@ import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.NavPager
 import com.yunzia.hyperstar.ui.base.SuperIntentArrow
+import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
 
 @Composable
@@ -25,6 +26,26 @@ fun TranslatorPager(
                 navController = navController,
                 url = "https://t.me/cafayeli"
             )
+            SuperIntentArrow(
+                title = "Natsukawa Masuzu",
+                summary = "Telegram@Minggg07",
+                navController = navController,
+                url = "https://t.me/Minggg07"
+            )
+        }
+        classes(
+            title = "Русский"
+        ) {
+            SuperIntentArrow(
+                title = "Алексей",
+                summary = "Telegram@Osean22",
+                navController = navController,
+                url = "https://t.me/Osean22"
+            )
+        }
+        classes(
+            title = "tiếng việt"
+        ) {
             SuperIntentArrow(
                 title = "Natsukawa Masuzu",
                 summary = "Telegram@Minggg07",

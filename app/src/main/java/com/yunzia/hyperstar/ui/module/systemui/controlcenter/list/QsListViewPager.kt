@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.XMiuixSlider
+import com.yunzia.hyperstar.ui.base.XSuperDropdown
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
 import com.yunzia.hyperstar.utils.Utils
@@ -22,8 +23,18 @@ fun QsListViewPager(
             Utils.rootShell("killall com.android.systemui")
         }
     ){
+        firstClasses{
 
-        firstClasses(
+            XSuperDropdown(
+                title = stringResource(R.string.wordless_mode),
+                key = "is_wordless_mode_2",
+                option = R.array.is_wordless_mode_entire,
+            )
+
+
+        }
+
+        classes(
             title = R.string.title_style
         ){
             XMiuixSlider(

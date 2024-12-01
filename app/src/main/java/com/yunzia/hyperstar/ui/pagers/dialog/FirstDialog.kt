@@ -1,18 +1,14 @@
 package com.yunzia.hyperstar.ui.pagers.dialog
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.Utils
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import yunzia.utils.SystemProperties
 
 @Composable
@@ -23,7 +19,7 @@ fun FirstDialog(
 ) {
     if (activity.isRecreate) return
 
-    val errVersion = (SystemProperties.getInt("ro.mi.os.version.code", 1) != 1)
+    val errVersion = (SystemProperties.getInt("ro.mi.os.version.code", 1) != 2)
 
     val verShow = remember{ mutableStateOf(PreferencesUtil.getBoolean("ver_waring",errVersion))}
     val rootShow = remember{ mutableStateOf(PreferencesUtil.getBoolean("no_root_waring",(Utils.getRootPermission() != 0)))}

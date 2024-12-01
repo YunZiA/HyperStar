@@ -9,12 +9,9 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -25,7 +22,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,16 +33,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.ui.base.BaseArrow
 import com.yunzia.hyperstar.ui.base.Classes
 import com.yunzia.hyperstar.ui.base.NavPager
 import com.yunzia.hyperstar.ui.base.classes
@@ -56,7 +51,6 @@ import top.yukonga.miuix.kmp.extra.SuperArrow
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import yunzia.utils.AppUtils
 import java.io.IOException
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -142,10 +136,8 @@ fun DonationPage(
                         .width(144.dp)
                 )
             }
-            SuperArrow(
-                modifier = Modifier,
+            BaseArrow(
                 title = stringResource(R.string.go_scaner),
-                insideMargin = PaddingValues(24.dp, 16.dp),
                 summary = null,
                 onClick = {
 
@@ -165,10 +157,8 @@ fun DonationPage(
 
                 }
             )
-            SuperArrow(
-                modifier = Modifier,
+            BaseArrow(
                 title = stringResource(R.string.quick_donation),
-                insideMargin = PaddingValues(24.dp, 16.dp),
                 summary = null,
                 onClick = {
                     val intentFullUrl = "alipays://platformapi/startapp?appId=20000067&url=$apCode"
@@ -208,10 +198,8 @@ fun DonationPage(
                         .width(154.dp)
                 )
             }
-            SuperArrow(
-                modifier = Modifier,
+            BaseArrow(
                 title = stringResource(R.string.go_scaner),
-                insideMargin = PaddingValues(24.dp, 16.dp),
                 summary = null,
                 onClick = {
                     val intent = Intent()

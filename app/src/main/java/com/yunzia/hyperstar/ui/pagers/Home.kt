@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.pagers
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,6 +26,7 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.SystemUIPagerList
 import com.yunzia.hyperstar.ui.base.Classes
 import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
+import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
 import com.yunzia.hyperstar.utils.Utils
@@ -45,7 +47,7 @@ fun Home(
     padding: PaddingValues
 ) {
 
-    val errVersion = (SystemProperties.getInt("ro.mi.os.version.code", 1) != 1)
+    val errVersion = (SystemProperties.getInt("ro.mi.os.version.code", 1) != 2)
     val isModuleActive = activity.isModuleActive()
 
     LazyColumn(
@@ -146,8 +148,26 @@ fun Home(
 
 
         }
+        classes (
+            title = R.string.other_settings
+        ){
+            SuperNavHostArrow(
+                leftIcon = R.drawable.ic_miui_home_settings,
+                title = stringResource(R.string.hyper_home),
+                navController = navController,
+                route = PagerList.HOME
+
+            )
+
+        }
+
+
 
     }
+
+
+
+
 
 
 }

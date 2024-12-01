@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.base
 
+import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,12 +11,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.ui.base.modifier.blur
 import com.yunzia.hyperstar.ui.base.modifier.showBlur
 import com.yunzia.hyperstar.ui.pagers.FPSMonitor
@@ -68,7 +71,7 @@ fun ModulePager(
 
     val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
 
-    Scaffold(
+    XScaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             ModuleTopAppBar(
@@ -87,7 +90,7 @@ fun ModulePager(
 
         ) { padding ->
         if (contents != null) {
-            Box(modifier = Modifier.blur(hazeState)) {
+            Box(Modifier.blur(hazeState)) {
                 contents(topAppBarScrollBehavior,padding)
 
             }
@@ -108,6 +111,7 @@ fun ModulePager(
 fun ModuleNavPagers(
     activityTitle: String,
     navController: NavController,
+    startClick: () -> Unit =  { navController.popBackStack() },
     endClick: () -> Unit,
     endIcon :  @Composable () -> Unit = {},
     content: LazyListScope.() -> Unit
@@ -116,6 +120,7 @@ fun ModuleNavPagers(
     ModuleNavPager(
         activityTitle = activityTitle,
         navController = navController,
+        startClick = startClick,
         endClick = endClick,
         endIcon = endIcon,
     ){ topAppBarScrollBehavior,padding->
@@ -134,6 +139,7 @@ fun ModuleNavPagers(
 fun ModuleNavPager(
     activityTitle: String,
     navController: NavController,
+    startClick: () -> Unit = { navController.popBackStack() },
     endClick: () -> Unit,
     endIcon :  @Composable () -> Unit = {},
     contents: @Composable ((ScrollBehavior, PaddingValues) -> Unit)? = null
@@ -144,7 +150,7 @@ fun ModuleNavPager(
 
     val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
 
-    Scaffold(
+    XScaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black),
@@ -154,7 +160,7 @@ fun ModuleNavPager(
                 color = Color.Transparent,
                 title = activityTitle,
                 scrollBehavior = topAppBarScrollBehavior,
-                navController = navController,
+                startClick = startClick,
                 endIcon = endIcon,
                 endClick = {
                     endClick()
@@ -165,9 +171,7 @@ fun ModuleNavPager(
 
         ) { padding ->
         if (contents != null) {
-            Box(
-                modifier = Modifier.blur(hazeState)
-            ) {
+            Box(Modifier.blur(hazeState)) {
                 contents(topAppBarScrollBehavior,padding)
 
             }
@@ -188,12 +192,37 @@ fun ModuleNavPager(
 
 }
 
+fun NavHostController.goBackRouteWithParams(
+    route: String,
+    autoPop: Boolean = true,
+    callback: (Bundle.() -> Unit)? = null,
+) {
+    getBackStackEntry(route).arguments?.let {
+        callback?.invoke(it)
+    }
+    if (autoPop) {
+        popBackStack()
+    }
+}
+
+fun NavHostController.goBackWithParams(
+    autoPop: Boolean = true,
+    callback: (Bundle.() -> Unit)? = null,
+) {
+    previousBackStackEntry?.arguments?.let {
+        callback?.invoke(it)
+    }
+    if (autoPop) {
+        popBackStack()
+    }
+}
+
 @Composable
 fun NavPager(
     activityTitle: String,
     navController: NavController,
     actions: @Composable() (RowScope.() -> Unit) = {},
-    content: (LazyListScope.() -> Unit)? = null
+    content: (LazyListScope.(MutableState<Boolean>) -> Unit)? = null
 ) {
 
     val hazeState = remember { HazeState() }
@@ -202,7 +231,7 @@ fun NavPager(
     val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
 
 
-    Scaffold(
+    XScaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             NavTopAppBar(
@@ -224,7 +253,7 @@ fun NavPager(
                     contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+28.dp),
                     topAppBarScrollBehavior = topAppBarScrollBehavior
                 ) {
-                    content()
+                    content(showFPSMonitor)
                 }
 
             }

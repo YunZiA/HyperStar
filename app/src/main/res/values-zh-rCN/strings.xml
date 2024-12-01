@@ -181,6 +181,7 @@
     <string name="os_ver_tips">OS版本不符，已停用！</string>
     <string name="sidebar_mode">侧边状态</string>
     <string name="expanded_mode">展开状态</string>
+    <string name="power_menu_extra">电源菜单扩展</string>
     <string name="title_standardview_hide">隐藏静音勿扰按钮</string>
     <string name="title_press_expand_volume">按压展开二级音量条</string>
     <string name="summary_press_expand_volume">启用此功能后，会关闭展开按钮</string>
@@ -205,4 +206,35 @@
     <string name="save_fail">保存失败!!!</string>
     <string name="button">按钮</string>
     <string name="range_des">范围：%1$s%2$s ~ %3$s%4$s</string>
+    <string name="hyper_home">系统桌面</string>
+    <string name="remove_no_support_blur_device">强制识别为支持模糊设备</string>
+    <string name="warning">警告</string>
+    <string name="backup_restore">备份与恢复</string>
+    <string name="backup_settings">备份模块配置</string>
+    <string name="restore_settings">恢复模块配置</string>
+    <string name="clear_settings">清除模块配置</string>
+    <string name="clear_settings_warning_title">要清除模块配置吗?</string>
+    <string name="clear_settings_warning_description">此操作将会删除本模块的所有配置。删除的内容包括模块hook配置数据和内部功能设置数据等。</string>
+    <string name="clear_success">清除成功！</string>
+    <string name="partial_clear_successful">部分清除成功！</string>
+    <string name="clear_fail">清除失败！</string>
+    <string name="file_not_exist">文件不存在</string>
+    <string name="restore_success">恢复成功！！</string>
+    <string name="model_pager_setting">模块页面设置</string>
+    <string name="global">全局</string>
+    <string name="setting_item">设置项</string>
+    <string name="click_bounce">点击回弹</string>
+    <string name="no_warning">不再提示</string>
+    <string name="active_faster">快速激活</string>
+    <string name="quick_authorization">快速授权</string>
+    <string name="installed">已安装</string>
+    <string name="uninstalled">未安装</string>
+    <string name="telegram_channel">Telegram 频道</string>
+    <string name="telegram_group">Telegram 群组</string>
+    <string name="wordless_mode">无字模式</string>
+    <string name="device_center_ist">设备显示</string>
+    <string name="fast_reboot_systemui_summary">是否快速重启系统界面？</string>
+    <string name="empty_device">空设备状态</string>
+    <string name="device_item">设备项</string>
+
 </resources>

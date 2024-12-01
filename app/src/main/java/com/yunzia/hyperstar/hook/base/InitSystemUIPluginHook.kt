@@ -3,6 +3,8 @@ package com.yunzia.hyperstar.hook.base
 import android.content.Context
 import android.content.res.Resources
 import android.content.res.XModuleResources
+import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.hook.app.plugin.DeviceCenterRow
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTile
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTileList
@@ -42,14 +44,6 @@ class InitSystemUIPluginHook() : BaseHooker() {
 
     }
 
-    override fun getLocalRes(res: Resources?) {
-        super.getLocalRes(res)
-        if (res != null){
-            qsMediaCoverBackground.getLocalRes(res)
-
-        }
-    }
-
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
         startSystemUIPluginHook()
@@ -61,18 +55,30 @@ class InitSystemUIPluginHook() : BaseHooker() {
         modRes: XModuleResources?
     ) {
         super.doResources(resparam, modRes)
+
+        if (resparam!!.packageName != "miui.systemui.plugin") return
+
+        resparam.res.setReplacement(
+            "miui.systemui.plugin",
+            "drawable",
+            "ic_header_settings",
+            modRes!!.fwd(R.drawable.ic_header_settings)
+        )
+        resparam.res.setReplacement(
+            "miui.systemui.plugin",
+            "drawable",
+            "ic_controls_edit",
+            modRes.fwd(R.drawable.ic_controls_edit)
+        )
         doResources(qsControlCenterColor)
         doResources(powerMenu)
         doResources(QSMiplayAppIconRadius())
+        doResources(qsMediaCoverBackground)
 
 
 
     }
 
-    override fun doRes(resparam: XC_InitPackageResources.InitPackageResourcesParam?) {
-        super.doRes(resparam)
-
-    }
 
     lateinit var mContext: Context;
     var ishHooked : Boolean = false;
@@ -138,6 +144,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         doSecMethods(VolumeColumnProgressRadius())
         doSecMethods(powerMenu)
         doSecMethods(VolumeView())
+        doSecMethods(DeviceCenterRow())
     }
 
 

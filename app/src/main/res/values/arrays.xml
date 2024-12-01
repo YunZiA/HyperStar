@@ -152,6 +152,11 @@
         <item>Force on</item>
     </string-array>
 
+    <string-array name="is_wordless_mode_entire">
+        <item>Default</item>
+        <item>Force off</item>
+        <item>Force on</item>
+    </string-array>
     <string-array name="is_list_label_mode_entire">
         <item>Default</item>
         <item>Inside</item>
@@ -161,6 +166,11 @@
     <string-array name="edit_background_mode_entire">
         <item>Separate</item>
         <item>Global</item>
+    </string-array>
+    <string-array name="is_device_center_mode_entire">
+        <item>Default</item>
+        <item>Force off</item>
+        <item>Limit to one line</item>
     </string-array>
 
     <string-array name="seekbar_value_style_entire">

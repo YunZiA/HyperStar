@@ -60,7 +60,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
@@ -126,7 +125,7 @@ private fun processAppInfo(
 
         val bean = AppInfo()
         bean.label = app_name.toString()
-        bean.package_name = package_name.toString()
+        bean.packageName = package_name.toString()
         bean.icon = app_icon
 
         val values = ContentValues()
@@ -387,7 +386,7 @@ private fun AppItem(
     isApp : MutableState<String>
 ){
     val label = app.label
-    val packageName = app.package_name
+    val packageName = app.packageName
     var isSelect = packageName == isApp.value // 直接比较，不需要用 mutableStateOf
 
     var eventState by remember { mutableStateOf(EventState.Idle) }

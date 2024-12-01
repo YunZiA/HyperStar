@@ -24,7 +24,7 @@ import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemDropdown
 import yunzia.ui.Card
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.MSuperDialog
+import com.yunzia.hyperstar.ui.base.dialog.MSuperDialog
 import com.yunzia.hyperstar.ui.base.modifier.elevation
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme

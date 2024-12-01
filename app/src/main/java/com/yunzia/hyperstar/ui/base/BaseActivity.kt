@@ -15,43 +15,27 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yunzia.hyperstar.ui.base.theme.HyperStarTheme
 import com.yunzia.hyperstar.utils.LanguageHelper
 import com.yunzia.hyperstar.utils.LanguageHelper.Companion.getIndexLanguage
 import com.yunzia.hyperstar.utils.PreferencesUtil
+import yunzia.utils.SystemProperties
 import java.util.Locale
 
 abstract class BaseActivity : ComponentActivity() {
 
     @Composable abstract fun InitView(colorMode: MutableState<Int>?)
+
     abstract fun initData(savedInstanceState: Bundle?)
-
-    fun setLocale(
-        language : String,
-        country: String
-    ){
-        //locale.value=Locale(language,country)
-        val res = this.resources
-        val config = res.configuration
-        Locale.setDefault(Locale(language,country))
-        config.setLocale(Locale(language,country))
-        //attachBaseContext(this)
-        res.updateConfiguration(config,res.displayMetrics)
-
-        recreate()
-
-    }
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initData(savedInstanceState)
+
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        initData(savedInstanceState)
         setContent {
 //
             val colorMode = remember { mutableIntStateOf(PreferencesUtil.getInt("color_mode",0)) }
@@ -69,18 +53,12 @@ abstract class BaseActivity : ComponentActivity() {
 
             }
 
-
             HyperStarTheme(colorMode.intValue) {
                 InitView(colorMode)
             }
+
         }
     }
-
-//    override fun recreate() {
-//        super.recreate()
-//
-//
-//    }
 
 
 
@@ -91,8 +69,7 @@ abstract class BaseActivity : ComponentActivity() {
             super.attachBaseContext(newBase)
             return
         }
-        super.attachBaseContext(LanguageHelper.wrap(newBase))
-
+        super.attachBaseContext(LanguageHelper.wrap(newBase));
 
     }
 
@@ -107,8 +84,6 @@ abstract class BaseActivity : ComponentActivity() {
         res.updateConfiguration(configuration,metrics)
 
     }
-
-
 
 
 }

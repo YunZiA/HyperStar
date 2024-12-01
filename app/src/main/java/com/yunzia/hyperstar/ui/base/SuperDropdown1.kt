@@ -16,9 +16,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.yunzia.hyperstar.ui.base.modifier.bounceClick
+import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
 import com.yunzia.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.extra.DropDownMode
 import top.yukonga.miuix.kmp.extra.SuperDropdown
@@ -38,7 +37,7 @@ fun XSuperDropdown(
     val dropdownOptions = stringArrayResource(id = option).toList()
 
     SuperDropdown(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
         items = dropdownOptions,
@@ -68,7 +67,7 @@ fun XSuperDialogDropdown(
     val dropdownOptions = stringArrayResource(id = option).toList()
 
     SuperDropdown(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
         items = dropdownOptions,
@@ -101,7 +100,7 @@ fun XMiuixContentDropdown(
 
 
     SuperDropdown(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
         items = dropdownOptions,
@@ -114,6 +113,61 @@ fun XMiuixContentDropdown(
             SPUtils.setInt(key,newOption)
         }
     )
+
+    AnimatedVisibility (
+        (dropdownSelectedOption.value == showOption),
+        enter = fadeIn() + expandVertically(),
+        exit = fadeOut() + shrinkVertically()
+    ) {
+        Column{
+            content()
+
+        }
+    }
+}
+
+@Composable
+fun XMiuixContentDropdown(
+    title : String,
+    option: Int,
+    key : String,
+    showOption : Int,
+    showOptions : Int,
+    summary : String ?= null,
+    insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp),
+    contents: @Composable (() -> Unit),
+    content: @Composable (() -> Unit),
+) {
+
+    val dropdownOptions = stringArrayResource(id = option).toList()
+    val dropdownSelectedOption = remember { mutableStateOf(SPUtils.getInt(key,0)) }
+
+
+    SuperDropdown(
+        modifier = Modifier.bounceAnim(),
+        title = title,
+        summary = summary,
+        items = dropdownOptions,
+        horizontalPadding = 0.dp,
+        mode = DropDownMode.AlwaysOnRight,
+        insideMargin = insideMargin,
+        selectedIndex = dropdownSelectedOption.value,
+        onSelectedIndexChange = { newOption ->
+            dropdownSelectedOption.value = newOption
+            SPUtils.setInt(key,newOption)
+        }
+    )
+
+    AnimatedVisibility (
+        (dropdownSelectedOption.value == showOptions),
+        enter = fadeIn() + expandVertically(),
+        exit = fadeOut() + shrinkVertically()
+    ) {
+        Column{
+            contents()
+
+        }
+    }
 
     AnimatedVisibility (
         (dropdownSelectedOption.value == showOption),
@@ -142,7 +196,7 @@ fun SuperContentDropdown(
     val dropdownSelectedOption = remember { mutableStateOf(SPUtils.getInt(key,0)) }
 //    popupHorizontalPadding+insideMargin.width/2
     SuperDropdown(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
         items = dropdownOptions,
@@ -175,6 +229,7 @@ fun PMiuixSuperDropdown(
     option: Int,
     summary : String ?= null,
     selectedIndex: Int,
+    popupHorizontalPadding: Dp = 12.dp,
     insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp),
     onSelectedIndexChange: (Int) -> Unit
 ) {
@@ -182,7 +237,7 @@ fun PMiuixSuperDropdown(
     val dropdownOptions = stringArrayResource(id = option).toList()
 
     SuperDropdown(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
         items = dropdownOptions,

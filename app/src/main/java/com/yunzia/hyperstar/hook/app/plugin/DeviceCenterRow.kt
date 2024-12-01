@@ -71,7 +71,7 @@ class DeviceCenterRow:BaseHooker() {
         super.doMethods(classLoader)
 
 
-        val a = XposedHelpers.findClass("h.a.g.a",classLoader)
+        val a = XposedHelpers.findClass("miui.systemui.devicecenter.a",classLoader)
 
 
 
@@ -90,7 +90,7 @@ class DeviceCenterRow:BaseHooker() {
 
                     if (deviceCenterSpanSize == 1 || isDeviceCenterMode == 1){
                         val lists = list.subList(0,0 )
-                        XposedHelpers.setObjectField(thisObj,"f",lists)
+                        XposedHelpers.setObjectField(thisObj,"b",lists)
                         return null
                     }
                     if (isDeviceCenterMode == 2){
@@ -99,12 +99,12 @@ class DeviceCenterRow:BaseHooker() {
                         if (list.size <= size){
                             starLog.log("list.size <= size")
 
-                            XposedHelpers.setObjectField(thisObj,"f",list)
+                            XposedHelpers.setObjectField(thisObj,"b",list)
 
                         }else{
                             starLog.log("list.size  size")
                             val lists = list.subList(0,size)
-                            XposedHelpers.setObjectField(thisObj,"f",lists)
+                            XposedHelpers.setObjectField(thisObj,"b",lists)
 
                         }
                         return null
@@ -112,11 +112,11 @@ class DeviceCenterRow:BaseHooker() {
                     val size = deviceCenterSpanSize*2-1
                     if (list.size <= size){
 
-                        XposedHelpers.setObjectField(thisObj,"f",list)
+                        XposedHelpers.setObjectField(thisObj,"b",list)
 
                     }else{
                         val lists = list.subList(0,size )
-                        XposedHelpers.setObjectField(thisObj,"f",lists)
+                        XposedHelpers.setObjectField(thisObj,"b",lists)
 
                     }
 

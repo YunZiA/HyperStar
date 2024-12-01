@@ -3,19 +3,17 @@ package com.yunzia.hyperstar.ui.pagers
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.PagerList
@@ -31,7 +29,6 @@ import com.yunzia.hyperstar.utils.JBUtil
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
-import top.yukonga.miuix.kmp.utils.getWindowSize
 
 @Composable
 fun Settings(
@@ -41,6 +38,7 @@ fun Settings(
     padding: PaddingValues,
     colorMode: MutableState<Int>
 ) {
+
 
     val context = LocalContext.current
 
@@ -55,10 +53,12 @@ fun Settings(
         JBUtil.saveToLocal(context, result)
     }
 
+    val language = remember { mutableIntStateOf(PreferencesUtil.getInt("app_language",0)) }
+
 
     LazyColumn(
-        modifier = Modifier.height(getWindowSize().height.dp),
-        contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+14.dp),
+        modifier = Modifier.fillMaxHeight(),
+        contentPadding =PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+14.dp),
         topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {
         firstClasses(
@@ -68,13 +68,23 @@ fun Settings(
                 title = stringResource(R.string.is_hide_icon_title),
                 key = "is_hide_icon"
             )
-
+//            PMiuixSuperDropdown(
+//                title = stringResource(R.string.language),
+//                option = R.array.language_list,
+//                selectedIndex = language.intValue,
+//                onSelectedIndexChange = {
+//                    language.intValue = it
+//                    PreferencesUtil.putInt("app_language",language.intValue)
+//                    activity.recreate()
+//                }
+//            )
             SuperNavHostArrow(
                 title = stringResource(R.string.language),
                 navController = navController,
                 route = PagerList.LANGUAGE,
                 rightText = getLanguage()
             )
+
 
             PMiuixSuperDropdown(
                 title = stringResource(R.string.color_mode_title),
@@ -93,9 +103,8 @@ fun Settings(
 
             )
 
-
-
         }
+
         classes(
             title = context.getString(R.string.backup_restore)
         ) {
@@ -127,14 +136,14 @@ fun Settings(
     }
 }
 
+
+
 @Composable
 fun getLanguage():String{
     val languageList = stringArrayResource(R.array.language_list).toList()
 
     return languageList.get(PreferencesUtil.getInt("app_language",0))
 }
-
-
 
 
 

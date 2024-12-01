@@ -1,12 +1,11 @@
 package com.yunzia.hyperstar
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
@@ -16,7 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.yunzia.hyperstar.ui.base.navtype.PagersModel
 import com.yunzia.hyperstar.ui.base.navtype.pagersJson
-import com.yunzia.hyperstar.ui.module.betahome.BetaHomePager
+import com.yunzia.hyperstar.ui.module.home.HomePage
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.list.QSListColorPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.list.QsListViewPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.MediaSettingsPager
@@ -24,7 +23,6 @@ import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.app.MediaAppS
 import com.yunzia.hyperstar.ui.module.systemui.other.SystemUIOtherPager
 import com.yunzia.hyperstar.ui.module.systemui.volume.VolumePager
 import com.yunzia.hyperstar.ui.pagers.TranslatorPager
-import com.yunzia.hyperstar.ui.base.theme.HyperStarTheme
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterColorPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterListPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterPager
@@ -35,8 +33,12 @@ import com.yunzia.hyperstar.ui.module.systemui.controlcenter.slider.ToggleSlider
 import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.PowerMenuStylePager
 import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.SelectFunPager
 import com.yunzia.hyperstar.ui.pagers.DonationPage
+import com.yunzia.hyperstar.ui.pagers.GoRootPager
+import com.yunzia.hyperstar.ui.pagers.LanguagePager
 import com.yunzia.hyperstar.ui.pagers.ReferencesPager
-import com.yunzia.hyperstar.ui.pagers.UITest
+import com.yunzia.hyperstar.ui.pagers.MainPager
+import com.yunzia.hyperstar.ui.pagers.SettingsShowPage
+import com.yunzia.hyperstar.ui.pagers.dialog.FirstDialog
 
 @SuppressLint("RestrictedApi", "StateFlowValueCalledInComposition")
 @Composable
@@ -46,12 +48,15 @@ fun App(
 ) {
 
 
-    var pager = "null"
 
     val navController = rememberNavController()
-    //val nav = remember
-    val easing = CubicBezierEasing(0.12f, 0.38f, 0.2f, 1f)
+
+    val easing = FastOutSlowInEasing
+
     activity?.let {
+
+        FirstDialog(activity,navController)
+
         NavHost(
             modifier = Modifier.fillMaxSize(),
             navController = navController,
@@ -83,17 +88,23 @@ fun App(
             }
         ) {
 
-            composable(PagerList.MAIN) { UITest(navController, activity,colorMode) }
+            composable(PagerList.MAIN) { MainPager(navController, activity,colorMode) }
+
+            composable(PagerList.GO_ROOT){ GoRootPager(navController) }
 
             composable(SystemUIPagerList.CONTROL_CENTER) { ControlCenterPager(navController) };
+
+            composable(PagerList.LANGUAGE){ LanguagePager(activity,navController) }
 
             composable(PagerList.TRANSLATOR) { TranslatorPager(navController) }
 
             composable(PagerList.DONATION) { DonationPage(navController)  }
 
+            composable(PagerList.SHOW){ SettingsShowPage(navController) }
+
             composable(PagerList.REFERENCES) { ReferencesPager(navController)  }
 
-            composable(PagerList.BETA_HOME) { BetaHomePager(navController) }
+            composable(PagerList.HOME) { HomePage(navController) }
 
             composable(SystemUIPagerList.COLOR_EDIT) { ControlCenterColorPager(navController) }
 
@@ -147,13 +158,19 @@ object PagerList {
     //主页
     const val MAIN = "main"
     //系统界面更多
-    const val BETA_HOME = "beta_home"
+    const val HOME = "home"
+
+    const val LANGUAGE = "language"
+
+    const val GO_ROOT = "go_root"
     //翻译
     const val TRANSLATOR = "translator"
     //
     const val REFERENCES = "references"
     //投喂
     const val DONATION = "donation"
+    //显示设置
+    const val SHOW = "show"
 }
 
 object SystemUIPagerList {

@@ -3,14 +3,15 @@ package com.yunzia.hyperstar.ui.pagers
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -24,20 +25,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.fontscaling.MathUtils.lerp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.graphics.toColorInt
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.ui.base.LinearImage
 import com.yunzia.hyperstar.ui.base.SuperIntentArrow
 import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.base.classes
+import com.yunzia.hyperstar.ui.base.firstClasses
+import com.yunzia.hyperstar.ui.base.view.BgEffectView
+import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.flow.onEach
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.LazyColumn
@@ -46,23 +55,49 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
-@SuppressLint("RestrictedApi")
+
+private fun getColorList(
+    colorMode: Int):  List<Color>{
+    if (colorMode == 2) {
+        return listOf(
+            Color("#D0A279ED".toColorInt()),
+            Color("#D0E3BCB1".toColorInt())
+        )
+    } else {
+        return listOf(
+            Color("#D03A18AD".toColorInt()),
+            Color("#D0A56138".toColorInt())
+        )
+    }
+}
+
+
+@SuppressLint("RestrictedApi", "SetTextI18n")
 @Composable
-fun About(
-    activity : ComponentActivity,
+fun ThirdPage(
+    activity: ComponentActivity,
     navController: NavHostController,
     topAppBarScrollBehavior: ScrollBehavior,
+    padding: PaddingValues,
     showBlurs: MutableState<Boolean>,
-    padding: PaddingValues
+    colorMode: MutableState<Int>
 ) {
 
+    val darkTheme = isSystemInDarkTheme()
+    val colorsMode = when (colorMode.value) {
+        1 -> 1
+        2 -> 2
+        else -> if (darkTheme) 2 else 1
+    }
+
+    val hazeState = remember { HazeState() }
     val density = LocalDensity.current
     val min = with(density) { 0.dp.toPx() }
     val sec = with(density) { 110.dp.toPx() }
     val main = with(density) { 150.dp.toPx() }
     val mainHeight = main-sec
 
-    val bgHeight = with(density) {  312.dp.toPx() }
+    val bgHeight = with(density) {  332.dp.toPx() }
 
     val bgAlpha = remember { mutableFloatStateOf(1f) }
 
@@ -71,7 +106,6 @@ fun About(
 
     val secAlpha = remember { mutableFloatStateOf(1f) }
     val secScale = remember { mutableFloatStateOf(1f) }
-
 
     val scroll = rememberLazyListState()
 
@@ -105,52 +139,57 @@ fun About(
             }
     }
 
+
     Box(Modifier.clip(RoundedCornerShape(0.dp))) {
-        Column(
+
+        AndroidView(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 48.dp)
+                .height(430.dp), // Occupy the max size in the Compose UI tree
+            factory = { context ->
+                BgEffectView(context,colorsMode)
+
+            }
+        ) {
+            it.updateMode(colorsMode)
+            it.alpha = bgAlpha.floatValue
+
+        }
+
+
+
+        Column(
+            modifier = Modifier
+                .padding(top = 36.dp)
+                .fillMaxWidth()
                 .height(420.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-        )  {
-            Row(
-                modifier = Modifier
-                    .alpha(mainAlpha.floatValue)
-                    .scale(mainScale.floatValue),
-            ){
+        ) {
 
-                Text(
-                    text = "Hyper",
-                    fontSize = 45.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center
-                )
+            LinearImage(
+                contentDescription = "",
+                painter = painterResource(R.drawable.hyperstar2),
+                alpha = mainAlpha.floatValue,
+                colors = getColorList(colorMode = colorsMode),
+                modifier = Modifier.width(260.dp).scale(mainScale.floatValue),
+            )
 
-                Text(
-                    text = "Star",
-                    fontSize = 45.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center,
-                    color = colorResource(R.color.blue),
-                )
-
-            }
 
             Text(
                 text = stringResource(id = R.string.xposed_desc),
                 fontSize = 14.sp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 18.dp)
+                    .scale(secScale.floatValue)
                     .alpha(secAlpha.floatValue)
-                    .scale(secScale.floatValue),
+                    .padding(top = 18.dp),
                 fontWeight = FontWeight.Medium,
                 color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
                 textAlign = TextAlign.Center
             )
-
         }
+
 
         LazyColumn(
             modifier = Modifier.height(getWindowSize().height.dp),
@@ -158,10 +197,12 @@ fun About(
             contentPadding = PaddingValues(top = 0.dp, bottom = padding.calculateBottomPadding()+16.dp),
             topAppBarScrollBehavior = topAppBarScrollBehavior
         ) {
+
             item {
                 Spacer(Modifier.height(padding.calculateTopPadding()+332.dp))
             }
-            classes(
+
+            firstClasses(
                 title = R.string.developer_title
             ){
                 SuperIntentArrow(
@@ -215,8 +256,9 @@ fun About(
                     title = stringResource(R.string.project_address),
                     summary = stringResource(R.string.open_source_statement),
                     navController = navController,
-                    url = "https://github.com/YunZiA/HyperStar"
+                    url = "https://github.com/YunZiA/HyperStar2.0"
                 )
+
                 SuperNavHostArrow(
                     title = stringResource(R.string.donation),
                     navController = navController,
@@ -225,7 +267,8 @@ fun About(
                 )
             }
 
-
         }
     }
+
+
 }

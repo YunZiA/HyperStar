@@ -1,12 +1,15 @@
 package com.yunzia.hyperstar.ui.base
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -18,6 +21,9 @@ import androidx.compose.ui.unit.sp
 import com.yunzia.hyperstar.R
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.icon.MiuixIcons
+import top.yukonga.miuix.kmp.icon.icons.ArrowRight
+import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 fun LazyListScope.emptyClasses(
     top : Dp = 0.dp,
@@ -84,6 +90,7 @@ fun LazyListScope.classes(
 
 @Composable
 fun Classes(
+    modifier: Modifier = Modifier,
     title : String? = null,
     summary : String? = null,
     top : Dp = 0.dp,
@@ -94,7 +101,7 @@ fun Classes(
     val insideMargin = if (title != null || summary != null ) PaddingValues(0.dp,14.dp)  else PaddingValues(0.dp,0.dp)
 
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .padding(top = top, bottom = bottom),

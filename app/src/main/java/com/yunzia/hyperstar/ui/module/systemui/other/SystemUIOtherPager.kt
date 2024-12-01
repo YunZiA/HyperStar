@@ -3,6 +3,7 @@ package com.yunzia.hyperstar.ui.module.systemui.other
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.SystemUIPagerList
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
@@ -14,7 +15,7 @@ import com.yunzia.hyperstar.utils.Utils
 
 @Composable
 fun SystemUIOtherPager(
-    navController: NavController
+    navController: NavHostController
 ) {
     ModuleNavPagers(
         activityTitle = stringResource(R.string.more),

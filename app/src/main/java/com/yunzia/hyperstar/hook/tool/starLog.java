@@ -3,7 +3,7 @@ package com.yunzia.hyperstar.hook.tool;
 import de.robv.android.xposed.XposedBridge;
 
 public class starLog {
-    private static final String HOOK_TAG = "[HyperStar]";
+    private static final String HOOK_TAG = "[HyperStar2.0]";
     public static void log(String msg) {
         XposedBridge.log(HOOK_TAG+"{ " + msg + " }");
     }

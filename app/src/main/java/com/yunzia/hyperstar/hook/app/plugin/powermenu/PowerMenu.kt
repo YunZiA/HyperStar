@@ -19,6 +19,7 @@ import java.lang.reflect.Proxy
 
 class PowerMenu : BaseHooker() {
 
+    var xiaoai = 0
     var icBootloader = 0
     var icRecovery = 0
     var icAirplaneOn = 0
@@ -43,6 +44,7 @@ class PowerMenu : BaseHooker() {
         super.doResources(resparam, modRes)
 
 
+        xiaoai = resparam?.res?.addResource(modRes,R.drawable.xiaoai)!!
         icBootloader = resparam?.res?.addResource(modRes,R.drawable.ic_bootloader)!!
         icRecovery = resparam.res?.addResource(modRes,R.drawable.ic_recovery)!!
         icAirplaneOn = resparam.res?.addResource(modRes,R.drawable.ic_airplane_on)!!
@@ -100,7 +102,7 @@ class PowerMenu : BaseHooker() {
                 val s = mSliderView.layoutParams as FrameLayout.LayoutParams
                 //mSliderView.translationX = 250f
                 val action = Action(
-                    mContext, icBootloader, icRecovery, icAirplaneOn, icAirplaneOff,
+                    mContext, xiaoai, icBootloader, icRecovery, icAirplaneOn, icAirplaneOff,
                     icSilentOn, icSilentOff, icQsScreenshot, alipayPay, wechatScan, alipayScan, wechatPay , VolumeUtil
                 )
 

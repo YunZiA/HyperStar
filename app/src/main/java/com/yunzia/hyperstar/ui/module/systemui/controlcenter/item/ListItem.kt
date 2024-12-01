@@ -20,8 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import com.yunzia.hyperstar.ui.base.dialog.MSuperDialog
 import yunzia.ui.Card
-import com.yunzia.hyperstar.ui.base.MSuperDialog
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemDropdown
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemSlider
 import com.yunzia.hyperstar.utils.SPUtils

@@ -38,7 +38,6 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.TopButton
 import com.yunzia.hyperstar.ui.base.XMiuixSlider
-import com.yunzia.hyperstar.ui.base.XSuperDialogDropdown
 import com.yunzia.hyperstar.ui.base.XSuperDropdown
 import com.yunzia.hyperstar.ui.base.XSuperSwitch
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.item.BrightnessItem
@@ -54,7 +53,6 @@ import com.yunzia.hyperstar.utils.Utils
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Switch
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 private fun getLists(): List<String> {

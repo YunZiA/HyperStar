@@ -74,10 +74,8 @@ fun Modifier.bounceAnimClickable(
 
 fun Modifier.bounceScale(
     eventState: MutableState<EventState>,
-    canClose:Boolean? = false,
     finishedListener:((Float) -> Unit)? = null
 ) = composed {
-    val enable = PreferencesUtil.getBoolean("bounce_anim_enable",true)
     val scale by animateFloatAsState(if (eventState.value == EventState.Pressed) 0.8f else 1f,
         animationSpec = tween(100),
         label = "", finishedListener ={
@@ -87,12 +85,7 @@ fun Modifier.bounceScale(
             }
         }
     )
-    if (!canClose!! || enable){
-        this.scale(scale)
-
-    }else{
-        this
-    }
+    this.scale(scale)
 
 }
 

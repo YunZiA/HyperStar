@@ -1,124 +1,59 @@
 package com.yunzia.hyperstar
 
-import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.util.Log
+import android.os.Environment
+import android.provider.Settings
 import android.widget.Toast
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.style.TextIndent
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.profileinstaller.ProfileInstaller
 import com.yunzia.hyperstar.ui.base.BaseActivity
-import com.yunzia.hyperstar.utils.LanguageHelper.Companion.getIndexLanguage
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.SPUtils
 import com.yunzia.hyperstar.utils.Utils
-import top.yukonga.miuix.kmp.basic.Button
-import top.yukonga.miuix.kmp.basic.Card
-import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import yunzia.utils.SystemProperties
-import java.io.Serializable
 
 
 class MainActivity : BaseActivity() {
 
-    var paddings = PaddingValues(0.dp)
-    var state = State.Start
+    var isRecreate:Boolean = false
 
-    private fun isModuleActive() : Boolean{
+    fun isModuleActive() : Boolean{
         return false;
     }
 
     @Composable
     override fun InitView(colorMode: MutableState<Int>?) {
-        val isRoot:Boolean = Utils.getRootPermission() == 0
 
-        val errVersion = (SystemProperties.getInt("ro.mi.os.version.code", 1) != 2)
-        VerDialog(errVersion,this)
-        RootDialog(!isRoot)
-        Log.d("ggc", "Greeting: $isRoot")
         if (colorMode != null) {
             App(this,colorMode)
         }
     }
 
     override fun initData(savedInstanceState: Bundle?) {
-//        val state = savedInstanceState?.getString("state")
-//        if (state != null){
-//            this.state = State.valueOf(state)
-//
-//        }
-//        val paddingData = savedInstanceState?.getSerializable("paddings",PaddingData::class.java)
-//        if (paddingData != null){
-//            paddings = paddingData.toPaddingValues()
-//
-//        }
+
+        val isRecreate = savedInstanceState?.getBoolean("isRecreate",true)
+        if (isRecreate != null && isRecreate){
+            this.isRecreate = true
+        }
         ProfileInstaller.writeProfile(this)
         if (isModuleActive()){
             SPUtils.getInstance().init(this);
 
-        }else{
-            Toast.makeText(this,
-                getString(R.string.not_activated_toast_description),Toast.LENGTH_SHORT).show()
         }
         showLauncherIcon(PreferencesUtil.getBoolean("is_hide_icon",false))
-
-    }
-
-    fun savePadding(
-        padding: PaddingValues
-    ){
-        paddings = padding
-        this.state = State.Recreate
 
     }
 
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-//        val paddingData = PaddingData(paddings.calculateTopPadding().value,  paddings.calculateBottomPadding().value)
-//        outState.putString("state",state.name)
-//        outState.putSerializable("paddings",paddingData)
-    }
-    fun changeL() {
-        val res = this.resources;
-        val configuration = res.configuration;
-        val metrics: DisplayMetrics = res.displayMetrics
-        val index = PreferencesUtil.getInt("app_language",0)
-
-        configuration.setLocale(getIndexLanguage(index))
-        res.updateConfiguration(configuration,metrics)
+        //outState.putBoolean("isRecreate",true)
     }
 
 
@@ -135,188 +70,26 @@ class MainActivity : BaseActivity() {
     private fun getAliseComponentName(): ComponentName {
         return ComponentName(this@MainActivity, "com.yunzia.hyperstar.MainActivityAlias")
 
-        // 在AndroidManifest.xml中为MainActivity定义了一个别名为MainActivity-Alias的activity，是默认启动activity、是点击桌面图标后默认程序入口
+
     }
 
+    fun goManagerFileAccess():Boolean {
 
-
-}
-
-enum class State{
-    Start,Recreate
-}
-
-data class PaddingData(val top: Float, val bottom: Float) :
-    Serializable {
-    // 构造函数、getter/setter等
-
-    fun toPaddingValues(): PaddingValues {
-        return PaddingValues(0.dp, top.dp, 0.dp, bottom.dp)
-    }
-
-}
-
-
-
-@Composable
-fun RootDialog(showDialog: Boolean) {
-    val showDialogs = remember{ mutableStateOf(showDialog)}
-    if (showDialogs.value) {
-
-        Dialog(
-            onDismissRequest = { showDialogs.value = false },
-        ) {
-            Card(
-                cornerRadius = 30.dp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 28.dp)
-                    .padding(bottom = 28.dp),
-                insideMargin = PaddingValues(20.dp,20.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.tips),
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    color = colorScheme.onSurface,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 18.sp
-                )
-                Spacer(Modifier.height(20.dp))
-                Text(
-                    text = stringResource(R.string.no_root_description),
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    color = colorScheme.onSurface,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 13.sp
-                )
-                Spacer(Modifier.height(23.dp))
-
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    cornerRadius = 14.dp,
-                    onClick = {
-                        //dismissDialog()
-                        showDialogs.value = false
-                    }
-                ){
-                    Text(stringResource(R.string.sure))
-                }
-
-
+        if (!Environment.isExternalStorageManager()) {
+            val appIntent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+            appIntent.setData(Uri.parse("package:$packageName"))
+            try {
+                this.startActivity(appIntent)
+            } catch (ex: ActivityNotFoundException) {
+                ex.printStackTrace()
+                val allFileIntent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+                this.startActivity(allFileIntent)
             }
 
         }
+        return Environment.isExternalStorageManager()
     }
+
+
+
 }
-
-@SuppressLint("UnrememberedMutableInteractionSource")
-@Composable
-fun VerDialog(showDialog: Boolean,context: Context) {
-    val showDialogs = remember{ mutableStateOf(showDialog)}
-    if (showDialogs.value) {
-
-        Dialog(
-            onDismissRequest = { showDialogs.value = false },
-        ) {
-            Card(
-                cornerRadius = 30.dp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 5.dp)
-                    .padding(bottom = 28.dp),
-                insideMargin =  PaddingValues(20.dp,20.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.os_tips),
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    color = colorScheme.onSurface,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 19.sp
-                )
-                Spacer(Modifier.height(20.dp))
-                Text(
-                    text = stringResource(R.string.os_description),
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Start,
-                    color = colorScheme.onSurface,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 15.sp,
-                    style = TextStyle(textIndent = TextIndent(20.sp, 0.sp))
-
-                )
-                Spacer(Modifier.height(12.dp))
-                Text(
-                    text = stringResource(R.string.os1_link),
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp).clickable(
-                        onClick = {
-                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/YunZiA/HyperStar")))
-                        },
-                        indication = null,
-                        interactionSource = MutableInteractionSource()
-                    ),
-                    textDecoration = TextDecoration.Underline,
-                    textAlign = TextAlign.End,
-                    color = colorScheme.primary,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 13.sp
-                )
-                Spacer(Modifier.height(23.dp))
-
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    cornerRadius = 14.dp,
-                    onClick = {
-                        //dismissDialog()
-                        showDialogs.value = false
-                    }
-                ){
-                    Text(stringResource(R.string.sure))
-                }
-
-
-            }
-
-        }
-    }
-}
-
-
-
-
-
-
-
-@Composable
-fun MySwitch(
-    modifier: Modifier = Modifier,
-    text: String
-    ) {
-        var checkedButton by remember { mutableStateOf(false) }
-
-        Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .clickable {
-                    checkedButton = !checkedButton
-
-                }
-        ) {
-            Text(
-                text = text,
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .padding(start = 20.dp)
-            )
-            Switch(
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .padding(end = 20.dp),
-                checked = checkedButton,
-                onCheckedChange = { checkedButton = it }
-            )
-        }
-}
-
-
-
-

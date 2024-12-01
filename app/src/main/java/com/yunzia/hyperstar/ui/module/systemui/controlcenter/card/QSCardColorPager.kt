@@ -3,6 +3,7 @@ package com.yunzia.hyperstar.ui.module.systemui.controlcenter.card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.ColorPickerTool
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
@@ -12,7 +13,7 @@ import com.yunzia.hyperstar.utils.Utils
 
 @Composable
 fun QSCardColorPager(
-    navController: NavController
+    navController: NavHostController
 ) {
     ModuleNavPagers(
         activityTitle = stringResource(R.string.card_tile_color),

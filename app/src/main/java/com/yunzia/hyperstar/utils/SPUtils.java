@@ -5,6 +5,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.Map;
+
 
 public class SPUtils {
 
@@ -110,6 +119,43 @@ public class SPUtils {
             return false;
         }
         return SPUtils.getInstance().sp.edit().putLong(key, v).commit();
+    }
+
+    public static boolean clearPreferences() {
+        SharedPreferences pref = SPUtils.getInstance().sp;
+        SharedPreferences.Editor editor = pref.edit();
+        editor.clear();
+        return editor.commit();
+    }
+
+    public static void getAllPreferences(ArrayList<SP> sputils) {
+        SharedPreferences pref = SPUtils.getInstance().sp;
+        Map<String, ?> allEntries = pref.getAll();
+        Log.d("SPUtils", "Key: " + allEntries);
+
+        String type  = "SPUtils";
+        //ArrayList<SP> sputils = new ArrayList<>();
+        //JSONObject json = new JSONObject();
+
+        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if (value instanceof String) {
+                sputils.add(new SP(type,key,SP.type_string,value));
+            } else if (value instanceof Integer) {
+                sputils.add(new SP(type,key,SP.type_int,value));
+            } else if (value instanceof Boolean) {
+                sputils.add(new SP(type,key,SP.type_boolean,value));
+            } else if (value instanceof Float) {
+                sputils.add(new SP(type,key,SP.type_float,value));
+            } else if (value instanceof Long) {
+                sputils.add(new SP(type,key,SP.type_long,value));
+            } else {
+                sputils.add(new SP(type,key,SP.type_string,value));
+            }
+        }
+        //return gson.toJsonTree(sputils,new TypeToken<ArrayList<SP>>() {}.getType());
+
     }
 
 

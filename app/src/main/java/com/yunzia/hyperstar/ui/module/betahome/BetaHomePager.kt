@@ -25,7 +25,6 @@ fun BetaHomePager(
             title = R.string.unlock
         ) {
             XSuperSwitch(
-                enabled = false,
                 title = stringResource(R.string.is_use_beta_home_cc_title),
                 summary = stringResource(R.string.is_use_beta_home_cc_summary),
                 key = "is_use_beta_home_cc"

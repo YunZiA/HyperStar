@@ -43,7 +43,7 @@ class FilterNumber(
                     newString.append(c)
                     val tempValue = newString.toString().toDouble()
                     if (tempValue > maxValue) newString.deleteCharAt(newString.lastIndex)
-                    if (tempValue < minValue) newString.deleteCharAt(newString.lastIndex) // 需要改进 （例如限制最小值为 100000000，则将无法输入东西）
+                    if (tempValue < minValue) newString.deleteCharAt(newString.lastIndex) // TODO 需要改进 （例如限制最小值为 100000000，则将无法输入东西）
 
                     if (dotIndex != -1) {
                         if (decimalNumber != -1) {

@@ -1,11 +1,7 @@
 package com.yunzia.hyperstar.ui.base
 
-import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +20,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -56,16 +51,14 @@ import androidx.wear.compose.material.FractionalThreshold
 import androidx.wear.compose.material.rememberSwipeableState
 import androidx.wear.compose.material.swipeable
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.enums.EventState
-import com.yunzia.hyperstar.ui.base.modifier.bounceClick
+import com.yunzia.hyperstar.ui.base.dialog.SuperDialog
+import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
 import com.yunzia.hyperstar.ui.base.tool.FilterFloat
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.SPUtils
 import kotlinx.coroutines.launch
-import top.yukonga.miuix.kmp.basic.Button
 import top.yukonga.miuix.kmp.basic.Slider
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.basic.TextField
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import kotlin.math.roundToInt
@@ -201,7 +194,7 @@ fun XMiuixSlider(
                 )
                 Text(
                     modifier =if (isDialog) Modifier else{
-                        Modifier
+                        Modifier.bounceAnim()
                             .pointerInput(Unit) {
                                 detectTapGestures(
                                     onLongPress = {
@@ -434,7 +427,7 @@ fun XSuperSliders(
                     fontSize = TextUnit.Unspecified
                 )
                 Text(
-                    modifier = Modifier
+                    modifier = Modifier.bounceAnim()
                         .pointerInput(Unit) {
                             detectTapGestures(
                                 onLongPress = {

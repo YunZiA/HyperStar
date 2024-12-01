@@ -9,9 +9,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.yunzia.hyperstar.ui.base.SuperSwitch
+import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.SPUtils
 
@@ -20,16 +19,16 @@ fun XSuperSwitch(
     title: String,
     summary: String? = null,
     key: String,
-    enabled: Boolean = true,
+    enabled: Boolean? = true,
     insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp)
 ) {
     val state: MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) }
     SuperSwitch(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
         checked = state.value,
-        enabled = enabled,
+        enabled = enabled!!,
         insideMargin = insideMargin,
         onCheckedChange = {
             state.value = it
@@ -45,17 +44,17 @@ fun XSuperSwitch(
     title: String,
     summary: String? = null,
     key: String,
-    enabled: Boolean = true,
+    enabled: Boolean? = true,
     insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp),
     onStateChanged : (Boolean) -> Unit = {}
 ) {
     val state: MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) }
     SuperSwitch(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
         checked = state.value,
-        enabled = enabled,
+        enabled = enabled!!,
         insideMargin = insideMargin,
         onCheckedChange = {
             state.value = it
@@ -72,17 +71,17 @@ fun XSuperSwitch(
     title: String,
     summary: String? = null,
     key: String,
-    enabled: Boolean = true,
+    enabled: Boolean? = true,
     state: MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) },
     insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp)
 ) {
 
     SuperSwitch(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
         checked = state.value,
-        enabled = enabled,
+        enabled = enabled!!,
         insideMargin = insideMargin,
         onCheckedChange = {
             state.value = it
@@ -96,18 +95,21 @@ fun XSuperSwitch(
 @Composable
 fun PMiuixSuperSwitch(
     title : String,
-    key : String
+    key : String,
+    defValue: Boolean = false,
+    expend:(Boolean)->Unit = {}
 ) {
 
-    var MiuixSuperSwitchState by remember { mutableStateOf(PreferencesUtil.getBoolean(key,false)) }
+    var MiuixSuperSwitchState by remember { mutableStateOf(PreferencesUtil.getBoolean(key,defValue)) }
     SuperSwitch(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         checked = MiuixSuperSwitchState,
         insideMargin = PaddingValues(24.dp, 16.dp),
         onCheckedChange = {
             MiuixSuperSwitchState = it
             PreferencesUtil.putBoolean(key,MiuixSuperSwitchState)
+            expend(MiuixSuperSwitchState)
         },
     )
 }

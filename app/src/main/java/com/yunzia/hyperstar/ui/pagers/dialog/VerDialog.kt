@@ -56,7 +56,7 @@ fun VerDialog(
 
         )
         Text(
-            text = stringResource(R.string.os2_link),
+            text = stringResource(R.string.os1_link),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp)
@@ -66,7 +66,7 @@ fun VerDialog(
                         mContext.startActivity(
                             Intent(
                                 Intent.ACTION_VIEW,
-                                Uri.parse("https://github.com/YunZiA/HyperStar2.0")
+                                Uri.parse("https://github.com/YunZiA/HyperStar")
                             )
                         )
                     },

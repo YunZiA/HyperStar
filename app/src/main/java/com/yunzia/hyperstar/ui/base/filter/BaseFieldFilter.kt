@@ -11,24 +11,12 @@ open class BaseFieldFilter() {
         inputValue.value = TextFieldValue(value, TextRange(value.lastIndex+1))
     }
 
-    constructor(value:String,defValue:String) : this() {
-        if (value != defValue){
-            inputValue.value = TextFieldValue(value, TextRange(value.lastIndex+1))
-
-        }else{
-            val newString = StringBuffer()
-            newString.append("")
-            inputValue.value = TextFieldValue(newString.toString(), TextRange(newString.lastIndex+1))
-
-        }
-    }
-
     protected open fun onFilter(inputTextFieldValue: TextFieldValue, lastTextFieldValue: TextFieldValue): TextFieldValue {
         return TextFieldValue()
     }
 
     protected open fun computePos(): Int {
-
+        // TODO
         return 0
     }
 
@@ -46,7 +34,6 @@ open class BaseFieldFilter() {
 
         return null
     }
-
 
     fun setInputValue(value: String) {
         inputValue.value = TextFieldValue(value, TextRange(value.lastIndex+1))

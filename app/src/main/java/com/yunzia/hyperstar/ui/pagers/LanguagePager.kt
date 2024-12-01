@@ -52,12 +52,6 @@ fun LanguagePager(
 
     val languageList = stringArrayResource(R.array.language_list).toList()
 
-//    LaunchedEffect(selectedItem.intValue) {
-//
-//
-//    }
-
-
     NavPager(
         activityTitle = stringResource(R.string.language),
         navController = navController,

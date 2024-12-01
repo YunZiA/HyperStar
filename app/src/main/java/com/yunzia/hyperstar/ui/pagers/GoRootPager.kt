@@ -61,7 +61,7 @@ private fun getRootManagerInfo(
     val rootList = root.toMutableList()
     root.forEach {
         try {
-            val packageInfo = packageManager.getPackageInfo(it.packageName, 0).applicationInfo
+            val packageInfo = packageManager.getPackageInfo(it.packageName, 0).applicationInfo!!
 
             val app_name = packageManager.getApplicationLabel(packageInfo).toString()
             val package_name = packageInfo.packageName

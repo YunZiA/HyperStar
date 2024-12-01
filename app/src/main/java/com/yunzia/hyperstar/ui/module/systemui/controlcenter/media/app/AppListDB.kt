@@ -49,9 +49,9 @@ class AppListDB(context: Context?) :
 //            Log.d("ggc", "searchAPPlist: $label $packageName")
             val appData = AppInfo()
             appData.label = label
-            appData.package_name = packageName
-            appData.icon = appIconlist[appData.package_name]
-            if (appIconlist[appData.package_name] == null){
+            appData.packageName = packageName
+            appData.icon = appIconlist[appData.packageName]
+            if (appIconlist[appData.packageName] == null){
                 Log.d("ggc","appIconlist[appData.package_name] == null")
             }
             if (appData.icon == null){

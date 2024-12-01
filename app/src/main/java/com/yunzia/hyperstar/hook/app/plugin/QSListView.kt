@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
+import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.AnimatedVectorDrawable
@@ -7,6 +8,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.SystemClock
+import android.provider.Settings
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
@@ -32,6 +34,8 @@ class QSListView : BaseHooker() {
     private val clickClose = XSPUtils.getBoolean("list_tile_click_close",false)
     val labelMode: Int = XSPUtils.getInt("is_list_label_mode",0)
     val labelSize = XSPUtils.getFloat("list_label_size",13f)
+    val isWordlessMode0: Int = XSPUtils.getInt("is_wordless_mode_0",0)
+    val isWordlessMode2: Int = XSPUtils.getInt("is_wordless_mode_2",0)
     val labelWidth = XSPUtils.getFloat("list_label_width",100f)/100f
     val labelMarquee = XSPUtils.getBoolean("list_tile_label_marquee",false)
     private val tileColorForState = XSPUtils.getInt("qs_list_tile_color_for_state",0)
@@ -128,13 +132,8 @@ class QSListView : BaseHooker() {
             override fun afterHookedMethod(param: MethodHookParam?) {
                 super.afterHookedMethod(param)
                 val thisObj = param?.thisObject
-                val tileSize = XposedHelpers.getFloatField(thisObj,"tileSize").toInt()
-                //height = tileSize
 
                 val drawable = param?.args?.get(0) as Drawable
-
-                val isCustomTile = XposedHelpers.getBooleanField(thisObj,"isCustomTile")
-                if (isCustomTile) return
 
                 if(drawable !is AnimatedVectorDrawable) return
 
@@ -266,6 +265,43 @@ class QSListView : BaseHooker() {
         val CommonUtils = XposedHelpers.findClass("miui.systemui.util.CommonUtils", classLoader)
 
         if ( labelMode != 0 ){
+
+
+            val QSListController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.qs.QSListController",classLoader)
+
+            XposedHelpers.findAndHookMethod(QSListController,"updateTextMode",object : XC_MethodHook(){
+                override fun beforeHookedMethod(param: MethodHookParam?) {
+                    super.beforeHookedMethod(param)
+                    val thisObj = param?.thisObject
+                    val contentResolver = XposedHelpers.getObjectField(thisObj,"contentResolver")  as ContentResolver
+                    when (labelMode) {
+
+                        1 -> {
+                            Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+
+
+                        }
+                        2 -> {
+                            when (isWordlessMode2) {
+                                2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
+                                1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+
+                            }
+                        }
+                        else -> {
+                            when (isWordlessMode0) {
+                                2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
+                                1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+
+                            }
+                            return
+                        }
+                    }
+
+
+
+                }
+            })
 
             XposedHelpers.findAndHookMethod(QSTileItemView, "changeExpand", object : XC_MethodReplacement() {
 

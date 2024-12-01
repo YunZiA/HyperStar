@@ -20,12 +20,6 @@ public class InitSystemUIHook extends BaseHooker {
     }
 
     @Override
-    public void getLocalRes(Resources res) {
-        super.getLocalRes(res);
-        initSystemUIPluginHook.getLocalRes(res);
-    }
-
-    @Override
     public void doMethods(XC_LoadPackage.LoadPackageParam lpparam) {
         super.doMethods(lpparam);
         if (lpparam.packageName.equals("com.android.systemui")){
@@ -36,15 +30,6 @@ public class InitSystemUIHook extends BaseHooker {
         }
     }
 
-    @Override
-    public void doRes(XC_InitPackageResources.InitPackageResourcesParam resparam) {
-        super.doRes(resparam);
-        if (resparam.packageName.equals("com.android.systemui")){
-
-            //doResHook(resparam);
-
-        }
-    }
 
     @Override
     public void doResources(XC_InitPackageResources.InitPackageResourcesParam resparam, XModuleResources modRes) {

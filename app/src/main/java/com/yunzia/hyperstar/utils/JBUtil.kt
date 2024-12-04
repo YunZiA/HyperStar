@@ -95,9 +95,8 @@ object JBUtil {
     fun readJsonFile(filePath: String?): String {
         val sb = StringBuilder()
         try {
-            val file = File(filePath)
-            var `in`: InputStream? = null
-            `in` = FileInputStream(file)
+            val file = File(filePath.toString())
+            val `in`: InputStream = FileInputStream(file)
             var tempbyte: Int
             while ((`in`.read().also { tempbyte = it }) != -1) {
                 sb.append(tempbyte.toChar())

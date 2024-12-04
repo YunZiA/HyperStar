@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.base.dialog
 
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
@@ -30,6 +32,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -71,7 +76,11 @@ fun MSuperDialog(
             .padding(horizontal = insideMargin.width)
             .padding(bottom = insideMargin.height)
     }
+    val density = LocalDensity.current
     val getWindowSize by rememberUpdatedState(getWindowSize())
+    val windowWidth by rememberUpdatedState(getWindowSize.width.dp / density.density)
+    val windowHeight by rememberUpdatedState(getWindowSize.height.dp / density.density)
+    val maxWidth by remember { derivedStateOf { if (windowHeight >= 480.dp && windowWidth >= 840.dp) 420.dp else  383.2.dp } }
     val contentAlignment by remember { derivedStateOf { if (getWindowSize.width > getWindowSize.height) Alignment.Center else Alignment.BottomCenter } }
 
     BackHandler(enabled = show.value) {
@@ -94,11 +103,11 @@ fun MSuperDialog(
     ) {
         Column(
             modifier = Modifier
-                .then(
-                    if (contentAlignment != Alignment.Center) Modifier.fillMaxWidth() else Modifier.widthIn(
-                        max = 400.dp
-                    )
-                )
+                .onGloballyPositioned {
+                    Log.d("ggc", "MSuperDialog: ${it.size}")
+
+                }
+                .widthIn(max = maxWidth)
                 .pointerInput(Unit) {
                     detectTapGestures {
 
@@ -108,7 +117,7 @@ fun MSuperDialog(
                 .align(contentAlignment)
                 .background(
                     color = color,
-                    shape = SmoothRoundedCornerShape(25.dp,0.8f)
+                    shape = SmoothRoundedCornerShape(25.dp, 0.8f)
                     // SquircleShape(45.dp, cornerSmoothing = CornerSmoothing.High)
                 )
                 .padding(24.dp),

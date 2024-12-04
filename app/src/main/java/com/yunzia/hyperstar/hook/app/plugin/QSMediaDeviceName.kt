@@ -19,7 +19,7 @@ class QSMediaDeviceName :BaseHooker() {
 
     private fun startMethodsHook() {
         val cc : Class<*>
-        val p0Var  = XposedHelpers.findClassIfExists("c.f.d.a.j.p0",classLoader)
+        val p0Var  = XposedHelpers.findClassIfExists("v0.i",classLoader)
         val v = XposedHelpers.findClassIfExists("c.f.d.a.j.v",classLoader)
         if (p0Var != null) {
             cc = p0Var
@@ -46,8 +46,8 @@ class QSMediaDeviceName :BaseHooker() {
                     )
                     val isLocalSpeaker : Boolean = XposedHelpers.callStaticMethod(MiPlayExtentionsKt,"isLocalSpeaker",parameterTypes,p0Vars) as Boolean
                     if (isLocalSpeaker){
-                        val d = cc.getDeclaredMethod("d")
-                        val name = d.invoke(p0Vars)
+                        val k = cc.getDeclaredMethod("k")
+                        val name = k.invoke(p0Vars)
                         val getName = DeviceInfo.getDeclaredMethod("getName")
                         val roomName : String = getName.invoke(name) as String
                         param?.result = roomName

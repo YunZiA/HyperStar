@@ -215,7 +215,9 @@ class BitmapUtils {
 
         private fun blur(bitmap: Bitmap, radius: Float): Bitmap {
 
-            // 配置跟 bitmap 同样大小的 ImageReader
+
+
+             //配置跟 bitmap 同样大小的 ImageReader
             val imageReader = ImageReader.newInstance(
                 bitmap.width, bitmap.height,
                 PixelFormat.RGBA_8888, 1,

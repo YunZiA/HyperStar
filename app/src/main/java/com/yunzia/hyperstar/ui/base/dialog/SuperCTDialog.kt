@@ -66,6 +66,7 @@ fun SuperCTDialog(
         val paddingModifier = remember(outsideMargin) { Modifier.padding(horizontal = outsideMargin.width).padding(bottom = outsideMargin.height) }
         val roundedCorner by rememberUpdatedState(getRoundedCorner())//- outsideMargin.width
         val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) roundedCorner-5.dp  else 32.dp } }
+        val maxWidth by remember { derivedStateOf { if (windowHeight >= 480.dp && windowWidth >= 840.dp) 420.dp else  383.2.dp } }
         val contentAlignment by rememberUpdatedState { derivedStateOf { if (windowHeight >= 480.dp && windowWidth >= 840.dp) Alignment.Center else Alignment.Center } }
 
         BackHandler(enabled = show.value) {
@@ -88,7 +89,7 @@ fun SuperCTDialog(
                 ) {
                     Column(
                         modifier = modifier
-                            .widthIn(max = 420.dp)
+                            .widthIn(max = maxWidth)
                             .pointerInput(Unit) {
                                 detectTapGestures {
 

@@ -43,7 +43,6 @@ fun XSuperDropdown(
         items = dropdownOptions,
         mode = DropDownMode.AlwaysOnRight,
         enabled = enabled,
-        horizontalPadding = 0.dp,
         insideMargin = insideMargin,
         selectedIndex = selectedIndex.intValue,
         onSelectedIndexChange = { newOption ->
@@ -73,7 +72,6 @@ fun XSuperDialogDropdown(
         items = dropdownOptions,
         mode = DropDownMode.AlwaysOnRight,
         enabled = enabled,
-        horizontalPadding = 0.dp,
         insideMargin = insideMargin,
         selectedIndex = selectedIndex.intValue,
         onSelectedIndexChange = { newOption ->
@@ -104,7 +102,6 @@ fun XMiuixContentDropdown(
         title = title,
         summary = summary,
         items = dropdownOptions,
-        horizontalPadding = 0.dp,
         mode = DropDownMode.AlwaysOnRight,
         insideMargin = insideMargin,
         selectedIndex = dropdownSelectedOption.value,
@@ -148,7 +145,6 @@ fun XMiuixContentDropdown(
         title = title,
         summary = summary,
         items = dropdownOptions,
-        horizontalPadding = 0.dp,
         mode = DropDownMode.AlwaysOnRight,
         insideMargin = insideMargin,
         selectedIndex = dropdownSelectedOption.value,
@@ -188,7 +184,6 @@ fun SuperContentDropdown(
     key : String,
     summary : String ?= null,
     insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp),
-    popupHorizontalPadding: Dp = 12.dp,
     content: @Composable ((MutableState<Int>) -> Unit),
 ) {
 
@@ -201,7 +196,6 @@ fun SuperContentDropdown(
         summary = summary,
         items = dropdownOptions,
         mode = DropDownMode.AlwaysOnRight,
-        horizontalPadding = 0.dp,
         insideMargin = insideMargin,
         selectedIndex = dropdownSelectedOption.value,
         onSelectedIndexChange = { newOption ->
@@ -229,7 +223,6 @@ fun PMiuixSuperDropdown(
     option: Int,
     summary : String ?= null,
     selectedIndex: Int,
-    popupHorizontalPadding: Dp = 12.dp,
     insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp),
     onSelectedIndexChange: (Int) -> Unit
 ) {
@@ -243,7 +236,6 @@ fun PMiuixSuperDropdown(
         items = dropdownOptions,
         mode = DropDownMode.AlwaysOnRight,
         selectedIndex = selectedIndex,
-        horizontalPadding = 0.dp,
         insideMargin = insideMargin,
         onSelectedIndexChange =
         { newOption ->

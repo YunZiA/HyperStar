@@ -119,7 +119,7 @@ fun ColorPickerTool(
                 modifier = Modifier.weight(1f),
                 text = title,
                 fontWeight = FontWeight.Medium,
-                color = colorScheme.onSurface
+                color = if (swappableState.targetValue == Status.CLOSE) colorScheme.onSurface else colorScheme.disabledOnSecondaryVariant
             )
 
             Box(

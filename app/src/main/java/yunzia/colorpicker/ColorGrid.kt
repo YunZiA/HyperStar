@@ -3,7 +3,11 @@ package yunzia.colorpicker
 import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -12,9 +16,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.dp
 
 const val mRow = 7
 const val mColumn = 13
+
+data class Size(val width:Float,val height:Float)
+
 
 @Composable
 fun ColorGrid(
@@ -25,14 +33,15 @@ fun ColorGrid(
 
     val colorList = getGridColors()
     var totalWidth = 0f
-    var mSize = 0f
+    var mSize  = 0f
+    var mSizes : Size = Size(0F,0F)
     var realWidth = 0f
 
     var extraSpace = 0f// 计算剩余空间
 
     Canvas(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = { offset ->
@@ -53,6 +62,7 @@ fun ColorGrid(
     ) {
 
         totalWidth = size.width
+        Log.d("ggc", "ColorGrid: $totalWidth")
         mSize = (totalWidth / mColumn).toInt().toFloat()
         realWidth = mSize * mColumn
         extraSpace = totalWidth - realWidth

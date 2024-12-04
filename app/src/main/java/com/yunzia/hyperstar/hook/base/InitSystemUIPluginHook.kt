@@ -1,7 +1,6 @@
 package com.yunzia.hyperstar.hook.base
 
 import android.content.Context
-import android.content.res.Resources
 import android.content.res.XModuleResources
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.app.plugin.DeviceCenterRow
@@ -13,7 +12,7 @@ import com.yunzia.hyperstar.hook.app.plugin.QSControlCenterColor
 import com.yunzia.hyperstar.hook.app.plugin.QSControlCenterList
 import com.yunzia.hyperstar.hook.app.plugin.QSEditButton
 import com.yunzia.hyperstar.hook.app.plugin.QSHeaderMessage
-import com.yunzia.hyperstar.hook.app.plugin.QSHeaderView
+import com.yunzia.hyperstar.hook.app.systemui.controlcenter.QSHeaderView
 import com.yunzia.hyperstar.hook.app.plugin.QSListView
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaCoverBackground
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaDefaultApp

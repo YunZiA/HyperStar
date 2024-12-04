@@ -447,7 +447,7 @@ class QSControlCenterColor :BaseHooker() {
                 override fun afterHookedMethod(param: MethodHookParam?) {
                     super.afterHookedMethod(param)
                     val thisObj = param?.thisObject
-                    val sliderHolder = XposedHelpers.callMethod(thisObj,"getSlider")
+                    val sliderHolder = XposedHelpers.callMethod(thisObj,"getSliderHolder")
                     val itemView = XposedHelpers.getObjectField(sliderHolder,"itemView") as View
                     val icon = itemView.findViewByIdName("icon") as ImageView
                     val drawable = icon.drawable
@@ -652,37 +652,77 @@ class QSControlCenterColor :BaseHooker() {
 
                 val states = XposedHelpers.callMethod(Companion,"isRestrictedCompat",sta) as Boolean
 
-                val state = XposedHelpers.getObjectField(sta,"state")
+                val state = XposedHelpers.getIntField(sta,"state")
                 thisObj as LinearLayout
                 val title = thisObj.findViewByIdName("title") as TextView
 
                 val status = thisObj.findViewByIdName("status") as TextView
 
-                if (state == 0) {
+                starLog.log("status = $state")
 
-                    if (disablePrimaryColor != "null") title.setTextColor(Color.parseColor(disablePrimaryColor))
+                when(state){
 
-                    if (disableSecondaryColor != "null") status.setTextColor(Color.parseColor(disableSecondaryColor))
 
-                } else if (state == 1 && states) {
+                    1->{
+                        if (disablePrimaryColor != "null") title.setTextColor(Color.parseColor(disablePrimaryColor))
 
-                    if (restrictedPrimaryColor != "null") title.setTextColor(Color.parseColor(restrictedPrimaryColor))
+                        if (disableSecondaryColor != "null") status.setTextColor(Color.parseColor(disableSecondaryColor))
 
-                    if (restrictedSecondaryColor != "null") status.setTextColor(Color.parseColor(restrictedSecondaryColor))
+                    }
 
-                } else if (state != 2) {
+                    2->{
 
-                    if (unavailablePrimaryColor != "null") title.setTextColor(Color.parseColor(unavailablePrimaryColor))
+                        if (enablePrimaryColor != "null") title.setTextColor(Color.parseColor(enablePrimaryColor))
 
-                    if (unavailableSecondaryColor != "null") status.setTextColor(Color.parseColor(unavailableSecondaryColor))
+                        if (enableSecondaryColor != "null") status.setTextColor(Color.parseColor(enableSecondaryColor))
 
-                } else {
+                    }
 
-                    if (enablePrimaryColor != "null") title.setTextColor(Color.parseColor(enablePrimaryColor))
+                    else->{
 
-                    if (enableSecondaryColor != "null") status.setTextColor(Color.parseColor(enableSecondaryColor))
+                        if (states) {
+
+                            if (restrictedPrimaryColor != "null") title.setTextColor(Color.parseColor(restrictedPrimaryColor))
+
+                            if (restrictedSecondaryColor != "null") status.setTextColor(Color.parseColor(restrictedSecondaryColor))
+
+                        }else{
+
+                            if (unavailablePrimaryColor != "null") title.setTextColor(Color.parseColor(unavailablePrimaryColor))
+
+                            if (unavailableSecondaryColor != "null") status.setTextColor(Color.parseColor(unavailableSecondaryColor))
+
+                        }
+
+                    }
 
                 }
+
+//                if (state == 0) {
+//
+//                    if (disablePrimaryColor != "null") title.setTextColor(Color.parseColor(disablePrimaryColor))
+//
+//                    if (disableSecondaryColor != "null") status.setTextColor(Color.parseColor(disableSecondaryColor))
+//
+//                } else if (state == 1 && states) {
+//
+//                    if (restrictedPrimaryColor != "null") title.setTextColor(Color.parseColor(restrictedPrimaryColor))
+//
+//                    if (restrictedSecondaryColor != "null") status.setTextColor(Color.parseColor(restrictedSecondaryColor))
+//
+//                } else if (state != 2) {
+//
+//                    if (unavailablePrimaryColor != "null") title.setTextColor(Color.parseColor(unavailablePrimaryColor))
+//
+//                    if (unavailableSecondaryColor != "null") status.setTextColor(Color.parseColor(unavailableSecondaryColor))
+//
+//                } else {
+//
+//                    if (enablePrimaryColor != "null") title.setTextColor(Color.parseColor(enablePrimaryColor))
+//
+//                    if (enableSecondaryColor != "null") status.setTextColor(Color.parseColor(enableSecondaryColor))
+//
+//                }
             }
 
         })

@@ -45,7 +45,7 @@ class LanguageHelper {
             val context = activity.baseContext
             val resources = context.resources
             val configuration = resources.configuration
-            val locale = Locale(language, country)
+            val locale = Locale(language.toString(), country.toString())
             val lastLocale = configuration.locales[0]
 
             Locale.setDefault(locale)
@@ -96,7 +96,7 @@ class LanguageHelper {
 
         private fun getLanguage(language: String?, country: String?):Locale {
 
-            return Locale(language, country)
+            return Locale(language.toString(), country.toString())
         }
 
         fun getIndexLanguage(index: Int):Locale {

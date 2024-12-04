@@ -22,7 +22,7 @@
         <item>Không làm phiền</item>
         <item>Tiết kiệm pin</item>
         <item>Mi AI Translate</item>
-        <item>Phụ đề AI </item>
+        <item>Phụ đề AI</item>
         <item>Sạc ngược không dây</item>
         <item>Dolby Atoms</item>
         <item>Chiếu</item>
@@ -49,6 +49,11 @@
         <item>Separate</item>
         <item>Global</item>
     </string-array>
+    <string-array name="is_device_center_mode_entire">
+        <item>Mặc định</item>
+        <item>Luôn tắt</item>
+        <item>Giới hạn một dòng</item>
+    </string-array>
     <string-array name="is_list_label_mode_entire">
         <item>Mặc định</item>
         <item>Bên trong</item>
@@ -59,6 +64,11 @@
         <item>Tên thiết bị</item>
     </string-array>
     <string-array name="is_super_blur_entire">
+        <item>Mặc định</item>
+        <item>Luôn tắt</item>
+        <item>Luôn bật</item>
+    </string-array>
+    <string-array name="is_wordless_mode_entire">
         <item>Mặc định</item>
         <item>Luôn tắt</item>
         <item>Luôn bật</item>

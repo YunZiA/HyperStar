@@ -26,7 +26,7 @@ fun GridTabView(
 
     val updatedOnColorChanged by rememberUpdatedState(onColorChanged)
 
-    Column() {
+    Column {
         Text(
             text = stringResource(R.string.Hue),
             color = Color(0xFF74777F),
@@ -36,7 +36,8 @@ fun GridTabView(
 
         ColorGrid(
             modifier = Modifier
-                .height(200.dp),
+                .height(200.dp)
+            ,
             color = color.value.copy(alpha = 1f).toColor()
 
         ){

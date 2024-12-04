@@ -1,10 +1,14 @@
 package yunzia.colorpicker
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
@@ -14,6 +18,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.TextUnit
@@ -23,6 +29,7 @@ import com.yunzia.hyperstar.R
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
+import yunzia.utils.DensityUtil
 
 
 @Composable
@@ -32,6 +39,10 @@ fun ClassicColorPicker(
     onColorChanged: (HsvColor) -> Unit
 ) {
 
+    val width = LocalView.current.width
+    val res = LocalContext.current.resources
+
+    Log.d("ggc", "ClassicColorPicker: $width + ${DensityUtil.pxToDp(res,1006f)}")
     val coroutineScope = rememberCoroutineScope()
 
     val pagerState = rememberPagerState(pageCount = { 2 })

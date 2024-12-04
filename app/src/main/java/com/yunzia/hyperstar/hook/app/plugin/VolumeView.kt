@@ -8,12 +8,10 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Handler
 import android.os.Looper
-import android.util.DisplayMetrics
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import com.yunzia.hyperstar.hook.base.BaseHooker
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
@@ -472,13 +470,25 @@ class VolumeView: BaseHooker() {
 
         val MiuiVolumeSeekBar = XposedHelpers.findClass("com.android.systemui.miui.volume.MiuiVolumeSeekBar",classLoader)
 
+
+
         XposedHelpers.findAndHookMethod(MiuiVolumeSeekBar,"onTouchEvent",MotionEvent::class.java,object :XC_MethodHook(){
             override fun afterHookedMethod(param: MethodHookParam?) {
                 super.afterHookedMethod(param)
                 val thisObj = param?.thisObject
-
                 val mSeekBarOnclickListener =
                     XposedHelpers.getObjectField(thisObj, "mSeekBarOnclickListener")
+
+                val handler = Handler(Looper.getMainLooper())
+                val mLongPressRunnable = Runnable {
+                    val mMoveY = XposedHelpers.getFloatField(thisObj, "mMoveY")
+                    if (longClick){
+                        thisObj as View
+                        //thisObj.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                        XposedHelpers.callMethod(mSeekBarOnclickListener, "onClick")
+                    }
+                }
+
                 if (mSeekBarOnclickListener != null) {
                     val motionEvent = param?.args?.get(0) as MotionEvent
 
@@ -489,24 +499,18 @@ class VolumeView: BaseHooker() {
                             longClick = true
                             XposedHelpers.setLongField(thisObj,"mCurrentMS",0L)
 
-                            val handler = Handler(Looper.getMainLooper())
-                            handler.postDelayed({
-                                val mMoveY = XposedHelpers.getFloatField(thisObj, "mMoveY")
-                                if (longClick){
-                                    thisObj as View
-                                    //thisObj.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                                    XposedHelpers.callMethod(mSeekBarOnclickListener, "onClick")
-                                }
-                            }, 300L)
+                            handler.postDelayed(mLongPressRunnable, 300L)
 
                         }
                         1-> {
                             longClick = false
+                            handler.removeCallbacks(mLongPressRunnable)
                             XposedHelpers.setLongField(thisObj,"mCurrentMS",0L)
                         }
 
                         2 -> {
                             longClick = false
+                            handler.removeCallbacks(mLongPressRunnable)
 
 
                         }

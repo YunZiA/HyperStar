@@ -1,10 +1,10 @@
 package com.yunzia.hyperstar.hook.base
 
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.content.res.XModuleResources
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.app.plugin.DeviceCenterRow
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTile
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTileList
 import com.yunzia.hyperstar.hook.app.plugin.QSClockAnim
@@ -12,7 +12,6 @@ import com.yunzia.hyperstar.hook.app.plugin.QSControlCenterColor
 import com.yunzia.hyperstar.hook.app.plugin.QSControlCenterList
 import com.yunzia.hyperstar.hook.app.plugin.QSEditButton
 import com.yunzia.hyperstar.hook.app.plugin.QSHeaderMessage
-import com.yunzia.hyperstar.hook.app.systemui.controlcenter.QSHeaderView
 import com.yunzia.hyperstar.hook.app.plugin.QSListView
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaCoverBackground
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaDefaultApp
@@ -25,8 +24,13 @@ import com.yunzia.hyperstar.hook.app.plugin.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurWidgetManager
 import com.yunzia.hyperstar.hook.app.plugin.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.VolumeView
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
+import com.yunzia.hyperstar.hook.app.systemui.controlcenter.QSHeaderView
 import com.yunzia.hyperstar.hook.tool.starLog
 import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XC_MethodHook.MethodHookParam
+import de.robv.android.xposed.XposedBridge
+import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
 
@@ -35,11 +39,13 @@ class InitSystemUIPluginHook() : BaseHooker() {
     private val qsMediaCoverBackground: QSMediaCoverBackground
     private val qsControlCenterColor: QSControlCenterColor
     private val powerMenu: PowerMenu
+    private val deviceCenterRow: DeviceCenterRow
 
     init {
         qsMediaCoverBackground = QSMediaCoverBackground()
         qsControlCenterColor = QSControlCenterColor()
         powerMenu = PowerMenu()
+        deviceCenterRow = DeviceCenterRow()
 
     }
 
@@ -73,6 +79,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         doResources(powerMenu)
         doResources(QSMiplayAppIconRadius())
         doResources(qsMediaCoverBackground)
+        doResources(deviceCenterRow)
 
 
 
@@ -84,27 +91,15 @@ class InitSystemUIPluginHook() : BaseHooker() {
 
     private fun startSystemUIPluginHook(){
 
-        hookAllMethods(classLoader, "com.android.systemui.shared.plugins.PluginInstance\$Factory", "create",object : MethodHook {
-                override fun before(param: XC_MethodHook.MethodHookParam) {
-                    if (param.args.isNotEmpty() && param.args[0] is Context) {
-                        mContext = param.args[0] as Context
-                    }
-                }
 
-                override fun after(param: XC_MethodHook.MethodHookParam) {
+        val PluginContextWrapper = XposedHelpers.findClass("com.android.systemui.shared.plugins.PluginActionManager\$PluginContextWrapper",classLoader)
 
-                }
-            }
-        )
-        hookAllMethods(classLoader,
-            "com.android.systemui.shared.plugins.PluginInstance\$Factory$\$ExternalSyntheticLambda0",
-            "get",object : MethodHook {
-            override fun before(param: XC_MethodHook.MethodHookParam) {
+        XposedBridge.hookAllConstructors(PluginContextWrapper,object :XC_MethodHook(){
+            override fun afterHookedMethod(param: MethodHookParam?) {
+                super.afterHookedMethod(param)
+                val thisObj = param?.thisObject
+                val pathClassLoader = XposedHelpers.getObjectField(thisObj,"mClassLoader") as? ClassLoader // 尝试将结果安全地转换为ClassLoader
 
-            }
-
-            override fun after(param: XC_MethodHook.MethodHookParam) {
-                val pathClassLoader = param.getResult() as? ClassLoader // 尝试将结果安全地转换为ClassLoader
                 if (!ishHooked && pathClassLoader != null) {
                     starLog.log("Loaded pluginClassLoader: $pathClassLoader") // 直接使用pathClassLoader
                     doHook(pathClassLoader) // 直接传递pathClassLoader给doHook函数
@@ -114,8 +109,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
                     starLog.log("Failed to load pluginClassLoader: null returned")
                 }
             }
-        }
-        )
+        })
 
     }
 
@@ -143,7 +137,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
         doSecMethods(VolumeColumnProgressRadius())
         doSecMethods(powerMenu)
         doSecMethods(VolumeView())
-        doSecMethods(DeviceCenterRow())
+        doSecMethods(deviceCenterRow)
     }
 
 

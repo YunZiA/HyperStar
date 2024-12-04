@@ -1,19 +1,22 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
+import android.R
 import android.content.res.XModuleResources
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.base.BaseHooker
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
+import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LayoutInflated
-import java.util.ArrayList
+
 
 class DeviceCenterRow:BaseHooker() {
 
@@ -46,8 +49,6 @@ class DeviceCenterRow:BaseHooker() {
 
         }
 
-
-        //res.setReplacement(plugin,"dimen","device_center_device_item_width",res.getDimensionPixelSize(device_center_item_height))
         if (deviceCenterSpanSize < 4){
             resparam?.res?.hookLayout(plugin,"layout","device_center_device_item",object : XC_LayoutInflated(){
                 override fun handleLayoutInflated(liparam: LayoutInflatedParam?) {
@@ -56,6 +57,7 @@ class DeviceCenterRow:BaseHooker() {
                     val lp = root.layoutParams
                     lp.width = lp.height
                     root.layoutParams = lp
+                    starLog.log("root.layoutParams ${root.layoutParams}")
 //                for (i in root.childCount) {
 //                }
                 }
@@ -70,11 +72,72 @@ class DeviceCenterRow:BaseHooker() {
     override fun doMethods(classLoader: ClassLoader?) {
         super.doMethods(classLoader)
 
+        if (deviceCenterSpanSize < 4){
+            val DetailViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.DetailViewHolder",classLoader)
+            val DeviceItemViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.DeviceItemViewHolder",classLoader)
+
+            val CommonUtils = XposedHelpers.findClass("miui.systemui.util.CommonUtils",classLoader)
+
+
+            XposedHelpers.findAndHookMethod(DetailViewHolder,"onConfigurationChanged",Int::class.java,object : XC_MethodHook() {
+                override fun afterHookedMethod(param: MethodHookParam?) {
+                    super.afterHookedMethod(param)
+                    val thisObj = param?.thisObject
+
+                    val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
+                    val res = itemView.resources
+
+                    val deviceCenterItemHeight = res.getIdentifier("device_center_item_height","dimen",plugin)
+                    val size = res.getDimensionPixelSize(deviceCenterItemHeight)
+
+                    val INSTANCE = XposedHelpers.getStaticObjectField(CommonUtils,"INSTANCE")
+                    XposedHelpers.callStaticMethod(
+                        CommonUtils,
+                        "setLayoutSize\$default",
+                        INSTANCE,
+                        itemView,
+                        size,
+                        size,
+                        false,
+                        4,
+                        null
+                    )
+
+                }
+
+            })
+
+            XposedHelpers.findAndHookMethod(DeviceItemViewHolder,"onConfigurationChanged",Int::class.java,object : XC_MethodHook() {
+                override fun afterHookedMethod(param: MethodHookParam?) {
+                    super.afterHookedMethod(param)
+                    val thisObj = param?.thisObject
+
+                    val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
+                    val res = itemView.resources
+
+                    val deviceCenterItemHeight = res.getIdentifier("device_center_item_height","dimen",plugin)
+                    val size = res.getDimensionPixelSize(deviceCenterItemHeight)
+
+                    val INSTANCE = XposedHelpers.getStaticObjectField(CommonUtils,"INSTANCE")
+                    XposedHelpers.callStaticMethod(
+                        CommonUtils,
+                        "setLayoutSize\$default",
+                        INSTANCE,
+                        itemView,
+                        size,
+                        size,
+                        false,
+                        4,
+                        null
+                    )
+
+                }
+
+            })
+
+        }
 
         val a = XposedHelpers.findClass("miui.systemui.devicecenter.a",classLoader)
-
-
-
 
         val DeviceCenterCardController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.DeviceCenterCardController",classLoader)
 

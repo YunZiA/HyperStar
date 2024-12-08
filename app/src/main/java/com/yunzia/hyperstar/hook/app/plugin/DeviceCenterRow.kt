@@ -73,10 +73,10 @@ class DeviceCenterRow:BaseHooker() {
         super.doMethods(classLoader)
 
         if (deviceCenterSpanSize < 4){
-            val DetailViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.DetailViewHolder",classLoader)
-            val DeviceItemViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.DeviceItemViewHolder",classLoader)
+            val DetailViewHolder = findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.DetailViewHolder",classLoader)
+            val DeviceItemViewHolder = findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.DeviceItemViewHolder",classLoader)
 
-            val CommonUtils = XposedHelpers.findClass("miui.systemui.util.CommonUtils",classLoader)
+            val CommonUtils = findClass("miui.systemui.util.CommonUtils",classLoader)
 
 
             XposedHelpers.findAndHookMethod(DetailViewHolder,"onConfigurationChanged",Int::class.java,object : XC_MethodHook() {
@@ -137,11 +137,11 @@ class DeviceCenterRow:BaseHooker() {
 
         }
 
-        val a = XposedHelpers.findClass("miui.systemui.devicecenter.a",classLoader)
+        val a = findClass("miui.systemui.devicecenter.a",classLoader)
 
-        val DeviceCenterCardController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.DeviceCenterCardController",classLoader)
+        val DeviceCenterCardController = findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.DeviceCenterCardController",classLoader)
 
-        val DeviceCenterEntryViewHolderMode = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.devicecenter.entry.DeviceCenterEntryViewHolder\$Mode",classLoader)
+        val DeviceCenterEntryViewHolderMode = findClass("miui.systemui.controlcenter.panel.main.devicecenter.entry.DeviceCenterEntryViewHolder\$Mode",classLoader)
 
         if (isDeviceCenterMode != 0 || deviceCenterSpanSize !=4){
 

@@ -238,5 +238,6 @@
     <string name="fast_reboot_systemui_summary">是否快速重启系统界面？</string>
     <string name="empty_device">空设备状态</string>
     <string name="device_item">设备项</string>
+    <string name="recovery_default">恢复默认</string>
 
 </resources>

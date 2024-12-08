@@ -24,7 +24,7 @@ fun XSuperSwitch(
 ) {
     val state: MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) }
     SuperSwitch(
-        modifier = Modifier.bounceAnim(),
+        modifier = Modifier,
         title = title,
         summary = summary,
         checked = state.value,
@@ -50,7 +50,7 @@ fun XSuperSwitch(
 ) {
     val state: MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) }
     SuperSwitch(
-        modifier = Modifier.bounceAnim(),
+        modifier = Modifier,
         title = title,
         summary = summary,
         checked = state.value,
@@ -77,7 +77,7 @@ fun XSuperSwitch(
 ) {
 
     SuperSwitch(
-        modifier = Modifier.bounceAnim(),
+        modifier = Modifier,
         title = title,
         summary = summary,
         checked = state.value,
@@ -102,7 +102,7 @@ fun PMiuixSuperSwitch(
 
     var MiuixSuperSwitchState by remember { mutableStateOf(PreferencesUtil.getBoolean(key,defValue)) }
     SuperSwitch(
-        modifier = Modifier.bounceAnim(),
+        modifier = Modifier,
         title = title,
         checked = MiuixSuperSwitchState,
         insideMargin = PaddingValues(24.dp, 16.dp),

@@ -38,7 +38,7 @@ class QSCardTile : BaseHooker() {
         }
 
 
-        val onFinishInflate  = XposedHelpers.findClassIfExists("miui.systemui.controlcenter.qs.tileview.QSCardItemView\$onFinishInflate\$1",classLoader)
+        val onFinishInflate  = findClass("miui.systemui.controlcenter.qs.tileview.QSCardItemView\$onFinishInflate\$1",classLoader)
 
 
         XposedHelpers.findAndHookMethod(onFinishInflate,"invoke",View::class.java,object : XC_MethodHook(){

@@ -56,7 +56,14 @@ public abstract class BaseHooker {
     }
 
     public void doSecMethods(BaseHooker baseHooker)  {
-        baseHooker.doMethods(secClassLoader);
+        try{
+
+            baseHooker.doMethods(secClassLoader);
+
+        } catch (Exception e) {
+            starLog.log(e.getMessage());
+            return;
+        }
 
     }
 
@@ -89,17 +96,24 @@ public abstract class BaseHooker {
         mPath=startupParam.modulePath;
     }
 
+    public Class<?> findClass( String className,ClassLoader classLoader){
 
-    public boolean classIsExist(XC_LoadPackage.LoadPackageParam lpparam, String className){
-        Class<?> hookClass= XposedHelpers.findClass(className,lpparam.classLoader);
-        return hookClass != null;
+        Class<?> cc = XposedHelpers.findClassIfExists(className,classLoader);
+        if (cc == null){
+            starLog.logE(className+" is not find");
+        }
+        return cc;
     }
 
     public void hookAllMethods (ClassLoader classLoader,
                                 String className,
                                 String methodName,
                                 MethodHook methodHook){
-        Class<?> hookClass= XposedHelpers.findClass(className,classLoader);
+        Class<?> hookClass= XposedHelpers.findClassIfExists(className,classLoader);
+        if (hookClass == null){
+            starLog.logE(className+" is not find");
+            return;
+        }
         XposedBridge.hookAllMethods(hookClass, methodName, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -113,6 +127,32 @@ public abstract class BaseHooker {
                 methodHook.after(param);
             }
         });
+
+
+    }
+
+    public void hookAllMethods (Class<?> hookClass,
+                                String methodName,
+                                MethodHook methodHook){
+        if (hookClass == null){
+            starLog.logE(methodName+"'s class is null");
+            return;
+        }
+        XposedBridge.hookAllMethods(hookClass, methodName, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                methodHook.before(param);
+            }
+
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                methodHook.after(param);
+            }
+        });
+
+
 
 
     }

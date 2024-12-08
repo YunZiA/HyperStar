@@ -41,7 +41,7 @@ fun SuperSwitch(
     if (isChecked != checked) isChecked = checked
 
     BasicComponent(
-        modifier = modifier.bounceAnim(),
+        modifier = modifier.bounceAnim(enabled),
         insideMargin = insideMargin,
         title = title,
         titleColor = titleColor,

@@ -1,18 +1,14 @@
 package com.yunzia.hyperstar.ui.pagers
 
-import android.util.Log
 import android.view.HapticFeedbackConstants
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -25,18 +21,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.NavPager
-import com.yunzia.hyperstar.ui.base.SuperIntentArrow
-import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.enums.EventState
-import com.yunzia.hyperstar.ui.base.firstClasses
 import com.yunzia.hyperstar.ui.base.modifier.bounceClick
 import com.yunzia.hyperstar.ui.base.modifier.bounceScale
 import com.yunzia.hyperstar.utils.PreferencesUtil
-import com.yunzia.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.basic.Text

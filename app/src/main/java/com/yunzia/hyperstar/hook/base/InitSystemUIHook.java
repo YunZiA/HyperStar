@@ -41,10 +41,8 @@ public class InitSystemUIHook extends BaseHooker {
     @Override
     public void doMethodsHook(ClassLoader classLoader) {
         super.doMethodsHook(classLoader);
-        doBaseMethods(initSystemUIPluginHook);
         doBaseMethods(new NavigationBarBackground());
-
-        initSystemUIPluginHook.doMethods(classLoader);
+        doBaseMethods(initSystemUIPluginHook);
 
         doTestHook();
     }

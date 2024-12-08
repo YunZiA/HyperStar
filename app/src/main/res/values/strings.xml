@@ -238,4 +238,5 @@
     <string name="clear_fail">Clearing failure！</string>
     <string name="file_not_exist">File does not exist</string>
     <string name="restore_success">Restore success！！</string>
+    <string name="recovery_default">restore defaults</string>
 </resources>

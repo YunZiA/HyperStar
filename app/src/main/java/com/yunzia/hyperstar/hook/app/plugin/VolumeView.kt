@@ -414,7 +414,7 @@ class VolumeView: BaseHooker() {
 
 
 
-        val MiuiVolumeDialogMotion = XposedHelpers.findClass("com.android.systemui.miui.volume.MiuiVolumeDialogMotion",classLoader)
+        val MiuiVolumeDialogMotion = findClass("com.android.systemui.miui.volume.MiuiVolumeDialogMotion",classLoader)
 
         XposedBridge.hookAllConstructors(MiuiVolumeDialogMotion,object :XC_MethodHook(){
             override fun afterHookedMethod(param: MethodHookParam?) {

@@ -37,7 +37,6 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.NavPager
-import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.enums.EventState
 import com.yunzia.hyperstar.ui.base.modifier.bounceClick
 import com.yunzia.hyperstar.ui.base.modifier.bounceScale

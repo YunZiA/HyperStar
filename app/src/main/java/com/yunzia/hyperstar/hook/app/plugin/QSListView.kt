@@ -61,61 +61,73 @@ class QSListView : BaseHooker() {
         if ( labelMode != 0 ){
             val BrightnessPanelTilesController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.brightness.BrightnessPanelTilesController",classLoader)
 
+
+//            XposedHelpers.findAndHookMethod(BrightnessPanelTilesController,"getTileSpecs",object :XC_MethodHook(){
+//                override fun afterHookedMethod(param: MethodHookParam?) {
+//                    super.afterHookedMethod(param)
+//                    val list = param?.result as List<*>
+//                    list.toMutableList().removeLast()
+////                    list.add("reduce_brightness")
+////
+////                    list.add("reduce_brightness")
+//                    param.result = list
+//                    starLog.log("${param.result}")
+//                }
+//            })
+            XposedHelpers.findAndHookMethod(BrightnessPanelTilesController,"getTileSpecs",object :XC_MethodReplacement(){
+                override fun replaceHookedMethod(param: MethodHookParam?): Any {
+
+                    val list = listOf("night","autobrightness",  "papermode")
+                    val list2 = listOf("autobrightness", "night", "reduce_brightness")
+                    return list
+                }
+
+            })
+
             XposedHelpers.findAndHookMethod(BrightnessPanelTilesController,"getQSTileItemView",String::class.java,object :XC_MethodHook(){
                 override fun afterHookedMethod(param: MethodHookParam?) {
                     super.afterHookedMethod(param)
                     val inflate = param?.result as ViewGroup
-                    val iconFrame = inflate.findViewByIdName("icon_frame") as FrameLayout
-                    val iconView = iconFrame.getChildAt(0) as LinearLayout
-                    val icon = iconView.getChildAt(0) as ImageView
-                    val dra = icon.drawable
-                    starLog.log("${dra}")
-                    if (dra is LayerDrawable){
+                    val icon = inflate.findViewByIdName("icon_frame") as FrameLayout
+                    val label = inflate.findViewByIdName("tile_label") as TextView
 
-                        val num = dra.numberOfLayers
+                    if (labelMode == 1){
+                        inflate.removeView(label)
+                        inflate.removeView(icon)
+                        inflate.addView(icon,0)
+                        inflate.addView(label,1)
+                        label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9f)
 
-                        starLog.log("${num}")
+                        val layoutParam =  label.layoutParams
+                        icon.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+                        layoutParam.width = icon.measuredWidth/9*8
+                        label.layoutParams = layoutParam
+                    } else if (labelMode == 2){
+                        inflate.removeView(label)
+                        inflate.removeView(icon)
+                        inflate.addView(icon,0)
+                        inflate.addView(label,1)
 
-                        val index = num - 1
-                        val disabledBg = dra.getDrawable(0)
+                        label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
+                        val layoutParam =  label.layoutParams
+                        inflate.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+                        starLog.log("${inflate.layoutParams.width}+${inflate.measuredWidth}")
+                        val width = inflate.measuredWidth*labelWidth
+                        layoutParam.width = width.toInt()
+                        label.layoutParams = layoutParam
 
-                        val invisibleDrawableCompat = dra.getDrawable(index)
-
-                        val icons: LayerDrawable
-
-                        when (num) {
-                            2 -> {
-                                icons = LayerDrawable(arrayOf(disabledBg, invisibleDrawableCompat))
-
-                            }
-                            3 -> {
-                                val enabledBg = dra.getDrawable(1)
-                                icons = LayerDrawable(
-                                    arrayOf(
-                                        disabledBg,
-                                        enabledBg,
-                                        invisibleDrawableCompat
-                                    )
-                                )
-
-                            }
-                            else -> {
-                                return
-                            }
-                        }
-
-                        val height  = dra.getLayerHeight(index)
-                        val width = dra.getLayerWidth(index)
-
-                        icons.setLayerGravity(index, Gravity.CENTER)
-                        icons.setLayerInsetBottom(index, 0)
-                        icons.setLayerSize(index, width, height)
-
-                        icon.setImageDrawable(icons)
                     }
-                    param.result = inflate
+                    if(labelMarquee){
+                        label.ellipsize = TextUtils.TruncateAt.MARQUEE
+                        label.focusable = View.NOT_FOCUSABLE
+                        label.isSelected = true
+                        label.setSingleLine()
+                    }
+
+
 
                 }
+
             })
 
         }
@@ -567,16 +579,12 @@ class QSListView : BaseHooker() {
                         return
                     }
                     val thisObj = param?.thisObject
-                    //val disabledBg = XposedHelpers.getObjectField(thisObj,"disabledBg") as Drawable
-
-                    val pluginContext: Context =
-                        XposedHelpers.getObjectField(param?.thisObject, "pluginContext") as Context;
-                    val Icon: ImageView =
-                        XposedHelpers.getObjectField(thisObj, "icon") as ImageView;
 
                     val z = param?.args?.get(1) as Boolean
 
                     if (z) {
+                        val Icon: ImageView =
+                            XposedHelpers.getObjectField(thisObj, "icon") as ImageView;
                         val combine = Icon.drawable
 
                         if (combine !is LayerDrawable) {
@@ -585,48 +593,42 @@ class QSListView : BaseHooker() {
 
                         val num = combine.numberOfLayers
 
-                        val index = num - 1
-                        val disabledBg = combine.getDrawable(0)
-
-                        val invisibleDrawableCompat = combine.getDrawable(index)
-
-                        val icons: LayerDrawable
 
                         when (num) {
                             2 -> {
-                                icons = LayerDrawable(arrayOf(disabledBg, invisibleDrawableCompat))
+                                //icons = LayerDrawable(arrayOf(disabledBg, invisibleDrawableCompat))
 
                             }
                             3 -> {
+                                val disabledBg = combine.getDrawable(0)
+
+                                val invisibleDrawableCompat = combine.getDrawable(2)
                                 val enabledBg = combine.getDrawable(1)
-                                icons = LayerDrawable(
+                                val icons = LayerDrawable(
                                     arrayOf(
                                         disabledBg,
                                         enabledBg,
                                         invisibleDrawableCompat
                                     )
                                 )
+                                val height  = combine.getLayerHeight(2)
+                                val width = combine.getLayerWidth(2)
+                                val tileSize = XposedHelpers.getFloatField(thisObj,"tileSize").toInt()
 
-                            }
-                            else -> {
-                                return
+                                icons.setLayerGravity(2, Gravity.CENTER)
+                                if (listIconTop != 0f){
+                                    icons.setLayerInsetBottom(2,
+                                        (tileSize*listIconTop).toInt()
+                                    )
+
+                                }
+                                icons.setLayerSize(2, width, height)
+
+                                Icon.setImageDrawable(icons)
+
                             }
                         }
 
-                        val height  = combine.getLayerHeight(index)
-                        val width = combine.getLayerWidth(index)
-                        val tileSize = XposedHelpers.getFloatField(thisObj,"tileSize").toInt()
-
-                        icons.setLayerGravity(index, Gravity.CENTER)
-                        if (listIconTop != 0f){
-                            icons.setLayerInsetBottom(index,
-                                (tileSize*listIconTop).toInt()
-                            )
-
-                        }
-                        icons.setLayerSize(index, width, height)
-
-                        Icon.setImageDrawable(icons)
 
 
                     }

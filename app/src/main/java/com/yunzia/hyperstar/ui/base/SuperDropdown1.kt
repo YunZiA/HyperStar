@@ -37,7 +37,7 @@ fun XSuperDropdown(
     val dropdownOptions = stringArrayResource(id = option).toList()
 
     SuperDropdown(
-        modifier = Modifier.bounceAnim(),
+        modifier = Modifier.bounceAnim(enabled),
         title = title,
         summary = summary,
         items = dropdownOptions,
@@ -66,7 +66,7 @@ fun XSuperDialogDropdown(
     val dropdownOptions = stringArrayResource(id = option).toList()
 
     SuperDropdown(
-        modifier = Modifier.bounceAnim(),
+        modifier = Modifier.bounceAnim(enabled),
         title = title,
         summary = summary,
         items = dropdownOptions,

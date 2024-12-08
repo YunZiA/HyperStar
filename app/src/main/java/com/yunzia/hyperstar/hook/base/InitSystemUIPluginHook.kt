@@ -61,16 +61,16 @@ class InitSystemUIPluginHook() : BaseHooker() {
     ) {
         super.doResources(resparam, modRes)
 
-        if (resparam!!.packageName != "miui.systemui.plugin") return
+        if (resparam!!.packageName != plugin) return
 
         resparam.res.setReplacement(
-            "miui.systemui.plugin",
+            plugin,
             "drawable",
             "ic_header_settings",
             modRes!!.fwd(R.drawable.ic_header_settings)
         )
         resparam.res.setReplacement(
-            "miui.systemui.plugin",
+            plugin,
             "drawable",
             "ic_controls_edit",
             modRes.fwd(R.drawable.ic_controls_edit)
@@ -91,14 +91,14 @@ class InitSystemUIPluginHook() : BaseHooker() {
 
     private fun startSystemUIPluginHook(){
 
+        val pluginInstance = findClass("com.android.systemui.shared.plugins.PluginInstance",classLoader)
 
-        val PluginContextWrapper = XposedHelpers.findClass("com.android.systemui.shared.plugins.PluginActionManager\$PluginContextWrapper",classLoader)
-
-        XposedBridge.hookAllConstructors(PluginContextWrapper,object :XC_MethodHook(){
+        XposedHelpers.findAndHookMethod(pluginInstance,"loadPlugin",object : XC_MethodHook(){
             override fun afterHookedMethod(param: MethodHookParam?) {
                 super.afterHookedMethod(param)
                 val thisObj = param?.thisObject
-                val pathClassLoader = XposedHelpers.getObjectField(thisObj,"mClassLoader") as? ClassLoader // 尝试将结果安全地转换为ClassLoader
+                val mPluginContext = XposedHelpers.getObjectField(thisObj,"mPluginContext")
+                val pathClassLoader = XposedHelpers.getObjectField(mPluginContext,"mClassLoader") as? ClassLoader
 
                 if (!ishHooked && pathClassLoader != null) {
                     starLog.log("Loaded pluginClassLoader: $pathClassLoader") // 直接使用pathClassLoader
@@ -108,8 +108,11 @@ class InitSystemUIPluginHook() : BaseHooker() {
                     // 如果需要，处理pathClassLoader为null的情况
                     starLog.log("Failed to load pluginClassLoader: null returned")
                 }
+
+
             }
         })
+
 
     }
 
@@ -132,7 +135,6 @@ class InitSystemUIPluginHook() : BaseHooker() {
         doSecMethods(QSHeaderMessage())
         doSecMethods(QSHeaderView())
         doSecMethods(QSEditButton())
-        doSecMethods(QSClockAnim())
         doSecMethods(QSControlCenterList())
         doSecMethods(VolumeColumnProgressRadius())
         doSecMethods(powerMenu)

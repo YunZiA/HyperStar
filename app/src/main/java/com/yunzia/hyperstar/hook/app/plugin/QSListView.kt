@@ -2,6 +2,7 @@ package com.yunzia.hyperstar.hook.app.plugin
 
 import android.content.ContentResolver
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
@@ -84,51 +85,51 @@ class QSListView : BaseHooker() {
 
             })
 
-            XposedHelpers.findAndHookMethod(BrightnessPanelTilesController,"getQSTileItemView",String::class.java,object :XC_MethodHook(){
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    super.afterHookedMethod(param)
-                    val inflate = param?.result as ViewGroup
-                    val icon = inflate.findViewByIdName("icon_frame") as FrameLayout
-                    val label = inflate.findViewByIdName("tile_label") as TextView
-
-                    if (labelMode == 1){
-                        inflate.removeView(label)
-                        inflate.removeView(icon)
-                        inflate.addView(icon,0)
-                        inflate.addView(label,1)
-                        label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9f)
-
-                        val layoutParam =  label.layoutParams
-                        icon.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-                        layoutParam.width = icon.measuredWidth/9*8
-                        label.layoutParams = layoutParam
-                    } else if (labelMode == 2){
-                        inflate.removeView(label)
-                        inflate.removeView(icon)
-                        inflate.addView(icon,0)
-                        inflate.addView(label,1)
-
-                        label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
-                        val layoutParam =  label.layoutParams
-                        inflate.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-                        starLog.log("${inflate.layoutParams.width}+${inflate.measuredWidth}")
-                        val width = inflate.measuredWidth*labelWidth
-                        layoutParam.width = width.toInt()
-                        label.layoutParams = layoutParam
-
-                    }
-                    if(labelMarquee){
-                        label.ellipsize = TextUtils.TruncateAt.MARQUEE
-                        label.focusable = View.NOT_FOCUSABLE
-                        label.isSelected = true
-                        label.setSingleLine()
-                    }
-
-
-
-                }
-
-            })
+//            XposedHelpers.findAndHookMethod(BrightnessPanelTilesController,"getQSTileItemView",String::class.java,object :XC_MethodHook(){
+//                override fun afterHookedMethod(param: MethodHookParam?) {
+//                    super.afterHookedMethod(param)
+//                    val inflate = param?.result as ViewGroup
+//                    val icon = inflate.findViewByIdName("icon_frame") as FrameLayout
+//                    val label = inflate.findViewByIdName("tile_label") as TextView
+//
+//                    if (labelMode == 1){
+//                        inflate.removeView(label)
+//                        inflate.removeView(icon)
+//                        inflate.addView(icon,0)
+//                        inflate.addView(label,1)
+//                        label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9f)
+//
+//                        val layoutParam =  label.layoutParams
+//                        icon.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+//                        layoutParam.width = icon.measuredWidth/9*8
+//                        label.layoutParams = layoutParam
+//                    } else if (labelMode == 2){
+//                        inflate.removeView(label)
+//                        inflate.removeView(icon)
+//                        inflate.addView(icon,0)
+//                        inflate.addView(label,1)
+//
+//                        label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
+//                        val layoutParam =  label.layoutParams
+//                        inflate.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+//                        starLog.log("${inflate.layoutParams.width}+${inflate.measuredWidth}")
+//                        val width = inflate.measuredWidth*labelWidth
+//                        layoutParam.width = width.toInt()
+//                        label.layoutParams = layoutParam
+//
+//                    }
+//                    if(labelMarquee){
+//                        label.ellipsize = TextUtils.TruncateAt.MARQUEE
+//                        label.focusable = View.NOT_FOCUSABLE
+//                        label.isSelected = true
+//                        label.setSingleLine()
+//                    }
+//
+//
+//
+//                }
+//
+//            })
 
         }
     }
@@ -319,6 +320,8 @@ class QSListView : BaseHooker() {
 
                 override fun replaceHookedMethod(param: MethodHookParam?): Any? {
                     val thisObj = param?.thisObject as FrameLayout
+
+                    val isDetailTile = XposedHelpers.getBooleanField(thisObj,"isDetailTile")
                     val res = thisObj.resources
                     val label = thisObj.findViewByIdName("tile_label") as TextView
                     val isShowLabel = XposedHelpers.callMethod(thisObj,"getShowLabel") as Boolean
@@ -326,26 +329,35 @@ class QSListView : BaseHooker() {
                     var space : Int = XposedHelpers.getIntField(thisObj,"containerHeight")
                     val labelHeight = XposedHelpers.getIntField(thisObj,"labelHeight")
                     if (isShowLabel){
-                        when (labelMode) {
-                            2 -> {
-                                y = dpToPx(res,listLabelTop)
+                        if (isDetailTile){
+                            y = 0f
+                            space += labelHeight
+                        }else{
+                            when (labelMode) {
+                                2 -> {
+                                    y = dpToPx(res,listLabelTop)
 
-                                space += labelHeight
-                                space = (space*listLabelSpacingY).toInt()
+                                    space += labelHeight
+                                    space = (space*listLabelSpacingY).toInt()
 
+                                }
+                                1 -> {
+
+                                    y = -2f
+
+                                }
+                                else -> {
+                                    return null
+                                }
                             }
-                            1 -> {
 
-                                y = -2f
-
-                            }
-                            else -> {
-                                return null
-                            }
                         }
                     }else{
+
                         y = labelHeight.toFloat()
-                        space = (space*listSpacingY).toInt()
+                        if (!isDetailTile){
+                            space = (space*listSpacingY).toInt()
+                        }
                     }
                     label.translationY = y
                     val setLayoutHeight = XposedHelpers.findMethodBestMatch(
@@ -385,14 +397,6 @@ class QSListView : BaseHooker() {
 
             }
 
-
-//            XposedHelpers.findAndHookMethod(QSTileItemView, "updateTextSizeForKDDI", object : XC_MethodReplacement() {
-//
-//                override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-//
-//                    return null
-//                }
-//            })
 
         }
 
@@ -489,24 +493,20 @@ class QSListView : BaseHooker() {
         if (isQSListTileRadius){
 
             XposedHelpers.findAndHookMethod(classTile,
-                "setCornerRadius", Float::class.java, object : XC_MethodHook() {
-                    override fun beforeHookedMethod(param: MethodHookParam) {
+                "updateCornerRadius",  object : XC_MethodReplacement() {
 
-                        val pluginContext: Context = XposedHelpers.getObjectField(param.thisObject, "pluginContext") as Context;
-
-                        param.args[0] = dpToPx(pluginContext.resources,qsListTileRadius)
-
-                    }
-
-                    override fun afterHookedMethod(param: MethodHookParam) {
-
+                    override fun replaceHookedMethod(param: MethodHookParam?): Any? {
+                        val thisObj = param?.thisObject
+                        val pluginContext: Context = XposedHelpers.getObjectField(thisObj, "pluginContext") as Context;
+                        XposedHelpers.setFloatField(thisObj,"_cornerRadius",dpToPx(pluginContext.resources,qsListTileRadius))
+                        return null;
                     }
                 })
 
         }
+        var isDetailTile = false
 
         var height :Int = 0
-
 
         hookAllMethods(classLoader, "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
             "updateIcon",
@@ -514,6 +514,7 @@ class QSListView : BaseHooker() {
 
                 override fun before(param: XC_MethodHook.MethodHookParam?) {
                     val thisObj = param?.thisObject
+                    isDetailTile = XposedHelpers.getBooleanField(thisObj,"isDetailTile")
                     if ( labelMode != 0 ) {
 
                         val tileSize = XposedHelpers.getFloatField(thisObj,"tileSize").toInt()
@@ -522,53 +523,18 @@ class QSListView : BaseHooker() {
                     if (isQSListTileRadius){
                         val pluginContext: Context =
                             XposedHelpers.getObjectField(param?.thisObject, "pluginContext") as Context;
+                        val res = pluginContext.resources
                         //val enableColor = pluginContext.resources.getIdentifier("qs_enabled_color","color","miui.systemui.plugin")
-
-                        val warning: Int = pluginContext.resources
-                            .getIdentifier("qs_background_warning", "drawable", "miui.systemui.plugin");
-                        val enabled: Int = pluginContext.resources
-                            .getIdentifier("qs_background_enabled", "drawable", "miui.systemui.plugin");
-                        val restricted: Int = pluginContext.resources.getIdentifier(
-                            "qs_background_restricted",
-                            "drawable",
-                            "miui.systemui.plugin"
-                        );
-                        val disabled: Int = pluginContext.getResources().getIdentifier(
-                            "qs_background_disabled",
-                            "drawable",
-                            "miui.systemui.plugin"
-                        );
-                        val unavailable: Int = pluginContext.getResources().getIdentifier(
-                            "qs_background_unavailable",
-                            "drawable",
-                            "miui.systemui.plugin"
-                        );
-                        val warningD: Drawable = pluginContext.theme.getDrawable(warning);
-                        val enabledD: Drawable = pluginContext.theme.getDrawable(enabled);
-                        val restrictedD: Drawable = pluginContext.theme.getDrawable(restricted);
-                        val disabledD: Drawable = pluginContext.theme.getDrawable(disabled);
-                        val unavailableD: Drawable = pluginContext.theme.getDrawable(unavailable);
-                        if (warningD is GradientDrawable) {
-                            warningD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
-                            //warningD.setStroke(10,Color.RED)
-                        }
-                        if (enabledD is GradientDrawable) {
-
-                            enabledD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
-                            //enabledD.setStroke(10,Color.RED)
-                        }
-                        if (restrictedD is GradientDrawable) {
-                            restrictedD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
-                            //restrictedD.setStroke(10,Color.RED)
-                        }
-                        if (disabledD is GradientDrawable) {
-                            disabledD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
-                            //disabledD.setStroke(10,Color.RED)
-                        }
-                        if (unavailableD is GradientDrawable) {
-                            unavailableD.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
-                            //unavailableD.setStroke(10,Color.RED)
-                        }
+                        setRadius(pluginContext,res,"qs_background_warning")
+                        setRadius(pluginContext,res,"qs_background_enabled")
+                        setRadius(pluginContext,res,"qs_background_restricted")
+                        setRadius(pluginContext,res,"qs_background_disabled")
+                        setRadius(pluginContext,res,"qs_background_unavailable")
+                        setRadius(pluginContext,res,"qs_detail_background_disabled")
+                        setRadius(pluginContext,res,"qs_detail_background_enabled")
+                        setRadius(pluginContext,res,"qs_detail_background_restricted")
+                        setRadius(pluginContext,res,"qs_detail_background_unavailable")
+                        setRadius(pluginContext,res,"qs_detail_background_warning")
 
                     }
 
@@ -579,6 +545,8 @@ class QSListView : BaseHooker() {
                         return
                     }
                     val thisObj = param?.thisObject
+
+                    if (isDetailTile) return
 
                     val z = param?.args?.get(1) as Boolean
 
@@ -651,7 +619,7 @@ class QSListView : BaseHooker() {
                         val icon = LayerDrawable(arrayOf(dra, dra2))
                         icon.setLayerGravity(1, i)
 
-                        if (height == 0) return icon
+                        if (isDetailTile || height == 0) return icon
                         if (listIconTop != 0f) {
                             icon.setLayerInsetBottom(1,
                                 (height * listIconTop).toInt()
@@ -664,6 +632,20 @@ class QSListView : BaseHooker() {
                     }
 
                 })
+        }
+    }
+
+    private fun setRadius(
+        pluginContext: Context,
+        res : Resources,
+        name:String
+    ) {
+
+        val id: Int = res.getIdentifier(name, "drawable", plugin)
+        val drawable: Drawable = pluginContext.theme.getDrawable(id)
+        if (drawable is GradientDrawable) {
+            drawable.cornerRadius = dpToPx(res,qsListTileRadius)
+            //warningD.setStroke(10,Color.RED)
         }
     }
 

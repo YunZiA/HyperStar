@@ -29,6 +29,7 @@ import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
+import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
 import com.yunzia.hyperstar.utils.Utils
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
@@ -87,7 +88,7 @@ fun Home(
             }
             if (Utils.getRootPermission() != 0){
                 Classes(
-                    modifier = Modifier.bounceAnim()
+                    modifier = Modifier.bounceAnimN()
                 ){
                     Row(
                         modifier = Modifier.fillMaxWidth().clickable {

@@ -1,7 +1,9 @@
 package com.yunzia.hyperstar.ui.base
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -32,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -58,6 +61,7 @@ import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.dismissXDia
 import com.yunzia.hyperstar.ui.base.enums.EventState
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
 import com.yunzia.hyperstar.ui.base.modifier.bounceClick
+import com.yunzia.hyperstar.ui.base.modifier.bounceCorner
 import com.yunzia.hyperstar.ui.base.modifier.bounceScale
 import com.yunzia.hyperstar.ui.base.tool.FilterFloat
 import com.yunzia.hyperstar.utils.PreferencesUtil
@@ -65,13 +69,16 @@ import com.yunzia.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.basic.Slider
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 
 enum class Status{
     CLOSE, OPEN
 }
 
-@OptIn(ExperimentalWearMaterialApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalWearMaterialApi::class, ExperimentalComposeUiApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun XMiuixSlider(
     host:String? = null,
@@ -109,21 +116,27 @@ fun XMiuixSlider(
         modifier = Modifier
             .height(IntrinsicSize.Max)
             .fillMaxWidth()
-            .bounceScale(eventState) {
-
-                dialog.value = true
-            }
+            .bounceScale(eventState).clip(SmoothRoundedCornerShape(8.dp,0.5f))
             .pointerInput(Unit) {
-                detectTapGestures(onPress = { offset ->
-                    if (!click.value) return@detectTapGestures
+                detectTapGestures(
+                    onPress = { offset ->
+                        if (click.value) {
+                            val press = PressInteraction.Press(offset)
+                            interactionSource.emit(press)
+                            tryAwaitRelease()
+                            interactionSource.emit(PressInteraction.Release(press))
+                            click.value = false
 
-                    val press = PressInteraction.Press(offset)
-                    interactionSource.emit(press)
-                    tryAwaitRelease()
-                    interactionSource.emit(PressInteraction.Release(press))
-                    click.value = false
+                        }
 
-                })
+                    }
+                ){
+                    if (click.value) {
+                        dialog.value = true
+
+                    }
+
+                }
             }
 
             .indication(interactionSource, LocalIndication.current)
@@ -147,7 +160,7 @@ fun XMiuixSlider(
                 .bounceClick(eventState, (enable && !isDialog && !click.value && enabled))
                 .pointerInput(Unit) {
                     awaitPointerEventScope {
-                        while (true) {
+                        while (enabled && !isDialog) {
                             val event = awaitPointerEvent()
                             when (event.type) {
                                 PointerEventType.Press -> {
@@ -159,6 +172,7 @@ fun XMiuixSlider(
                     }
 
                 }
+
 
 
 
@@ -314,21 +328,28 @@ fun XSuperSliders(
         modifier = Modifier
             .height(IntrinsicSize.Max)
             .fillMaxWidth()
-            .bounceScale(eventState) {
-
-                dialog.value = true
-            }
+            .bounceScale(eventState).clip(SmoothRoundedCornerShape(8.dp,0.5f))
             .pointerInput(Unit) {
-                detectTapGestures(onPress = { offset ->
-                    if (!click.value) return@detectTapGestures
+                detectTapGestures(
+                    onPress = { offset ->
+                        if (click.value) {
 
-                    val press = PressInteraction.Press(offset)
-                    interactionSource.emit(press)
-                    tryAwaitRelease()
-                    interactionSource.emit(PressInteraction.Release(press))
-                    click.value = false
+                            val press = PressInteraction.Press(offset)
+                            interactionSource.emit(press)
+                            tryAwaitRelease()
+                            interactionSource.emit(PressInteraction.Release(press))
+                            click.value = false
+                        }
 
-                })
+
+                    }
+                ){
+                    if (click.value) {
+                        dialog.value = true
+
+                    }
+
+                }
             }
             .indication(interactionSource, LocalIndication.current)
             .padding(vertical = insideMargin.height)
@@ -345,14 +366,13 @@ fun XSuperSliders(
                 .bounceClick(eventState, (enable && !click.value && enabled))
                 .pointerInput(Unit) {
                     awaitPointerEventScope {
-                        while (true) {
+                        while (enabled) {
                             val event = awaitPointerEvent()
                             when (event.type) {
                                 PointerEventType.Press -> {
                                     click.value = true
                                 }
                             }
-
                         }
                     }
 

@@ -288,7 +288,7 @@ fun QSCardListPager(
                             text = stringResource(R.string.empty_list_description),
                             fontSize = 15.sp,
                             textAlign = TextAlign.Center,
-                            color = colorResource(R.color.class_name_color),
+                            color = colorScheme.onBackgroundVariant,
                             fontWeight = FontWeight.Medium
                         )
 

@@ -67,9 +67,9 @@ public abstract class BaseHooker {
 
     }
 
-    public void doHook(ClassLoader classLoader){
+    public void doHook(ClassLoader secClassLoader){
         Log.d("ggc", "doHook: super");
-        this.secClassLoader = classLoader;
+        this.secClassLoader = secClassLoader;
     }
 
     public void doMethods(XC_LoadPackage.LoadPackageParam lpparam){}

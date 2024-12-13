@@ -121,7 +121,7 @@ fun Classes(
                         modifier = Modifier
                             .padding(bottom = 1.dp),
                         fontSize = 15.sp,
-                        color = colorResource(R.color.class_name_color),
+                        color = colorScheme.onBackgroundVariant,
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -132,7 +132,7 @@ fun Classes(
                             .padding(bottom = 1.dp),
                         fontSize = 11.sp,
                         lineHeight =  1.5.em,
-                        color = colorResource(R.color.class_name_color),
+                        color = colorScheme.onBackgroundVariant,
                         fontWeight = FontWeight.Medium
                     )
                 }

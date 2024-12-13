@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.pagers
 
+import android.app.assist.AssistContent
 import android.content.ComponentName
 import android.content.ContentResolver
 import android.content.ContentValues
@@ -14,12 +15,19 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableIntStateOf
@@ -30,13 +38,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
@@ -46,8 +59,10 @@ import com.yunzia.hyperstar.ui.base.Classes
 import com.yunzia.hyperstar.ui.base.NavPager
 import com.yunzia.hyperstar.ui.base.classes
 import kotlinx.coroutines.launch
+import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.SuperArrow
+import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import yunzia.utils.AppUtils
 import java.io.IOException
@@ -65,7 +80,7 @@ fun DonationPage(
     val mContext = navController.context
     val appUtils = AppUtils(mContext)
     val apCode = "https://qr.alipay.com/fkx14314i5s3jbfx0rcwz2e"
-    val tipsList = listOf(stringResource(R.string.donate_tip_one),stringResource(R.string.donate_tip_two))
+    val tipsList = listOf(stringResource(R.string.qr_code_save),stringResource(R.string.donate_tip_one),stringResource(R.string.donate_tip_two))
     val tipIndex = remember { mutableIntStateOf(0) }
     val size = tipsList.size
 
@@ -111,31 +126,16 @@ fun DonationPage(
                 Text(
                     text = tipsList[tipIndex.intValue],
                     fontSize = 15.sp,
-                    color = colorResource(R.color.class_name_color),
+                    color = colorScheme.onBackgroundVariant,
                     modifier = Modifier
                         .padding(24.dp, 16.dp)
                         .alpha(animatedTextAlpha.value))
 
             }
         }
-        classes(
-            title = R.string.alipay,
-            summary = R.string.qr_code_save
+        donationClass(
+            mContext,R.drawable.donate_alipay,R.drawable.alipay_icon,R.string.alipay
         ){
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                SaveImage(
-                    context = mContext,
-                    imageRes = R.drawable.donate_alipay,
-                    contentDescription = "donate_alipay",
-                    modifier = Modifier
-                        .width(144.dp)
-                )
-            }
             BaseArrow(
                 title = stringResource(R.string.go_scaner),
                 summary = null,
@@ -176,28 +176,11 @@ fun DonationPage(
                     }
                 }
             )
-
-
         }
-        classes(
-            title = R.string.wechat,
-            summary = R.string.qr_code_save
-        ){
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp),
-                contentAlignment = Alignment.Center
-            ) {
 
-                SaveImage(
-                    context = mContext,
-                    imageRes = R.drawable.donate_wechat,
-                    contentDescription = "donate_wechat",
-                    modifier = Modifier
-                        .width(154.dp)
-                )
-            }
+        donationClass(
+            mContext,R.drawable.donate_wechat,R.drawable.wechat_icon,R.string.wechat
+        ){
             BaseArrow(
                 title = stringResource(R.string.go_scaner),
                 summary = null,
@@ -220,8 +203,57 @@ fun DonationPage(
                     }
                 }
             )
+        }
+    }
+}
+
+
+private fun LazyListScope.donationClass(
+    context:Context,
+    imageRes: Int,
+    appIcon:Int,
+    appName:Int,
+    content: @Composable (() -> Unit),
+){
+
+    classes{
+        Row(
+            modifier = Modifier.padding(top = 16.dp, start = 16.dp, bottom = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                painter = painterResource(appIcon),
+                contentDescription = stringResource(appName),
+                modifier = Modifier.size(30.dp)
+            )
+            Text(
+                text = stringResource(appName),
+                modifier = Modifier
+                    .padding(start = 5.dp),
+                fontSize = 17.sp,
+                color = colorScheme.onSurface,
+                fontWeight = FontWeight.SemiBold
+            )
+
 
         }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 28.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            SaveImage(
+                context = context,
+                imageRes = imageRes,
+                contentDescription = stringResource(appName),
+                modifier = Modifier
+                    .width(144.dp)
+            )
+        }
+        Box(modifier = Modifier.fillMaxWidth().height(11.dp).padding(horizontal = 22.dp).padding(top = 10.dp).background(colorScheme.secondary))
+        content()
+
     }
 }
 
@@ -233,12 +265,15 @@ private fun SaveImage(
     modifier: Modifier = Modifier,
 ){
 
+    val shape = SmoothRoundedCornerShape(10.dp, 0.5f)
+
     val hapticFeedback = LocalHapticFeedback.current
     Image(
         painter = painterResource(imageRes),
         contentDescription = contentDescription,
         modifier = modifier
-            .clip(SmoothRoundedCornerShape(10.dp, 0.5f))
+            .clip(shape)
+            .border(0.5.dp,colorScheme.secondary,shape)
             .pointerInput(Unit) {
                 detectTapGestures(
                     onLongPress = {

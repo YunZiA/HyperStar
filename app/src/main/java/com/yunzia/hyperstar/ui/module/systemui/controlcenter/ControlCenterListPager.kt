@@ -225,7 +225,7 @@ fun ControlCenterListPager(
                         modifier = Modifier.weight(1f),
                         fontSize = 11.sp,
                         lineHeight =  1.5.em,
-                        color = colorResource(R.color.class_name_color),
+                        color = colorScheme.onBackgroundVariant,
                         fontWeight = FontWeight.Medium
                     )
 

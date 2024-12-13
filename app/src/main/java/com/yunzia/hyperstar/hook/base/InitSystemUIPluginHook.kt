@@ -1,7 +1,6 @@
 package com.yunzia.hyperstar.hook.base
 
 import android.content.Context
-import android.content.pm.ApplicationInfo
 import android.content.res.XModuleResources
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.app.plugin.DeviceCenterRow
@@ -12,6 +11,7 @@ import com.yunzia.hyperstar.hook.app.plugin.QSControlCenterColor
 import com.yunzia.hyperstar.hook.app.plugin.QSControlCenterList
 import com.yunzia.hyperstar.hook.app.plugin.QSEditButton
 import com.yunzia.hyperstar.hook.app.plugin.QSHeaderMessage
+import com.yunzia.hyperstar.hook.app.plugin.QSHeaderView
 import com.yunzia.hyperstar.hook.app.plugin.QSListView
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaCoverBackground
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaDefaultApp
@@ -25,11 +25,8 @@ import com.yunzia.hyperstar.hook.app.plugin.SuperBlurWidgetManager
 import com.yunzia.hyperstar.hook.app.plugin.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.VolumeView
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
-import com.yunzia.hyperstar.hook.app.systemui.controlcenter.QSHeaderView
 import com.yunzia.hyperstar.hook.tool.starLog
 import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XC_MethodHook.MethodHookParam
-import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
@@ -117,8 +114,9 @@ class InitSystemUIPluginHook() : BaseHooker() {
     }
 
 
-    override fun doHook(classLoader: ClassLoader?) {
-        super.doHook(classLoader)
+    override fun doHook(secClassLoader: ClassLoader?) {
+        super.doHook(secClassLoader)
+        doSecMethods(QSHeaderView(classLoader))
         doSecMethods(QSClockAnim())
         doSecMethods(SuperBlurWidgetManager())
         doSecMethods(SuperBlurVolumeManager())
@@ -133,7 +131,6 @@ class InitSystemUIPluginHook() : BaseHooker() {
         doSecMethods(QSCardTile())
         doSecMethods(QSToggleSliderRadius())
         doSecMethods(QSHeaderMessage())
-        doSecMethods(QSHeaderView())
         doSecMethods(QSEditButton())
         doSecMethods(QSControlCenterList())
         doSecMethods(VolumeColumnProgressRadius())

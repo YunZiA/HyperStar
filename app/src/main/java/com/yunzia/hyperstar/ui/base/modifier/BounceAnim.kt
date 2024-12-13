@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.base.modifier
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -18,20 +19,40 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.ui.base.enums.EventState
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
 
 
 
+fun Modifier.bounceAnimN(
+    enabled: Boolean = true,
+    finishedListener:((Float) -> Unit)? = null
+) = composed {
+    val enable = PreferencesUtil.getBoolean("bounce_anim_enable",true)
+    val eventState = remember { mutableStateOf(EventState.Idle) }
+    if ( enabled && enable ){
+        this.bounceScale(eventState){
+            finishedListener?.invoke(it)
+        }.bounceClick(eventState, enabled).clip(SmoothRoundedCornerShape(8.dp,0.5f))
+    }else{
+        finishedListener?.invoke(1f)
+        this
+    }
+
+
+}
 
 fun Modifier.bounceAnim(
     enabled: Boolean = true,
@@ -42,7 +63,7 @@ fun Modifier.bounceAnim(
     if ( enabled && enable ){
         this.bounceScale(eventState){
             finishedListener?.invoke(it)
-        }.bounceClick(eventState, enabled)
+        }.bounceClick(eventState, enabled).clip(SmoothRoundedCornerShape(8.dp,0.5f))
     }else{
         finishedListener?.invoke(1f)
         this
@@ -68,6 +89,18 @@ fun Modifier.bounceScale(
 
 }
 
+
+fun Modifier.bounceCorner(
+    eventState: MutableState<EventState>,
+) = composed {
+    val size by animateDpAsState(if (eventState.value == EventState.Pressed) 8.dp else 0.dp,
+        animationSpec = tween(100),
+        label = "",
+    )
+    this.clip(SmoothRoundedCornerShape(size,0.5f))
+
+}
+
 fun Modifier.bounceClick(
     buttonState: MutableState<EventState>,
     enabled: Boolean = true,
@@ -76,13 +109,11 @@ fun Modifier.bounceClick(
 
     this.pointerInput(Unit) {
         awaitPointerEventScope {
-            while (true) {
+            while (enabled) {
                 val event = awaitPointerEvent()
                 when (event.type) {
                     PointerEventType.Press -> {
-                        if (enabled){
                             buttonState.value = EventState.Pressed
-                        }
                     }
                     PointerEventType.Release -> {
                         buttonState.value = EventState.Idle

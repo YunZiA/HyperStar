@@ -171,7 +171,7 @@ fun GoRootPager(
                 modifier = Modifier
                     .padding(horizontal = 36.dp)
                     .padding(top = 18.dp),
-                color = colorResource(R.color.class_name_color),
+                color = colorScheme.onBackgroundVariant,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
             )

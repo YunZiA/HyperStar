@@ -1,9 +1,11 @@
 package com.yunzia.hyperstar.ui.pagers
 
 import android.view.HapticFeedbackConstants
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,6 +17,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -25,13 +29,21 @@ import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.NavPager
 import com.yunzia.hyperstar.ui.base.enums.EventState
+import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.base.modifier.bounceClick
 import com.yunzia.hyperstar.ui.base.modifier.bounceScale
 import com.yunzia.hyperstar.utils.PreferencesUtil
+import top.yukonga.miuix.kmp.basic.BasicComponentColors
+import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.extra.CheckboxLocation
+import top.yukonga.miuix.kmp.extra.SuperCheckbox
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 @Composable
 fun LanguagePager(
@@ -60,7 +72,6 @@ fun LanguagePager(
 }
 
 
-
 fun LazyListScope.languageItem(
     activity : MainActivity,
     language:String,
@@ -73,71 +84,44 @@ fun LazyListScope.languageItem(
 
     item(index){
 
-        val view = LocalView.current
-        val eventState = remember { mutableStateOf(EventState.Idle) }
-
-        val click = remember { mutableStateOf(false) }
-        Card(
+        SuperCheckbox(
+            title = language,
+            titleColor =  titleColor(isSelected),
+            checked = isSelected,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 28.dp)
                 .padding(top = 10.dp)
-                .bounceScale(eventState){
-                    if (!isSelected && click.value){
+                .bounceAnimN{
+                    if (isSelected){
                         selectedItem.intValue = index
                         PreferencesUtil.putInt("app_language",selectedItem.intValue)
                         activity.recreate()
                     }
-                    click.value = false
-                },
-            color = if (isSelected) colorScheme.tertiaryContainer  else colorScheme.surfaceVariant
-        ) {
-
-            Row(
-
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .bounceClick(eventState)
-                    .clickable {
-                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                        click.value = true
-                    }
-
-            ) {
-
-                Text(
-                    text = language,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier
-                        .padding(start = 20.dp)
-                        .weight(1f)
-                        .align(Alignment.CenterVertically),
-                    color = if (isSelected) colorScheme.primary else colorScheme.onBackground
-                )
-                Box(
-                    modifier = Modifier
-                        .padding(vertical = 20.dp)
-                        .padding(start = 8.dp, end = 20.dp)
-                ){
-                    Checkbox(
-                        modifier = Modifier
-                            .padding(start = 8.dp),
-                        enabled = true,
-                        checked = isSelected,
-                        onCheckedChange = {
-                            click.value = true
-                        }
-                    )
-
                 }
+                .clip(SmoothRoundedCornerShape(CardDefaults.ConorRadius))
+                .background(if (isSelected) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
+            ,
+            checkboxLocation = CheckboxLocation.Right,
+            insideMargin = PaddingValues(20.dp),
+            onCheckedChange = {
+                selectedItem.intValue = index
 
             }
-        }
+        )
 
     }
 
 
 
+}
+
+@Composable
+fun titleColor(
+    isSelected: Boolean
+): BasicComponentColors {
+    return BasicComponentColors(
+        color = if (isSelected) colorScheme.primary else colorScheme.onSurface,
+        disabledColor = colorScheme.disabledOnSecondaryVariant
+    )
 }

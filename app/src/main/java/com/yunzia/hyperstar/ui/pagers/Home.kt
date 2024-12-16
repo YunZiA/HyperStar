@@ -1,5 +1,7 @@
 package com.yunzia.hyperstar.ui.pagers
 
+import android.content.Intent
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -30,6 +32,7 @@ import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
+import com.yunzia.hyperstar.ui.pagers.dialog.checkApplication
 import com.yunzia.hyperstar.utils.Utils
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
@@ -73,14 +76,47 @@ fun Home(
 
             }
             if (!isModuleActive){
-                Classes{
-                    Text(
-                        text = stringResource(R.string.not_activated_toast_description),
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
-                        color = Color.Red,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 15.sp
-                    )
+                val go = checkApplication(activity,"org.lsposed.manager")
+                val intent = Intent().apply {
+                    setClassName("org.lsposed.manager","org.lsposed.manager.ui.activity.MainActivity")
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                Classes(
+                    modifier = Modifier.bounceAnimN()
+                ){
+                    Row(
+                        modifier = Modifier.fillMaxWidth().clickable {
+                            if (go){
+                                activity.startActivity(intent)
+                            }else{
+                                val result = Utils.rootShell("am start -c 'org.lsposed.manager.LAUNCH_MANAGER' 'com.android.shell/.BugreportWarningActivity'")
+                                if (result != "0"){
+                                    Toast.makeText(activity,result,Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                                                                     },
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+
+                        Text(
+                            text = stringResource(R.string.not_activated_toast_description),
+                            modifier = Modifier.weight(1f).padding( vertical = 16.dp).padding(start = 24.dp, end = 8.dp),
+                            color = Color.Red,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 15.sp
+                        )
+
+
+                        Image(
+                            modifier = Modifier
+                                .padding(end = 24.dp)
+                                .size(10.dp,14.dp),
+                            imageVector = MiuixIcons.ArrowRight,
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(colorScheme.onSurfaceVariantActions),
+                        )
+
+                    }
 
                 }
                 Spacer(Modifier.height(12.dp))

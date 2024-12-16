@@ -49,8 +49,8 @@ object JBUtil {
         }
     }
 
-    fun saveToLocal(context: Context,result: Uri) {
-        val filePath = getPathFromDocumentUri(context, result) ?: return
+    fun saveToLocal(context: Context,result: Uri):Boolean {
+        val filePath = getPathFromDocumentUri(context, result) ?: return false
 
         val dir = File(filePath)
 
@@ -58,7 +58,7 @@ object JBUtil {
             val created = dir.mkdirs()
             if (!created) {
                 Toast.makeText(context, context.getString(R.string.file_not_exist),Toast.LENGTH_SHORT).show()
-                return
+                return false
             }
         }
 
@@ -80,7 +80,7 @@ object JBUtil {
             out.close()
 
             Toast.makeText(context,context.getString(R.string.save_success),Toast.LENGTH_SHORT).show()
-            return
+            return true
         } catch (e: IOException) {
             e.printStackTrace()
             Toast.makeText(context,context.getString(R.string.save_fail),Toast.LENGTH_SHORT).show()
@@ -88,7 +88,7 @@ object JBUtil {
             throw RuntimeException(e)
         }
 
-        return
+        return false
     }
 
 
@@ -108,12 +108,8 @@ object JBUtil {
         return sb.toString()
     }
 
-    fun readGson(context: Context,result: Uri) {
-        val filePath = getPathFromDocumentUri(context, result)
-        if (filePath == null) {
-            Log.d("ggc", "filePath == null")
-            return
-        }
+    fun readGson(context: Context,result: Uri):Boolean {
+        val filePath = getPathFromDocumentUri(context, result) ?: return false
         Log.d("ggc", "filePath:$filePath")
 
         val readJsonFile = readJsonFile(filePath)
@@ -200,32 +196,36 @@ object JBUtil {
             }
 
             Toast.makeText(context, context.getString(R.string.restore_success),Toast.LENGTH_SHORT).show()
+            return true
         } catch (e: JsonSyntaxException) {
             // 处理 JSON 语法错误
             // 例如：记录错误、返回错误消息等
             Toast.makeText(context,"文件错误！",Toast.LENGTH_SHORT).show()
             Log.e(TAG, "readGson: $e")
-            return
         } catch (e: JsonIOException) {
             // 处理 I/O 错误，如读取文件失败
             // 例如：记录错误、返回错误消息等
             Toast.makeText(context,"读取文件失败！",Toast.LENGTH_SHORT).show()
             Log.e(TAG, "readGson: $e")
-            return
         } catch (e: Exception) {
             // 处理其他可能的异常（虽然不太可能是 Gson 抛出的）
             // 例如：记录错误、返回错误消息等
             Toast.makeText(context,"未知错误！",Toast.LENGTH_SHORT).show()
             Log.e(TAG, "readGson: $e")
-            return
         }
+        return false
 
     }
 
 
     private fun getPathFromDocumentUri(context: Context, uri: Uri): String? {
         val documentId = DocumentsContract.getDocumentId(uri)
-        val split = documentId.split(":").toTypedArray()
+        val split = documentId.split(":")
+        if (split.size != 2){
+
+            return null
+
+        }
         val type = split[0]
 
         return when {

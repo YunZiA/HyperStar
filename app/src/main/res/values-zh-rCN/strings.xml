@@ -222,7 +222,7 @@
     <string name="clear_fail">清除失败！</string>
     <string name="file_not_exist">文件不存在</string>
     <string name="restore_success">恢复成功！！</string>
-    <string name="model_pager_setting">模块页面设置</string>
+    <string name="model_pager_setting">界面设置</string>
     <string name="global">全局</string>
     <string name="setting_item">设置项</string>
     <string name="click_bounce">点击回弹</string>
@@ -239,5 +239,8 @@
     <string name="empty_device">空设备状态</string>
     <string name="device_item">设备项</string>
     <string name="recovery_default">恢复默认</string>
+    <string name="focus_notification_content">点击</string>
+    <string name="error_title">出错啦！</string>
+    <string name="send_developer">请将本次提示反馈给开发者：</string>
 
 </resources>

@@ -41,12 +41,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -72,14 +74,22 @@ import com.yunzia.hyperstar.ui.base.enums.EventState
 import com.yunzia.hyperstar.utils.SPUtils
 import com.yunzia.hyperstar.utils.Utils
 import com.google.accompanist.drawablepainter.DrawablePainter
+import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
+import com.yunzia.hyperstar.ui.pagers.titleColor
+import com.yunzia.hyperstar.utils.PreferencesUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.extra.CheckboxLocation
+import top.yukonga.miuix.kmp.extra.SuperCheckbox
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 @SuppressLint("QueryPermissionsNeeded")
 private fun getAllAppInfo(
@@ -118,23 +128,25 @@ private fun processAppInfo(
     appListDB: AppListDB?,
     appIconlist: MutableMap<String, Drawable>
 ) {
+    if (applicationInfo == null || packageManager == null) return
     run {
-        val app_name = applicationInfo?.let { packageManager?.getApplicationLabel(it).toString() }
-        val package_name = applicationInfo?.packageName
-        val app_icon = applicationInfo?.let { packageManager?.getApplicationIcon(it) }
+
+        val appName = packageManager.getApplicationLabel(applicationInfo).toString()
+        val packageName = applicationInfo.packageName
+        val appIcon = packageManager.getApplicationIcon(applicationInfo)
 
         val bean = AppInfo()
-        bean.label = app_name.toString()
-        bean.packageName = package_name.toString()
-        bean.icon = app_icon
+        bean.label = appName
+        bean.packageName = packageName.toString()
+        bean.icon = appIcon
 
         val values = ContentValues()
-        values.put("package_name", package_name)
-        values.put("app_name", app_name)
+        values.put("package_name", packageName)
+        values.put("app_name", appName)
 
-        if (app_icon != null && package_name != null) {
-            appIconlist[package_name] = app_icon
-            if (appIconlist[package_name] == null){
+        if (packageName != null) {
+            appIconlist[packageName] = appIcon
+            if (appIconlist[packageName] == null){
                 Log.d("ggc","appIconlist[package_name]  == null")
 
             }
@@ -387,64 +399,26 @@ private fun AppItem(
 ){
     val label = app.label
     val packageName = app.packageName
-    var isSelect = packageName == isApp.value // 直接比较，不需要用 mutableStateOf
-
-    var eventState by remember { mutableStateOf(EventState.Idle) }
-    val scale by animateFloatAsState(if (eventState == EventState.Pressed) 0.90f else 1f)
-
-
-    val view = LocalView.current
-
-    //if (isSelect) view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-
-    Card(
+    var isSelect = packageName == isApp.value
+    BasicComponent(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 28.dp)
             .padding(top = 10.dp)
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            },
-
-        color = if (isSelect) colorScheme.tertiaryContainer  else colorScheme.surfaceVariant
-    ) {
-
-        Row(
-
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    EventState.Idle
-                    isApp.value = if (isSelect) "" else packageName
-                    isSelect = !isSelect
-                    SPUtils.setString("media_default_app_package", isApp.value)
-                }
-                .pointerInput(eventState) {
-
-                    awaitPointerEventScope {
-                        eventState = if (eventState == EventState.Pressed) {
-                            waitForUpOrCancellation()
-                            EventState.Idle
-                        } else {
-                            ///view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-                            awaitFirstDown(false)
-                            EventState.Pressed
-                        }
-                    }
-                }
-        ) {
+            .bounceAnimN()
+            .clip(SmoothRoundedCornerShape(CardDefaults.ConorRadius))
+            .background(if (isSelect) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
+        ,
+        insideMargin =  PaddingValues(16.dp),
+        title = label,
+        titleColor = titleColor(isSelect),
+        leftAction = {
             Box(
-                modifier = Modifier
-                    .padding(start = 16.dp, end = 12.dp)
-                    .padding(vertical = 16.dp)
+                modifier = Modifier.padding(end = 12.dp)
             ){
                 app.icon?.let { icon ->
                     Image(
-                        modifier = Modifier
-                            .size(40.dp),
+                        modifier = Modifier.size(40.dp),
                         painter = DrawablePainter(icon),
                         contentDescription = label
                     )
@@ -455,34 +429,25 @@ private fun AppItem(
                 }
 
             }
-            Text(
-                text = label,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically),
-                color = if (isSelect) colorScheme.primary else colorScheme.onBackground
+        },
+        rightActions = {
+            Checkbox(
+                checked = isSelect,
+                onCheckedChange = {
+                    isSelect = !isSelect
+                    isApp.value = if (isSelect) packageName else ""
+                    SPUtils.setString("media_default_app_package", isApp.value)
+                }
             )
-            Box(
-                modifier = Modifier
-                    .padding(vertical = 16.dp)
-                    .padding(start = 8.dp, end = 16.dp)
-            ){
-                Checkbox(
-                    modifier = Modifier
-                        .padding(start = 8.dp),
-                    enabled = true,
-                    checked = isSelect,
-                    onCheckedChange = {
-                        isApp.value = if (isSelect) "" else packageName
-                        isSelect = !isSelect
-                        SPUtils.setString("media_default_app_package",isApp.value)
-                    } // 如果需要处理选中变化，可以在这里添加逻辑
-                )
 
-            }
+        },
+        onClick = {
+            isSelect = !isSelect
+            isApp.value = if (isSelect) packageName else ""
+            SPUtils.setString("media_default_app_package", isApp.value)
 
         }
-    }
+    )
+
 }
 

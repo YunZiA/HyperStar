@@ -23,9 +23,10 @@
     <color name="logo_color1">#757a7a7a</color>
     <color name="logo_color2">#127300</color>
     <color name="logo_color3">#7a000000</color>
+    <color name="focus_text_start_color">#80600039</color>
 
 
-<!--    <color name="logo_color1">#e6a1a1a1</color>-->
+    <!--    <color name="logo_color1">#e6a1a1a1</color>-->
 <!--    <color name="logo_color2">#4de6e6e6</color>-->
 <!--    <color name="logo_color3">#1af500</color>-->
 

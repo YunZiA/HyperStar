@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.SuperXPopupHost
 import com.yunzia.hyperstar.ui.base.dialog.CTPopupUtil.Companion.CTPopupHost
+import com.yunzia.hyperstar.ui.base.dialog.SuperNotificationUtil.Companion.SuperNotificationHost
 import top.yukonga.miuix.kmp.basic.MiuixFabPosition
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -22,9 +23,11 @@ fun XScaffold(
     floatingActionButtonPosition: MiuixFabPosition = MiuixFabPosition.End,
     snackbarHost: @Composable () -> Unit = {},
     popupHost: @Composable () -> Unit = {
+        SuperNotificationHost()
         MiuixPopupHost()
         CTPopupHost()
         SuperXPopupHost()
+
                                         },
     containerColor: Color = MiuixTheme.colorScheme.background,
     contentWindowInsets: WindowInsets = WindowInsets.statusBars,

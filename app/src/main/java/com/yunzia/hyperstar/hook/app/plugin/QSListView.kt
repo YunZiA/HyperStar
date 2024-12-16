@@ -46,7 +46,7 @@ class QSListView : BaseHooker() {
 
     val qsListTileRadius = XSPUtils.getFloat("qs_list_tile_radius",20f)
 
-    val listIconTop = if (labelMode == 2) XSPUtils.getFloat("list_icon_top", 0f)/100 else 1/8f
+    val listIconTop = if (labelMode == 2) XSPUtils.getFloat("list_icon_top", 0f)/100 else 1/7f
     val listLabelTop = XSPUtils.getFloat("list_label_top", 0f)
 
     override fun doMethods(classLoader: ClassLoader?) {
@@ -244,7 +244,7 @@ class QSListView : BaseHooker() {
 
                         val layoutParam =  label.layoutParams
                         icon.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-                        layoutParam.width = icon.measuredWidth/9*8
+                        layoutParam.width = icon.measuredWidth/9*7
                         label.layoutParams = layoutParam
                     } else if (labelMode == 2){
                         qSItemView.removeView(label)
@@ -343,7 +343,7 @@ class QSListView : BaseHooker() {
                                 }
                                 1 -> {
 
-                                    y = -2f
+                                    y = -4f
 
                                 }
                                 else -> {
@@ -486,20 +486,23 @@ class QSListView : BaseHooker() {
 
     private fun qsTileRadius() {
 
-        val classTile = XposedHelpers.findClass(
+        val QSTileItemIconView = findClass(
             "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
             classLoader
         )
         if (isQSListTileRadius){
 
-            XposedHelpers.findAndHookMethod(classTile,
-                "updateCornerRadius",  object : XC_MethodReplacement() {
 
-                    override fun replaceHookedMethod(param: MethodHookParam?): Any? {
+            XposedHelpers.findAndHookMethod(QSTileItemIconView,
+                "getCornerRadius",  object : XC_MethodReplacement() {
+
+                    override fun replaceHookedMethod(param: MethodHookParam?): Any {
                         val thisObj = param?.thisObject
                         val pluginContext: Context = XposedHelpers.getObjectField(thisObj, "pluginContext") as Context;
-                        XposedHelpers.setFloatField(thisObj,"_cornerRadius",dpToPx(pluginContext.resources,qsListTileRadius))
-                        return null;
+                        //XposedHelpers.setFloatField(thisObj,"_cornerRadius",dpToPx(pluginContext.resources,qsListTileRadius))
+
+
+                        return dpToPx(pluginContext.resources,qsListTileRadius);
                     }
                 })
 
@@ -508,7 +511,7 @@ class QSListView : BaseHooker() {
 
         var height :Int = 0
 
-        hookAllMethods(classLoader, "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
+        hookAllMethods(QSTileItemIconView,
             "updateIcon",
             object : MethodHook {
 
@@ -606,7 +609,7 @@ class QSListView : BaseHooker() {
             })
 
         if ( labelMode != 0 ) {
-            val DrawableUtils = XposedHelpers.findClass("miui.systemui.util.DrawableUtils", classLoader)
+            val DrawableUtils = findClass("miui.systemui.util.DrawableUtils", classLoader)
 
             XposedHelpers.findAndHookMethod(DrawableUtils, "combine", Drawable::class.java, Drawable::class.java, Int::class.java,
                 object : XC_MethodReplacement() {

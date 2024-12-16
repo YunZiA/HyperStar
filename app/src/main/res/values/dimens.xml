@@ -58,6 +58,13 @@
     <dimen name="logo_area_height">416dp</dimen>
     <dimen name="no">0.dp</dimen>
     <dimen name="miplay_seekbar_progress_bg_corner_radiu">8.dp</dimen>
+    <dimen name="focus_textsize">14dp</dimen>
+    <dimen name="focus_summary_margin_top">5dp</dimen>
+    <dimen name="focus_logo_margin_top">18.dp</dimen>
+    <dimen name="focus_logo_margin_left">16dp</dimen>
+    <dimen name="focus_logo_width">199dp</dimen>
+    <dimen name="focus_logo_height">30dp</dimen>
+    <dimen name="focus_height">90dp</dimen>
 
 
 </resources>

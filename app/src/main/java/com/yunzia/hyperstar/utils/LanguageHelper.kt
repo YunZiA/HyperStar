@@ -107,12 +107,12 @@ class LanguageHelper {
                 }
 
                 1 -> {
-                    return getLanguage("zh", "CN")
+                    return getLanguage("en")
 
                 }
 
                 2 -> {
-                    return getLanguage("en")
+                    return getLanguage("zh", "CN")
 
                 }
                 3-> {

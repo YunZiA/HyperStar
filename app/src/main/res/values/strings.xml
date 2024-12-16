@@ -209,7 +209,7 @@
     <string name="range_des">Range:%1$s%2$s~%3$s%4$s</string>
     <string name="hyper_home">System launcher</string>
     <string name="remove_no_support_blur_device">Force recognition as blur-supported device</string>
-    <string name="model_pager_setting">Module Page Settings</string>
+    <string name="model_pager_setting">Page Settings</string>
     <string name="global">Global</string>
     <string name="setting_item">Setting item</string>
     <string name="click_bounce">Click bounce</string>
@@ -239,4 +239,7 @@
     <string name="file_not_exist">File does not exist</string>
     <string name="restore_success">Restore success！！</string>
     <string name="recovery_default">restore defaults</string>
+    <string name="focus_notification_content">点击</string>
+    <string name="error_title">An Error Has Been Detected!</string>
+    <string name="send_developer">Please forward this prompt to the developers:</string>
 </resources>

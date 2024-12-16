@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
+import android.content.Context
 import android.content.res.XModuleResources
 import android.content.res.XResources
 import android.graphics.Color
@@ -294,6 +295,23 @@ class QSControlCenterColor :BaseHooker() {
 
 
         }
+
+        if (mainBackgroundBlendColor != "null" || secondaryBackgroundBlendColor != "null"){
+            ReplaceIntArray(
+                "control_center_list_items_blend_colors"
+            ) { array ->
+                if (mainBackgroundBlendColor != "null"){
+                    array[0] = Color.parseColor(mainBackgroundBlendColor)
+
+                }
+                if (secondaryBackgroundBlendColor != "null"){
+                    array[2] = Color.parseColor(secondaryBackgroundBlendColor)
+
+                }
+
+
+            }
+        }
         if (editBackgroundMode == 0){
             if (editBackgroundColor != "null"){
                 ReplaceColor("qs_customize_entry_button_background_color",editBackgroundColor)
@@ -324,36 +342,6 @@ class QSControlCenterColor :BaseHooker() {
 
         }
 
-
-        if (mainBackgroundBlendColor != "null" || secondaryBackgroundBlendColor != "null"){
-            ReplaceIntArray(
-                "control_center_qs_items_blend_colors"
-            ) { array ->
-                if (mainBackgroundBlendColor != "null"){
-                    array[0] = Color.parseColor(mainBackgroundBlendColor)
-
-                }
-                if (secondaryBackgroundBlendColor != "null"){
-                    array[2] = Color.parseColor(secondaryBackgroundBlendColor)
-
-                }
-
-            }
-            ReplaceIntArray(
-                "control_center_list_items_blend_colors"
-            ) { array ->
-                if (mainBackgroundBlendColor != "null"){
-                    array[0] = Color.parseColor(mainBackgroundBlendColor)
-
-                }
-                if (secondaryBackgroundBlendColor != "null"){
-                    array[2] = Color.parseColor(secondaryBackgroundBlendColor)
-
-                }
-
-
-            }
-        }
 
     }
 
@@ -396,20 +384,24 @@ class QSControlCenterColor :BaseHooker() {
 
         if (enableColor != "null"){
             ReplaceColor("qs_enabled_color",enableColor)
+            ReplaceColor("qs_detail_enabled_color",enableColor)
 
         }
         if (warningColor != "null"){
             ReplaceColor("qs_warning_color",warningColor)
+            ReplaceColor("qs_detail_warning_color",warningColor)
 
         }
 
         if (restrictedColor != "null"){
             ReplaceColor("qs_restrict_color",restrictedColor)
+            ReplaceColor("qs_detail_restrict_color",restrictedColor)
 
         }
 
         if (unavailableColor != "null"){
             ReplaceColor("qs_unavailable_color",unavailableColor)
+            ReplaceColor("qs_detail_unavailable_color",unavailableColor)
 
         }
 
@@ -753,6 +745,7 @@ class QSControlCenterColor :BaseHooker() {
                 }
             }
         })
+
     }
 
     private fun startCardIconHook() {

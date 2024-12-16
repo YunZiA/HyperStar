@@ -1,5 +1,7 @@
 package com.yunzia.hyperstar.utils
 
+import android.content.Context
+import android.widget.Toast
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.IOException
@@ -41,13 +43,16 @@ object Utils {
             process.waitFor()
         } catch (e: IOException) {
             e.printStackTrace()
+            return e.message.toString()
         } catch (e: InterruptedException) {
             e.printStackTrace()
+            return e.message.toString()
         }
-        if (output.toString().isEmpty()) {
-            return "0"
-        }
-        return output.toString()
+        return "0"
+//        if (output.toString().isEmpty()) {
+//            return "0"
+//        }
+//        return output.toString()
     }
 
 }

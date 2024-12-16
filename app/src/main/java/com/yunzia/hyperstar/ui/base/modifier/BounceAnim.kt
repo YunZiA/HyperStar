@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.base.modifier
 
+import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -43,9 +44,12 @@ fun Modifier.bounceAnimN(
     val enable = PreferencesUtil.getBoolean("bounce_anim_enable",true)
     val eventState = remember { mutableStateOf(EventState.Idle) }
     if ( enabled && enable ){
-        this.bounceScale(eventState){
-            finishedListener?.invoke(it)
-        }.bounceClick(eventState, enabled).clip(SmoothRoundedCornerShape(8.dp,0.5f))
+        this
+            .bounceScale(eventState) {
+                finishedListener?.invoke(it)
+            }
+            .bounceClick(eventState, enabled)
+            .clip(SmoothRoundedCornerShape(8.dp, 0.5f))
     }else{
         finishedListener?.invoke(1f)
         this
@@ -61,9 +65,12 @@ fun Modifier.bounceAnim(
     val enable = PreferencesUtil.getBoolean("bounce_anim_enable",true)
     val eventState = remember { mutableStateOf(EventState.Idle) }
     if ( enabled && enable ){
-        this.bounceScale(eventState){
-            finishedListener?.invoke(it)
-        }.bounceClick(eventState, enabled).clip(SmoothRoundedCornerShape(8.dp,0.5f))
+        this
+            .bounceScale(eventState) {
+                finishedListener?.invoke(it)
+            }
+            .bounceClick(eventState, enabled)
+            .clip(SmoothRoundedCornerShape(8.dp, 0.5f))
     }else{
         finishedListener?.invoke(1f)
         this

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/focus_rl"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipToOutline="true"
+    android:clipToPadding="true"
+    android:clipChildren="true"
+    android:background="@drawable/focus_background">
+    <ImageView
+        android:id="@+id/focus_img"
+        android:layout_width="@dimen/focus_logo_width"
+        android:layout_height="@dimen/focus_logo_height"
+        android:layout_marginTop="@dimen/focus_logo_margin_top"
+        android:src="@drawable/focus_noti_logo"
+        android:layout_marginStart="@dimen/focus_logo_margin_left" />
+    <TextView
+        android:textSize="@dimen/focus_textsize"
+        android:textStyle="bold"
+        android:textColor="@color/focus_text_start_color"
+        android:id="@+id/focus_tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/focus_summary_margin_top"
+        android:layout_marginBottom="@dimen/focus_logo_margin_top"
+        android:text="@string/focus_notification_content"
+        android:layout_below="@id/focus_img"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:layout_marginStart="@dimen/focus_logo_margin_left" />
+</RelativeLayout>

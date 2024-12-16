@@ -217,6 +217,7 @@ private fun LazyListScope.donationClass(
 ){
 
     classes{
+
         Row(
             modifier = Modifier.padding(top = 16.dp, start = 16.dp, bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically,

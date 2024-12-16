@@ -25,6 +25,7 @@ import com.yunzia.hyperstar.ui.base.dialog.SuperCTDialogDefaults
 import com.yunzia.hyperstar.ui.base.dialog.SuperXDialog
 import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.utils.PreferencesUtil
+import com.yunzia.hyperstar.utils.Utils
 import top.yukonga.miuix.kmp.basic.Text
 
 
@@ -121,6 +122,22 @@ fun ActiveDialog(
                 onClick = {
                     dismissXDialog(show)
                     mContext.startActivity(intent)
+
+                }
+
+            )
+
+        }else if (Utils.getRootPermission() == 0){
+
+            Spacer(Modifier.height(12.dp))
+            BaseButton(
+                text = stringResource(R.string.active_faster),
+                modifier = Modifier.fillMaxWidth(),
+                submit = true,
+                onClick = {
+                    dismissXDialog(show)
+                    Utils.rootShell("am start -c 'org.lsposed.manager.LAUNCH_MANAGER' 'com.android.shell/.BugreportWarningActivity'")
+
 
                 }
 

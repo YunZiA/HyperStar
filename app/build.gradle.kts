@@ -19,7 +19,7 @@ android {
         applicationId = "com.yunzia.hyperstar"
         minSdk = 35
         targetSdk = 35
-        versionCode = 3
+        versionCode = 4
         versionName = "2.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -102,6 +102,7 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.cardview)
     androidTestImplementation(libs.androidx.ui.test.junit4)
     compileOnly (libs.android.xposed)
     implementation(libs.kyuubiran.ezxhelper)

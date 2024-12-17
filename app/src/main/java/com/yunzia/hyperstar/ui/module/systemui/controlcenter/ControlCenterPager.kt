@@ -70,7 +70,7 @@ fun ControlCenterPager(
             )
 
             XSuperSwitch(
-                enabled = false,
+//                enabled = false,
                 title = stringResource(R.string.is_use_chaos_header_title),
                 key = "is_use_chaos_header"
             )

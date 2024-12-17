@@ -117,20 +117,24 @@ fun CardItem(
                 title = item.name,
                 show = showDialog,
                 showAction = true,
-                color = colorScheme.background,
                 onDismissRequest = {
                     dismissDialog(showDialog)
                 }
             ) {
 
-                Card(Modifier.padding(bottom = 10.dp)){
+                Card(
+                    Modifier.padding(bottom = 10.dp),
+                    color = colorScheme.secondaryContainer
+                ){
 
                     EnableItemDropdown(
                         key = "cards_land_rightOrLeft",
                         dfOpt = 1
                     )
                 }
-                Card{
+                Card(
+                    color = colorScheme.secondaryContainer
+                ){
                     EnableItemSlider(
                         key = "cards_span_size",
                         progress = 2f,

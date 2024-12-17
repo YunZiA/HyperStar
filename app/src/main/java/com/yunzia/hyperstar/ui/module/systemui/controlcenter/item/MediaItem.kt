@@ -64,13 +64,14 @@ fun MediaItem(
                 title = item.name,
                 show = showDialog,
                 showAction = true,
-                color = colorScheme.background,
                 onDismissRequest = {
                     dismissDialog(showDialog)
                 }
             ) {
 
-                Card{
+                Card(
+                    color = colorScheme.secondaryContainer
+                ){
                     EnableItemDropdown(
                         key = "media_land_rightOrLeft",
                         dfOpt = 1

@@ -46,12 +46,15 @@ import com.yunzia.hyperstar.ui.base.dialog.SuperXDialog
 import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.ui.base.firstClasses
 import com.yunzia.hyperstar.utils.JBUtil
+import com.yunzia.hyperstar.utils.JBUtil.saveFile
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import java.io.BufferedWriter
+import java.io.OutputStreamWriter
 
 @Composable
 fun Settings(
@@ -181,7 +184,7 @@ fun ErrorDialog(
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .background(
-                        colorScheme.background,
+                        colorScheme.secondaryContainer,
                         SmoothRoundedCornerShape(12.dp, 0.5f)
                     )
                     .padding(12.dp)

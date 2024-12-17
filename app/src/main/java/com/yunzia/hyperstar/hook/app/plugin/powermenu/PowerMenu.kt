@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.FrameLayout
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
@@ -45,7 +46,7 @@ class PowerMenu : BaseHooker() {
 
 
         xiaoai = resparam?.res?.addResource(modRes,R.drawable.xiaoai)!!
-        icBootloader = resparam?.res?.addResource(modRes,R.drawable.ic_bootloader)!!
+        icBootloader = resparam.res?.addResource(modRes,R.drawable.ic_bootloader)!!
         icRecovery = resparam.res?.addResource(modRes,R.drawable.ic_recovery)!!
         icAirplaneOn = resparam.res?.addResource(modRes,R.drawable.ic_airplane_on)!!
         icAirplaneOff = resparam.res?.addResource(modRes,R.drawable.ic_airplane_off)!!
@@ -152,11 +153,9 @@ class PowerMenu : BaseHooker() {
                 super.afterHookedMethod(param)
                 if (group == null) return
                 val thisObj = param?.thisObject
-                val mDark = XposedHelpers.getObjectField(thisObj,"mDark") as View
+                val mSliderAlpha = XposedHelpers.getFloatField(thisObj,"mSliderAlpha")
 
-
-
-                group!!.alpha = (1-mDark.alpha)
+                group!!.alpha = mSliderAlpha.coerceAtLeast(0.0f)
 
 
             }
@@ -166,8 +165,6 @@ class PowerMenu : BaseHooker() {
             override fun afterHookedMethod(param: MethodHookParam?) {
                 super.afterHookedMethod(param)
                 if (group == null) return
-                //group!!.clearAnimation()
-                //group!!.animatin
 
                 group!!.visibility = View.GONE
 

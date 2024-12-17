@@ -6,7 +6,7 @@ import android.content.res.XModuleResources;
 
 import com.yunzia.hyperstar.R;
 import com.yunzia.hyperstar.hook.app.systemui.NavigationBarBackground;
-import com.yunzia.hyperstar.hook.app.plugin.QSHeaderView;
+import com.yunzia.hyperstar.hook.app.systemui.QSHeaderView;
 import com.yunzia.hyperstar.hook.tool.starLog;
 
 import java.util.Objects;
@@ -19,9 +19,12 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 public class InitSystemUIHook extends BaseHooker {
 
     private final InitSystemUIPluginHook initSystemUIPluginHook;
+    private final QSHeaderView qsHeaderView;
 
     public InitSystemUIHook(){
+
         initSystemUIPluginHook = new InitSystemUIPluginHook();
+        qsHeaderView = new QSHeaderView();
     }
 
     @Override
@@ -39,23 +42,12 @@ public class InitSystemUIHook extends BaseHooker {
     @Override
     public void doResources(XC_InitPackageResources.InitPackageResourcesParam resparam, XModuleResources modRes) {
         super.doResources(resparam, modRes);
-//        resparam.res.setReplacement(
-//                systemUI,
-//                "drawable",
-//                "ic_header_settings",
-//                modRes.fwd(R.drawable.ic_header_settings)
-//        );
-//        resparam.res.setReplacement(
-//                systemUI,
-//                "drawable",
-//                "ic_controls_edit",
-//                modRes.fwd(R.drawable.ic_controls_edit)
-//        );
-        initSystemUIPluginHook.doResources(resparam,modRes);
+        doResources(initSystemUIPluginHook);
+        //initSystemUIPluginHook.doResources(resparam,modRes);
+        if (!resparam.packageName.equals(systemUI)) return;
+        doResources(qsHeaderView);
 
-        if (Objects.equals(resparam.packageName, systemUI)) {
 
-        }
 
 
     }
@@ -64,31 +56,19 @@ public class InitSystemUIHook extends BaseHooker {
     public void doMethodsHook(ClassLoader classLoader) {
         super.doMethodsHook(classLoader);
         doBaseMethods(new NavigationBarBackground());
+        doBaseMethods(qsHeaderView);
         doBaseMethods(initSystemUIPluginHook);
 
-        doTestHook();
+        //doTestHook();
     }
-    //     public void doMethodsHook(ClassLoader classLoader) {
-//
-//
-//
-//    }
+
 
     private void doTestHook() {
 
-        Class<?> ControlCenterHeaderController  = findClass("com.android.systemui.controlcenter.shade.ControlCenterHeaderController",classLoader);
-
-        XposedBridge.hookAllConstructors(ControlCenterHeaderController,new XC_MethodHook(){
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
-                starLog.log("ControlCenterHeaderController1111111111");
-
-            }
-        });
-
 
     }
+
+
 
 //    private void doResHook(XC_InitPackageResources.InitPackageResourcesParam resparam){
 //

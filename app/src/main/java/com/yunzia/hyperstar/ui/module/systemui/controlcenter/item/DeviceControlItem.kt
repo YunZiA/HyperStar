@@ -63,20 +63,25 @@ fun DeviceControlItem(
                 title = item.name,
                 show = showDialog,
                 showAction = true,
-                color = colorScheme.background,
                 onDismissRequest = {
                     dismissDialog(showDialog)
                 }
             ) {
 
-                Card(Modifier.padding(bottom = 10.dp)){
+                Card(
+                    Modifier.padding(bottom = 10.dp),
+                    color = colorScheme.secondaryContainer
+
+                ){
                     EnableItemDropdown(
                         key = "deviceControl_land_rightOrLeft"
                     )
 
                 }
 
-                Card{
+                Card(
+                    color = colorScheme.secondaryContainer
+                ){
                     EnableItemSlider(
                         key = "deviceControl_span_size",
                         progress = 4f,

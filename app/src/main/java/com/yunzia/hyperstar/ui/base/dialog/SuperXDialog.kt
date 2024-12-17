@@ -93,8 +93,7 @@ fun SuperXDialog(
             content = {
                 Box(
                     modifier = if (defaultWindowInsetsPadding) {
-                        Modifier
-                            .imePadding()
+                        Modifier.imePadding()
                             .navigationBarsPadding()
                     } else {
                         Modifier

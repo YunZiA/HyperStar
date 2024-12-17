@@ -41,18 +41,19 @@ fun VolumeItem(
 
     if (showDialog.value){
 
-        showDialog() {
+        showDialog {
             MSuperDialog(
                 title = item.name,
                 show = showDialog,
                 showAction = true,
-                color = colorScheme.background,
                 onDismissRequest = {
                     dismissDialog(showDialog)
                 }
             ) {
 
-                Card{
+                Card(
+                    color = colorScheme.secondaryContainer
+                ){
                     EnableItemDropdown(
                         key = "volume_land_rightOrLeft",
                         dfOpt = 1

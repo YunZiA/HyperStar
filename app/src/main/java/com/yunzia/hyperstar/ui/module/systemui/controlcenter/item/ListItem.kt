@@ -59,20 +59,25 @@ fun ListItem(
                 title = item.name,
                 show = showDialog,
                 showAction = true,
-                color = colorScheme.background,
                 onDismissRequest = {
                     dismissDialog(showDialog)
                 }
             ) {
 
-                Card(Modifier.padding(bottom = 10.dp)){
+                Card(
+                    Modifier.padding(bottom = 10.dp),
+                    color = colorScheme.secondaryContainer
+
+                ){
                     EnableItemDropdown(
                         key = "list_land_rightOrLeft"
                     )
 
                 }
 
-                Card{
+                Card(
+                    color = colorScheme.secondaryContainer
+                ){
                     EnableItemSlider(
                         key = "list_span_size",
                         progress = 1f,

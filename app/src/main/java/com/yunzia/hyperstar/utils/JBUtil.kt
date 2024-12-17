@@ -17,11 +17,15 @@ import com.google.gson.reflect.TypeToken
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import org.json.JSONException
+import java.io.BufferedReader
+import java.io.BufferedWriter
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -50,248 +54,148 @@ object JBUtil {
     }
 
     fun saveToLocal(context: Context,result: Uri):Boolean {
-        val filePath = getPathFromDocumentUri(context, result) ?: return false
-
-        val dir = File(filePath)
-
-        if (!dir.exists()) {
-            val created = dir.mkdirs()
-            if (!created) {
-                Toast.makeText(context, context.getString(R.string.file_not_exist),Toast.LENGTH_SHORT).show()
-                return false
-            }
-        }
 
         try {
-            // 获取所有偏好设置
-            val spList = ArrayList<SP>()
-            PreferencesUtil.getAllPreferences(spList)
-            SPUtils.getAllPreferences(spList)
 
-            // 使用 Gson 将 ArrayList<SP> 转换为 JSON 字符串
-            val gson = Gson()
-            val json = gson.toJson(spList, object : TypeToken<ArrayList<SP?>?>() {}.type)
+            val saveFile = context.contentResolver.openOutputStream(result)
+            BufferedWriter(OutputStreamWriter(saveFile)).apply {
+                val spList = ArrayList<SP>()
+                PreferencesUtil.getAllPreferences(spList)
+                SPUtils.getAllPreferences(spList)
 
-            // 创建文件
-            val file = File(filePath)
-            val out = FileOutputStream(file)
-            out.write(json.toByteArray())
-            out.flush()
-            out.close()
+                // 使用 Gson 将 ArrayList<SP> 转换为 JSON 字符串
+                val gson = Gson()
+                val json = gson.toJson(spList, object : TypeToken<ArrayList<SP?>?>() {}.type)
+                write(json.toString())
+                close()
+            }
 
             Toast.makeText(context,context.getString(R.string.save_success),Toast.LENGTH_SHORT).show()
             return true
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Toast.makeText(context,context.getString(R.string.save_fail),Toast.LENGTH_SHORT).show()
-        } catch (e: JSONException) {
-            throw RuntimeException(e)
+        } catch (e: JsonSyntaxException) {
+            Toast.makeText(context,"文件错误！",Toast.LENGTH_SHORT).show()
+            Log.e(TAG, "saveGson: $e")
+        } catch (e: JsonIOException) {
+            Toast.makeText(context,"读取文件失败！",Toast.LENGTH_SHORT).show()
+            Log.e(TAG, "saveGson: $e")
+        } catch (e: Exception) {
+            Toast.makeText(context,"未知错误！",Toast.LENGTH_SHORT).show()
+            Log.e(TAG, "saveGson: $e")
         }
+        Toast.makeText(context,context.getString(R.string.save_fail),Toast.LENGTH_SHORT).show()
 
         return false
     }
 
 
-    fun readJsonFile(filePath: String?): String {
-        val sb = StringBuilder()
-        try {
-            val file = File(filePath.toString())
-            val `in`: InputStream = FileInputStream(file)
-            var tempbyte: Int
-            while ((`in`.read().also { tempbyte = it }) != -1) {
-                sb.append(tempbyte.toChar())
-            }
-            `in`.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return sb.toString()
-    }
-
     fun readGson(context: Context,result: Uri):Boolean {
-        val filePath = getPathFromDocumentUri(context, result) ?: return false
-        Log.d("ggc", "filePath:$filePath")
 
-        val readJsonFile = readJsonFile(filePath)
-
-        val gson = Gson()
         try {
-            val spArrayList = gson.fromJson<ArrayList<SP>>(
-                readJsonFile,
-                object : TypeToken<ArrayList<SP?>?>() {}.type
-            )
-            for (sp in spArrayList) {
-                val key = sp.key
-                val value = sp.value
-                when (sp.type) {
-                    SP.type_boolean -> when (sp.spType) {
-                        "SPUtils" -> SPUtils.setBoolean(
-                            key,
-                            (value as Boolean)
-                        )
+            val saveFile = context.contentResolver.openInputStream(result)
+            BufferedReader(InputStreamReader(saveFile)).apply {
+                val sb = StringBuffer()
+                var line = readLine()
+                do {
+                    sb.append(line)
+                    line = readLine()
+                } while (line != null)
+                val gson = Gson()
+                val spArrayList = gson.fromJson<ArrayList<SP>>(
+                    sb.toString(),
+                    object : TypeToken<ArrayList<SP?>?>() {}.type
+                )
+                for (sp in spArrayList) {
+                    val key = sp.key
+                    val value = sp.value
+                    when (sp.type) {
+                        SP.type_boolean -> when (sp.spType) {
+                            "SPUtils" -> SPUtils.setBoolean(
+                                key,
+                                (value as Boolean)
+                            )
 
-                        "PreferencesUtil" -> PreferencesUtil.putBoolean(
-                            key,
-                            (value as Boolean)
-                        )
+                            "PreferencesUtil" -> PreferencesUtil.putBoolean(
+                                key,
+                                (value as Boolean)
+                            )
 
-                        else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
+                            else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
+                        }
+
+                        SP.type_float -> when (sp.spType) {
+                            "SPUtils" -> if (value is Double) {
+                                SPUtils.setFloat(key, value.toFloat())
+                            } else {
+                                SPUtils.setFloat(key, (value as Float))
+                            }
+
+                            "PreferencesUtil" -> if (value is Double) {
+                                PreferencesUtil.putFloat(key, value.toFloat())
+                            } else {
+                                PreferencesUtil.putFloat(key, (value as Float))
+                            }
+
+                            else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
+                        }
+
+                        SP.type_int -> when (sp.spType) {
+                            "SPUtils" -> if (value is Double) {
+                                SPUtils.setInt(key, value.toInt())
+                            } else {
+                                SPUtils.setInt(key, value as Int)
+                            }
+
+                            "PreferencesUtil" -> if (value is Double) {
+                                PreferencesUtil.putInt(key, value.toInt())
+                            } else {
+                                PreferencesUtil.putInt(key, value as Int)
+                            }
+
+                            else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
+                        }
+
+                        SP.type_long -> when (sp.spType) {
+                            "SPUtils" -> if (value is Double) {
+                                SPUtils.setLong(key, value.toLong())
+                            } else {
+                                SPUtils.setLong(key, (value as Long))
+                            }
+
+                            "PreferencesUtil" -> if (value is Double) {
+                                PreferencesUtil.putLong(key, value.toLong())
+                            } else {
+                                PreferencesUtil.putLong(key, (value as Long))
+                            }
+
+                            else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
+                        }
+
+                        else -> when (sp.spType) {
+                            "SPUtils" -> SPUtils.setString(key, value as String)
+                            "PreferencesUtil" -> PreferencesUtil.putString(key, value as String)
+                            else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
+                        }
+
                     }
-
-                    SP.type_float -> when (sp.spType) {
-                        "SPUtils" -> if (value is Double) {
-                            SPUtils.setFloat(key, value.toFloat())
-                        } else {
-                            SPUtils.setFloat(key, (value as Float))
-                        }
-
-                        "PreferencesUtil" -> if (value is Double) {
-                            PreferencesUtil.putFloat(key, value.toFloat())
-                        } else {
-                            PreferencesUtil.putFloat(key, (value as Float))
-                        }
-
-                        else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
-                    }
-
-                    SP.type_int -> when (sp.spType) {
-                        "SPUtils" -> if (value is Double) {
-                            SPUtils.setInt(key, value.toInt())
-                        } else {
-                            SPUtils.setInt(key, value as Int)
-                        }
-
-                        "PreferencesUtil" -> if (value is Double) {
-                            PreferencesUtil.putInt(key, value.toInt())
-                        } else {
-                            PreferencesUtil.putInt(key, value as Int)
-                        }
-
-                        else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
-                    }
-
-                    SP.type_long -> when (sp.spType) {
-                        "SPUtils" -> if (value is Double) {
-                            SPUtils.setLong(key, value.toLong())
-                        } else {
-                            SPUtils.setLong(key, (value as Long))
-                        }
-
-                        "PreferencesUtil" -> if (value is Double) {
-                            PreferencesUtil.putLong(key, value.toLong())
-                        } else {
-                            PreferencesUtil.putLong(key, (value as Long))
-                        }
-
-                        else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
-                    }
-
-                    else -> when (sp.spType) {
-                        "SPUtils" -> SPUtils.setString(key, value as String)
-                        "PreferencesUtil" -> PreferencesUtil.putString(key, value as String)
-                        else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
-                    }
-
                 }
+
             }
+
 
             Toast.makeText(context, context.getString(R.string.restore_success),Toast.LENGTH_SHORT).show()
             return true
         } catch (e: JsonSyntaxException) {
-            // 处理 JSON 语法错误
-            // 例如：记录错误、返回错误消息等
             Toast.makeText(context,"文件错误！",Toast.LENGTH_SHORT).show()
             Log.e(TAG, "readGson: $e")
         } catch (e: JsonIOException) {
-            // 处理 I/O 错误，如读取文件失败
-            // 例如：记录错误、返回错误消息等
             Toast.makeText(context,"读取文件失败！",Toast.LENGTH_SHORT).show()
             Log.e(TAG, "readGson: $e")
         } catch (e: Exception) {
-            // 处理其他可能的异常（虽然不太可能是 Gson 抛出的）
-            // 例如：记录错误、返回错误消息等
             Toast.makeText(context,"未知错误！",Toast.LENGTH_SHORT).show()
             Log.e(TAG, "readGson: $e")
         }
         return false
 
-    }
-
-
-    private fun getPathFromDocumentUri(context: Context, uri: Uri): String? {
-        val documentId = DocumentsContract.getDocumentId(uri)
-        val split = documentId.split(":")
-        if (split.size != 2){
-
-            return null
-
-        }
-        val type = split[0]
-
-        return when {
-            isExternalStorageDocument(uri) -> {
-                if ("primary".equals(type, ignoreCase = true)) {
-                    "${Environment.getExternalStorageDirectory()}/${split[1]}"
-                } else {
-                    null
-                }
-            }
-            isDownloadsDocument(uri) -> {
-                val contentUri = ContentUris.withAppendedId(
-                    Uri.parse("content://downloads/public_downloads"),
-                    split[1].toLong()
-                )
-
-                getDataColumn(context, contentUri, null, null)
-                //getPathFromDownloadsDocumentUri(context,split)
-            }
-            isMediaDocument(uri) -> {
-                val contentUri: Uri? = when (type) {
-                    "image" -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                    "video" -> MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-                    "audio" -> MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-                    else -> null
-                }
-                val selection = "_id=?"
-                val selectionArgs = arrayOf(split[1])
-                getDataColumn(context, contentUri, selection, selectionArgs)
-            }
-            else -> null
-        }
-    }
-
-    private fun getDataColumn(
-        context: Context,
-        uri: Uri?,
-        selection: String?,
-        selectionArgs: Array<String>?
-    ): String? {
-        var cursor: Cursor? = null
-        val column = "_data"
-        val projection = arrayOf(column)
-
-        try {
-            cursor = context.contentResolver.query(uri!!, projection, selection, selectionArgs, null)
-            if (cursor != null && cursor.moveToFirst()) {
-                val columnIndex = cursor.getColumnIndexOrThrow(column)
-                return cursor.getString(columnIndex)
-            }
-        } finally {
-            cursor?.close()
-        }
-        return null
-    }
-
-    private fun isExternalStorageDocument(uri: Uri): Boolean {
-        return "com.android.externalstorage.documents" == uri.authority
-    }
-
-    private fun isDownloadsDocument(uri: Uri): Boolean {
-        return "com.android.providers.downloads.documents" == uri.authority
-    }
-
-    private fun isMediaDocument(uri: Uri): Boolean {
-        return "com.android.providers.media.documents" == uri.authority
     }
 
     fun clear(activity: MainActivity, context: Context) {

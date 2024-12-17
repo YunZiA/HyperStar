@@ -61,18 +61,19 @@ fun EditItem(
 
     if (showDialog.value){
 
-        MiuixPopupUtil.showDialog() {
+        MiuixPopupUtil.showDialog{
             MSuperDialog(
                 title = item.name,
                 show = showDialog,
                 showAction = true,
-                color = colorScheme.background,
                 onDismissRequest = {
                     dismissDialog(showDialog)
                 }
             ) {
 
-                Card{
+                Card(
+                    color = colorScheme.secondaryContainer
+                ){
                     EnableItemSlider(
                         key = "edit_span_size",
                         progress = 4f,

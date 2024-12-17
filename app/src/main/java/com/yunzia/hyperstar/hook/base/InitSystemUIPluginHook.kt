@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.hook.base
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.res.XModuleResources
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.app.plugin.DeviceCenterRow
@@ -11,7 +12,7 @@ import com.yunzia.hyperstar.hook.app.plugin.QSControlCenterColor
 import com.yunzia.hyperstar.hook.app.plugin.QSControlCenterList
 import com.yunzia.hyperstar.hook.app.plugin.QSEditButton
 import com.yunzia.hyperstar.hook.app.plugin.QSHeaderMessage
-import com.yunzia.hyperstar.hook.app.plugin.QSHeaderView
+import com.yunzia.hyperstar.hook.app.plugin.QSHeaderViewListener
 import com.yunzia.hyperstar.hook.app.plugin.QSListView
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaCoverBackground
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaDefaultApp
@@ -83,27 +84,33 @@ class InitSystemUIPluginHook() : BaseHooker() {
     }
 
 
-    lateinit var mContext: Context;
-    var ishHooked : Boolean = false;
+    var isHooked : Boolean = false;
 
     private fun startSystemUIPluginHook(){
 
         val pluginInstance = findClass("com.android.systemui.shared.plugins.PluginInstance",classLoader)
 
         XposedHelpers.findAndHookMethod(pluginInstance,"loadPlugin",object : XC_MethodHook(){
+
             override fun afterHookedMethod(param: MethodHookParam?) {
                 super.afterHookedMethod(param)
                 val thisObj = param?.thisObject
-                val mPluginContext = XposedHelpers.getObjectField(thisObj,"mPluginContext")
-                val pathClassLoader = XposedHelpers.getObjectField(mPluginContext,"mClassLoader") as? ClassLoader
+                val mPluginContext = XposedHelpers.getObjectField(thisObj,"mPluginContext") as ContextWrapper
+                val pathClassLoader = mPluginContext.classLoader
 
-                if (!ishHooked && pathClassLoader != null) {
-                    starLog.log("Loaded pluginClassLoader: $pathClassLoader") // 直接使用pathClassLoader
-                    doHook(pathClassLoader) // 直接传递pathClassLoader给doHook函数
-                    ishHooked = true
-                } else if (pathClassLoader == null) {
-                    // 如果需要，处理pathClassLoader为null的情况
+                if (pathClassLoader == null) {
                     starLog.log("Failed to load pluginClassLoader: null returned")
+                    return
+                }
+                if (!isHooked) {
+                    starLog.log("Loaded pluginClassLoader: $pathClassLoader")
+                    doHook(pathClassLoader)
+                    isHooked = true
+                }
+                if (secClassLoader != pathClassLoader){
+                    starLog.log("pluginClassLoader is changed")
+                    isHooked = false
+
                 }
 
 
@@ -116,7 +123,7 @@ class InitSystemUIPluginHook() : BaseHooker() {
 
     override fun doHook(secClassLoader: ClassLoader?) {
         super.doHook(secClassLoader)
-        doSecMethods(QSHeaderView(classLoader))
+        doSecMethods(QSHeaderViewListener())
         doSecMethods(QSClockAnim())
         doSecMethods(SuperBlurWidgetManager())
         doSecMethods(SuperBlurVolumeManager())

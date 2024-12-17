@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.pagers
 
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -92,10 +93,11 @@ fun LazyListScope.languageItem(
                 .fillMaxWidth()
                 .padding(horizontal = 28.dp)
                 .padding(top = 10.dp)
-                .bounceAnimN{
-                    if (isSelected){
-                        selectedItem.intValue = index
-                        PreferencesUtil.putInt("app_language",selectedItem.intValue)
+                .bounceAnimN {
+                    Log.d("ggc", "languageItem: $isSelected")
+                    if (isSelected) {
+                        Log.d("ggc", "languageItem: isSelected $isSelected")
+                        PreferencesUtil.putInt("app_language", selectedItem.intValue)
                         activity.recreate()
                     }
                 }

@@ -246,7 +246,7 @@ fun  RebootDialog(
                 .padding(top = 8.dp, bottom = 18.dp)
                 .fillMaxWidth()
                 .clip(SmoothRoundedCornerShape(12.dp, 0.5f))
-                .background(colorScheme.background)
+                .background(colorScheme.secondaryContainer)
         ) {
             Item(
                 title = stringResource(id = R.string.systemui),

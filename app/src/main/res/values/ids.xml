@@ -30,4 +30,5 @@
     <item name="miui_volume_timer_progress_normal" type="id" />
     <item name="miui_volume_timer_progress_dragging" type="id" />
     <item name="miui_volume_timer_progress_dragging_rect" type="id" />
+    <item name="cc_header_edit" type="id" />
 </resources>

@@ -65,14 +65,14 @@ fun DeviceCenterItem(
                 title = item.name,
                 show = showDialog,
                 showAction = true,
-                color = colorScheme.background,
                 onDismissRequest = {
                     dismissDialog(showDialog)
                 }
             ) {
 
                 Card(
-                    Modifier.padding(bottom = 10.dp)
+                    Modifier.padding(bottom = 10.dp),
+                    color = colorScheme.secondaryContainer
                 ){
                     EnableItemDropdown(
                         key = "deviceCenter_land_rightOrLeft"
@@ -80,7 +80,9 @@ fun DeviceCenterItem(
 
                 }
 
-                Card{
+                Card(
+                    color = colorScheme.secondaryContainer
+                ){
                     EnableItemSlider(
                         key = "deviceCenter_span_size",
                         state = enable,

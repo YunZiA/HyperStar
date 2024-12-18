@@ -61,18 +61,6 @@ class InitSystemUIPluginHook() : BaseHooker() {
 
         if (resparam!!.packageName != plugin) return
 
-        resparam.res.setReplacement(
-            plugin,
-            "drawable",
-            "ic_header_settings",
-            modRes!!.fwd(R.drawable.ic_header_settings)
-        )
-        resparam.res.setReplacement(
-            plugin,
-            "drawable",
-            "ic_controls_edit",
-            modRes.fwd(R.drawable.ic_controls_edit)
-        )
         doResources(qsControlCenterColor)
         doResources(powerMenu)
         doResources(QSMiplayAppIconRadius())

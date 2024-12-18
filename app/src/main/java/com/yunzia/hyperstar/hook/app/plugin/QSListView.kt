@@ -14,20 +14,18 @@ import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
-import yunzia.utils.DensityUtil.Companion.dpToPx
+import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.base.BaseHooker
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
-import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
+import yunzia.utils.DensityUtil.Companion.dpToPx
 
 
 class QSListView : BaseHooker() {
@@ -262,9 +260,11 @@ class QSListView : BaseHooker() {
 
                     }
                     if(labelMarquee){
+
                         label.ellipsize = TextUtils.TruncateAt.MARQUEE
-                        label.focusable = View.NOT_FOCUSABLE
+                        label.isFocusable = true
                         label.isSelected = true
+                        label.marqueeRepeatLimit = 3
                         label.setSingleLine()
                     }
 
@@ -274,6 +274,46 @@ class QSListView : BaseHooker() {
             })
         }
 
+//        XposedHelpers.findAndHookMethod(QSTileItemView,"startMarquee",object : XC_MethodReplacement(){
+//
+//            override fun replaceHookedMethod(param: MethodHookParam?): Any? {
+//                val thisObj = param?.thisObject
+//                val context = XposedHelpers.callMethod(thisObj,"getContext") as Context
+//                val tile_label = context.resources.getIdentifier("tile_label","id",plugin)
+//
+//                val label = XposedHelpers.callMethod(thisObj,"_\$_findCachedViewById",tile_label) as TextView
+//                XposedHelpers.callMethod(label,"startMarquee")
+//                return null
+//            }
+//
+//        })
+//
+//        val QSListController = findClass("miui.systemui.controlcenter.panel.main.qs.QSListController",classLoader)
+//        XposedHelpers.findAndHookMethod(QSListController,"onResume",object : XC_MethodReplacement(){
+//
+//            override fun replaceHookedMethod(param: MethodHookParam?): Any? {
+//                val thisObj = param?.thisObject
+//                val addedTiles = XposedHelpers.getObjectField(thisObj,"addedTiles") as ArrayList<*>
+//                val it = addedTiles.iterator()
+//                while (it.hasNext()) {
+//                    XposedHelpers.callMethod(it.next(),"startMarquee")
+//
+//                }
+//                val copiedTiles = XposedHelpers.getObjectField(thisObj,"copiedTiles") as ArrayList<*>
+//                val its = copiedTiles.iterator()
+//                while (its.hasNext()) {
+//                    XposedHelpers.callMethod(it.next(),"startMarquee")
+//
+//                }
+////                val context = XposedHelpers.callMethod(thisObj,"getContext") as Context
+////                val tile_label = context.resources.getIdentifier("tile_label","id",plugin)
+////
+////                val label = XposedHelpers.callMethod(thisObj,"_\$_findCachedViewById",tile_label) as TextView
+////                XposedHelpers.callMethod(label,"startMarquee")
+//                return null
+//            }
+//
+//        })
 
         val CommonUtils = XposedHelpers.findClass("miui.systemui.util.CommonUtils", classLoader)
 

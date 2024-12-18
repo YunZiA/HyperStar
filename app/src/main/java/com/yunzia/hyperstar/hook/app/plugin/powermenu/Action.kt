@@ -2,11 +2,10 @@ package com.yunzia.hyperstar.hook.app.plugin.powermenu
 
 import android.annotation.SuppressLint
 import android.content.ComponentName
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu.Item
-
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.StateListDrawable
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -14,7 +13,13 @@ import android.os.PowerManager
 import android.os.RemoteException
 import android.os.UserHandle
 import android.provider.Settings
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu.Item
+import com.yunzia.hyperstar.hook.tool.starLog
 import de.robv.android.xposed.XposedHelpers
+import java.lang.ref.WeakReference
+
+
+
 
 class Action(val mContext: Context,
              var xiaoai:Int,
@@ -176,6 +181,7 @@ class Action(val mContext: Context,
         }
 
     }
+
     fun airPlane (
         mContext:Context,
         icAirplaneOn:Int,
@@ -187,9 +193,18 @@ class Action(val mContext: Context,
             "飞行模式",
             airPlaneMode
         ){ v,context->
-            v.isSelected = !airPlaneMode
-            Settings.Global.putInt(context.contentResolver, Settings.Global.AIRPLANE_MODE_ON, if (airPlaneMode) 1 else 0)
-            context.sendBroadcast(Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED))
+            val enable = !airPlaneMode
+            v.isSelected = enable
+            starLog.log("airPlaneMode")
+            Settings.Global.putInt(
+                mContext.contentResolver,
+                Settings.Global.AIRPLANE_MODE_ON,
+                if (enable) 1 else 0
+            )
+            val intent = Intent("android.intent.action.AIRPLANE_MODE")
+            intent.putExtra("state", enable)
+            context.sendBroadcast(intent)
+
         }
     }
     fun silentMode(

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.XModuleResources
 import android.provider.Settings
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.HapticFeedbackConstants
 import android.view.View
@@ -21,8 +22,9 @@ import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
-
 import yunzia.utils.DensityUtil.Companion.dpToPx
+import java.lang.reflect.Method
+import java.util.Locale
 import kotlin.math.pow
 
 
@@ -74,8 +76,6 @@ class QSHeaderView() : BaseHooker() {
             override fun afterHookedMethod(param: MethodHookParam?) {
                 val combinedHeaderController = param?.args?.get(0)
                 val controlCenterHeaderView = XposedHelpers.getObjectField(combinedHeaderController,"controlCenterHeaderView") as ViewGroup
-
-                starLog.log("$controlCenterHeaderView")
                 header = addButton(controlCenterHeaderView)
             }
         })
@@ -177,9 +177,7 @@ class QSHeaderView() : BaseHooker() {
                         val isVerticalMode = XposedHelpers.callStaticMethod(MiuiConfigs,"isVerticalMode",context) as Boolean
                         if (isVerticalMode ){
                             val f2 = 1-f
-//                        val controlCenterCarrierView = XposedHelpers.getObjectField(combinedHeaderController,"controlCenterCarrierView") as View
                             val normalControlStatusBarTranslationY = XposedHelpers.getIntField(controlCenterHeaderExpandController,"normalControlStatusBarTranslationY")
-                            val normalControlCarrierTranslationX = XposedHelpers.getIntField(controlCenterHeaderExpandController,"normalControlCarrierTranslationX")
                             header?.translationY = normalControlStatusBarTranslationY * f2
                         }
 
@@ -192,61 +190,61 @@ class QSHeaderView() : BaseHooker() {
             }
         })
 
-
-//        XposedHelpers.findAndHookMethod(ControlCenterHeaderController,"updateControlViewAlpha",object :XC_MethodHook(){
-//            override fun afterHookedMethod(param: MethodHookParam?) {
-//                super.afterHookedMethod(param)
-//                val thisObj = param?.thisObject
-//                val controlCenter = XposedHelpers.getObjectField(thisObj,"controlCenter")
-//                val expanded = XposedHelpers.callMethod(controlCenter,"getExpanded") as Boolean
-//                starLog.log("expanded $expanded")
-////                if (expanded){
-////                    header?.alpha = 1f
-////                    return
-////                }
-////                header?.alpha = 0f
-//
-//
-//
-//            }
-//        })
-
         val CombinedHeaderController = findClass("com.android.systemui.controlcenter.shade.CombinedHeaderController",classLoader)
+        val PanelExpandControllerExt = findClass("com.miui.interfaces.shade.PanelExpandControllerExt",classLoader)
 
 
-//        XposedHelpers.findAndHookMethod(CombinedHeaderController,"onSwitchProgressChanged",Float::class.java,object :XC_MethodHook(){
-//            override fun afterHookedMethod(param: MethodHookParam?) {
-//                super.afterHookedMethod(param)
-//                val thisObj = param?.thisObject
-//                val f = param?.args?.get(0) as Float
-//                if ( f <= 0.5f ){
-//                    val controlLocationX =  XposedHelpers.getFloatField(thisObj,"controlLocationX")
-//                    val notificationLocationY =  XposedHelpers.getFloatField(thisObj,"notificationLocationY")
-//                    val notificationLocationX =  XposedHelpers.getFloatField(thisObj,"notificationLocationX")
-//                    val controlLocationY =  XposedHelpers.getFloatField(thisObj,"controlLocationY")
-//                    val f2 = 1f
-//                    val f3 = 2f
-//                    val pow = (f2-(f2 - (f * f3)).coerceIn(0.0f, 1.0f)).pow(2.0f)
-//                    val f4: Float =
-//                        (controlLocationX - notificationLocationX) * pow / f3
-//                    val f5: Float =
-//                        (notificationLocationY - controlLocationY) * pow / f3
-//                    header?.translationY = f5
-//                    return
-//                }
-//                val controlLocationX =  XposedHelpers.getFloatField(thisObj,"controlLocationX")
-//                val notificationLocationY =  XposedHelpers.getFloatField(thisObj,"notificationLocationY")
-//                val notificationLocationX =  XposedHelpers.getFloatField(thisObj,"notificationLocationX")
-//                val controlLocationY =  XposedHelpers.getFloatField(thisObj,"controlLocationY")
-//                val f7 = 1f
-//                val f8 = 2f
-//                val pow2 = (f7 - ((f * f8) - f7).coerceIn(0.0f, 1.0f)).pow(2.0f)
-//                val f9: Float = ((controlLocationX - notificationLocationX) * pow2) / f8
-//                val f10: Float = ((notificationLocationY - controlLocationY) * pow2) / f8
-//
-//
-//            }
-//        })
+        XposedHelpers.findAndHookMethod(CombinedHeaderController,"onSwitchProgressChanged",Float::class.java,object :XC_MethodHook(){
+            override fun afterHookedMethod(param: MethodHookParam?) {
+                super.afterHookedMethod(param)
+                val thisObj = param?.thisObject
+                val f = param?.args?.get(0) as Float
+                val context = XposedHelpers.getObjectField(thisObj,"context") as Context
+                val controlCenterExpandController = XposedHelpers.getObjectField(thisObj,"controlCenterExpandController")
+
+                val getAppearance = XposedHelpers.findMethodExactIfExists(PanelExpandControllerExt,"getAppearance")
+
+                if (!(getAppearance.invoke(controlCenterExpandController) as Boolean)) {
+                    return;
+                }
+
+                if ( f <= 0.5f ){
+                    val controlLocationX =  XposedHelpers.getFloatField(thisObj,"controlLocationX")
+                    val notificationLocationY =  XposedHelpers.getFloatField(thisObj,"notificationLocationY")
+                    val notificationLocationX =  XposedHelpers.getFloatField(thisObj,"notificationLocationX")
+                    val controlLocationY =  XposedHelpers.getFloatField(thisObj,"controlLocationY")
+                    val f2 = 1f
+                    val f3 = 2f
+                    val pow = (f2-(f2 - (f * f3)).coerceIn(0.0f, 1.0f)).pow(2.0f)
+                    var moveX: Float =
+                        (controlLocationX - notificationLocationX) * pow / f3
+                    var moveY: Float =
+                        (notificationLocationY - controlLocationY) * pow / f3
+                    if (TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == 1) {
+                        moveX = -moveX
+                        moveY = -moveY
+                    }
+                    val isFlipTinyScreen = XposedHelpers.callStaticMethod(MiuiConfigs,"isFlipTinyScreen",context) as Boolean
+                    if (isFlipTinyScreen){
+                        header?.translationY = moveY
+                        header?.get(0)?.translationX = -moveX
+                        header?.get(2)?.translationX = -moveX
+                        return
+
+                    }
+                    val isVerticalMode = XposedHelpers.callStaticMethod(MiuiConfigs,"isVerticalMode",context) as Boolean
+                    if (isVerticalMode){
+                        header?.translationY = moveY
+                        header?.get(0)?.translationX = -moveX
+                        header?.get(2)?.translationX = moveX
+                        return
+
+                    }
+                }
+
+
+            }
+        })
 
 
 

@@ -51,18 +51,18 @@ public abstract class BaseHooker {
         this.classLoader = classLoader;
     }
     public void doBaseMethods(BaseHooker baseHooker){
-
-        baseHooker.doMethods(classLoader);
+        try{
+            baseHooker.doMethods(classLoader);
+        } catch (Exception e) {
+            starLog.log(e.getMessage());
+        }
     }
 
     public void doSecMethods(BaseHooker baseHooker)  {
         try{
-
             baseHooker.doMethods(secClassLoader);
-
         } catch (Exception e) {
             starLog.log(e.getMessage());
-            return;
         }
 
     }

@@ -16,6 +16,7 @@ import com.yunzia.hyperstar.SystemUIPagerList
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.SuperContentDropdown
 import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
+import com.yunzia.hyperstar.ui.base.SuperStringArrow
 import com.yunzia.hyperstar.ui.base.SwitchContentFolder
 import com.yunzia.hyperstar.ui.base.XSuperDropdown
 import com.yunzia.hyperstar.ui.base.XMiuixSuperSliderSwitch
@@ -43,6 +44,10 @@ fun MediaSettingsPager(
                 title = stringResource(R.string.media_default_app_settings),
                 navController = navController,
                 route = SystemUIPagerList.MEDIA_APP
+            )
+            SuperStringArrow(
+                title = stringResource(R.string.title_miplay_detail_header_no_song),
+                key = "miplay_detail_header_no_song"
             )
 
         }
@@ -138,6 +143,10 @@ fun MediaSettingsPager(
             XSuperSwitch(
                 title = stringResource(R.string.title_qs_detail_progress_bg_radius),
                 key = "qs_detail_progress_bg_radius"
+            )
+            XSuperSwitch(
+                title = stringResource(R.string.title_detail_volumebar_show_value),
+                key = "is_detail_volumebar_show_value"
             )
             XSuperDropdown(
                 title = stringResource(R.string.is_local_speaker_title),

@@ -3,6 +3,9 @@ package com.yunzia.hyperstar.hook.base;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 import android.content.res.XModuleResources;
+import android.graphics.Color;
+import android.util.Log;
+import android.view.View;
 
 import com.yunzia.hyperstar.R;
 import com.yunzia.hyperstar.hook.app.systemui.NavigationBarBackground;
@@ -66,6 +69,16 @@ public class InitSystemUIHook extends BaseHooker {
     private void doTestHook() {
 
 
+    }
+
+    public static void applyViewShadowForMediaAlbum(float f, float f2, int i, View view) {
+        try {
+            Class<?> cls = Class.forName("android.view.View");
+            Class<?> cls2 = Float.TYPE;
+            cls.getMethod("setMiShadow", Integer.TYPE, cls2, cls2, cls2, cls2, Boolean.TYPE).invoke(view, Integer.valueOf(Color.argb(i, 0, 0, 0)), Float.valueOf(0.0f), Float.valueOf(f), Float.valueOf(f2), Float.valueOf(1.0f), Boolean.FALSE);
+        } catch (Exception unused) {
+            Log.d("NotificationUtil", "applyViewShadowForMediaAlbum setMiShadow Method not found!");
+        }
     }
 
 

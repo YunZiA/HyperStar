@@ -9,6 +9,7 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.SystemUIPagerList
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
+import com.yunzia.hyperstar.ui.base.SuperStringArrow
 import com.yunzia.hyperstar.ui.base.SwitchContentFolder
 import com.yunzia.hyperstar.ui.base.XMiuixContentDropdown
 import com.yunzia.hyperstar.ui.base.XMiuixSlider
@@ -63,11 +64,6 @@ fun ControlCenterPager(
             title = R.string.header,
             top = 12.dp
         ){
-
-            XSuperSwitch(
-                title = stringResource(R.string.close_qs_clock_anim_title),
-                key = "close_qs_clock_anim"
-            )
 
             XSuperSwitch(
 //                enabled = false,
@@ -219,6 +215,10 @@ fun ControlCenterPager(
             title = R.string.other,
             top = 12.dp
         ){
+            SuperStringArrow(
+                title = stringResource(R.string.title_qs_customize_entry_button_text),
+                key = "qs_customize_entry_button_text"
+            )
             XSuperSwitch(
                 title = stringResource(R.string.close_edit_button_show_title),
                 key = "close_edit_button_show"

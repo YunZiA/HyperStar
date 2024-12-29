@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.hook.base;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.XModuleResources;
 import android.graphics.Color;
@@ -86,6 +87,28 @@ public abstract class BaseHooker {
     }
     public void setColorField(Object context, String fieldName, String color){
         XposedHelpers.setIntField(context,fieldName, Color.parseColor(color));
+    }
+
+    public int getColor(Resources res, String name, String defPackage){
+        int id = res.getIdentifier(name,"color",defPackage);
+        return res.getColor(id,res.newTheme());
+
+    }
+
+    public float getDimension(Resources res, String name, String defPackage){
+        int id = res.getIdentifier(name,"dimen",defPackage);
+        return res.getDimension(id);
+
+    }
+    public float getDimensionPixelOffset(Resources res, String name, String defPackage){
+        int id = res.getIdentifier(name,"dimen",defPackage);
+        return res.getDimensionPixelOffset(id);
+
+    }
+    public float getDimensionPixelSize(Resources res, String name, String defPackage){
+        int id = res.getIdentifier(name,"dimen",defPackage);
+        return res.getDimensionPixelSize(id);
+
     }
     //public ProviderUtils mProviderUtils;
     public String mPath;

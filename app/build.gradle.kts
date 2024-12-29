@@ -88,7 +88,6 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation("com.github.skydoves:cloudy:0.2.3")
     implementation(libs.haze)
-    //implementation ("com.android.support:palette-v7:29.0.0")
 
     implementation (libs.androidx.palette.ktx)
 

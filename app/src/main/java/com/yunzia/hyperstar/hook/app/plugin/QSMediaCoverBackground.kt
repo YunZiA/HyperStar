@@ -20,6 +20,7 @@ import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.R
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
+import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
@@ -172,6 +173,31 @@ class QSMediaCoverBackground: BaseHooker() {
                 }
 
             })
+
+            val MediaPanelContentController = findClass("miui.systemui.controlcenter.panel.main.media.MediaPanelController",classLoader)
+
+
+            val MediaPanelParams = findClass("MediaPanelController\$MediaPanelParams",classLoader)
+
+            XposedBridge.hookAllMethods(MediaPanelContentController,"updateFromViewSize",object :XC_MethodHook(){
+                override fun afterHookedMethod(param: MethodHookParam?) {
+                    super.afterHookedMethod(param)
+                    val mediaFromView = param?.args?.get(0)
+                    val view = XposedHelpers.callMethod(mediaFromView,"getViewHolder")
+
+                }
+            })
+
+            XposedBridge.hookAllConstructors(MediaPanelParams,object :XC_MethodHook(){
+                override fun afterHookedMethod(param: MethodHookParam?) {
+                    super.afterHookedMethod(param)
+                    val thisObj = param?.thisObject
+                    val fromView  = XposedHelpers.getObjectField(thisObj,"fromView")
+                    val fromView2  = XposedHelpers.getObjectField(thisObj,"fromView2")
+
+                }
+            })
+
 
         }
     }

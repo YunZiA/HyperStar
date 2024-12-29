@@ -143,21 +143,13 @@ class Action(val mContext: Context,
             false
         ){ _, context: Context ->
             Handler(Looper.getMainLooper()).postDelayed({
-                try {
-                    val clazz = Class.forName("android.os.UserHandle")
-                    val field = clazz.getDeclaredField("CURRENT")
-                    val currentUserHandle = field.get(null) as UserHandle
-                    context.sendBroadcastAsUser(
-                        Intent("android.intent.action.CAPTURE_SCREENSHOT"),
-                        currentUserHandle
-                    )
-                } catch (e: ClassNotFoundException) {
-                    e.printStackTrace()
-                } catch (e: NoSuchFieldException) {
-                    e.printStackTrace()
-                } catch (e: IllegalAccessException) {
-                    e.printStackTrace()
-                }
+                val field = XposedHelpers.findField(UserHandle::class.java,"CURRENT")
+                val currentUserHandle = field.get(null) as UserHandle
+
+                context.sendBroadcastAsUser(
+                    Intent("android.intent.action.CAPTURE_SCREENSHOT"),
+                    currentUserHandle
+                )
             }, 400)
 
         }
@@ -195,15 +187,12 @@ class Action(val mContext: Context,
         ){ v,context->
             val enable = !airPlaneMode
             v.isSelected = enable
-            starLog.log("airPlaneMode")
-            Settings.Global.putInt(
-                mContext.contentResolver,
-                Settings.Global.AIRPLANE_MODE_ON,
-                if (enable) 1 else 0
-            )
+            Settings.Global.putInt(context.contentResolver, Settings.Global.AIRPLANE_MODE_ON, if (enable) 1 else 0)
             val intent = Intent("android.intent.action.AIRPLANE_MODE")
             intent.putExtra("state", enable)
-            context.sendBroadcast(intent)
+            val field = XposedHelpers.findField(UserHandle::class.java,"ALL")
+            val ALLUserHandle = field.get(null) as UserHandle
+            context.sendBroadcastAsUser(intent,ALLUserHandle)
 
         }
     }

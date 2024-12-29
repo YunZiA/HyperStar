@@ -172,6 +172,44 @@ class QSListView : BaseHooker() {
         val QSItemViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder", classLoader)
         val QSItemView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSItemView", classLoader)
         val QSTileItemView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemView", classLoader)
+        val QSListController = findClass("miui.systemui.controlcenter.panel.main.qs.QSListController",classLoader)
+        val WhenMappings = findClass("miui.systemui.controlcenter.panel.main.qs.QSListController\$WhenMappings",classLoader)
+
+
+
+//        XposedHelpers.findAndHookMethod(QSListController,"distributeTileInfo",List::class.java,object :XC_MethodHook(){
+//            override fun beforeHookedMethod(param: MethodHookParam?) {
+//                super.beforeHookedMethod(param)
+//                val thisObj = param?.thisObject
+//                val addedTiles = XposedHelpers.getObjectField(thisObj,"addedTiles") as ArrayList<*>
+//                XposedHelpers.setObjectField(thisObj,"addedTiles",addedTiles.subList(0,5))
+//            }
+//
+//        })
+
+//        XposedHelpers.findAndHookMethod(QSListController,"getListItems",object :XC_MethodHook(){
+//            override fun afterHookedMethod(param: MethodHookParam?) {
+//                super.afterHookedMethod(param)
+//                val thisObj = param?.thisObject
+//                val mainPanelController = XposedHelpers.getObjectField(thisObj,"mainPanelController")
+//                val get = XposedHelpers.callMethod(mainPanelController,"get")
+//                val getModeController = XposedHelpers.callMethod(get,"getModeController")
+//                val getMode = XposedHelpers.callMethod(getModeController,"getMode")
+//                val ordinal = XposedHelpers.callMethod(getMode,"ordinal") as Int
+//                val cc = XposedHelpers.getStaticObjectField(WhenMappings,"\$EnumSwitchMapping\$0") as Array<*>
+////                int i = WhenMappings.$EnumSwitchMapping$0[ordinal];
+//                val i = cc[ordinal]
+//
+//                if (i !=1 && i != 2) return
+//
+//                val list = param?.result as List<*>
+//                val arrayList = ArrayList<Any?>()
+//                arrayList.addAll(list)
+//                arrayList.addAll(list)
+//
+//                param.result = list.subList(0,1)
+//            }
+//        })
 
         val MainPanelModeController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.MainPanelController\$Mode",classLoader)
 
@@ -538,18 +576,62 @@ class QSListView : BaseHooker() {
 
                     override fun replaceHookedMethod(param: MethodHookParam?): Any {
                         val thisObj = param?.thisObject
-                        val pluginContext: Context = XposedHelpers.getObjectField(thisObj, "pluginContext") as Context;
-                        //XposedHelpers.setFloatField(thisObj,"_cornerRadius",dpToPx(pluginContext.resources,qsListTileRadius))
-
-
-                        return dpToPx(pluginContext.resources,qsListTileRadius);
+                        val pluginContext: Context = XposedHelpers.getObjectField(thisObj, "pluginContext") as Context
+                        return dpToPx(pluginContext.resources,qsListTileRadius)
                     }
                 })
+
+            XposedBridge.hookAllMethods(QSTileItemIconView,"getActiveBackgroundDrawable",object :XC_MethodHook(){
+                override fun afterHookedMethod(param: MethodHookParam?) {
+                    super.afterHookedMethod(param)
+                    val thisObj = param?.thisObject
+                    val pluginContext = XposedHelpers.getObjectField(thisObj,"pluginContext") as Context
+                    val drawable = param?.result as Drawable
+                    if (drawable is GradientDrawable) {
+                        drawable.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
+                    }
+
+                    param.result = drawable
+                }
+
+            })
+            XposedBridge.hookAllMethods(QSTileItemIconView,"getDisabledBackgroundDrawable",object :XC_MethodHook(){
+                override fun afterHookedMethod(param: MethodHookParam?) {
+                    super.afterHookedMethod(param)
+                    val thisObj = param?.thisObject
+                    val pluginContext = XposedHelpers.getObjectField(thisObj,"pluginContext") as Context
+                    val drawable = param?.result as Drawable
+                    if (drawable is GradientDrawable) {
+                        drawable.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
+                    }
+                    param.result = drawable
+                }
+
+            })
+
+            XposedBridge.hookAllMethods(QSTileItemIconView,"getBackgroundDrawable",object :XC_MethodHook(){
+                override fun afterHookedMethod(param: MethodHookParam?) {
+                    super.afterHookedMethod(param)
+                    val state = param?.args?.get(0)
+                    val i = XposedHelpers.getIntField(state,"state")
+                    if (i == 0){
+                        val thisObj = param?.thisObject
+                        val pluginContext = XposedHelpers.getObjectField(thisObj,"pluginContext") as Context
+                        val drawable = param?.result as Drawable
+                        if (drawable is GradientDrawable) {
+                            drawable.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
+                        }
+                        param.result = drawable
+                    }
+                }
+
+            })
 
         }
         var isDetailTile = false
 
         var height :Int = 0
+
 
         hookAllMethods(QSTileItemIconView,
             "updateIcon",
@@ -562,23 +644,6 @@ class QSListView : BaseHooker() {
 
                         val tileSize = XposedHelpers.getFloatField(thisObj,"tileSize").toInt()
                         height = tileSize
-                    }
-                    if (isQSListTileRadius){
-                        val pluginContext: Context =
-                            XposedHelpers.getObjectField(param?.thisObject, "pluginContext") as Context;
-                        val res = pluginContext.resources
-                        //val enableColor = pluginContext.resources.getIdentifier("qs_enabled_color","color","miui.systemui.plugin")
-                        setRadius(pluginContext,res,"qs_background_warning")
-                        setRadius(pluginContext,res,"qs_background_enabled")
-                        setRadius(pluginContext,res,"qs_background_restricted")
-                        setRadius(pluginContext,res,"qs_background_disabled")
-                        setRadius(pluginContext,res,"qs_background_unavailable")
-                        setRadius(pluginContext,res,"qs_detail_background_disabled")
-                        setRadius(pluginContext,res,"qs_detail_background_enabled")
-                        setRadius(pluginContext,res,"qs_detail_background_restricted")
-                        setRadius(pluginContext,res,"qs_detail_background_unavailable")
-                        setRadius(pluginContext,res,"qs_detail_background_warning")
-
                     }
 
                 }

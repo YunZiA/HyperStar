@@ -242,5 +242,8 @@
     <string name="focus_notification_content">点击</string>
     <string name="error_title">出错啦！</string>
     <string name="send_developer">请将本次提示反馈给开发者：</string>
+    <string name="title_detail_volumebar_show_value">音量条进度显示</string>
+    <string name="title_miplay_detail_header_no_song">暂无播放文本自定义</string>
+    <string name="title_qs_customize_entry_button_text">编辑文本自定义</string>
 
 </resources>

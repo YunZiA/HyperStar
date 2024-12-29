@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.yunzia.hyperstar.ui.base.dialog.ShowUtil
 import com.yunzia.hyperstar.ui.base.navtype.PagersModel
 import com.yunzia.hyperstar.ui.base.navtype.pagersJson
 import com.yunzia.hyperstar.ui.module.home.HomePage
@@ -54,7 +55,6 @@ fun App(
     val easing = FastOutSlowInEasing
 
     activity?.let {
-
         FirstDialog(activity,navController)
 
         NavHost(

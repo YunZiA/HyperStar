@@ -242,4 +242,7 @@
     <string name="focus_notification_content">点击</string>
     <string name="error_title">An Error Has Been Detected!</string>
     <string name="send_developer">Please forward this prompt to the developers:</string>
+    <string name="title_detail_volumebar_show_value">Volume bar progress display</string>
+    <string name="title_miplay_detail_header_no_song">Custom text for no playback</string>
+    <string name="title_qs_customize_entry_button_text">Custom edit text</string>
 </resources>

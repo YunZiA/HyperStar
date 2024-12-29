@@ -1,16 +1,22 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
+import android.graphics.Color
 import android.text.TextUtils
+import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.marginTop
-import com.yunzia.hyperstar.hook.base.BaseHooker
-import com.yunzia.hyperstar.utils.XSPUtils
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
+import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
+import java.lang.reflect.Array
+
 
 class QSMediaView : BaseHooker() {
 
@@ -26,6 +32,7 @@ class QSMediaView : BaseHooker() {
     }
 
     private fun startMethodsHook() {
+        val ReflectionHelper = findClass("miuix.reflect.ReflectionHelper",classLoader)
 
         val MediaPlayerViewHolder  = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",classLoader)
         XposedHelpers.findAndHookMethod(MediaPlayerViewHolder, "updateSize", object : XC_MethodHook() {
@@ -42,7 +49,7 @@ class QSMediaView : BaseHooker() {
                     title.gravity = Gravity.CENTER
                     artist.gravity = Gravity.CENTER
                     val top = title.marginTop*3
-                    title.setPadding(0,top,0,0,)
+                    title.setPadding(0, top, 0, 0)
                 }
                 if (isTitleMarquee){
                     title.ellipsize = TextUtils.TruncateAt.MARQUEE
@@ -67,6 +74,7 @@ class QSMediaView : BaseHooker() {
         })
 
         val HapticFeedback = XposedHelpers.findClass("miui.systemui.util.HapticFeedback",classLoader)
+        val MiShadowUtils = findClass("miuix.core.util.MiShadowUtils",classLoader)
 
         XposedBridge.hookAllConstructors(MediaPlayerViewHolder, object : XC_MethodHook() {
 
@@ -80,7 +88,7 @@ class QSMediaView : BaseHooker() {
                     title.gravity = Gravity.CENTER
                     artist.gravity = Gravity.CENTER
                     val top = title.marginTop*3
-                    title.setPadding(0,top,0,0,)
+                    title.setPadding(0, top, 0, 0)
                 }
                 if (isTitleMarquee){
                     title.ellipsize = TextUtils.TruncateAt.MARQUEE
@@ -129,6 +137,25 @@ class QSMediaView : BaseHooker() {
 
 
     }
+
+    fun addViewShadow(f: Float, f2: Float, i: Int, view: View?) {
+
+        try {
+            val cls = Class.forName("android.view.View")
+            val cls2: Class<*> = Float::class.java
+            cls.getMethod(
+                "setMiShadow",
+                Integer.TYPE, cls2, cls2, cls2, cls2,
+                Boolean::class.java
+            ).invoke(view, Color.argb(i, 0, 0, 0), 0.0f, f, f2, 1.0f, false)
+        } catch (unused: Exception) {
+            starLog.log("addViewShadow setMiShadow Method not found!")
+        }
+    } //    private void doResHook(XC_InitPackageResources.InitPackageResourcesParam resparam){
+    //
+    //        resparam.res.setReplacement(resparam.packageName,"drawable","qs");
+    //
+    //    }
 
 
 }

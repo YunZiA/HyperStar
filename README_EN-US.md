@@ -12,9 +12,9 @@
 
 **[简体中文](README.md) | English**
 
-[![GitHub License](https://img.shields.io/github/license/YunZiA/HyperStar2.0)](https://github.com/YunZiA/HyperStar2.0/blob/master/LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/YunZiA/HyperStar2.0)](https://github.com/YunZiA/HyperStar2.0/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/YunZiA/HyperStar2.0)](https://github.com/YunZiA/HyperStar2.0/forks)
+[![GitHub License](https://img.shields.io/github/license/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/blob/master/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/forks)
 
 
 </div>
@@ -45,6 +45,7 @@ Currently, HyperStar is adapted for devices running Xiaomi HyperOS 2.0 based on 
 |:-----------------|:---------------------|
 | System UI        | com.android.systemui |
 | System UI Plugin | miui.systemui.plugin |
+| System Launcher  | com.miui.home        |
 
 [//]: # (| System launcher  | com.miui.home        |)
 
@@ -59,9 +60,11 @@ You can join the group to exchange information or provide feedback on any issues
 
 Thank you to the following individuals for contributing translations to the HyperStar project:
 
-| Languages | Translator                                                                    |
-|:----------|:------------------------------------------------------------------------------|
-| English   | [cafayeli](https://t.me/cafayeli) & [Natsukawa Masuzu](https://t.me/Minggg07) |
+| Languages   | Translator                                                                    |
+|:------------|:------------------------------------------------------------------------------|
+| English     | [cafayeli](https://t.me/cafayeli) & [Natsukawa Masuzu](https://t.me/Minggg07) |
+| Русский     | [Алексей](https://t.me/Osean22)                                               |
+| tiếng việt  | [Natsukawa Masuzu](https://t.me/Minggg07)                                     |
 
 If you would like to contribute translations to the HyperStar project, please feel free to contact me!
 

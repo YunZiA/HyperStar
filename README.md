@@ -12,9 +12,9 @@
 
 **简体中文 | [English](README_EN-US.md)**
 
-[![GitHub License](https://img.shields.io/github/license/YunZiA/HyperStar2.0)](https://github.com/YunZiA/HyperStar2.0/blob/master/LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/YunZiA/HyperStar2.0)](https://github.com/YunZiA/HyperStar2.0/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/YunZiA/HyperStar2.0)](https://github.com/YunZiA/HyperStar2.0/forks)
+[![GitHub License](https://img.shields.io/github/license/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/blob/master/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/YunZiA/HyperStar)](https://github.com/YunZiA/HyperStar/forks)
 
 
 </div>
@@ -41,10 +41,11 @@
 
 ## 模块作用域
 
-| 应用名    | 包名                    |
-|:-------|:----------------------|
-| 系统界面   | com.android.systemui  |
-| 系统界面组件 | miui.systemui.plugin  |
+| 应用名     | 包名                    |
+|:--------|:----------------------|
+| 系统界面    | com.android.systemui  |
+| 系统界面组件  | miui.systemui.plugin  |
+| 系统桌面    | com.miui.home         |
 
 [//]: # (| 系统桌面   | com.miui.home         |)
 
@@ -59,9 +60,12 @@
 
 感谢以下人员为HyperStar项目贡献翻译：
 
-| 语言      | 翻译人员                                                                          |
-|:--------|:------------------------------------------------------------------------------|
-| English | [cafayeli](https://t.me/cafayeli) & [Natsukawa Masuzu](https://t.me/Minggg07) |
+| 语言          | 翻译人员                                                                          |
+|:------------|:------------------------------------------------------------------------------|
+| English     | [cafayeli](https://t.me/cafayeli) & [Natsukawa Masuzu](https://t.me/Minggg07) |
+| Русский     | [Алексей](https://t.me/Osean22)                                               |
+| tiếng việt  | [Natsukawa Masuzu](https://t.me/Minggg07)                                     |
+
 
 如果您想要为 HyperStar 项目贡献翻译，请联系我吧~
 

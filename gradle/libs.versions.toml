@@ -1,5 +1,6 @@
 [versions]
 accompanistDrawablepainter = "0.36.0"
+accompanistSystemuicontroller = "0.31.0-alpha"
 api = "82"
 agp = "8.6.1"
 colormathExtJetpackComposeVersion = "3.6.0"
@@ -28,6 +29,7 @@ cardview = "1.0.0"
 
 [libraries]
 accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanistDrawablepainter" }
+accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutComposeVersion" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
 androidx-palette-ktx = { module = "androidx.palette:palette-ktx", version.ref = "paletteKtx" }

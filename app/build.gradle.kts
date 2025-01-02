@@ -12,6 +12,17 @@ plugins {
 }
 
 android {
+
+    fun getVersionCode():Int{
+        val formatter = DateTimeFormatter.ofPattern("MMddHHm")
+        val createTime = LocalDateTime.now().format(formatter)
+        return createTime.toInt()
+    }
+    fun getVersionName(version:String):String{
+        val formatter = DateTimeFormatter.ofPattern("yyMMddHHm")
+        val createTime = LocalDateTime.now().format(formatter)
+        return "${version}_$createTime"
+    }
     namespace = "com.yunzia.hyperstar"
     compileSdk = 35
 
@@ -19,8 +30,8 @@ android {
         applicationId = "com.yunzia.hyperstar"
         minSdk = 33
         targetSdk = 35
-        versionCode = 6
-        versionName = "2.0.0"
+        versionCode = getVersionCode()
+        versionName = getVersionName("2.0.0")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -32,11 +43,9 @@ android {
         outputs.all {
             if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
                 val config = project.android.defaultConfig
-                val appName = "HyperStar2.0"
+                val appName = "HyperStar"
                 val versionName = "v"+config.versionName
-                val formatter = DateTimeFormatter.ofPattern("yyyyMMddHH")
-                val createTime = LocalDateTime.now().format(formatter)
-                this.outputFileName = "${appName}_${versionName}_${createTime}_test.apk"
+                this.outputFileName = "${appName}_${versionName}_dev.apk"
             }
         }
     }
@@ -78,11 +87,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-}
 
+}
 dependencies {
     // 系统UI控制库，实现沉浸式状态栏
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.31.0-alpha")
+    implementation(libs.accompanist.systemuicontroller)
 
     implementation(libs.gson)
     implementation(libs.androidx.navigation.compose)

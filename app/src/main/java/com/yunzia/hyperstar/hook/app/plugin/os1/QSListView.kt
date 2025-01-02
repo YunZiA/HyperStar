@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.hook.app.plugin.os1
 
+import android.R.id.icon2
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Color
@@ -16,15 +17,14 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import yunzia.utils.DensityUtil.Companion.dpToPx
+import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.base.BaseHooker
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
-import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
-import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
+import yunzia.utils.DensityUtil.Companion.dpToPx
 
 
 class QSListView : BaseHooker() {
@@ -397,25 +397,35 @@ class QSListView : BaseHooker() {
                 })
 
 
-            XposedHelpers.findAndHookMethod("miui.systemui.controlcenter.qs.tileview.QSTileItemIconView", classLoader, "setDisabledBg", Drawable::class.java, object : XC_MethodHook(){
+            XposedHelpers.findAndHookMethod(QSTileItemIconView, "setDisabledBg", Drawable::class.java, object : XC_MethodHook(){
                 override fun beforeHookedMethod(param: MethodHookParam?) {
                     super.beforeHookedMethod(param)
-                    val pluginContext: Context = XposedHelpers.getObjectField(param?.thisObject, "pluginContext") as Context
                     val drawable = param?.args?.get(0) as Drawable
                     if (drawable is GradientDrawable){
-                        drawable.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
-                        param.args[0] = drawable
+                        val cc = drawable.cornerRadius
+                        val pluginContext: Context = XposedHelpers.getObjectField(param.thisObject, "pluginContext") as Context
+                        val mRadius = dpToPx(pluginContext.resources,qsListTileRadius)
+                        if (cc != mRadius){
+                            drawable.cornerRadius = mRadius
+                            param.args[0] = drawable
+
+                        }
                     }
                 }
             })
-            XposedHelpers.findAndHookMethod("miui.systemui.controlcenter.qs.tileview.QSTileItemIconView", classLoader, "setEnabledBg", Drawable::class.java, object : XC_MethodHook(){
+            XposedHelpers.findAndHookMethod(QSTileItemIconView, "setEnabledBg", Drawable::class.java, object : XC_MethodHook(){
                 override fun beforeHookedMethod(param: MethodHookParam?) {
                     super.beforeHookedMethod(param)
-                    val pluginContext: Context = XposedHelpers.getObjectField(param?.thisObject, "pluginContext") as Context
                     val drawable = param?.args?.get(0) as Drawable
                     if (drawable is GradientDrawable){
-                        drawable.cornerRadius = dpToPx(pluginContext.resources,qsListTileRadius)
-                        param.args[0] = drawable
+                        val cc = drawable.cornerRadius
+                        val pluginContext: Context = XposedHelpers.getObjectField(param.thisObject, "pluginContext") as Context
+                        val mRadius = dpToPx(pluginContext.resources,qsListTileRadius)
+                        if (cc != mRadius){
+                            drawable.cornerRadius = mRadius
+                            param.args[0] = drawable
+
+                        }
                     }
                 }
             })
@@ -445,17 +455,13 @@ class QSListView : BaseHooker() {
                     if (labelMode == 0){
                         return
                     }
-                    val thisObj = param?.thisObject
-                    //val disabledBg = XposedHelpers.getObjectField(thisObj,"disabledBg") as Drawable
-
-                    val pluginContext: Context =
-                        XposedHelpers.getObjectField(param?.thisObject, "pluginContext") as Context;
-                    val Icon: ImageView =
-                        XposedHelpers.getObjectField(thisObj, "icon") as ImageView;
 
                     val z = param?.args?.get(1) as Boolean
 
                     if (z) {
+                        val thisObj = param.thisObject
+                        val Icon: ImageView =
+                            XposedHelpers.getObjectField(thisObj, "icon") as ImageView;
                         val combine = Icon.drawable
 
                         if (combine !is LayerDrawable) {
@@ -464,21 +470,15 @@ class QSListView : BaseHooker() {
 
                         val num = combine.numberOfLayers
 
-                        val index = num - 1
-                        val disabledBg = combine.getDrawable(0)
-
-                        val invisibleDrawableCompat = combine.getDrawable(index)
-
-                        val icons: LayerDrawable
-
                         when (num) {
                             2 -> {
-                                icons = LayerDrawable(arrayOf(disabledBg, invisibleDrawableCompat))
-
+                                return
                             }
                             3 -> {
-                                val enabledBg = combine.getDrawable(1)
-                                icons = LayerDrawable(
+                                val disabledBg = XposedHelpers.getObjectField(thisObj,"disabledBg") as Drawable
+                                val enabledBg = XposedHelpers.getObjectField(thisObj,"enabledBg") as Drawable
+                                val invisibleDrawableCompat = combine.getDrawable(2)
+                                val iconDrawable = LayerDrawable(
                                     arrayOf(
                                         disabledBg,
                                         enabledBg,
@@ -486,26 +486,25 @@ class QSListView : BaseHooker() {
                                     )
                                 )
 
+                                val size = XposedHelpers.callMethod(thisObj, "getProperIconSize",invisibleDrawableCompat) as Int
+                                val tileSize = XposedHelpers.getFloatField(thisObj,"tileSize").toInt()
+
+                                iconDrawable.setLayerGravity(2, Gravity.CENTER)
+                                if (listIconTop != 0f){
+                                    iconDrawable.setLayerInsetBottom(2,
+                                        (tileSize*listIconTop).toInt()
+                                    )
+
+                                }
+                                iconDrawable.setLayerSize(2, size, size)
+
+                                Icon.setImageDrawable(iconDrawable)
+
                             }
                             else -> {
                                 return
                             }
                         }
-
-                        val height  = combine.getLayerHeight(index)
-                        val width = combine.getLayerWidth(index)
-                        val tileSize = XposedHelpers.getFloatField(thisObj,"tileSize").toInt()
-
-                        icons.setLayerGravity(index, Gravity.CENTER)
-                        if (listIconTop != 0f){
-                            icons.setLayerInsetBottom(index,
-                                (tileSize*listIconTop).toInt()
-                            )
-
-                        }
-                        icons.setLayerSize(index, width, height)
-
-                        Icon.setImageDrawable(icons)
 
 
                     }

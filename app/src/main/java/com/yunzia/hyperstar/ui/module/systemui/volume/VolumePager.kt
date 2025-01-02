@@ -13,6 +13,9 @@ import com.yunzia.hyperstar.ui.base.XSuperSwitch
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
 import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.getOSVersion
+import com.yunzia.hyperstar.utils.isOS2
+import com.yunzia.hyperstar.utils.isOS2Settings
 
 @Composable
 fun VolumePager(
@@ -33,6 +36,14 @@ fun VolumePager(
                 key = "is_super_blur_volume",
                 option = R.array.is_super_blur_entire
             )
+
+            if (!isOS2Settings()){
+                XSuperSwitch(
+                    title = stringResource(R.string.is_use_pad_volume_title),
+                    summary = stringResource(R.string.is_use_pad_volume_summary),
+                    key = "is_use_pad_volume"
+                )
+            }
             XMiuixSuperSliderSwitch(
                 switchTitle = stringResource(R.string.is_change_qs_progress_radius_title),
                 switchKey = "is_change_volume_progress_radius",
@@ -48,11 +59,15 @@ fun VolumePager(
         }
         classes(title = R.string.sidebar_mode){
 
-            XSuperSwitch(
-                title = stringResource(R.string.title_press_expand_volume),
-                summary = stringResource(R.string.summary_press_expand_volume),
-                key = "is_press_expand_volume"
-            )
+
+            if (isOS2Settings()){
+                XSuperSwitch(
+                    title = stringResource(R.string.title_press_expand_volume),
+                    summary = stringResource(R.string.summary_press_expand_volume),
+                    key = "is_press_expand_volume"
+                )
+
+            }
             XSuperSwitch(
                 title = stringResource(R.string.title_standardview_hide),
                 key = "is_hide_StandardView"

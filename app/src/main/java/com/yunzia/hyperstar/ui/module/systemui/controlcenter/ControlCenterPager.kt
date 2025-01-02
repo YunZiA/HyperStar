@@ -19,6 +19,8 @@ import com.yunzia.hyperstar.ui.base.XSuperSwitch
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
 import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.isOS2
+import com.yunzia.hyperstar.utils.isOS2Settings
 
 
 @Composable
@@ -64,6 +66,15 @@ fun ControlCenterPager(
             title = R.string.header,
             top = 12.dp
         ){
+
+
+            if (!isOS2Settings()){
+                XSuperSwitch(
+                    title = stringResource(R.string.close_qs_clock_anim_title),
+                    key = "close_qs_clock_anim"
+                )
+
+            }
 
             XSuperSwitch(
 //                enabled = false,

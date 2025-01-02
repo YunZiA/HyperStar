@@ -40,6 +40,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -118,10 +119,10 @@ fun MainPager(
     )
 
     val pagerState = rememberPagerState(pageCount = { 3 })
-    var targetPage by remember { mutableStateOf(pagerState.currentPage) }
+    val targetPage = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()
 
-    val currentScrollBehavior = when (pagerState.currentPage) {
+    val currentScrollBehavior = when (targetPage) {
         0 -> topAppBarScrollBehaviorList[0]
         1 -> topAppBarScrollBehaviorList[1]
         else -> topAppBarScrollBehaviorList[2]
@@ -134,14 +135,15 @@ fun MainPager(
         NavigationItem(stringResource(R.string.about_page_title), ImageVector.vectorResource(id = R.drawable.about)),
     )
 
-    var pagerTitle by remember { mutableStateOf(items[targetPage].label) }
+    val pagerTitle = items[targetPage].label  //by remember { mutableStateOf(items[targetPage].label) }
 
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.debounce(150).collectLatest {
-            targetPage = pagerState.currentPage
-            pagerTitle = items[pagerState.currentPage].label
-        }
-    }
+//    LaunchedEffect(pagerState) {
+//        snapshotFlow { pagerState.targetPage }
+//            .debounce(0)
+//            .collectLatest { currentPage ->
+//                targetPage = currentPage
+//            }
+//    }
 
     val hazeState = remember { HazeState() }
     val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
@@ -156,7 +158,7 @@ fun MainPager(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                modifier =if (targetPage == 2 && !showBlurs.value) Modifier else Modifier.showBlur(hazeState),
+                modifier = if (targetPage == 2 && !showBlurs.value) Modifier else Modifier.showBlur(hazeState),
                 color = Color.Transparent,
                 title = pagerTitle,
                 largeTitle = if (targetPage == 2) "" else pagerTitle,
@@ -169,7 +171,6 @@ fun MainPager(
                         onClick = {
                             view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                             show.value = true
-                            Log.d("ggc", "IconButton: onClick")
                         }) {
 
                         Icon(
@@ -190,7 +191,6 @@ fun MainPager(
                 items = items,
                 selected = targetPage,
                 onClick = { index ->
-                    targetPage = index
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(index)
                     }

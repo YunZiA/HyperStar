@@ -113,9 +113,7 @@ fun SuperXDialog(
                             .widthIn(max = 420.dp)
                             .pointerInput(Unit) {
                                 detectTapGestures {
-
-                                    onFocus()/* Do nothing to consume the click */
-
+                                    onFocus()
 
                                 }
                             }

@@ -28,6 +28,7 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.dialog.TopNotification
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.Utils.isModuleActive
 import kotlinx.coroutines.delay
 import top.yukonga.miuix.kmp.basic.Box
 import yunzia.utils.SystemProperties
@@ -40,11 +41,12 @@ fun FirstDialog(
 ) {
     if (activity.isRecreate) return
 
-    val errVersion = (SystemProperties.getInt("ro.mi.os.version.code", 1) != 2)
+    val errVersion = false
+//        (SystemProperties.getInt("ro.mi.os.version.code", 1) != 2)
 
     val verShow = remember{ mutableStateOf(PreferencesUtil.getBoolean("ver_waring",errVersion))}
     val rootShow = remember{ mutableStateOf(PreferencesUtil.getBoolean("no_root_waring",(Utils.getRootPermission() != 0)))}
-    val activeShow = remember{ mutableStateOf(PreferencesUtil.getBoolean("no_active_waring",!activity.isModuleActive()))}
+    val activeShow = remember{ mutableStateOf(PreferencesUtil.getBoolean("no_active_waring",!isModuleActive()))}
 
     val secShow = remember { mutableStateOf(false) }
     val thirdShow = remember { mutableStateOf(false) }
@@ -66,7 +68,7 @@ fun FirstDialog(
     }
 
 
-    VerDialog(verShow,navController)
+    //VerDialog(verShow,navController)
     if (secShow.value){
 
         ActiveDialog(activeShow,navController)

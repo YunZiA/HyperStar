@@ -20,6 +20,11 @@
         <item>样式2</item>
     </string-array>
 
+    <string-array name="hook_channel_items">
+        <item>OS1</item>
+        <item>OS2</item>
+    </string-array>
+
     <string-array name="media_background_style_entire">
         <item>Default</item>
         <item>Cover color</item>

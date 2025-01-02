@@ -113,7 +113,7 @@ fun DonationPage(
                 tipIndex.intValue = if ( ++tipIndex.intValue < size ) tipIndex.intValue  else  0
                 change.value = false
             }
-        }
+        }, label = ""
     )
 
 

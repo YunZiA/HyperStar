@@ -17,9 +17,9 @@ android {
 
     defaultConfig {
         applicationId = "com.yunzia.hyperstar"
-        minSdk = 35
+        minSdk = 33
         targetSdk = 35
-        versionCode = 5
+        versionCode = 6
         versionName = "2.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

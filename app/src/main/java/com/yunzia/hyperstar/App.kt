@@ -13,7 +13,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.yunzia.hyperstar.ui.base.dialog.ShowUtil
 import com.yunzia.hyperstar.ui.base.navtype.PagersModel
 import com.yunzia.hyperstar.ui.base.navtype.pagersJson
 import com.yunzia.hyperstar.ui.module.home.HomePage
@@ -38,6 +37,7 @@ import com.yunzia.hyperstar.ui.pagers.GoRootPager
 import com.yunzia.hyperstar.ui.pagers.LanguagePager
 import com.yunzia.hyperstar.ui.pagers.ReferencesPager
 import com.yunzia.hyperstar.ui.pagers.MainPager
+import com.yunzia.hyperstar.ui.pagers.NeedMessagePager
 import com.yunzia.hyperstar.ui.pagers.SettingsShowPage
 import com.yunzia.hyperstar.ui.pagers.dialog.FirstDialog
 
@@ -101,6 +101,7 @@ fun App(
             composable(PagerList.DONATION) { DonationPage(navController)  }
 
             composable(PagerList.SHOW){ SettingsShowPage(navController) }
+            composable(PagerList.MESSAGE) { NeedMessagePager(navController)  }
 
             composable(PagerList.REFERENCES) { ReferencesPager(navController)  }
 
@@ -128,7 +129,7 @@ fun App(
 
             composable(SystemUIPagerList.MORE) { SystemUIOtherPager(navController) }
 
-            composable(SystemUIPagerList.MEDIA_APP) { MediaAppSettingsPager(navController) }
+            composable(SystemUIPagerList.MEDIA_APP) { MediaAppSettingsPager(activity,navController) }
 
             composable(SystemUIPagerList.POWERMENU){ PowerMenuStylePager(navController) }
 
@@ -171,6 +172,8 @@ object PagerList {
     const val DONATION = "donation"
     //显示设置
     const val SHOW = "show"
+
+    const val MESSAGE = "message"
 }
 
 object SystemUIPagerList {

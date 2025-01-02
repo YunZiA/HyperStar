@@ -33,14 +33,14 @@ class QSMiplayDetailVolumeBar:BaseHooker() {
                 super.afterHookedMethod(param)
                 val thisObj = param?.thisObject
                 val volumeBarContainer = XposedHelpers.getObjectField(thisObj,"volumeBarContainer") as RelativeLayout
-                val context = XposedHelpers.callMethod(thisObj,"getContext") as Context
+                val context = volumeBarContainer.context
                 val res = context.resources
 
                 val value = TextView(context).apply {
                     text = "null%"
                     typeface = Typeface.DEFAULT_BOLD;
                     setTextSize(TypedValue.COMPLEX_UNIT_DIP,12.5f)
-                    setTextColor(getColor(res,"miplay_detail_volume_icon_color",plugin))
+                    setTextColor(getColor(res,"miplay_detail_volume_icon_color",plugin,"#FF6E747B"))
                 }
 
                 val lp = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT).apply {

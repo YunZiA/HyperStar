@@ -243,9 +243,8 @@ fun NavPager(
                 actions = actions
             )
 
-        },
-
-        ) { padding ->
+        }
+    ) { padding ->
         if (content != null) {
             Box(Modifier.blur(hazeState)) {
                 LazyColumn(

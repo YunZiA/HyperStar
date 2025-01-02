@@ -2,8 +2,6 @@ package com.yunzia.hyperstar.hook.app.home
 
 import com.yunzia.hyperstar.hook.base.BaseHooker
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XC_MethodReplacement.returnConstant
 import de.robv.android.xposed.XposedHelpers
 

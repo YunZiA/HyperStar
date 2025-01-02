@@ -16,7 +16,7 @@ import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 
-public abstract class BaseHooker {
+public abstract class BaseHooker extends HookHelper {
 
     public String plugin = "miui.systemui.plugin";
     public String systemUI = "com.android.systemui";
@@ -25,15 +25,17 @@ public abstract class BaseHooker {
 
     }
 
-    public interface ArrayChange{
-        void change(int[] array);
-    }
 
 
     public XC_InitPackageResources.InitPackageResourcesParam resparam;
     public XModuleResources modRes;
     public ClassLoader classLoader;
     public ClassLoader secClassLoader;
+
+
+    protected void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam resparam) throws Throwable {
+        //setmXModuleResources(XModuleResources.createInstance(mPath, resparam.res));
+    }
 
     public void doResources(XC_InitPackageResources.InitPackageResourcesParam resparam,XModuleResources modRes){
         this.resparam = resparam;
@@ -75,9 +77,17 @@ public abstract class BaseHooker {
 
     public void doMethods(XC_LoadPackage.LoadPackageParam lpparam){}
 
+
+
+
+    public interface ArrayChange{
+        void change(int[] array);
+    }
+
     public void ReplaceColor(String color,String colorValue){
         resparam.res.setReplacement(plugin, "color", color, Color.parseColor(colorValue));
     }
+
     public void ReplaceIntArray(String array,ArrayChange arrayChange){
         int arrayId = resparam.res.getIdentifier(array,"array",plugin);
         int[] ay = resparam.res.getIntArray(arrayId);
@@ -85,13 +95,24 @@ public abstract class BaseHooker {
         resparam.res.setReplacement(plugin, "array", array, ay);
 
     }
+
     public void setColorField(Object context, String fieldName, String color){
         XposedHelpers.setIntField(context,fieldName, Color.parseColor(color));
     }
-
     public int getColor(Resources res, String name, String defPackage){
         int id = res.getIdentifier(name,"color",defPackage);
         return res.getColor(id,res.newTheme());
+    }
+
+    public int getColor(Resources res, String name, String defPackage,String defColor){
+        try{
+            int id = res.getIdentifier(name,"color",defPackage);
+            return res.getColor(id,res.newTheme());
+
+        } catch (Resources.NotFoundException e) {
+            starLog.logE("color "+name+" is not found!");
+            return Color.parseColor(defColor);
+        }
 
     }
 
@@ -179,13 +200,6 @@ public abstract class BaseHooker {
 
 
     }
-
-
-
-    protected void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam resparam) throws Throwable {
-        //setmXModuleResources(XModuleResources.createInstance(mPath, resparam.res));
-    }
-
 
 
 

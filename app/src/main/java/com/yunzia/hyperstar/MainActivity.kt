@@ -1,31 +1,26 @@
 package com.yunzia.hyperstar
 
 import android.annotation.SuppressLint
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
-import android.util.TypedValue
-import android.widget.RemoteViews
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
+import androidx.compose.runtime.mutableStateOf
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.profileinstaller.ProfileInstaller
-import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.ui.base.BaseActivity
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.SPUtils
-import org.json.JSONObject
+import com.yunzia.hyperstar.utils.Utils.isModuleActive
 
 
 class MainActivity : BaseActivity() {
@@ -35,9 +30,8 @@ class MainActivity : BaseActivity() {
 
     var isRecreate:Boolean = false
 
-    fun isModuleActive() : Boolean{
-        return false;
-    }
+    var isGranted = mutableStateOf(false)
+
 
     @Composable
     override fun InitView(colorMode: MutableState<Int>?) {
@@ -46,6 +40,46 @@ class MainActivity : BaseActivity() {
             App(this,colorMode)
         }
     }
+
+    fun getInstalledApps(){
+        try {
+            val permissionInfo = applicationContext.packageManager.getPermissionInfo(
+                "com.android.permission.GET_INSTALLED_APPS",
+                0
+            )
+            if (permissionInfo != null && permissionInfo.packageName == "com.lbe.security.miui") {
+                //MIUI 系统支持动态申请该权限
+                if (ContextCompat.checkSelfPermission(
+                        applicationContext,
+                        "com.android.permission.GET_INSTALLED_APPS"
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    //没有权限，需要申请
+                    ActivityCompat.requestPermissions(
+                        this@MainActivity,
+                        arrayOf("com.android.permission.GET_INSTALLED_APPS"),
+                        999
+                    )
+                }
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
+        deviceId: Int
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults, deviceId)
+        Log.d("ggc", "onRequestPermissionsResult:  $requestCode + ${grantResults[0]}")
+        if (requestCode == 999){
+            isGranted.value = grantResults.isNotEmpty() &&  grantResults[0] == 0
+        }
+    }
+
 
     @SuppressLint("MissingPermission", "RemoteViewLayout")
     override fun initData(savedInstanceState: Bundle?) {
@@ -56,6 +90,7 @@ class MainActivity : BaseActivity() {
         }
         ProfileInstaller.writeProfile(this)
         if (isModuleActive()){
+
             SPUtils.getInstance().init(this);
 
         }

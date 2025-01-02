@@ -4,23 +4,21 @@ package com.yunzia.hyperstar.hook.app.plugin.powermenu
 import android.content.Context
 import android.content.res.XModuleResources
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.BaseHooker
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.Action
+import com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.menuA
+import com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.menuB
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
-import java.lang.reflect.InvocationHandler
-import java.lang.reflect.Proxy
 
 
 class PowerMenu : BaseHooker() {
 
-    var xiaoai = 0
     var icBootloader = 0
     var icRecovery = 0
     var icAirplaneOn = 0
@@ -29,6 +27,7 @@ class PowerMenu : BaseHooker() {
     var icSilentOff = 0
     var icQsScreenshot = 0
 
+    var xiaoai = 0
     var alipayPay = 0
     var wechatScan = 0
     var alipayScan = 0
@@ -68,11 +67,6 @@ class PowerMenu : BaseHooker() {
         val MiuiGlobalActionsDialog = XposedHelpers.findClass("com.android.systemui.miui.globalactions.MiuiGlobalActionsDialog",classLoader)
         val VolumeUtil = XposedHelpers.findClass("com.android.systemui.miui.volume.VolumeUtil",classLoader)
 
-        val callback = XposedHelpers.findClass("com.android.systemui.miui.globalactions.SliderView\$Callback",classLoader)
-        val SliderViews = XposedHelpers.findClass("com.android.systemui.miui.globalactions.SliderView",classLoader)
-        val callbacks = callback::class.java
-
-
         if (isPowerMenuNavShow){
             XposedHelpers.findAndHookMethod(MiuiGlobalActionsDialog,"initDialog",object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam?) {
@@ -103,7 +97,7 @@ class PowerMenu : BaseHooker() {
                 val s = mSliderView.layoutParams as FrameLayout.LayoutParams
                 //mSliderView.translationX = 250f
                 val action = Action(
-                    mContext, xiaoai, icBootloader, icRecovery, icAirplaneOn, icAirplaneOff,
+                    mContext,xiaoai, icBootloader, icRecovery, icAirplaneOn, icAirplaneOff,
                     icSilentOn, icSilentOff, icQsScreenshot, alipayPay, wechatScan, alipayScan, wechatPay , VolumeUtil
                 )
 
@@ -119,7 +113,7 @@ class PowerMenu : BaseHooker() {
                         )
 
                         group = menuB(
-                            mContext,thisObj,items1,mTalkbackLayout,mSliderView
+                            mContext, thisObj, items1, mTalkbackLayout, mSliderView
                         )
                     }
                     2->{
@@ -138,7 +132,7 @@ class PowerMenu : BaseHooker() {
 
 
                         group = menuA(
-                            mContext,thisObj,items1,mTalkbackLayout,mSliderView
+                            mContext, thisObj, items1, mTalkbackLayout, mSliderView
                         )
                     }
                 }
@@ -153,9 +147,11 @@ class PowerMenu : BaseHooker() {
                 super.afterHookedMethod(param)
                 if (group == null) return
                 val thisObj = param?.thisObject
-                val mSliderAlpha = XposedHelpers.getFloatField(thisObj,"mSliderAlpha")
+                val mDark = XposedHelpers.getObjectField(thisObj,"mDark") as View
 
-                group!!.alpha = mSliderAlpha.coerceAtLeast(0.0f)
+
+
+                group!!.alpha = (1-mDark.alpha)
 
 
             }
@@ -165,6 +161,8 @@ class PowerMenu : BaseHooker() {
             override fun afterHookedMethod(param: MethodHookParam?) {
                 super.afterHookedMethod(param)
                 if (group == null) return
+                //group!!.clearAnimation()
+                //group!!.animatin
 
                 group!!.visibility = View.GONE
 

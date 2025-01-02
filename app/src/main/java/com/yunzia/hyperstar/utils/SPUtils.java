@@ -5,14 +5,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONException;
-
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class SPUtils {
@@ -137,23 +132,53 @@ public class SPUtils {
         //ArrayList<SP> sputils = new ArrayList<>();
         //JSONObject json = new JSONObject();
 
-        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            if (value instanceof String) {
-                sputils.add(new SP(type,key,SP.type_string,value));
-            } else if (value instanceof Integer) {
-                sputils.add(new SP(type,key,SP.type_int,value));
-            } else if (value instanceof Boolean) {
-                sputils.add(new SP(type,key,SP.type_boolean,value));
-            } else if (value instanceof Float) {
-                sputils.add(new SP(type,key,SP.type_float,value));
-            } else if (value instanceof Long) {
-                sputils.add(new SP(type,key,SP.type_long,value));
-            } else {
-                sputils.add(new SP(type,key,SP.type_string,value));
-            }
-        }
+        allEntries.entrySet().stream()
+                .filter(entry -> !"is_Hook_Channel".equals(entry.getKey()))
+                .forEach(entry -> {
+                    String key = entry.getKey();
+                    Object value = entry.getValue();
+                    if (value == null) {
+                        // 处理null值的情况，如果需要的话
+                        return;
+                    }
+                    int sp_type;
+                    if (value instanceof String) {
+                        sp_type = SP.type_string;
+                    } else if (value instanceof Integer) {
+                        sp_type = SP.type_int;
+                    } else if (value instanceof Boolean) {
+                        sp_type = SP.type_boolean;
+                    } else if (value instanceof Float) {
+                        sp_type = SP.type_float;
+                    } else if (value instanceof Long) {
+                        sp_type = SP.type_long;
+                    } else {
+                        sp_type = SP.type_string; // 默认作为字符串处理
+                        value = value.toString(); // 确保值为字符串类型
+                    }
+                    sputils.add(new SP(type, key, sp_type, value));
+                });
+
+//        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+//            String key = entry.getKey();
+//            Object value = entry.getValue();
+//            if (Objects.equals(key, "is_Hook_Channel")){
+//                continue;
+//            }
+//            if (value instanceof String) {
+//                sputils.add(new SP(type,key,SP.type_string,value));
+//            } else if (value instanceof Integer) {
+//                sputils.add(new SP(type,key,SP.type_int,value));
+//            } else if (value instanceof Boolean) {
+//                sputils.add(new SP(type,key,SP.type_boolean,value));
+//            } else if (value instanceof Float) {
+//                sputils.add(new SP(type,key,SP.type_float,value));
+//            } else if (value instanceof Long) {
+//                sputils.add(new SP(type,key,SP.type_long,value));
+//            } else {
+//                sputils.add(new SP(type,key,SP.type_string,value));
+//            }
+//        }
         //return gson.toJsonTree(sputils,new TypeToken<ArrayList<SP>>() {}.getType());
 
     }

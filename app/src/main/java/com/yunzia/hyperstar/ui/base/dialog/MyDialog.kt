@@ -112,15 +112,13 @@ fun MSuperDialog(
                 .widthIn(max = maxWidth)
                 .pointerInput(Unit) {
                     detectTapGestures {
-
-                        onFocus()/* Do nothing to consume the click */
+                        onFocus()
                     }
                 }
                 .align(contentAlignment)
                 .background(
                     color = color,
                     shape = SmoothRoundedCornerShape(25.dp, 0.8f)
-                    // SquircleShape(45.dp, cornerSmoothing = CornerSmoothing.High)
                 )
                 .padding(24.dp),
         ) {

@@ -18,9 +18,11 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
@@ -39,6 +41,7 @@ import com.yunzia.hyperstar.ui.base.BaseButton
 import com.yunzia.hyperstar.ui.base.PMiuixSuperDropdown
 import com.yunzia.hyperstar.ui.base.PMiuixSuperSwitch
 import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
+import com.yunzia.hyperstar.ui.base.SuperSpinner
 import com.yunzia.hyperstar.ui.base.SuperWarnDialogArrow
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.dialog.SuperCTDialogDefaults
@@ -46,15 +49,17 @@ import com.yunzia.hyperstar.ui.base.dialog.SuperXDialog
 import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.ui.base.firstClasses
 import com.yunzia.hyperstar.utils.JBUtil
+import com.yunzia.hyperstar.utils.JBUtil.clear
+import com.yunzia.hyperstar.utils.JBUtil.openFile
 import com.yunzia.hyperstar.utils.JBUtil.saveFile
 import com.yunzia.hyperstar.utils.PreferencesUtil
+import com.yunzia.hyperstar.utils.isOS2
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.extra.SpinnerEntry
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
-import java.io.BufferedWriter
-import java.io.OutputStreamWriter
 
 @Composable
 fun Settings(
@@ -67,6 +72,7 @@ fun Settings(
 
 
     val context = LocalContext.current
+    //val hookedChannel = remember { mutableIntStateOf(if (isOS2()) 1 else 0) }
     val errorDialog = remember { mutableStateOf(false) }
     val results: MutableState<Uri?> = remember { mutableStateOf(null) }
 
@@ -131,13 +137,13 @@ fun Settings(
             BaseArrow(
                 title = stringResource(R.string.backup_settings),
                 onClick = {
-                    JBUtil.saveFile(activity,launcher2)
+                    saveFile(activity,launcher2)
                 }
             )
             BaseArrow(
                 title = stringResource(R.string.restore_settings),
                 onClick = {
-                    JBUtil.openFile(activity,launcher)
+                    openFile(activity,launcher)
 
                 }
             )
@@ -147,10 +153,33 @@ fun Settings(
                 warnTitle = stringResource(R.string.clear_settings_warning_title),
                 warnDes = stringResource(R.string.clear_settings_warning_description)
             ){
-                JBUtil.clear(activity,context)
+                clear(activity,context)
             }
 
         }
+
+        classes(
+            title = context.getString(R.string.err_find)
+        ) {
+
+            SuperSpinner(
+                title = stringResource(R.string.hook_channel),
+                items = stringArrayResource(R.array.hook_channel_items),
+                key = "is_Hook_Channel",
+                defIndex = if (isOS2()) 1 else 0,
+            ) {
+                activity.recreate()
+            }
+
+            SuperNavHostArrow(
+                title = stringResource(R.string.debug_message),
+                navController = navController,
+                route = PagerList.MESSAGE
+            )
+
+
+        }
+
 
     }
 }

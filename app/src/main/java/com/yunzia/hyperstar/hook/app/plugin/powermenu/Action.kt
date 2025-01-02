@@ -1,11 +1,12 @@
-package com.yunzia.hyperstar.hook.app.plugin.powermenu
+package com.yunzia.hyperstar.hook.os1.app.plugin.powermenu
 
 import android.annotation.SuppressLint
 import android.content.ComponentName
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu.Item
+
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.StateListDrawable
-import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -13,13 +14,7 @@ import android.os.PowerManager
 import android.os.RemoteException
 import android.os.UserHandle
 import android.provider.Settings
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu.Item
-import com.yunzia.hyperstar.hook.tool.starLog
 import de.robv.android.xposed.XposedHelpers
-import java.lang.ref.WeakReference
-
-
-
 
 class Action(val mContext: Context,
              var xiaoai:Int,
@@ -143,13 +138,21 @@ class Action(val mContext: Context,
             false
         ){ _, context: Context ->
             Handler(Looper.getMainLooper()).postDelayed({
-                val field = XposedHelpers.findField(UserHandle::class.java,"CURRENT")
-                val currentUserHandle = field.get(null) as UserHandle
-
-                context.sendBroadcastAsUser(
-                    Intent("android.intent.action.CAPTURE_SCREENSHOT"),
-                    currentUserHandle
-                )
+                try {
+                    val clazz = Class.forName("android.os.UserHandle")
+                    val field = clazz.getDeclaredField("CURRENT")
+                    val currentUserHandle = field.get(null) as UserHandle
+                    context.sendBroadcastAsUser(
+                        Intent("android.intent.action.CAPTURE_SCREENSHOT"),
+                        currentUserHandle
+                    )
+                } catch (e: ClassNotFoundException) {
+                    e.printStackTrace()
+                } catch (e: NoSuchFieldException) {
+                    e.printStackTrace()
+                } catch (e: IllegalAccessException) {
+                    e.printStackTrace()
+                }
             }, 400)
 
         }
@@ -173,7 +176,6 @@ class Action(val mContext: Context,
         }
 
     }
-
     fun airPlane (
         mContext:Context,
         icAirplaneOn:Int,
@@ -190,10 +192,7 @@ class Action(val mContext: Context,
             Settings.Global.putInt(context.contentResolver, Settings.Global.AIRPLANE_MODE_ON, if (enable) 1 else 0)
             val intent = Intent("android.intent.action.AIRPLANE_MODE")
             intent.putExtra("state", enable)
-            val field = XposedHelpers.findField(UserHandle::class.java,"ALL")
-            val ALLUserHandle = field.get(null) as UserHandle
-            context.sendBroadcastAsUser(intent,ALLUserHandle)
-
+            context.sendBroadcast(intent)
         }
     }
     fun silentMode(

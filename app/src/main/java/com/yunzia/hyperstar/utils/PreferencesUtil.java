@@ -154,8 +154,6 @@ public class PreferencesUtil {
         Map<String, ?> allEntries = pref.getAll();
 
         String type  = "PreferencesUtil";
-        //ArrayList<SP> preferencesUtil = new ArrayList<>();
-        //Gson gson = new Gson();
 
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
             String key = entry.getKey();

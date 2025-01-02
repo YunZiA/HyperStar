@@ -1,6 +1,7 @@
 
 package com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.app
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
@@ -8,20 +9,19 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.util.Log
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,8 +41,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -52,11 +52,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -64,20 +61,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.ModuleNavPager
 import com.yunzia.hyperstar.ui.base.XMiuixTextField
-import com.yunzia.hyperstar.ui.base.enums.EventState
 
 import com.yunzia.hyperstar.utils.SPUtils
 import com.yunzia.hyperstar.utils.Utils
 import com.google.accompanist.drawablepainter.DrawablePainter
+import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.pagers.titleColor
-import com.yunzia.hyperstar.utils.PreferencesUtil
+import com.yunzia.hyperstar.utils.JBUtil
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import top.yukonga.miuix.kmp.basic.BasicComponent
@@ -86,10 +86,64 @@ import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.extra.CheckboxLocation
-import top.yukonga.miuix.kmp.extra.SuperCheckbox
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import kotlin.coroutines.cancellation.CancellationException
+import kotlin.math.log
+import androidx.compose.runtime.DisposableEffect as DisposableEffect
+
+fun getInstalledApps(
+    activity: MainActivity
+){
+    try {
+        val permissionInfo = activity.applicationContext.packageManager.getPermissionInfo(
+            "com.android.permission.GET_INSTALLED_APPS",
+            0
+        )
+        if (permissionInfo != null && permissionInfo.packageName == "com.lbe.security.miui") {
+            //MIUI 系统支持动态申请该权限
+            if (ContextCompat.checkSelfPermission(
+                    activity.applicationContext,
+                    "com.android.permission.GET_INSTALLED_APPS"
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                //没有权限，需要申请
+                ActivityCompat.requestPermissions(
+                    activity,
+                    arrayOf("com.android.permission.GET_INSTALLED_APPS"),
+                    999
+                )
+            }
+        }
+    } catch (e: PackageManager.NameNotFoundException) {
+        e.printStackTrace()
+    }
+}
+
+
+fun getInstalledApps(
+    activity: MainActivity,
+    requestPermission: ManagedActivityResultLauncher<String, Boolean>
+){
+    try {
+        val permissionInfo = activity.applicationContext.packageManager.getPermissionInfo(
+            "com.android.permission.GET_INSTALLED_APPS",
+            0
+        )
+        if (permissionInfo != null && permissionInfo.packageName == "com.lbe.security.miui") {
+            //MIUI 系统支持动态申请该权限
+            if (ContextCompat.checkSelfPermission(
+                    activity.applicationContext,
+                    "com.android.permission.GET_INSTALLED_APPS"
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermission.launch("com.android.permission.GET_INSTALLED_APPS")
+            }
+        }
+    } catch (e: PackageManager.NameNotFoundException) {
+        e.printStackTrace()
+    }
+}
 
 @SuppressLint("QueryPermissionsNeeded")
 private fun getAllAppInfo(
@@ -98,6 +152,7 @@ private fun getAllAppInfo(
     appListDB: AppListDB?,
     appIconlist: MutableMap<String, Drawable>
 ): ArrayList<AppInfo> {
+
     val appBeanList: ArrayList<AppInfo> = ArrayList<AppInfo>()
     val packageManager = context.packageManager
     val list = packageManager.getInstalledPackages(0)
@@ -161,11 +216,58 @@ private fun processAppInfo(
 }
 
 
+
+sealed class LoadingState<out R> {
+    object Loading : LoadingState<Nothing>()
+    data class Failure(val error : Throwable) : LoadingState<Nothing>()
+    data class Success<T>(val data : T) : LoadingState<T>()
+
+    val isLoading
+        get() = this is Loading
+    val isSuccess
+        get() = this is Success<*>
+}
+
+@Composable
+fun <T> LoadingContent(
+    modifier: Modifier = Modifier,
+    loader : suspend ()->T,
+    loading : @Composable ()->Unit = { ShowLoading() },
+    failure : @Composable (error : Throwable, retry : ()->Unit)->Unit = { error, retry->
+        ShowLoading()   },
+    success : @Composable (data : T?)->Unit)
+{
+    var key by remember {
+        mutableStateOf(false)
+    }
+    val state : LoadingState<T> by produceState<LoadingState<T>>(initialValue = LoadingState.Loading, key){
+        value = try {
+            Log.d("ggc", "LoadingContent: loading...")
+            LoadingState.Success(loader())
+        }catch (e: Exception){
+            LoadingState.Failure(e)
+        }
+    }
+    Box(modifier = modifier){
+        when(state){
+            is LoadingState.Loading -> loading()
+            is LoadingState.Success<T> -> success((state as LoadingState.Success<T>).data)
+            is LoadingState.Failure -> failure((state as LoadingState.Failure).error){
+                key = !key
+                Log.d("ggc", "LoadingContent: newKey:$key")
+            }
+        }
+    }
+}
+
+
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun MediaAppSettingsPager(
+    activity: MainActivity,
     navController: NavController
 ) {
+    getInstalledApps(activity)
 
     ModuleNavPager(
         activityTitle = stringResource(R.string.media_default_app_settings),
@@ -186,13 +288,24 @@ fun MediaAppSettingsPager(
 
         val focusManager = LocalFocusManager.current
         var text by remember { mutableStateOf("") }
+        val update = remember { mutableStateOf(false) }
 
-        LaunchedEffect(Unit) {
+        LaunchedEffect(activity.isGranted.value) {
+
+            if (activity.isGranted.value){
+                update.value = true
+                isLoading.value = true
+            }
+        }
+
+        LaunchedEffect(update.value) {
+
             coroutineScope.launch {
                 val result = withContext(Dispatchers.IO) {
                     getAllAppInfo(mContext,isFilterSystem = true,appListDB,appIconlist)
                 }
                 appLists.value = result
+                update.value = false
                 isLoading.value = false
             }
         }
@@ -358,6 +471,8 @@ fun MediaAppSettingsPager(
 
 
 }
+
+
 
 
 @Composable

@@ -1,12 +1,14 @@
 package com.yunzia.hyperstar;
 
 import static com.yunzia.hyperstar.BuildConfig.APPLICATION_ID;
+import static com.yunzia.hyperstar.utils.VersionKt.isOS2;
+import static com.yunzia.hyperstar.utils.VersionKt.isOS2Hook;
 
-import android.content.res.Resources;
 import android.content.res.XModuleResources;
 
 import com.yunzia.hyperstar.hook.base.InitMiuiHomeHook;
-import com.yunzia.hyperstar.hook.base.InitSystemUIHook;
+import com.yunzia.hyperstar.hook.base.SystemUIHookForOS1;
+import com.yunzia.hyperstar.hook.base.SystemUIHookForOS2;
 import com.yunzia.hyperstar.hook.base.BaseHooker;
 import com.yunzia.hyperstar.hook.tool.starLog;
 
@@ -17,23 +19,18 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import yunzia.utils.SystemProperties;
 
 public class InitHook extends BaseHooker implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
 
-    private final InitSystemUIHook systemUIHook;
-    private final boolean errVersion ;
-
-    public InitHook() {
-
-        errVersion = SystemProperties.getInt("ro.mi.os.version.code",1) != 2;
-        systemUIHook = new InitSystemUIHook();
-    }
+    private final SystemUIHookForOS2 systemUIHook0S2 = new SystemUIHookForOS2();
+    private final SystemUIHookForOS1 systemUIHook0S1 = new SystemUIHookForOS1();
+    private final Boolean isOS2Hook = isOS2Hook();
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
         super.initZygote(startupParam);
-        if (errVersion) return;
+        String hookChannel = isOS2Hook ? "OS2" : "OS1";
+        starLog.log("hook channel is " + hookChannel);
 
     }
 
@@ -41,25 +38,34 @@ public class InitHook extends BaseHooker implements IXposedHookLoadPackage, IXpo
     @Override
     public void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam resparam) throws Throwable {
         super.handleInitPackageResources(resparam);
-        if (errVersion) return;
         XModuleResources modRes = XModuleResources.createInstance(mPath, resparam.res);
-        systemUIHook.doResources(resparam,modRes);
+        if (isOS2Hook){
+            systemUIHook0S2.doResources(resparam,modRes);
+        }else {
+            systemUIHook0S1.doResources(resparam,modRes);
+
+        }
+
+
 
 
     }
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-        if (errVersion){
-            starLog.log("OS Version is " + SystemProperties.getInt("ro.mi.os.version.code",1));
-            return;
-        }
         if (lpparam.packageName.equals(APPLICATION_ID)){
-            XposedHelpers.findAndHookMethod(APPLICATION_ID+".MainActivity", lpparam.classLoader, "isModuleActive", XC_MethodReplacement.returnConstant(true));
+            XposedHelpers.findAndHookMethod("com.yunzia.hyperstar.utils.Utils", lpparam.classLoader, "isModuleActive", XC_MethodReplacement.returnConstant(true));
         }
 
-        systemUIHook.doMethods(lpparam);
-        new InitMiuiHomeHook().doMethods(lpparam);
+        if (isOS2Hook){
+            systemUIHook0S2.doMethods(lpparam);
+            new InitMiuiHomeHook().doMethods(lpparam);
+        }else {
+            systemUIHook0S1.doMethods(lpparam);
+
+        }
+
+
     }
 
 

@@ -10,6 +10,12 @@ import java.io.InputStreamReader
 
 object Utils {
 
+    val isRoot = getRootPermission() != 0
+
+    fun isModuleActive() : Boolean{
+        return false;
+    }
+
     fun getRootPermission(): Int {
         var process: Process? = null
         val exitCode = -1

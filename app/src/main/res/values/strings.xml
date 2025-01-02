@@ -245,4 +245,8 @@
     <string name="title_detail_volumebar_show_value">Volume bar progress display</string>
     <string name="title_miplay_detail_header_no_song">Custom text for no playback</string>
     <string name="title_qs_customize_entry_button_text">Custom edit text</string>
+    <string name="debug_message">Debug info</string>
+    <string name="debug_message_header_text">After a long press or double-click, the content will be automatically copied. You can provide this content as feedback to the developer.</string>
+    <string name="hook_channel">The current hook channel</string>
+    <string name="err_find">Troubleshooting</string>
 </resources>

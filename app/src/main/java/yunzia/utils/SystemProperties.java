@@ -98,7 +98,7 @@ public class SystemProperties {
     public static int getInt(String key, int def) {
         if (isSupportGetInt) {
             try {
-                return ((Integer) invoke(null, callMethod("getInt", Integer.TYPE), key, Integer.valueOf(def))).intValue();
+                return (Integer) invoke(null, callMethod("getInt", Integer.TYPE), key, def);
             } catch (IllegalArgumentException e) {
                 Log.e(TAG, "key: " + key + " detail:" + e.toString());
             }

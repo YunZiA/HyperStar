@@ -34,6 +34,11 @@ import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.pagers.dialog.checkApplication
 import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.Utils.isModuleActive
+import com.yunzia.hyperstar.utils.Utils.isRoot
+import com.yunzia.hyperstar.utils.getOSVersion
+import com.yunzia.hyperstar.utils.isOS2
+import com.yunzia.hyperstar.utils.isOS2Settings
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
@@ -51,8 +56,7 @@ fun Home(
     padding: PaddingValues
 ) {
 
-    val errVersion = (SystemProperties.getInt("ro.mi.os.version.code", 1) != 2)
-    val isModuleActive = activity.isModuleActive()
+    val isModuleActive = isModuleActive()
 
     LazyColumn(
         modifier = Modifier.height(getWindowSize().height.dp),
@@ -61,20 +65,6 @@ fun Home(
     ) {
 
         item{
-            if (errVersion){
-                Classes{
-                    Text(
-                        text = stringResource(R.string.os_ver_tips),
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
-                        color = Color.Red,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 15.sp
-                    )
-
-                }
-                Spacer(Modifier.height(12.dp))
-
-            }
             if (!isModuleActive){
                 val go = checkApplication(activity,"org.lsposed.manager")
                 val intent = Intent().apply {
@@ -122,7 +112,7 @@ fun Home(
                 Spacer(Modifier.height(12.dp))
 
             }
-            if (Utils.getRootPermission() != 0){
+            if (isRoot){
                 Classes(
                     modifier = Modifier.bounceAnimN()
                 ){
@@ -185,16 +175,19 @@ fun Home(
 
 
         }
-        classes (
-            title = R.string.other_settings
-        ){
-            SuperNavHostArrow(
-                leftIcon = R.drawable.ic_miui_home_settings,
-                title = stringResource(R.string.hyper_home),
-                navController = navController,
-                route = PagerList.HOME
+        if (isOS2Settings()){
+            classes (
+                title = R.string.other_settings
+            ){
+                SuperNavHostArrow(
+                    leftIcon = R.drawable.ic_miui_home_settings,
+                    title = stringResource(R.string.hyper_home),
+                    navController = navController,
+                    route = PagerList.HOME
 
-            )
+                )
+
+            }
 
         }
 

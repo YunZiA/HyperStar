@@ -1,4 +1,4 @@
-package com.yunzia.hyperstar.hook.app.plugin.powermenu
+package com.yunzia.hyperstar.hook.os1.app.plugin.powermenu
 
 import android.animation.ValueAnimator
 import android.content.Context
@@ -19,15 +19,15 @@ fun menuC(mContext: Context, thisObj: Any?, items: List<Item?>, mTalkbackLayout:
     val res = mContext.resources
 
 
-    val menu1 = ButtonB(mContext,items[0]!!){
+    val menu1 = ButtonB(mContext, items[0]!!) {
         Handler(Looper.getMainLooper()).postDelayed({
-            XposedHelpers.callMethod(thisObj,"dismiss",1)
+            XposedHelpers.callMethod(thisObj, "dismiss", 1)
         }, 100)
     }
 
-    val menu2 = ButtonB(mContext,items[1]!!){
+    val menu2 = ButtonB(mContext, items[1]!!) {
         Handler(Looper.getMainLooper()).postDelayed({
-            XposedHelpers.callMethod(thisObj,"dismiss",1)
+            XposedHelpers.callMethod(thisObj, "dismiss", 1)
         }, 100)
     }
 
@@ -44,10 +44,10 @@ fun menuC(mContext: Context, thisObj: Any?, items: List<Item?>, mTalkbackLayout:
     m2.gravity = Gravity.BOTTOM+ Gravity.CENTER_HORIZONTAL
     //m1.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
 
-    val sliderWidth = res.getIdentifier("slider_width","dimen",plugin)
+    val sliderWidth = res.getIdentifier("slider_width","dimen", plugin)
     val size = res.getDimensionPixelOffset(sliderWidth)
     val width = size/4*3*2+size/5*4*2+size + dpToPx(res,15f).toInt()
-    val sliderHeight = res.getIdentifier("slider_height","dimen",plugin)
+    val sliderHeight = res.getIdentifier("slider_height","dimen", plugin)
     val top = res.getDimensionPixelOffset(sliderHeight)
     val height = top+ dpToPx(res,230f).toInt()
 

@@ -1,14 +1,12 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
 import android.content.Context
-import android.telephony.TelephonyManager
 import android.view.View
 import android.widget.LinearLayout
 import com.yunzia.hyperstar.hook.base.BaseHooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
-
 
 class QSCardTile : BaseHooker() {
 
@@ -37,8 +35,7 @@ class QSCardTile : BaseHooker() {
             return
         }
 
-
-        val onFinishInflate  = findClass("miui.systemui.controlcenter.qs.tileview.QSCardItemView\$onFinishInflate\$1",classLoader)
+        val onFinishInflate  = XposedHelpers.findClassIfExists("miui.systemui.controlcenter.qs.tileview.QSCardItemView\$onFinishInflate\$1",classLoader)
 
 
         XposedHelpers.findAndHookMethod(onFinishInflate,"invoke",View::class.java,object : XC_MethodHook(){

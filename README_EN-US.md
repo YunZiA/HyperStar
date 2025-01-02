@@ -25,9 +25,11 @@ This is an extremely ordinary Xposed module, mainly designed to customize the Xi
 
 ## Current supported versions
 
-| System versions | Android versions | Support status       |
-|:----------------|:-----------------|:---------------------|
-| HyperOS2.0      | 15               | Partially functional |
+| System versions | Android versions | Support status             |
+|:----------------|:-----------------|:---------------------------|
+| HyperOS1.0      | 14               | Supported                  |
+| HyperOS1.0 Beta | 15               | Supported                  |
+| HyperOS2.0      | 15               | Partially functional       |
 
 ## Pre-use instructions
 

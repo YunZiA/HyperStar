@@ -120,31 +120,6 @@ fun getInstalledApps(
     }
 }
 
-
-fun getInstalledApps(
-    activity: MainActivity,
-    requestPermission: ManagedActivityResultLauncher<String, Boolean>
-){
-    try {
-        val permissionInfo = activity.applicationContext.packageManager.getPermissionInfo(
-            "com.android.permission.GET_INSTALLED_APPS",
-            0
-        )
-        if (permissionInfo != null && permissionInfo.packageName == "com.lbe.security.miui") {
-            //MIUI 系统支持动态申请该权限
-            if (ContextCompat.checkSelfPermission(
-                    activity.applicationContext,
-                    "com.android.permission.GET_INSTALLED_APPS"
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                requestPermission.launch("com.android.permission.GET_INSTALLED_APPS")
-            }
-        }
-    } catch (e: PackageManager.NameNotFoundException) {
-        e.printStackTrace()
-    }
-}
-
 @SuppressLint("QueryPermissionsNeeded")
 private fun getAllAppInfo(
     context:Context,

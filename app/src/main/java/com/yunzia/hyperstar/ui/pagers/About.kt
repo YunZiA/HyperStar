@@ -256,7 +256,7 @@ fun ThirdPage(
                     title = stringResource(R.string.project_address),
                     summary = stringResource(R.string.open_source_statement),
                     navController = navController,
-                    url = "https://github.com/YunZiA/HyperStar2.0"
+                    url = "https://github.com/YunZiA/HyperStar"
                 )
 
                 SuperNavHostArrow(

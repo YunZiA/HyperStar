@@ -37,7 +37,6 @@ class QSMiplayDetailVolumeBar:BaseHooker() {
                 val res = context.resources
 
                 val value = TextView(context).apply {
-                    text = "null%"
                     typeface = Typeface.DEFAULT_BOLD;
                     setTextSize(TypedValue.COMPLEX_UNIT_DIP,12.5f)
                     setTextColor(getColor(res,"miplay_detail_volume_icon_color",plugin,"#FF6E747B"))

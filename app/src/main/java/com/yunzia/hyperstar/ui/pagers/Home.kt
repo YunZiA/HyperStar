@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -50,11 +51,12 @@ import yunzia.utils.SystemProperties
 
 @Composable
 fun Home(
-    activity : MainActivity,
     navController: NavHostController,
     topAppBarScrollBehavior: ScrollBehavior,
     padding: PaddingValues
 ) {
+    val context = LocalContext.current
+    val activity = context as MainActivity
 
     val isModuleActive = isModuleActive()
 

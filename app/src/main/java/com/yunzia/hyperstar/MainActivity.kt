@@ -28,17 +28,16 @@ class MainActivity : BaseActivity() {
     private  val NOTIFY_ID_DAILY = 0x2000
     private  val CHANNEL_ID = "channel_new"
 
+    val enablePageUserScroll = mutableStateOf(false)
+
     var isRecreate:Boolean = false
 
     var isGranted = mutableStateOf(false)
 
 
     @Composable
-    override fun InitView(colorMode: MutableState<Int>?) {
-
-        if (colorMode != null) {
-            App(this,colorMode)
-        }
+    override fun InitView() {
+        App()
     }
 
     fun getInstalledApps(){
@@ -74,7 +73,6 @@ class MainActivity : BaseActivity() {
         deviceId: Int
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults, deviceId)
-        Log.d("ggc", "onRequestPermissionsResult:  $requestCode + ${grantResults[0]}")
         if (requestCode == 999){
             isGranted.value = grantResults.isNotEmpty() &&  grantResults[0] == 0
         }
@@ -83,6 +81,7 @@ class MainActivity : BaseActivity() {
 
     @SuppressLint("MissingPermission", "RemoteViewLayout")
     override fun initData(savedInstanceState: Bundle?) {
+        enablePageUserScroll.value = PreferencesUtil.getBoolean("page_user_scroll",false)
 
         val isRecreate = savedInstanceState?.getBoolean("isRecreate",true)
         if (isRecreate != null && isRecreate){

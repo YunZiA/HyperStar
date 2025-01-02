@@ -22,7 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -143,7 +142,8 @@ private fun initData(context: Context, itemLists: List<String>) : List<Card> {
 
 @Composable
 fun ControlCenterListPager(
-    navController: NavController
+    navController: NavController,
+    currentStartDestination: MutableState<String>
 ) {
 
     var itemList by remember { mutableStateOf(emptyList<String>()) }
@@ -174,6 +174,7 @@ fun ControlCenterListPager(
 
     ModuleNavPagers(
         activityTitle = stringResource(R.string.control_center_edit),
+        currentStartDestination = currentStartDestination,
         navController = navController,
         endIcon = {
 

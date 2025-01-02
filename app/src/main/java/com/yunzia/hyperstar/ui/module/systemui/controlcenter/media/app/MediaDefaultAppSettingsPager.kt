@@ -1,7 +1,6 @@
 
 package com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.app
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
@@ -9,9 +8,6 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.util.Log
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -53,6 +49,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -75,9 +72,7 @@ import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.pagers.titleColor
-import com.yunzia.hyperstar.utils.JBUtil
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import top.yukonga.miuix.kmp.basic.BasicComponent
@@ -88,9 +83,6 @@ import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
-import kotlin.coroutines.cancellation.CancellationException
-import kotlin.math.log
-import androidx.compose.runtime.DisposableEffect as DisposableEffect
 
 fun getInstalledApps(
     activity: MainActivity
@@ -239,14 +231,17 @@ fun <T> LoadingContent(
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun MediaAppSettingsPager(
-    activity: MainActivity,
-    navController: NavController
+    navController: NavController,
+    currentStartDestination: MutableState<String>
 ) {
+    val context = LocalContext.current
+    val activity = context as MainActivity
     getInstalledApps(activity)
 
     ModuleNavPager(
         activityTitle = stringResource(R.string.media_default_app_settings),
         navController = navController,
+        currentStartDestination = currentStartDestination,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         },

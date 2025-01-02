@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +44,7 @@ import com.yunzia.hyperstar.utils.getSystemVersionIncremental
 import com.yunzia.hyperstar.utils.getVerName
 import com.yunzia.hyperstar.utils.getVersionCode
 import com.yunzia.hyperstar.utils.isBetaOs
+import com.yunzia.hyperstar.utils.isOS2Settings
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
@@ -54,12 +56,14 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 @Composable
 fun NeedMessagePager(
     navController: NavController,
+    currentStartDestination : MutableState<String>,
 ) {
     val context = LocalContext.current
     val debugInfo = "Debug Info of HyperStar\n\n" +
-            "VersionName = ${getVerName(context)}\n" +
+            "ModuleActive = ${isModuleActive()}\n" +
+            "HookChannel = ${if (isOS2Settings()) "OS2" else "OS1"}\n" +
             "VersionCode = ${getVersionCode(context)}\n" +
-            "ModuleActive = ${isModuleActive()}\n\n" +
+            "VersionName = ${getVerName(context)}\n\n" +
             "MarketName = ${getMarketName()}\n" +
             "DeviceName = ${getDeviceName()}\n" +
             "AndroidVersion = ${getAndroidVersion()}\n" +
@@ -80,6 +84,7 @@ fun NeedMessagePager(
     NavPager(
         activityTitle = stringResource(R.string.debug_message),
         navController = navController,
+        currentStartDestination = currentStartDestination
     ) {
 
         item {

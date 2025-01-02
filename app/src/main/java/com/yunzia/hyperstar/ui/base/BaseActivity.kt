@@ -13,6 +13,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
@@ -24,9 +25,13 @@ import com.yunzia.hyperstar.utils.PreferencesUtil
 import yunzia.utils.SystemProperties
 import java.util.Locale
 
+val colorMode = mutableIntStateOf(0)
+val showFPSMonitor =  mutableStateOf(false)
+
 abstract class BaseActivity : ComponentActivity() {
 
-    @Composable abstract fun InitView(colorMode: MutableState<Int>?)
+
+    @Composable abstract fun InitView()
 
     abstract fun initData(savedInstanceState: Bundle?)
 
@@ -37,9 +42,9 @@ abstract class BaseActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
+            colorMode.intValue = PreferencesUtil.getInt("color_mode",0)
+            showFPSMonitor.value = PreferencesUtil.getBoolean("show_FPS_Monitor",false)
 //
-            val colorMode = remember { mutableIntStateOf(PreferencesUtil.getInt("color_mode",0)) }
-
             val darkMode = colorMode.intValue == 2 || (isSystemInDarkTheme() && colorMode.intValue == 0)
 
             val systemUiController = rememberSystemUiController()
@@ -54,7 +59,7 @@ abstract class BaseActivity : ComponentActivity() {
             }
 
             HyperStarTheme(colorMode.intValue) {
-                InitView(colorMode)
+                InitView()
             }
 
         }

@@ -1,9 +1,9 @@
 package com.yunzia.hyperstar.ui.module.systemui.controlcenter
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.SystemUIPagerList
@@ -19,17 +19,18 @@ import com.yunzia.hyperstar.ui.base.XSuperSwitch
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
 import com.yunzia.hyperstar.utils.Utils
-import com.yunzia.hyperstar.utils.isOS2
 import com.yunzia.hyperstar.utils.isOS2Settings
 
 
 @Composable
 fun ControlCenterPager(
-    navController: NavHostController
+    navController: NavHostController,
+    currentStartDestination: MutableState<String>
 ) {
     ModuleNavPagers(
         activityTitle = stringResource(R.string.control_center),
         navController = navController,
+        currentStartDestination = currentStartDestination,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         },

@@ -1,27 +1,36 @@
 package com.yunzia.hyperstar.ui.pagers
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.Classes
 import com.yunzia.hyperstar.ui.base.NavPager
 import com.yunzia.hyperstar.ui.base.PMiuixSuperSwitch
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
+import com.yunzia.hyperstar.ui.base.showFPSMonitor
 import com.yunzia.hyperstar.utils.PreferencesUtil
 
 @Composable
 fun SettingsShowPage(
-    navController: NavHostController
+    navController: NavHostController,
+    currentStartDestination: MutableState<String>
 ) {
 
+    val context = LocalContext.current
+    val activity = context as MainActivity
+    val showFPSMonitor = showFPSMonitor
 
     NavPager(
         activityTitle = stringResource(R.string.model_pager_setting),
         navController = navController,
-    ) { showFPSMonitor->
+        currentStartDestination = currentStartDestination,
+    ) {
 
         firstClasses(
             title = R.string.global
@@ -41,8 +50,16 @@ fun SettingsShowPage(
         ){
             PMiuixSuperSwitch(
                 title = stringResource(R.string.page_user_scroll_title),
-                key = "page_user_scroll",
+                checked = activity.enablePageUserScroll.value,
+                onCheckedChange = {
+                    activity.enablePageUserScroll.value = it
+                    PreferencesUtil.putBoolean("page_user_scroll",activity.enablePageUserScroll.value)
+                }
             )
+//            PMiuixSuperSwitch(
+//                title = stringResource(R.string.page_user_scroll_title),
+//                key = "page_user_scroll",
+//            )
 
         }
         classes(

@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.ui.module.betahome
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
@@ -12,11 +13,13 @@ import com.yunzia.hyperstar.utils.Utils
 
 @Composable
 fun BetaHomePager(
-    navController: NavController
+    navController: NavController,
+    currentStartDestination: MutableState<String>,
 ) {
     ModuleNavPagers(
         activityTitle = stringResource(R.string.beta_home),
         navController = navController,
+        currentStartDestination = currentStartDestination,
         endClick = {
             Utils.rootShell("killall com.miui.home")
         },

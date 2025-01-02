@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -35,10 +36,11 @@ import yunzia.utils.SystemProperties
 
 @Composable
 fun FirstDialog(
-    activity: MainActivity,
     navController: NavHostController
-
 ) {
+    val context = LocalContext.current
+    val activity = context as MainActivity
+
     if (activity.isRecreate) return
 
     val errVersion = false

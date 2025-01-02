@@ -56,6 +56,7 @@ import androidx.compose.ui.graphics.BlendModeColorFilter
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -107,8 +108,6 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 @Composable
 fun MainPager(
     navController: NavHostController,
-    activity: MainActivity,
-    colorMode: MutableState<Int>,
 ) {
     val topAppBarScrollBehavior0 = MiuixScrollBehavior(rememberTopAppBarState())
     val topAppBarScrollBehavior1 = MiuixScrollBehavior(rememberTopAppBarState())
@@ -146,7 +145,6 @@ fun MainPager(
 //    }
 
     val hazeState = remember { HazeState() }
-    val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
     val enablePageUserScroll = remember { mutableStateOf(PreferencesUtil.getBoolean("page_user_scroll",false)) }
 
     val show = remember { mutableStateOf(false) }
@@ -156,6 +154,7 @@ fun MainPager(
 
     XScaffold(
         modifier = Modifier.fillMaxSize(),
+        popupHost = { },
         topBar = {
             TopAppBar(
                 modifier = if (targetPage == 2 && !showBlurs.value) Modifier else Modifier.showBlur(hazeState),
@@ -202,25 +201,13 @@ fun MainPager(
         AppHorizontalPager(
             modifier = Modifier.blur(hazeState),
             navController = navController,
-            activity = activity,
             pagerState = pagerState,
-            colorMode = colorMode,
             topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
             padding = padding,
-            showBlurs = showBlurs,
-            enablePageUserScroll = enablePageUserScroll
+            showBlurs = showBlurs
         )
 
 
-        //}
-    }
-
-    if (showFPSMonitor.value) {
-        FPSMonitor(
-            modifier = Modifier
-                .statusBarsPadding()
-                .padding(horizontal = 28.dp)
-        )
     }
 
     RebootDialog(show)
@@ -325,58 +312,50 @@ fun  Item(
 
 @Composable
 fun AppHorizontalPager(
-    activity: MainActivity,
     navController: NavHostController,
-    colorMode: MutableState<Int>,
     modifier: Modifier = Modifier,
     pagerState: PagerState,
     topAppBarScrollBehaviorList: List<ScrollBehavior>,
     padding: PaddingValues,
-    enablePageUserScroll: MutableState<Boolean>,
     showBlurs: MutableState<Boolean>
 ) {
+
+
+    val context = LocalContext.current
+    val activity = context as MainActivity
+
     HorizontalPager(
         modifier = modifier,
         pagerState = pagerState,
-        userScrollEnabled = enablePageUserScroll.value,
+        userScrollEnabled = activity.enablePageUserScroll.value,
         pageContent = { page ->
 
             when (page) {
 
                 0 ->{
-
                     Home(
-                        activity = activity,
                         navController = navController,
                         topAppBarScrollBehavior = topAppBarScrollBehaviorList[0],
-                        padding = padding,
-
+                        padding = padding
                     )
-
 
                 }
 
-
                 1 -> {
                     Settings(
-                        activity = activity,
                         navController = navController,
                         topAppBarScrollBehavior = topAppBarScrollBehaviorList[1],
-                        padding = padding,
-                        colorMode = colorMode,
+                        padding = padding
 
                     )
                 }
 
                 else -> {
                     ThirdPage(
-                        activity = activity,
                         showBlurs = showBlurs,
-                        colorMode = colorMode,
                         navController = navController,
                         topAppBarScrollBehavior = topAppBarScrollBehaviorList[2],
                         padding = padding,
-
                     )
                 }
             }

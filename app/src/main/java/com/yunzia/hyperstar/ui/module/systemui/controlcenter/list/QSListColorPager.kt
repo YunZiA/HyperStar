@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.ui.module.systemui.controlcenter.list
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
@@ -17,7 +18,8 @@ import com.yunzia.hyperstar.utils.Utils
 
 @Composable
 fun QSListColorPager(
-    navController: NavController
+    navController: NavController,
+    currentStartDestination: MutableState<String>
 ) {
     val tileColor = remember {
         mutableIntStateOf(SPUtils.getInt("qs_list_tile_color_for_state",0))
@@ -26,6 +28,7 @@ fun QSListColorPager(
     ModuleNavPagers(
         activityTitle = stringResource(R.string.tile_color),
         navController = navController,
+        currentStartDestination = currentStartDestination,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         },

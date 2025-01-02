@@ -64,7 +64,8 @@ fun getFunList():List<String>{
 @Composable
 fun SelectFunPager(
     navController: NavHostController,
-    backStackEntry: NavBackStackEntry
+    backStackEntry: NavBackStackEntry,
+    currentStartDestination: MutableState<String>
 ) {
 
     val funTypes = stringArrayResource(R.array.power_fun_types).toList()
@@ -79,6 +80,7 @@ fun SelectFunPager(
     ModuleNavPager(
         activityTitle = pagersJson.title,
         navController = navController,
+        currentStartDestination = currentStartDestination,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         },

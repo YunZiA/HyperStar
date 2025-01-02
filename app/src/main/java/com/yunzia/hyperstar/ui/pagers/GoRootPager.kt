@@ -95,7 +95,8 @@ private fun getRootManagerInfo(
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun GoRootPager(
-    navController: NavHostController
+    navController: NavHostController,
+    currentStartDestination: MutableState<String>
 ) {
     val mContext = LocalContext.current
     ///val rootList = getRootManagerInfo(mContext)
@@ -146,6 +147,7 @@ fun GoRootPager(
     NavPager(
         activityTitle = stringResource(R.string.quick_authorization),
         navController = navController,
+        currentStartDestination = currentStartDestination,
     ) {
 
         item {

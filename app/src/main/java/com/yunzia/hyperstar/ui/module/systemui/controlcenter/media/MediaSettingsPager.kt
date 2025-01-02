@@ -7,9 +7,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.SystemUIPagerList
@@ -28,10 +28,12 @@ import com.yunzia.hyperstar.utils.Utils
 
 @Composable
 fun MediaSettingsPager(
-    navController: NavHostController
+    navController: NavHostController,
+    currentStartDestination: MutableState<String>
 ) {
     ModuleNavPagers(
         activityTitle = stringResource(R.string.media_settings),
+        currentStartDestination = currentStartDestination,
         navController = navController,
         endClick = {
             Utils.rootShell("killall com.android.systemui")

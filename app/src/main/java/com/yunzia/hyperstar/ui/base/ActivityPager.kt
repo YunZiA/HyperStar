@@ -30,6 +30,7 @@ import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
+import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
 @Composable
@@ -69,10 +70,9 @@ fun ModulePager(
     val hazeState = remember { HazeState() }
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
 
-    val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
-
     XScaffold(
         modifier = Modifier.fillMaxSize(),
+        popupHost = { },
         topBar = {
             ModuleTopAppBar(
                 modifier = Modifier.showBlur(hazeState),
@@ -98,20 +98,22 @@ fun ModulePager(
 
     }
 
-
-    if (showFPSMonitor.value) {
-        FPSMonitor(
-            modifier = Modifier
-                .statusBarsPadding()
-                .padding(horizontal = 28.dp)
-        )
-    }
 }
 @Composable
 fun ModuleNavPagers(
     activityTitle: String,
     navController: NavController,
-    startClick: () -> Unit =  { navController.popBackStack() },
+    currentStartDestination: MutableState<String>,
+    startClick: () -> Unit =  {
+        navController.navigate(currentStartDestination.value) {
+            popUpTo(navController.graph.startDestinationId) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+        navController.popBackStack(currentStartDestination.value, inclusive = false)
+    },
     endClick: () -> Unit,
     endIcon :  @Composable () -> Unit = {},
     content: LazyListScope.() -> Unit
@@ -120,6 +122,7 @@ fun ModuleNavPagers(
     ModuleNavPager(
         activityTitle = activityTitle,
         navController = navController,
+        currentStartDestination = currentStartDestination,
         startClick = startClick,
         endClick = endClick,
         endIcon = endIcon,
@@ -139,7 +142,17 @@ fun ModuleNavPagers(
 fun ModuleNavPager(
     activityTitle: String,
     navController: NavController,
-    startClick: () -> Unit = { navController.popBackStack() },
+    currentStartDestination: MutableState<String>,
+    startClick: () -> Unit = {
+        navController.navigate(currentStartDestination.value) {
+            popUpTo(navController.graph.startDestinationId) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+        navController.popBackStack(currentStartDestination.value, inclusive = false)
+    },
     endClick: () -> Unit,
     endIcon :  @Composable () -> Unit = {},
     contents: @Composable ((ScrollBehavior, PaddingValues) -> Unit)? = null
@@ -148,12 +161,11 @@ fun ModuleNavPager(
     val hazeState = remember { HazeState() }
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
 
-    val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
-
     XScaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black),
+        popupHost = { },
         topBar = {
             ModuleNavTopAppBar(
                 modifier = Modifier.showBlur(hazeState),
@@ -167,9 +179,19 @@ fun ModuleNavPager(
                 }
             )
 
-        },
+        }
 
-        ) { padding ->
+    ) { padding ->
+        BackHandler(true) {
+            navController.navigate(currentStartDestination.value) {
+                popUpTo(navController.graph.startDestinationId) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
+            navController.popBackStack(currentStartDestination.value, inclusive = false)
+        }
         if (contents != null) {
             Box(Modifier.blur(hazeState)) {
                 contents(topAppBarScrollBehavior,padding)
@@ -178,17 +200,6 @@ fun ModuleNavPager(
         }
 
     }
-
-
-
-    if (showFPSMonitor.value) {
-        FPSMonitor(
-            modifier = Modifier
-                .statusBarsPadding()
-                .padding(horizontal = 28.dp)
-        )
-    }
-
 
 }
 
@@ -221,18 +232,18 @@ fun NavHostController.goBackWithParams(
 fun NavPager(
     activityTitle: String,
     navController: NavController,
+    currentStartDestination: MutableState<String>,
     actions: @Composable() (RowScope.() -> Unit) = {},
-    content: (LazyListScope.(MutableState<Boolean>) -> Unit)? = null
+    content: (LazyListScope.() -> Unit)? = null
 ) {
 
     val hazeState = remember { HazeState() }
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
 
-    val showFPSMonitor = remember { mutableStateOf(PreferencesUtil.getBoolean("show_FPS_Monitor",false)) }
-
 
     XScaffold(
         modifier = Modifier.fillMaxSize(),
+        popupHost = { },
         topBar = {
             NavTopAppBar(
                 modifier = Modifier.showBlur(hazeState),
@@ -240,19 +251,30 @@ fun NavPager(
                 title = activityTitle,
                 scrollBehavior = topAppBarScrollBehavior,
                 navController = navController,
+                currentStartDestination = currentStartDestination,
                 actions = actions
             )
 
         }
     ) { padding ->
         if (content != null) {
+            BackHandler(true) {
+                navController.navigate(currentStartDestination.value) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+                navController.popBackStack(currentStartDestination.value, inclusive = false)
+            }
             Box(Modifier.blur(hazeState)) {
                 LazyColumn(
                     modifier = Modifier.height(getWindowSize().height.dp),
                     contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+28.dp),
                     topAppBarScrollBehavior = topAppBarScrollBehavior
                 ) {
-                    content(showFPSMonitor)
+                    content()
                 }
 
             }
@@ -260,14 +282,6 @@ fun NavPager(
 
     }
 
-
-    if (showFPSMonitor.value) {
-        FPSMonitor(
-            modifier = Modifier
-                .statusBarsPadding()
-                .padding(horizontal = 28.dp)
-        )
-    }
 }
 
 

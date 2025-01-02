@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -38,12 +39,14 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.LinearImage
 import com.yunzia.hyperstar.ui.base.SuperIntentArrow
 import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.base.classes
+import com.yunzia.hyperstar.ui.base.colorMode
 import com.yunzia.hyperstar.ui.base.firstClasses
 import com.yunzia.hyperstar.ui.base.view.BgEffectView
 import dev.chrisbanes.haze.HazeState
@@ -75,16 +78,14 @@ private fun getColorList(
 @SuppressLint("RestrictedApi", "SetTextI18n")
 @Composable
 fun ThirdPage(
-    activity: ComponentActivity,
     navController: NavHostController,
     topAppBarScrollBehavior: ScrollBehavior,
     padding: PaddingValues,
     showBlurs: MutableState<Boolean>,
-    colorMode: MutableState<Int>
 ) {
 
     val darkTheme = isSystemInDarkTheme()
-    val colorsMode = when (colorMode.value) {
+    val colorsMode = when (colorMode.intValue) {
         1 -> 1
         2 -> 2
         else -> if (darkTheme) 2 else 1

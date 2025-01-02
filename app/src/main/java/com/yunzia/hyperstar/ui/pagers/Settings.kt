@@ -44,6 +44,7 @@ import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.base.SuperSpinner
 import com.yunzia.hyperstar.ui.base.SuperWarnDialogArrow
 import com.yunzia.hyperstar.ui.base.classes
+import com.yunzia.hyperstar.ui.base.colorMode
 import com.yunzia.hyperstar.ui.base.dialog.SuperCTDialogDefaults
 import com.yunzia.hyperstar.ui.base.dialog.SuperXDialog
 import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.dismissXDialog
@@ -63,15 +64,15 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 @Composable
 fun Settings(
-    activity : MainActivity,
     navController: NavHostController,
     topAppBarScrollBehavior: ScrollBehavior,
-    padding: PaddingValues,
-    colorMode: MutableState<Int>
+    padding: PaddingValues
 ) {
 
 
     val context = LocalContext.current
+    val activity = context as MainActivity
+
     //val hookedChannel = remember { mutableIntStateOf(if (isOS2()) 1 else 0) }
     val errorDialog = remember { mutableStateOf(false) }
     val results: MutableState<Uri?> = remember { mutableStateOf(null) }
@@ -114,10 +115,10 @@ fun Settings(
             PMiuixSuperDropdown(
                 title = stringResource(R.string.color_mode_title),
                 option = R.array.color_mode_items,
-                selectedIndex = colorMode.value,
+                selectedIndex = colorMode.intValue,
                 onSelectedIndexChange = {
-                    colorMode.value = it
-                    PreferencesUtil.putInt("color_mode",colorMode.value)
+                    colorMode.intValue = it
+                    PreferencesUtil.putInt("color_mode",colorMode.intValue)
                 }
             )
 

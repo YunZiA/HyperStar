@@ -19,7 +19,7 @@ android {
         return createTime.toInt()
     }
     fun getVersionName(version:String):String{
-        val formatter = DateTimeFormatter.ofPattern("yyMMddHHm")
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHm")
         val createTime = LocalDateTime.now().format(formatter)
         return "${version}_$createTime"
     }

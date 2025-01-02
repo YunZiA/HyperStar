@@ -2,9 +2,6 @@ package com.yunzia.hyperstar.ui.module.systemui.other.powermenu
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.AnimationSpec
-import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateDpAsState
@@ -30,6 +27,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -43,7 +41,6 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.FunList
@@ -53,10 +50,8 @@ import com.yunzia.hyperstar.ui.base.Classes
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.SuperArgNavHostArrow
 import com.yunzia.hyperstar.ui.base.TopButton
-import com.yunzia.hyperstar.ui.base.XSuperDropdown
 import com.yunzia.hyperstar.utils.SPUtils
 import com.yunzia.hyperstar.utils.Utils
-import kotlinx.coroutines.Dispatchers
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -64,7 +59,8 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 @Composable
 fun PowerMenuStylePager(
-    navController: NavHostController
+    navController: NavHostController,
+    currentStartDestination: MutableState<String>
 ) {
 
     val style = remember { mutableIntStateOf( SPUtils.getInt("is_power_menu_style",0) ) }
@@ -78,6 +74,7 @@ fun PowerMenuStylePager(
     ModuleNavPagers(
         activityTitle = stringResource(R.string.power_menu_extra),
         navController = navController,
+        currentStartDestination = currentStartDestination,
         endIcon = {
 
             AnimatedVisibility(

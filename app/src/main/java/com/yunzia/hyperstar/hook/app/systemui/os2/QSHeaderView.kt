@@ -132,7 +132,7 @@ class QSHeaderView() : BaseHooker() {
                             controlCenterHeaderExpandController,
                             setting,
                             settingViewFolme,
-                            (normalControlDateTranslationX*0.5).toInt(),z2
+                            (normalControlDateTranslationX*0.6).toInt(),z2
                         )
 
                     }else{

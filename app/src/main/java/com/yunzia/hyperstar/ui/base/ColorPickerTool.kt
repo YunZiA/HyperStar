@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.ui.base
 
 import android.view.HapticFeedbackConstants
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
@@ -90,6 +92,10 @@ fun ColorPickerTool(
     val paddingModifier = remember(insideMargin) {
         Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
     }
+    val titleColor = animateColorAsState(
+        if (swappableState.targetValue == Status.CLOSE) colorScheme.onSurface else colorScheme.disabledOnSecondaryVariant,
+        label = ""
+    )
 
     Box(
         Modifier
@@ -107,7 +113,7 @@ fun ColorPickerTool(
                     orientation = Orientation.Horizontal
                 )
                 .clickable(
-                    enabled = if (swappableState.targetValue == Status.CLOSE) true else false,
+                    enabled = swappableState.targetValue == Status.CLOSE,
                 ) {
                     showDialog.value = true
                 }
@@ -119,7 +125,7 @@ fun ColorPickerTool(
                 modifier = Modifier.weight(1f),
                 text = title,
                 fontWeight = FontWeight.Medium,
-                color = if (swappableState.targetValue == Status.CLOSE) colorScheme.onSurface else colorScheme.disabledOnSecondaryVariant
+                color = titleColor.value
             )
 
             Box(
@@ -171,6 +177,7 @@ fun ColorPickerTool(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .width(squareSize)
+                .alpha(if (swappableState.offset.value == 0f ) 0f else 1f )
                 .offset {
                     IntOffset((squareSize.toPx()+swappableState.offset.value).toInt(), 0)
                 }
@@ -190,7 +197,7 @@ fun ColorPickerTool(
                         swappableState.animateTo(Status.CLOSE)
                     }
                     color.value = dfColor
-                    SPUtils.setString(key,"null")
+                    SPUtils.setString(key,"nul l")
                 }
             )
             Spacer(modifier = Modifier.width(6.dp))

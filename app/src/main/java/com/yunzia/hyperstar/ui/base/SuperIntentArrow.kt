@@ -3,6 +3,7 @@ package com.yunzia.hyperstar.ui.base
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -124,7 +125,7 @@ fun SuperNavHostArrow(
     SuperArrow(
         modifier = Modifier.bounceAnim{
             if (click.value){
-                navController.navigate(route)
+                navController.nav(route)
             }
             click.value = false
         },
@@ -157,7 +158,7 @@ fun SuperArgNavHostArrow(
     def:String = "null",
     navController : NavHostController,
     route: String,
-    rightDo: @Composable (String)->String = {it}
+    rightDo: @Composable (String) -> String = {it}
 ) {
 
     val pagersModel = Gson().toJson(PagersModel(title, key))
@@ -174,7 +175,7 @@ fun SuperArgNavHostArrow(
     SuperArrow(
         modifier = Modifier.bounceAnim{
             if (click.value){
-                navController.navigate(routes)
+                navController.nav(routes)
             }
             click.value = false
         },
@@ -197,6 +198,16 @@ fun SuperArgNavHostArrow(
 
         }
     )
+}
+
+fun  NavHostController.nav(
+    route: String
+){
+    val currentRoute = this.currentDestination?.route
+    Log.d("ggc", "SuperNavHostArrow: $currentRoute")
+    if (currentRoute == route) return
+    this.navigate(route)
+
 }
 
 
@@ -282,7 +293,8 @@ fun SuperWarnDialogArrow(
 
         Text(
             warnDes,
-            Modifier.padding(horizontal = 5.dp)
+            Modifier
+                .padding(horizontal = 5.dp)
                 .padding(top = 8.dp, bottom = 24.dp),
             color = SuperDialogDefaults.summaryColor(),
             textAlign = TextAlign.Start,

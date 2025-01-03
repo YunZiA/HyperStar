@@ -2,6 +2,7 @@ package yunzia.colorpicker
 
 import android.util.Log
 import androidx.compose.ui.graphics.Color
+import java.util.stream.Stream
 
 fun Color.toHex(): String {
     val red = "%02X".format((this.red * 255).toInt())
@@ -40,3 +41,14 @@ fun String.colorFromHex(): Color {
         return Color.Transparent
     }
 }
+//fun color(
+//    color:String
+//):Color{
+//    val hex = ("0x"+color.drop(1)).toLong()
+//    Log.d("ggc", "colorFromHex: ${hex}")// 去掉前面的'#'
+//
+//
+//
+//
+//    return Color(0x)
+//}

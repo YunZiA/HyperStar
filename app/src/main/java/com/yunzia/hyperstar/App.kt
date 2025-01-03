@@ -103,14 +103,14 @@ fun App(){
 
             }
 
-        }
+            if (showFPSMonitor.value) {
+                FPSMonitor(
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .padding(horizontal = 28.dp)
+                )
+            }
 
-        if (showFPSMonitor.value) {
-            FPSMonitor(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .padding(horizontal = 28.dp)
-            )
         }
 
     }

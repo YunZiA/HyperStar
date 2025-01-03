@@ -1,7 +1,7 @@
 package com.yunzia.hyperstar.ui.pagers
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
@@ -13,7 +13,7 @@ import com.yunzia.hyperstar.ui.base.firstClasses
 @Composable
 fun TranslatorPager(
     navController: NavController,
-    currentStartDestination: MutableState<String>,
+    currentStartDestination: SnapshotStateList<String>,
 ) {
     NavPager(
         activityTitle = stringResource(R.string.translator),

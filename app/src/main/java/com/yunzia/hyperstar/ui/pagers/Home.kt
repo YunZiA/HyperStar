@@ -26,7 +26,7 @@ import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.SystemUIPagerList
+import com.yunzia.hyperstar.SystemUIList
 import com.yunzia.hyperstar.ui.base.Classes
 import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.base.classes
@@ -157,21 +157,21 @@ fun Home(
                 leftIcon = R.drawable.icon_controlcenter,
                 title = stringResource(R.string.control_center),
                 navController = navController,
-                route = SystemUIPagerList.CONTROL_CENTER
+                route = SystemUIList.CONTROL_CENTER
 
             )
             SuperNavHostArrow(
                 leftIcon = R.drawable.ic_sound_settings,
                 title = stringResource(R.string.sound_settings),
                 navController = navController,
-                route = SystemUIPagerList.VOLUME_DIALOG
+                route = SystemUIList.VOLUME_DIALOG
 
             )
             SuperNavHostArrow(
                 leftIcon = R.drawable.ic_other_advanced_settings,
                 title = stringResource(R.string.more),
                 navController = navController,
-                route = SystemUIPagerList.MORE
+                route = SystemUIList.MORE
 
             )
 

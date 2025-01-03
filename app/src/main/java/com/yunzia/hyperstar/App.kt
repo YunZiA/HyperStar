@@ -2,6 +2,7 @@ package com.yunzia.hyperstar
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -21,9 +22,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,8 +38,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.yunzia.hyperstar.PagerList.MAIN
 import com.yunzia.hyperstar.ui.base.XScaffold
 import com.yunzia.hyperstar.ui.base.navtype.PagersModel
 import com.yunzia.hyperstar.ui.base.navtype.pagersJson
@@ -69,6 +72,7 @@ import com.yunzia.hyperstar.ui.pagers.MainPager
 import com.yunzia.hyperstar.ui.pagers.NeedMessagePager
 import com.yunzia.hyperstar.ui.pagers.SettingsShowPage
 import com.yunzia.hyperstar.ui.pagers.dialog.FirstDialog
+import kotlinx.coroutines.flow.count
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -82,7 +86,8 @@ fun App(){
 
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    val currentStartDestination = remember { mutableStateOf("") }
+    val currentStartDestination = remember { mutableStateListOf(MAIN) }
+
 
     val navController = rememberNavController()
 
@@ -119,16 +124,32 @@ fun App(){
 
 fun NavGraphBuilder.pagerContent(
     navController: NavHostController,
-    currentStartDestination: MutableState<String>
+    currentStartDestination: SnapshotStateList<String>
 
 ){
+    composable(SystemUIList.CONTROL_CENTER) { ControlCenterPager(navController,currentStartDestination) }
 
-    composable(PagerList.MAIN) { MainPager(navController) }
-    composable("EmptyPage") { EmptyPage() }
+    composable(ControlCenterList.COLOR_EDIT) { ControlCenterColorPager(navController,currentStartDestination) }
+
+    composable(ControlCenterList.LAYOUT_ARRANGEMENT) { ControlCenterListPager(navController,currentStartDestination) }
+
+    composable(ControlCenterList.MEDIA) { MediaSettingsPager(navController,currentStartDestination) }
+
+    composable(ControlCenterList.CARD_LIST) { QSCardListPager(navController,currentStartDestination) }
+
+    composable(ControlCenterList.TILE_LAYOUT) { QsListViewPager(navController,currentStartDestination) }
+
+    composable(ControlCenterList.MEDIA_APP) { MediaAppSettingsPager(navController,currentStartDestination) }
+
+    composable(CenterColorList.CARD_TILE) { QSCardColorPager(navController,currentStartDestination) }
+
+    composable(CenterColorList.TOGGLE_SLIDER) { ToggleSliderColorsPager(navController,currentStartDestination) }
+
+    composable(CenterColorList.DEVICE_CENTER) { DeviceCenterColorPager(navController,currentStartDestination) }
+
+    composable(CenterColorList.LIST_COLOR) { QSListColorPager(navController,currentStartDestination) }
 
     composable(PagerList.GO_ROOT){ GoRootPager(navController,currentStartDestination) }
-
-    composable(SystemUIPagerList.CONTROL_CENTER) { ControlCenterPager(navController,currentStartDestination) };
 
     composable(PagerList.LANGUAGE){ LanguagePager(navController,currentStartDestination) }
 
@@ -143,35 +164,15 @@ fun NavGraphBuilder.pagerContent(
 
     composable(PagerList.HOME) { HomePage(navController,currentStartDestination) }
 
-    composable(SystemUIPagerList.COLOR_EDIT) { ControlCenterColorPager(navController,currentStartDestination) }
+    composable(SystemUIList.VOLUME_DIALOG) { VolumePager(navController,currentStartDestination) }
 
-    composable(SystemUIPagerList.LAYOUT_ARRANGEMENT) { ControlCenterListPager(navController,currentStartDestination) }
+    composable(SystemUIList.MORE) { SystemUIOtherPager(navController,currentStartDestination) }
 
-    composable(SystemUIPagerList.MEDIA) { MediaSettingsPager(navController,currentStartDestination) }
-
-    composable(SystemUIPagerList.CARD_LIST) { QSCardListPager(navController,currentStartDestination) }
-
-    composable(SystemUIPagerList.TILE_LAYOUT) { QsListViewPager(navController,currentStartDestination) }
-
-    composable(CenterColorList.CARD_TILE) { QSCardColorPager(navController,currentStartDestination) }
-
-    composable(CenterColorList.TOGGLE_SLIDER) { ToggleSliderColorsPager(navController,currentStartDestination) }
-
-    composable(CenterColorList.DEVICE_CENTER) { DeviceCenterColorPager(navController,currentStartDestination) }
-
-    composable(CenterColorList.LIST_COLOR) { QSListColorPager(navController,currentStartDestination) }
-
-    composable(SystemUIPagerList.VOLUME_DIALOG) { VolumePager(navController,currentStartDestination) }
-
-    composable(SystemUIPagerList.MORE) { SystemUIOtherPager(navController,currentStartDestination) }
-
-    composable(SystemUIPagerList.MEDIA_APP) { MediaAppSettingsPager(navController,currentStartDestination) }
-
-    composable(SystemUIPagerList.POWERMENU){ PowerMenuStylePager(navController,currentStartDestination) }
+    composable(SystemUIList.POWERMENU){ PowerMenuStylePager(navController,currentStartDestination) }
 
 
     composable(
-        FunList.SELECT_LIST+"/{pagersJson}",
+        FunList.SELECT_LIST+"?{pagersJson}",
         listOf(
             navArgument("pagersJson") {
                 type = pagersJson<PagersModel>()
@@ -184,20 +185,20 @@ fun NavGraphBuilder.pagerContent(
 @Composable
 fun PortraitLayout(
     navController: NavHostController,
-    currentStartDestination: MutableState<String>
+    currentStartDestination: SnapshotStateList<String>
 ){
     val windowWidth = getWindowSize().width
 
-    LaunchedEffect(navController) {
-        currentStartDestination.value = PagerList.MAIN
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.route == "EmptyPage") {
-                navController.navigate(PagerList.MAIN) {
-                    popUpTo(PagerList.MAIN) { inclusive = true }
-                }
-            }
-        }
-    }
+//    LaunchedEffect(navController) {
+//        currentStartDestination.value = PagerList.MAIN
+//        navController.addOnDestinationChangedListener { _, destination, _ ->
+//            if (destination.route == "EmptyPage") {
+//                navController.navigate(PagerList.MAIN) {
+//                    popUpTo(PagerList.MAIN) { inclusive = true }
+//                }
+//            }
+//        }
+//    }
 
     //val easing = CubicBezierEasing(0.12f, 0.38f, 0.2f, 1f)
     val easing = FastOutSlowInEasing
@@ -230,6 +231,8 @@ fun PortraitLayout(
             )
         },
         builder = {
+
+            composable(PagerList.MAIN) { MainPager(navController) }
             pagerContent(
                 navController,
                 currentStartDestination
@@ -242,19 +245,30 @@ fun PortraitLayout(
 @Composable
 fun LandscapeLayout(
     navController: NavHostController,
-    currentStartDestination: MutableState<String>
+    currentStartDestination: SnapshotStateList<String>
 ) {
     val windowWidth = getWindowSize().width
     val easing = CubicBezierEasing(0.12f, 0.88f, 0.2f, 1f)
     val dividerLineColor = colorScheme.dividerLine
+
+    val cc = navController.currentBackStackEntryAsState()
+//    cc.value.
     LaunchedEffect(navController) {
-        currentStartDestination.value = "EmptyPage"
+
+//        currentStartDestination.value = "EmptyPage"
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.route == PagerList.MAIN) {
-                navController.navigate("EmptyPage") {
-                    popUpTo("EmptyPage") { inclusive = true }
-                }
-            }
+            if (destination.route == null) return@addOnDestinationChangedListener
+
+            val ss = destination.route!!.split("/")
+            val aa = navController.currentBackStackEntryFlow
+//                .route!!.split("/")
+//            if (ss.size == aa?.size){
+//                Log.d("ggc", "LandscapeLayout: $ss\n$aa")
+//                navController.clearBackStack(navController.currentDestination?.route!!)
+////                navController.navigate(destination.route!!) {
+////                    popUpTo(PagerList.MAIN) { inclusive = true }
+////                }
+//            }
         }
     }
     Row(
@@ -281,9 +295,11 @@ fun LandscapeLayout(
             )
         }
         NavHost(
-            modifier = Modifier.weight(1f).clip(RoundedCornerShape(0.dp)),
+            modifier = Modifier
+                .weight(1f)
+                .clip(RoundedCornerShape(0.dp)),
             navController = navController,
-            startDestination = "EmptyPage",
+            startDestination = PagerList.MAIN,
             enterTransition = {
                 slideInHorizontally(
                     initialOffsetX = { windowWidth },
@@ -301,6 +317,7 @@ fun LandscapeLayout(
                 )
             },
             builder = {
+                composable(PagerList.MAIN) { EmptyPage() }
                 pagerContent(
                     navController,
                     currentStartDestination
@@ -315,67 +332,73 @@ fun LandscapeLayout(
 object PagerList {
 
     //主页
-    const val MAIN = "main"
-    //系统界面更多
-    const val HOME = "home"
+    const val MAIN = "root"
 
-    const val LANGUAGE = "language"
+    const val HOME = "${MAIN}/home"
 
-    const val GO_ROOT = "go_root"
+    const val LANGUAGE = "${MAIN}/language"
+
+    const val GO_ROOT = "${MAIN}/go_root"
     //翻译
-    const val TRANSLATOR = "translator"
+    const val TRANSLATOR = "${MAIN}/translator"
     //
-    const val REFERENCES = "references"
+    const val REFERENCES = "${MAIN}/references"
     //投喂
-    const val DONATION = "donation"
+    const val DONATION = "${MAIN}/donation"
     //显示设置
-    const val SHOW = "show"
+    const val SHOW = "${MAIN}/show"
 
-    const val MESSAGE = "message"
+    const val MESSAGE = "${MAIN}/message"
 }
 
-object SystemUIPagerList {
-
+object SystemUIList {
     //控制中心
-    const val CONTROL_CENTER = "controlCenter"
-    //颜色编辑
-    const val COLOR_EDIT = "colorEdit"
-    //颜色编辑
-    const val LAYOUT_ARRANGEMENT = "layoutArrangement"
-    //妙播
-    const val MEDIA = "media"
-    //妙播应用选择
-    const val MEDIA_APP = "mediaApp"
-    //卡片磁贴列表
-    const val CARD_LIST = "cardList"
-    //普通磁贴布局
-    const val TILE_LAYOUT = "tileLayout"
-    //音量条
-    const val VOLUME_DIALOG = "volumeDialog"
-    //系统界面更多
-    const val MORE = "more"
+    const val CONTROL_CENTER = "$MAIN/control_center"
 
-    const val POWERMENU = "powermenu"
+    //音量条
+    const val VOLUME_DIALOG = "$MAIN/volumeDialog"
+    //系统界面更多
+    const val MORE = "$MAIN/systemUI_more"
+
+    const val POWERMENU = "$MORE/powermenu"
 }
 
 
 object FunList {
 
     //控制中心
-    const val SELECT_LIST = "selectList"
+    const val SELECT_LIST = "${SystemUIList.POWERMENU}/selectList"
+}
+
+object ControlCenterList{
+    //控制中心
+    const val CONTROL_CENTER = "${SystemUIList.CONTROL_CENTER}/controlCenter"
+    //颜色编辑
+    const val COLOR_EDIT = "${SystemUIList.CONTROL_CENTER}/colorEdit"
+    //颜色编辑
+    const val LAYOUT_ARRANGEMENT = "${SystemUIList.CONTROL_CENTER}/layoutArrangement"
+    //妙播
+    const val MEDIA = "${SystemUIList.CONTROL_CENTER}/media"
+    //妙播应用选择
+    const val MEDIA_APP = "${MEDIA}/mediaApp"
+    //卡片磁贴列表
+    const val CARD_LIST = "${SystemUIList.CONTROL_CENTER}/cardList"
+    //普通磁贴布局
+    const val TILE_LAYOUT = "${SystemUIList.CONTROL_CENTER}/tileLayout"
+
 }
 
 
 object CenterColorList {
 
     //卡片磁贴
-    const val CARD_TILE = "cardTileColor"
+    const val CARD_TILE = "${ControlCenterList.COLOR_EDIT}/cardTileColor"
     //滑条
-    const val TOGGLE_SLIDER = "toggleSliderColor"
+    const val TOGGLE_SLIDER = "${ControlCenterList.COLOR_EDIT}/toggleSliderColor"
     //滑条
-    const val DEVICE_CENTER = "deviceCenterColor"
+    const val DEVICE_CENTER = "${ControlCenterList.COLOR_EDIT}/deviceCenterColor"
     //普通磁贴
-    const val LIST_COLOR = "listColor"
+    const val LIST_COLOR = "${ControlCenterList.COLOR_EDIT}/listColor"
 }
 
 @Composable

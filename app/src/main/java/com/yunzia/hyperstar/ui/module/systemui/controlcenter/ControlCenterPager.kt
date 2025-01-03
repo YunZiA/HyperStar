@@ -1,12 +1,12 @@
 package com.yunzia.hyperstar.ui.module.systemui.controlcenter
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.yunzia.hyperstar.ControlCenterList
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.SystemUIPagerList
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.base.SuperStringArrow
@@ -25,7 +25,7 @@ import com.yunzia.hyperstar.utils.isOS2Settings
 @Composable
 fun ControlCenterPager(
     navController: NavHostController,
-    currentStartDestination: MutableState<String>
+    currentStartDestination: SnapshotStateList<String>
 ) {
     ModuleNavPagers(
         activityTitle = stringResource(R.string.control_center),
@@ -48,17 +48,17 @@ fun ControlCenterPager(
             SuperNavHostArrow(
                 title = stringResource(R.string.color_edit),
                 navController = navController,
-                route = SystemUIPagerList.COLOR_EDIT
+                route = ControlCenterList.COLOR_EDIT
             )
             SuperNavHostArrow(
                 title = stringResource(R.string.control_center_edit),
                 navController = navController,
-                route = SystemUIPagerList.LAYOUT_ARRANGEMENT
+                route = ControlCenterList.LAYOUT_ARRANGEMENT
             )
             SuperNavHostArrow(
                 title = stringResource(R.string.media_settings),
                 navController = navController,
-                route = SystemUIPagerList.MEDIA
+                route = ControlCenterList.MEDIA
             )
         }
 
@@ -115,7 +115,7 @@ fun ControlCenterPager(
                 SuperNavHostArrow(
                     title = stringResource(R.string.card_tile_edit),
                     navController = navController,
-                    route = SystemUIPagerList.CARD_LIST
+                    route = ControlCenterList.CARD_LIST
                 )
 
             }
@@ -211,7 +211,7 @@ fun ControlCenterPager(
                 SuperNavHostArrow(
                     title = stringResource(R.string.tile_layout),
                     navController = navController,
-                    route = SystemUIPagerList.TILE_LAYOUT
+                    route = ControlCenterList.TILE_LAYOUT
                 )
             }
 

@@ -27,11 +27,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -67,7 +67,7 @@ import java.util.TimerTask
 @Composable
 fun DonationPage(
     navController: NavController,
-    currentStartDestination: MutableState<String>,
+    currentStartDestination: SnapshotStateList<String>,
 ) {
     val mContext = navController.context
     val appUtils = AppUtils(mContext)

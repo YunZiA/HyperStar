@@ -1,7 +1,7 @@
 package com.yunzia.hyperstar.ui.module.systemui.controlcenter
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.CenterColorList
@@ -18,7 +18,7 @@ import com.yunzia.hyperstar.utils.Utils
 @Composable
 fun ControlCenterColorPager(
     navController: NavHostController,
-    currentStartDestination: MutableState<String>
+    currentStartDestination: SnapshotStateList<String>
 ) {
     ModuleNavPagers(
         activityTitle = stringResource(R.string.control_center_color_edit),

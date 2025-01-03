@@ -1,7 +1,7 @@
 package com.yunzia.hyperstar.ui.module.systemui.controlcenter.list
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
@@ -16,7 +16,7 @@ import com.yunzia.hyperstar.utils.Utils
 @Composable
 fun QsListViewPager(
     navController: NavHostController,
-    currentStartDestination: MutableState<String>
+    currentStartDestination: SnapshotStateList<String>
 ) {
     ModuleNavPagers(
         activityTitle = stringResource(R.string.tile_layout),

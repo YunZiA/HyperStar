@@ -1,14 +1,12 @@
 package com.yunzia.hyperstar.ui.pagers
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.Classes
 import com.yunzia.hyperstar.ui.base.NavPager
 import com.yunzia.hyperstar.ui.base.PMiuixSuperSwitch
 import com.yunzia.hyperstar.ui.base.classes
@@ -19,7 +17,7 @@ import com.yunzia.hyperstar.utils.PreferencesUtil
 @Composable
 fun SettingsShowPage(
     navController: NavHostController,
-    currentStartDestination: MutableState<String>
+    currentStartDestination: SnapshotStateList<String>
 ) {
 
     val context = LocalContext.current

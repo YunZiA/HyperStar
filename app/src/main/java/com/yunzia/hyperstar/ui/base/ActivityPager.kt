@@ -1,19 +1,17 @@
 package com.yunzia.hyperstar.ui.base
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -21,17 +19,15 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.ui.base.modifier.blur
 import com.yunzia.hyperstar.ui.base.modifier.showBlur
-import com.yunzia.hyperstar.ui.pagers.FPSMonitor
-import com.yunzia.hyperstar.utils.PreferencesUtil
 import dev.chrisbanes.haze.HazeState
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
-import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.getWindowSize
+import kotlin.math.log
 
 @Composable
 fun ModulePagers(
@@ -103,19 +99,12 @@ fun ModulePager(
 fun ModuleNavPagers(
     activityTitle: String,
     navController: NavController,
-    currentStartDestination: MutableState<String>,
+    currentStartDestination: SnapshotStateList<String>,
     startClick: () -> Unit =  {
-        navController.navigate(currentStartDestination.value) {
-            popUpTo(navController.graph.startDestinationId) {
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
-        navController.popBackStack(currentStartDestination.value, inclusive = false)
+        navController.backParentPager()
     },
     endClick: () -> Unit,
-    endIcon :  @Composable () -> Unit = {},
+    endIcon:  @Composable () -> Unit = {},
     content: LazyListScope.() -> Unit
 ) {
 
@@ -142,19 +131,12 @@ fun ModuleNavPagers(
 fun ModuleNavPager(
     activityTitle: String,
     navController: NavController,
-    currentStartDestination: MutableState<String>,
+    currentStartDestination: SnapshotStateList<String>,
     startClick: () -> Unit = {
-        navController.navigate(currentStartDestination.value) {
-            popUpTo(navController.graph.startDestinationId) {
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
-        navController.popBackStack(currentStartDestination.value, inclusive = false)
+        navController.backParentPager()
     },
     endClick: () -> Unit,
-    endIcon :  @Composable () -> Unit = {},
+    endIcon:  @Composable () -> Unit = {},
     contents: @Composable ((ScrollBehavior, PaddingValues) -> Unit)? = null
 ) {
 
@@ -183,14 +165,7 @@ fun ModuleNavPager(
 
     ) { padding ->
         BackHandler(true) {
-            navController.navigate(currentStartDestination.value) {
-                popUpTo(navController.graph.startDestinationId) {
-                    saveState = true
-                }
-                launchSingleTop = true
-                restoreState = true
-            }
-            navController.popBackStack(currentStartDestination.value, inclusive = false)
+            navController.backParentPager()
         }
         if (contents != null) {
             Box(Modifier.blur(hazeState)) {
@@ -200,6 +175,13 @@ fun ModuleNavPager(
         }
 
     }
+
+}
+
+fun NavController.backParentPager(){
+    val ss = this.currentDestination?.route!!.substringBeforeLast("/")
+    Log.d("ggc", "backParentPager: ${this.currentDestination?.route!!}\n$ss")
+    this.popBackStack(ss,false)
 
 }
 
@@ -232,7 +214,7 @@ fun NavHostController.goBackWithParams(
 fun NavPager(
     activityTitle: String,
     navController: NavController,
-    currentStartDestination: MutableState<String>,
+    currentStartDestination: SnapshotStateList<String>,
     actions: @Composable() (RowScope.() -> Unit) = {},
     content: (LazyListScope.() -> Unit)? = null
 ) {
@@ -259,14 +241,7 @@ fun NavPager(
     ) { padding ->
         if (content != null) {
             BackHandler(true) {
-                navController.navigate(currentStartDestination.value) {
-                    popUpTo(navController.graph.startDestinationId) {
-                        saveState = true
-                    }
-                    launchSingleTop = true
-                    restoreState = true
-                }
-                navController.popBackStack(currentStartDestination.value, inclusive = false)
+                navController.backParentPager()
             }
             Box(Modifier.blur(hazeState)) {
                 LazyColumn(

@@ -168,7 +168,7 @@ fun SuperArgNavHostArrow(
     }else{
         rightDo(SPUtils.getString(key,def))
     }
-    val routes = "$route/${Uri.encode(pagersModel)}"
+    val routes = "$route?${Uri.encode(pagersModel)}"
 
     val click = remember { mutableStateOf(false) }
 
@@ -204,8 +204,10 @@ fun  NavHostController.nav(
     route: String
 ){
     val currentRoute = this.currentDestination?.route
-    Log.d("ggc", "SuperNavHostArrow: $currentRoute")
-    if (currentRoute == route) return
+    if (currentRoute == route){
+        Log.d("NavHostController", "nav repeat: $currentRoute")
+        return
+    }
     this.navigate(route)
 
 }

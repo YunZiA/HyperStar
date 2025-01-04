@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -312,7 +313,7 @@ fun NavigationBarForStart(
         LazyColumn(
             modifier = Modifier.height(getWindowSize().height.dp),
             isEnabledOverScroll = { false },
-            contentPadding = it,
+            contentPadding = PaddingValues(top = it.calculateTopPadding()+13.dp, bottom = it.calculateBottomPadding()),
         ) {
 
             items.forEachIndexed { index, item ->
@@ -322,7 +323,7 @@ fun NavigationBarForStart(
 
                     val bgColor by animateColorAsState(
                         targetValue = if (isSelected) {
-                            Color.Black.copy(alpha = 0.3f)
+                            Color.Black.copy(alpha = 0.1f)
                         } else {
                             Color.Transparent
                         }, label = ""
@@ -340,22 +341,22 @@ fun NavigationBarForStart(
                             }
                         ,) {
                         Row(
-                            Modifier.padding(16.dp),
+                            Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Icon(
                                 imageVector = item.icon,
                                 contentDescription = item.label,
-                                modifier = Modifier.size(32.dp),
+                                modifier = Modifier.size(24.dp),
                                 tint = colorScheme.onBackground
                             )
                             Text(
                                 text = item.label,
                                 modifier = Modifier
                                     .weight(1f)
-                                    .padding(start = 5.dp),
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium
+                                    .padding(start = 8.dp),
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight(550)
 
                             )
                         }

@@ -9,10 +9,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -24,11 +22,9 @@ import com.yunzia.hyperstar.utils.Utils.isModuleActive
 
 
 class MainActivity : BaseActivity() {
-    private  val REQUEST_CODE_DAILY = 0x1000
-    private  val NOTIFY_ID_DAILY = 0x2000
-    private  val CHANNEL_ID = "channel_new"
 
     val enablePageUserScroll = mutableStateOf(false)
+    val rebootStyle =  mutableIntStateOf(0)
 
     var isRecreate:Boolean = false
 
@@ -37,6 +33,8 @@ class MainActivity : BaseActivity() {
 
     @Composable
     override fun InitView() {
+        enablePageUserScroll.value = PreferencesUtil.getBoolean("page_user_scroll",false)
+        rebootStyle.intValue = PreferencesUtil.getInt("reboot_menus_style",0)
         App()
     }
 
@@ -81,7 +79,6 @@ class MainActivity : BaseActivity() {
 
     @SuppressLint("MissingPermission", "RemoteViewLayout")
     override fun initData(savedInstanceState: Bundle?) {
-        enablePageUserScroll.value = PreferencesUtil.getBoolean("page_user_scroll",false)
 
         val isRecreate = savedInstanceState?.getBoolean("isRecreate",true)
         if (isRecreate != null && isRecreate){

@@ -91,7 +91,6 @@ fun ThirdPage(
         else -> if (darkTheme) 2 else 1
     }
 
-    val hazeState = remember { HazeState() }
     val density = LocalDensity.current
     val min = with(density) { 0.dp.toPx() }
     val sec = with(density) { 110.dp.toPx() }
@@ -116,7 +115,6 @@ fun ThirdPage(
 
                 Log.d("ggc", "ThirdPage: ${it}")
                 if (scroll.firstVisibleItemIndex > 0){
-                    //showBlurs.value = true
                     bgAlpha.floatValue = 0f
                     secAlpha.floatValue = 0f
                     mainAlpha.floatValue = 0f
@@ -157,8 +155,6 @@ fun ThirdPage(
 
         }
 
-
-
         Column(
             modifier = Modifier
                 .padding(top = 36.dp)
@@ -175,7 +171,6 @@ fun ThirdPage(
                 colors = getColorList(colorMode = colorsMode),
                 modifier = Modifier.width(260.dp).scale(mainScale.floatValue),
             )
-
 
             Text(
                 text = stringResource(id = R.string.xposed_desc),
@@ -195,12 +190,12 @@ fun ThirdPage(
         LazyColumn(
             modifier = Modifier.height(getWindowSize().height.dp),
             state = scroll,
-            contentPadding = PaddingValues(top = 0.dp, bottom = padding.calculateBottomPadding()+16.dp),
+            contentPadding = PaddingValues(top = padding.calculateTopPadding(), bottom = padding.calculateBottomPadding()+16.dp),
             topAppBarScrollBehavior = topAppBarScrollBehavior
         ) {
 
             item {
-                Spacer(Modifier.height(padding.calculateTopPadding()+332.dp))
+                Spacer(Modifier.height(332.dp))
             }
 
             firstClasses(

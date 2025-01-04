@@ -61,19 +61,6 @@ class QSListView : BaseHooker() {
         if ( labelMode != 0 ){
             val BrightnessPanelTilesController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.brightness.BrightnessPanelTilesController",classLoader)
 
-
-//            XposedHelpers.findAndHookMethod(BrightnessPanelTilesController,"getTileSpecs",object :XC_MethodHook(){
-//                override fun afterHookedMethod(param: MethodHookParam?) {
-//                    super.afterHookedMethod(param)
-//                    val list = param?.result as List<*>
-//                    list.toMutableList().removeLast()
-////                    list.add("reduce_brightness")
-////
-////                    list.add("reduce_brightness")
-//                    param.result = list
-//                    starLog.log("${param.result}")
-//                }
-//            })
             XposedHelpers.findAndHookMethod(BrightnessPanelTilesController,"getTileSpecs",object :XC_MethodReplacement(){
                 override fun replaceHookedMethod(param: MethodHookParam?): Any {
 
@@ -83,52 +70,6 @@ class QSListView : BaseHooker() {
                 }
 
             })
-
-//            XposedHelpers.findAndHookMethod(BrightnessPanelTilesController,"getQSTileItemView",String::class.java,object :XC_MethodHook(){
-//                override fun afterHookedMethod(param: MethodHookParam?) {
-//                    super.afterHookedMethod(param)
-//                    val inflate = param?.result as ViewGroup
-//                    val icon = inflate.findViewByIdName("icon_frame") as FrameLayout
-//                    val label = inflate.findViewByIdName("tile_label") as TextView
-//
-//                    if (labelMode == 1){
-//                        inflate.removeView(label)
-//                        inflate.removeView(icon)
-//                        inflate.addView(icon,0)
-//                        inflate.addView(label,1)
-//                        label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9f)
-//
-//                        val layoutParam =  label.layoutParams
-//                        icon.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-//                        layoutParam.width = icon.measuredWidth/9*8
-//                        label.layoutParams = layoutParam
-//                    } else if (labelMode == 2){
-//                        inflate.removeView(label)
-//                        inflate.removeView(icon)
-//                        inflate.addView(icon,0)
-//                        inflate.addView(label,1)
-//
-//                        label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
-//                        val layoutParam =  label.layoutParams
-//                        inflate.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-//                        starLog.log("${inflate.layoutParams.width}+${inflate.measuredWidth}")
-//                        val width = inflate.measuredWidth*labelWidth
-//                        layoutParam.width = width.toInt()
-//                        label.layoutParams = layoutParam
-//
-//                    }
-//                    if(labelMarquee){
-//                        label.ellipsize = TextUtils.TruncateAt.MARQUEE
-//                        label.focusable = View.NOT_FOCUSABLE
-//                        label.isSelected = true
-//                        label.setSingleLine()
-//                    }
-//
-//
-//
-//                }
-//
-//            })
 
         }
     }
@@ -470,14 +411,14 @@ class QSListView : BaseHooker() {
                         val clickAction =
                             XposedHelpers.getObjectField(qSTileItemView, "clickAction")
                         if (clickAction == null) {
-                            starLog.log("clickAction == null")
+                            starLog.logE("clickAction == null")
                             return
                         }
 
                         val enumConstants: Array<out Any>? =
-                            MainPanelModeController.getEnumConstants()
+                            MainPanelModeController.enumConstants
                         if (enumConstants == null) {
-                            starLog.log("enumConstants == null")
+                            starLog.logE("enumConstants == null")
                             return
                         }
                         val mainPanelMode = XposedHelpers.getObjectField(qSTileItemView, "mode")
@@ -485,17 +426,12 @@ class QSListView : BaseHooker() {
                             val mContext = qSTileItemView.context
                             collapseStatusBar(mContext)
                         } else {
-                            starLog.log("mainPanelMode == edit")
+                            starLog.logE("mainPanelMode == edit")
 
                         }
                     }
                 }
 
-//                override fun beforeHookedMethod(param: MethodHookParam?) {
-//                    super.beforeHookedMethod(param)
-//
-//
-//                }
 
             })
 
@@ -534,7 +470,7 @@ class QSListView : BaseHooker() {
                         label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
                         val layoutParam =  label.layoutParams
                         qSItemView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-                        starLog.log("${qSItemView.layoutParams.width}+${qSItemView.measuredWidth}")
+                        starLog.logD("${qSItemView.layoutParams.width}+${qSItemView.measuredWidth}")
                         val width = qSItemView.measuredWidth*labelWidth
                         layoutParam.width = width.toInt()
                         label.layoutParams = layoutParam
@@ -882,7 +818,6 @@ class QSListView : BaseHooker() {
 
                             }
                             3 -> {
-                                starLog.log("setIcon")
                                 val disabledBg = XposedHelpers.getObjectField(thisObj,"disabledBg") as Drawable
                                 val enabledBg = XposedHelpers.getObjectField(thisObj,"enabledBg") as Drawable
                                 val invisibleDrawableCompat = combine.getDrawable(2)
@@ -958,7 +893,6 @@ class QSListView : BaseHooker() {
         val drawable: Drawable = context.theme.getDrawable(id)
         if (drawable is GradientDrawable) {
             drawable.cornerRadius = dpToPx(res,qsListTileRadius)
-            //warningD.setStroke(10,Color.RED)
         }
     }
 

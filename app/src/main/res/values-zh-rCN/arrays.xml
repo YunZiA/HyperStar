@@ -40,6 +40,10 @@
         <item>超级省电</item>
         <item>多机联录</item>
     </array>
+    <string-array name="reboot_menus_style">
+        <item>对话框</item>
+        <item>弹出式</item>
+    </string-array>
     <string-array name="is_local_speaker_entire">
         <item>本机（默认）</item>
         <item>设备名称</item>

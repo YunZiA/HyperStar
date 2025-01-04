@@ -55,10 +55,10 @@ class QSHeaderView : BaseHooker() {
 
                 val qsListControllerProviders = XposedHelpers.getObjectField(thisObj,"qsListControllerProvider")
                 if (qsListControllerProviders == null){
-                    starLog.log("qsListControllerProviders == null")
+                    starLog.logE("qsListControllerProviders == null")
                     return
                 }
-                starLog.log("qsListControllerProviders != null")
+                starLog.logD("qsListControllerProviders != null")
                 qsListControllerProvider = qsListControllerProviders
 
             }
@@ -75,24 +75,19 @@ class QSHeaderView : BaseHooker() {
                 val sysUIContext = XposedHelpers.getObjectField(thisObj,"sysUIContext") as Context
                 val view = XposedHelpers.callMethod(thisObj,"getView") as ViewGroup
                 val mContext = view.context
-                //XposedHelpers.callMethod(sysUIContext.getResources().getAssets(), "addAssetPath", modulePath);
 
                 val ic_header_settings:Int = view.resources.getIdentifier("ic_header_settings", "drawable", "miui.systemui.plugin");
                 val ic_controls_edit = view.resources.getIdentifier("ic_controls_edit","drawable","miui.systemui.plugin")
 
 
-                //feedbackConstant – One of the constants defined in HapticFeedbackConstants
                 val a = Button(mContext)
                 a.setBackgroundResource(ic_header_settings)
                 val lp = ViewGroup.MarginLayoutParams(60, 60)
                 lp.topMargin = 100
-                //c.gravity = Gravity.START
                 a.layoutParams = lp
 
                 val b = Button(mContext)
                 b.setBackgroundResource(ic_controls_edit)
-                //c.gravity = Gravity.END
-                //lp.marginStart = 15
                 b.layoutParams = lp
                 val c = View(mContext)
                 val c_lp = LinearLayout.LayoutParams(-1,-1)
@@ -128,23 +123,21 @@ class QSHeaderView : BaseHooker() {
                     if (view.alpha == 0f) return@setOnClickListener
                     it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     if (qsListControllerProvider != null){
-                        starLog.log("qsListControllerProvider != null")
+                        starLog.logD("qsListControllerProvider != null")
                         val get = XposedHelpers.callMethod(qsListControllerProvider,"get")
                         if (get == null){
-                            starLog.log("get == null")
+                            starLog.logE("get == null")
                         }else{
-                            starLog.log("get != null")
+                            val mainPanelMode: Array<out Any>? = MainPanelModeController.enumConstants
+                            if (mainPanelMode == null){
+                                starLog.logE("enumConstants == null")
+                                return@setOnClickListener
+                            }
 
+                            starLog.logD(""+mainPanelMode[0])
+                            XposedHelpers.callMethod(get,"startQuery",mainPanelMode[2])
                         }
 
-                        val mainPanelMode: Array<out Any>? = MainPanelModeController.getEnumConstants()
-                        if (mainPanelMode == null){
-                            starLog.log("enumConstants == null")
-                            return@setOnClickListener
-                        }
-
-                        starLog.log(""+mainPanelMode[0])
-                        XposedHelpers.callMethod(get,"startQuery",mainPanelMode[2])
                     }
 
                 }

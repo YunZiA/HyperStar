@@ -108,12 +108,12 @@ class QSMediaCoverBackground: BaseHooker() {
 
                 var art = XposedHelpers.callMethod(mediaPlayerMetaData,"getArt")
                 if (art == null){
-                    starLog.log("art is null")
+                    starLog.logE("art is null")
                     return
                 }
 
                 if (art !is Bitmap){
-                    starLog.log("mediaPlayerMetaData:art is not get!!!")
+                    starLog.logE("mediaPlayerMetaData:art is not get!!!")
                     XposedHelpers.callMethod(thisObj,"updateResources")
                     return
 

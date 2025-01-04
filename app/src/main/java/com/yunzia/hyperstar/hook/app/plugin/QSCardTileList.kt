@@ -93,14 +93,13 @@ class QSCardTileList :BaseHooker() {
                     val linearLayout: LinearLayout = param.thisObject as LinearLayout
                     val state = XposedHelpers.getObjectField(param.thisObject, "state")
                     if (state == null){
-                        starLog.log("state == null")
+                        starLog.logE("state == null")
                         return
                     }
                     val i = XposedHelpers.getIntField(state, "state")
                     val spec = XposedHelpers.getObjectField(state, "spec")
                     val cornerRadius = XposedHelpers.getObjectField(param.thisObject, "_cornerRadius")
                     if(spec == null){
-                        starLog.log("spec == null")
                         val id :Int = when (i) {
                             0 -> {
                                 idUnavailable
@@ -120,9 +119,6 @@ class QSCardTileList :BaseHooker() {
                             return
                         }
                         val background: Drawable = linearLayout.context.theme.resources.getDrawable(id, linearLayout.context.theme)
-//                        if (background is GradientDrawable){
-//                            background.setStroke(10, Color.RED)
-//                        }
                         linearLayout.background = background
                         XposedHelpers.callMethod(
                             param.thisObject,
@@ -133,15 +129,9 @@ class QSCardTileList :BaseHooker() {
                     }
                     when (spec.toString()) {
                         "bt", "cell", "flashlight", "wifi", "vowifi1", "vowifi2" -> {
-//                            val background = linearLayout.background
-//                            if (background is GradientDrawable){
-//                                background.shape
-//                                background.setStroke(30, Color.parseColor("#40FFFFFF"))
-//                            }
-//                            linearLayout.background = background
+
                         }
                         else -> {
-                            starLog.log("spec is else $spec")
                             val id :Int = when (i) {
                                 0 -> {
                                     idUnavailable
@@ -161,10 +151,6 @@ class QSCardTileList :BaseHooker() {
                                 return
                             }
                             val background: Drawable = linearLayout.context.theme.resources.getDrawable(id, linearLayout.context.theme)
-//                            if (background is GradientDrawable){
-//                                //background.colo
-//                                background.setStroke(20, Color.parseColor("#40FFFFFF"))
-//                            }
                             linearLayout.background = background
 
                             XposedHelpers.callMethod(

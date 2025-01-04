@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.NavPager
+import com.yunzia.hyperstar.ui.base.PMiuixSuperDropdown
 import com.yunzia.hyperstar.ui.base.PMiuixSuperSwitch
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
@@ -23,6 +24,7 @@ fun SettingsShowPage(
     val context = LocalContext.current
     val activity = context as MainActivity
     val showFPSMonitor = showFPSMonitor
+    val rebootStyle = activity.rebootStyle
 
     NavPager(
         activityTitle = stringResource(R.string.model_pager_setting),
@@ -46,6 +48,15 @@ fun SettingsShowPage(
         classes(
             title = R.string.main_page_title
         ){
+            PMiuixSuperDropdown(
+                title = stringResource(R.string.title_reboot_menus_style),
+                option = R.array.reboot_menus_style,
+                selectedIndex = rebootStyle.intValue,
+                onSelectedIndexChange = {
+                    rebootStyle.intValue = it
+                    PreferencesUtil.putInt("reboot_menus_style", rebootStyle.intValue)
+                }
+            )
             PMiuixSuperSwitch(
                 title = stringResource(R.string.page_user_scroll_title),
                 checked = activity.enablePageUserScroll.value,

@@ -353,7 +353,7 @@ class QSHeaderView() : BaseHooker() {
             setBackgroundResource(editIcon)
             layoutParams =lp
         }
-        starLog.log("id = ${edit.id}\nedit = $editId")
+        starLog.logD("id = ${edit.id}\nedit = $editId")
         Settings.System.putInt(context.contentResolver,"cc_edit_Id",editId)
 
         val spaceLp = LinearLayout.LayoutParams(-1,-1).apply {
@@ -375,7 +375,7 @@ class QSHeaderView() : BaseHooker() {
 
         controlCenterHeaderView.addView(header)
 
-        starLog.log("ControlCenterHeaderController ${controlCenterHeaderView.findViewById<View>(editId)}")
+        starLog.logD("ControlCenterHeaderController ${controlCenterHeaderView.findViewById<View>(editId)}")
 
         return header
     }

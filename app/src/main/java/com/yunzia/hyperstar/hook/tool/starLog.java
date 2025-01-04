@@ -3,6 +3,7 @@ package com.yunzia.hyperstar.hook.tool;
 import de.robv.android.xposed.XposedBridge;
 
 public class starLog {
+    private static  final Boolean show = false;
     private static final String HOOK_TAG = "[HyperStar]";
     public static void log(String msg) {
         XposedBridge.log(HOOK_TAG+"{ " + msg + " }");
@@ -85,6 +86,7 @@ public class starLog {
     }
 
     public static void logD(String msg) {
+        if (!show) return;
         XposedBridge.log(HOOK_TAG+" [D]: " + msg);
     }
 

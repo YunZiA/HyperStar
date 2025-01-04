@@ -42,25 +42,22 @@ class QSHeaderViewListener : BaseHooker() {
 
                 val editId = Settings.System.getInt(context.contentResolver,"cc_edit_Id",0)
                 if (editId == 0){
-                    starLog.log("ControlCenterHeaderController editId == null")
+                    starLog.logE("ControlCenterHeaderController editId == null")
                     return
                 }
                 val editButton = controlCenterHeaderView.findViewById<View>(editId)
-                starLog.log("ControlCenterHeaderController ${editButton}")
-
                 editButton.setOnClickListener {
                     if(controlCenterHeaderView.alpha == 0f) return@setOnClickListener
                     it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     if (qsListController != null){
-                        starLog.log("qsListControllerProvider != null")
 
                         val mainPanelMode: Array<out Any>? = MainPanelModeController.enumConstants
                         if (mainPanelMode == null){
-                            starLog.log("enumConstants == null")
+                            starLog.logE("enumConstants == null")
                             return@setOnClickListener
                         }
 
-                        starLog.log(""+mainPanelMode[0])
+                        starLog.logD(""+mainPanelMode[0])
                         XposedHelpers.callMethod(qsListController,"startQuery",mainPanelMode[2])
                     }
                 }
@@ -77,10 +74,9 @@ class QSHeaderViewListener : BaseHooker() {
                 val qsListControllerProvider = XposedHelpers.getObjectField(thisObj,"qsListControllerProvider")
 
                 if (qsListControllerProvider == null){
-                    starLog.log("qsListControllerProviders == null")
+                    starLog.logE("qsListControllerProviders == null")
                     return
                 }
-                starLog.log("qsListControllerProviders != null")
                 qsListController = XposedHelpers.callMethod(qsListControllerProvider,"get")
             }
         })

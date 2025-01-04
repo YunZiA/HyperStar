@@ -146,7 +146,7 @@ class QSMediaView : BaseHooker() {
                 Boolean::class.java
             ).invoke(view, Color.argb(i, 0, 0, 0), 0.0f, f, f2, 1.0f, false)
         } catch (unused: Exception) {
-            starLog.log("addViewShadow setMiShadow Method not found!")
+            starLog.logE("addViewShadow setMiShadow Method not found!")
         }
     } //    private void doResHook(XC_InitPackageResources.InitPackageResourcesParam resparam){
     //

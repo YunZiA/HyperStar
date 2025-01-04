@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.provider.Settings
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -154,13 +155,15 @@ fun App(){
                 }
             }
 
-
-            if (showFPSMonitor.value) {
+            AnimatedVisibility(
+                showFPSMonitor.value
+            ) {
                 FPSMonitor(
                     modifier = Modifier
                         .statusBarsPadding()
                         .padding(horizontal = 28.dp)
                 )
+
             }
 
         }
@@ -304,7 +307,7 @@ fun TwoLayout(
         VerticalDivider(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(horizontal = 12.dp)
+                .padding(end = 12.dp)
                 .width(0.75.dp),
             color = dividerLineColor
         )
@@ -358,14 +361,14 @@ fun ExpandLayout(
             .padding(horizontal = 12.dp)
     ) {
         Box(
-            modifier = Modifier.weight(0.88f)
+            modifier = Modifier.weight(1f)
         ) {
             MainPagerByThree(navController,pagerState)
         }
         VerticalDivider(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(horizontal = 12.dp)
+                .padding(end = 12.dp)
                 .width(0.75.dp),
             color = dividerLineColor
         )

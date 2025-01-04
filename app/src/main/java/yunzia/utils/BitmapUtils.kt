@@ -64,7 +64,7 @@ class BitmapUtils {
 
             val dominantColor = palette.getDominantColor(Color.TRANSPARENT)
             if (dominantColor == Color.TRANSPARENT){
-                starLog.log("backgroundColor is null")
+                starLog.logE("backgroundColor is null")
                 return bitmap
             }
 

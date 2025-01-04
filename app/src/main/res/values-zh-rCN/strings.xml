@@ -249,5 +249,6 @@
     <string name="debug_message_header_text">长按或者双击后会自动复制内容，您可以将内容反馈给开发者。</string>
     <string name="hook_channel">当前hook通道</string>
     <string name="err_find">故障排查</string>
+    <string name="title_reboot_menus_style">重启菜单风格</string>
 
 </resources>

@@ -249,4 +249,5 @@
     <string name="debug_message_header_text">After a long press or double-click, the content will be automatically copied. You can provide this content as feedback to the developer.</string>
     <string name="hook_channel">The current hook channel</string>
     <string name="err_find">Troubleshooting</string>
+    <string name="title_reboot_menus_style">Reboot menus style</string>
 </resources>

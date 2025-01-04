@@ -114,13 +114,13 @@ class QSListView : BaseHooker() {
                     if (elapsedRealtime > lastTriggeredTime + 200) {
                         val clickAction = XposedHelpers.getObjectField(qSTileItemView,"clickAction")
                         if (clickAction == null){
-                            starLog.log("clickAction == null")
+                            starLog.logE("clickAction == null")
                             return
                         }
 
                         val enumConstants: Array<out Any>? = MainPanelModeController.getEnumConstants()
                         if (enumConstants == null){
-                            starLog.log("enumConstants == null")
+                            starLog.logE("enumConstants == null")
                             return
                         }
                         val mainPanelMode = XposedHelpers.getObjectField(qSTileItemView,"mode")
@@ -128,7 +128,7 @@ class QSListView : BaseHooker() {
                             val mContext = qSTileItemView.context
                             collapseStatusBar(mContext)
                         }else{
-                            starLog.log("mainPanelMode == edit")
+                            starLog.logD("mainPanelMode == edit")
 
                         }
                     }
@@ -168,7 +168,7 @@ class QSListView : BaseHooker() {
                         label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
                         val layoutParam =  label.layoutParams
                         qSItemView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-                        starLog.log("${qSItemView.layoutParams.width}+${qSItemView.measuredWidth}")
+                        starLog.logD("${qSItemView.layoutParams.width}+${qSItemView.measuredWidth}")
                         val width = qSItemView.measuredWidth*labelWidth
                         layoutParam.width = width.toInt()
                         label.layoutParams = layoutParam

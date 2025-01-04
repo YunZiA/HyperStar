@@ -438,7 +438,7 @@ class VolumeView: BaseHooker() {
                 if ( XposedHelpers.getBooleanField(thisObj,"mExpanded") || !longClick ) return null
                 val mVolumeView = XposedHelpers.getObjectField(thisObj, "mVolumeView") as View
 
-                starLog.log("processExpandTouch")
+                starLog.logD("processExpandTouch")
 
                 with(AnimatorSet()) {
                     playTogether(

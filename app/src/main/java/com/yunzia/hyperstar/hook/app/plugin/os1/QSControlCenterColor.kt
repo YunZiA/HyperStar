@@ -67,7 +67,7 @@ class QSControlCenterColor :BaseHooker() {
             resparam.res.setReplacement(plugin, "drawable", "ic_device_center_item_background_default", object : XResources.DrawableLoader(){
                 override fun newDrawable(res: XResources?, id: Int): Drawable {
                     val newDraw = res?.getDrawable(id) as Drawable
-                    starLog.log("${newDraw.alpha}")
+                    starLog.logD("${newDraw.alpha}")
                     // newDraw.alpha
                     newDraw.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceCenterItemBackgroundColor),PorterDuff.Mode.SRC_IN)
                     return newDraw

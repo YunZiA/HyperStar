@@ -55,9 +55,6 @@ class DeviceCenterRow:BaseHooker() {
                     val lp = root.layoutParams
                     lp.width = lp.height
                     root.layoutParams = lp
-                    starLog.log("root.layoutParams ${root.layoutParams}")
-//                for (i in root.childCount) {
-//                }
                 }
 
             })
@@ -155,15 +152,13 @@ class DeviceCenterRow:BaseHooker() {
                         return null
                     }
                     if (isDeviceCenterMode == 2){
-                        starLog.log("isDeviceCenterMode == 2")
                         val size = deviceCenterSpanSize-1
                         if (list.size <= size){
-                            starLog.log("list.size <= size")
-
+                            starLog.logD("list.size <= size")
                             XposedHelpers.setObjectField(thisObj,"b",list)
 
                         }else{
-                            starLog.log("list.size  size")
+                            starLog.logD("list.size  size")
                             val lists = list.subList(0,size)
                             XposedHelpers.setObjectField(thisObj,"b",lists)
 
@@ -195,10 +190,8 @@ class DeviceCenterRow:BaseHooker() {
                     val rowMode: Array<out Any> = DeviceCenterEntryViewHolderMode.getEnumConstants()!!
 
                     if (deviceItems.size == 1 || deviceCenterSpanSize == 1 || isDeviceCenterMode == 1){
-                        starLog.log("1")
                         return rowMode[0]
                     }else{
-                        starLog.log(">1")
                         return if (deviceItems.size > deviceCenterSpanSize){
                             if (isDeviceCenterMode == 2){
 

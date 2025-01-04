@@ -93,8 +93,8 @@ fun ThirdPage(
 
     val density = LocalDensity.current
     val min = with(density) { 0.dp.toPx() }
-    val sec = with(density) { 110.dp.toPx() }
-    val main = with(density) { 150.dp.toPx() }
+    val sec = with(density) { 100.dp.toPx() }
+    val main = with(density) { 160.dp.toPx() }
     val mainHeight = main-sec
 
     val bgHeight = with(density) {  332.dp.toPx() }
@@ -157,7 +157,7 @@ fun ThirdPage(
 
         Column(
             modifier = Modifier
-                .padding(top = 36.dp)
+                .padding(top = 55.dp)
                 .fillMaxWidth()
                 .height(420.dp),
             verticalArrangement = Arrangement.Center,
@@ -179,7 +179,7 @@ fun ThirdPage(
                     .fillMaxWidth()
                     .scale(secScale.floatValue)
                     .alpha(secAlpha.floatValue)
-                    .padding(top = 18.dp),
+                    .padding(top = 20.dp),
                 fontWeight = FontWeight.Medium,
                 color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
                 textAlign = TextAlign.Center
@@ -195,7 +195,7 @@ fun ThirdPage(
         ) {
 
             item {
-                Spacer(Modifier.height(332.dp))
+                Spacer(Modifier.height(360.dp))
             }
 
             firstClasses(

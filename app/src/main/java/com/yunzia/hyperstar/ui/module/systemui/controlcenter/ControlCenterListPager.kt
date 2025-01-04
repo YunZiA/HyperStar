@@ -19,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -144,7 +143,7 @@ private fun initData(context: Context, itemLists: List<String>) : List<Card> {
 @Composable
 fun ControlCenterListPager(
     navController: NavController,
-    currentStartDestination: SnapshotStateList<String>
+    currentStartDestination: MutableState<String>
 ) {
 
     var itemList by remember { mutableStateOf(emptyList<String>()) }
@@ -175,7 +174,7 @@ fun ControlCenterListPager(
 
     ModuleNavPagers(
         activityTitle = stringResource(R.string.control_center_edit),
-        currentStartDestination = currentStartDestination,
+        parentRoute = currentStartDestination,
         navController = navController,
         endIcon = {
 

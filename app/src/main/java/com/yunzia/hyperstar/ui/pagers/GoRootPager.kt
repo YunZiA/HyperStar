@@ -21,7 +21,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -97,7 +96,7 @@ private fun getRootManagerInfo(
 @Composable
 fun GoRootPager(
     navController: NavHostController,
-    currentStartDestination: SnapshotStateList<String>
+    currentStartDestination: MutableState<String>
 ) {
     val mContext = LocalContext.current
     ///val rootList = getRootManagerInfo(mContext)
@@ -148,7 +147,7 @@ fun GoRootPager(
     NavPager(
         activityTitle = stringResource(R.string.quick_authorization),
         navController = navController,
-        currentStartDestination = currentStartDestination,
+        parentRoute = currentStartDestination,
     ) {
 
         item {

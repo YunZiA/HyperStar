@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.ui.base.nav.backParentPager
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -111,7 +112,7 @@ fun NavTopAppBar(
     scrollBehavior: ScrollBehavior? = null,
     color: Color,
     navController: NavController,
-    currentStartDestination: SnapshotStateList<String>,
+    parentRoute: MutableState<String>,
     actions: @Composable() (RowScope.() -> Unit) = {}
 ){
 
@@ -127,7 +128,7 @@ fun NavTopAppBar(
                 modifier = Modifier.padding(start = 12.dp),
                 onClick = {
                     view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                    navController.backParentPager()
+                    navController.backParentPager(parentRoute.value)
 
                 }
             ) {

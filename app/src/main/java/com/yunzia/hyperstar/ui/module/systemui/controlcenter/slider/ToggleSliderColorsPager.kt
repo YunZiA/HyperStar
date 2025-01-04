@@ -1,7 +1,7 @@
 package com.yunzia.hyperstar.ui.module.systemui.controlcenter.slider
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
@@ -15,11 +15,11 @@ import com.yunzia.hyperstar.utils.Utils
 @Composable
 fun ToggleSliderColorsPager(
     navController: NavController,
-    currentStartDestination: SnapshotStateList<String>
+    currentStartDestination: MutableState<String>
 ) {
     ModuleNavPagers(
         activityTitle = stringResource(R.string.toggle_slider_color),
-        currentStartDestination = currentStartDestination,
+        parentRoute = currentStartDestination,
         navController = navController,
         endClick = {
             Utils.rootShell("killall com.android.systemui")

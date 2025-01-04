@@ -26,9 +26,9 @@ import androidx.navigation.NavHostController
 import com.google.gson.Gson
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.dialog.SuperDialog
-import com.yunzia.hyperstar.ui.base.dialog.SuperCTDialogDefaults
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
-import com.yunzia.hyperstar.ui.base.navtype.PagersModel
+import com.yunzia.hyperstar.ui.base.nav.PagersModel
+import com.yunzia.hyperstar.ui.base.nav.nav
 import com.yunzia.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.SuperArrow
@@ -79,8 +79,7 @@ fun SuperIntentArrow(
     navController: NavController,
     summary : String? = null,
     url : String
-)
-{
+) {
 
     val click = remember { mutableStateOf(false) }
     SuperArrow(
@@ -200,17 +199,6 @@ fun SuperArgNavHostArrow(
     )
 }
 
-fun  NavHostController.nav(
-    route: String
-){
-    val currentRoute = this.currentDestination?.route
-    if (currentRoute == route){
-        Log.d("NavHostController", "nav repeat: $currentRoute")
-        return
-    }
-    this.navigate(route)
-
-}
 
 
 

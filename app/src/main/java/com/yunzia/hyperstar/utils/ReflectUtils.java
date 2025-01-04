@@ -140,8 +140,8 @@ public class ReflectUtils {
         try {
             return (T) getField(cls, str, cls2).get(null);
         } catch (Exception e) {
-            //Log.d(TAG, "getStaticFieldValue", e);
-            Log.d(TAG, "getStaticFieldValue "+str +" is not find");
+            Log.d(TAG, "getStaticFieldValue", e);
+            //Log.d(TAG, "getStaticFieldValue "+str +" is not find");
             return null;
         }
     }

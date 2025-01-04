@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 1040134,
-      "versionName": "2.0.0_202501040134",
-      "outputFile": "HyperStar_v2.0.0_202501040134_dev.apk"
+      "versionCode": 1041325,
+      "versionName": "2.0.0_202501041325",
+      "outputFile": "HyperStar_v2.0.0_202501041325_dev.apk"
     }
   ],
   "elementType": "File",
@@ -22,14 +22,14 @@
       "minApi": 28,
       "maxApi": 30,
       "baselineProfiles": [
-        "baselineProfiles/1/HyperStar_v2.0.0_202501040134_dev.dm"
+        "baselineProfiles/1/HyperStar_v2.0.0_202501041325_dev.dm"
       ]
     },
     {
       "minApi": 31,
       "maxApi": 2147483647,
       "baselineProfiles": [
-        "baselineProfiles/0/HyperStar_v2.0.0_202501040134_dev.dm"
+        "baselineProfiles/0/HyperStar_v2.0.0_202501041325_dev.dm"
       ]
     }
   ],

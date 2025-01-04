@@ -42,7 +42,6 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -233,7 +232,7 @@ fun <T> LoadingContent(
 @Composable
 fun MediaAppSettingsPager(
     navController: NavController,
-    currentStartDestination: SnapshotStateList<String>
+    parentRoute: MutableState<String>
 ) {
     val context = LocalContext.current
     val activity = context as MainActivity
@@ -242,7 +241,7 @@ fun MediaAppSettingsPager(
     ModuleNavPager(
         activityTitle = stringResource(R.string.media_default_app_settings),
         navController = navController,
-        currentStartDestination = currentStartDestination,
+        parentRoute = parentRoute,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         },

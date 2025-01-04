@@ -2,6 +2,7 @@ package com.yunzia.hyperstar
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.provider.Settings
 import android.util.Log
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -10,7 +11,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -19,16 +19,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -38,13 +41,11 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.yunzia.hyperstar.PagerList.MAIN
 import com.yunzia.hyperstar.ui.base.XScaffold
-import com.yunzia.hyperstar.ui.base.navtype.PagersModel
-import com.yunzia.hyperstar.ui.base.navtype.pagersJson
+import com.yunzia.hyperstar.ui.base.nav.PagersModel
+import com.yunzia.hyperstar.ui.base.nav.pagersJson
 import com.yunzia.hyperstar.ui.base.showFPSMonitor
 import com.yunzia.hyperstar.ui.module.home.HomePage
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.list.QSListColorPager
@@ -69,10 +70,12 @@ import com.yunzia.hyperstar.ui.pagers.GoRootPager
 import com.yunzia.hyperstar.ui.pagers.LanguagePager
 import com.yunzia.hyperstar.ui.pagers.ReferencesPager
 import com.yunzia.hyperstar.ui.pagers.MainPager
+import com.yunzia.hyperstar.ui.pagers.MainPagerByThree
 import com.yunzia.hyperstar.ui.pagers.NeedMessagePager
 import com.yunzia.hyperstar.ui.pagers.SettingsShowPage
 import com.yunzia.hyperstar.ui.pagers.dialog.FirstDialog
-import kotlinx.coroutines.flow.count
+import com.yunzia.hyperstar.utils.isFold
+import com.yunzia.hyperstar.utils.isPad
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -86,27 +89,71 @@ fun App(){
 
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    val currentStartDestination = remember { mutableStateListOf(MAIN) }
-
+    val context = LocalContext.current
+    val parentRoute = remember { mutableStateOf(PagerList.MAIN) }
+    val pagerState = rememberPagerState(initialPage = 0 ,pageCount = { 3 })
 
     val navController = rememberNavController()
+
+    LaunchedEffect(navController) {
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            parentRoute.value = destination.route!!.substringBeforeLast("/")
+        }
+    }
 
     XScaffold {
         BoxWithConstraints {
             FirstDialog(navController)
+            Log.d("ggc", "App:  $maxWidth")
 
-            if (isLandscape || maxWidth > 768.dp){
-                LandscapeLayout(
-                    navController,
-                    currentStartDestination
-                )
+            val layoutType = remember { mutableIntStateOf(1) }
+
+            layoutType.intValue = if (isFold()){
+                if (maxWidth > 480.dp && Settings.Global.getInt(context.contentResolver, "device_posture", 0) != 1){
+                    2
+                }else{
+                    1
+                }
+            }else if (isPad()){
+                if (isLandscape){
+                    3
+                }else{
+                    1
+                }
             }else{
-                PortraitLayout(
-                    navController,
-                    currentStartDestination
-                )
-
+                if (isLandscape && maxWidth > 480.dp){
+                    2
+                }else{
+                    1
+                }
             }
+
+            when(layoutType.intValue){
+                1->{
+                    OneLayout(
+                        pagerState,
+                        navController,
+                        parentRoute
+                    )
+
+                }
+                2->{
+                    TwoLayout(
+                        pagerState,
+                        navController,
+                        parentRoute
+                    )
+
+                }
+                3->{
+                    ExpandLayout(
+                        pagerState,
+                        navController,
+                        parentRoute
+                    )
+                }
+            }
+
 
             if (showFPSMonitor.value) {
                 FPSMonitor(
@@ -124,51 +171,52 @@ fun App(){
 
 fun NavGraphBuilder.pagerContent(
     navController: NavHostController,
-    currentStartDestination: SnapshotStateList<String>
+    parentRoute: MutableState<String>
 
 ){
-    composable(SystemUIList.CONTROL_CENTER) { ControlCenterPager(navController,currentStartDestination) }
+    composable(SystemUIList.CONTROL_CENTER) { ControlCenterPager(navController,parentRoute) }
 
-    composable(ControlCenterList.COLOR_EDIT) { ControlCenterColorPager(navController,currentStartDestination) }
+    composable(ControlCenterList.COLOR_EDIT) { ControlCenterColorPager(navController,parentRoute) }
 
-    composable(ControlCenterList.LAYOUT_ARRANGEMENT) { ControlCenterListPager(navController,currentStartDestination) }
+    composable(ControlCenterList.LAYOUT_ARRANGEMENT) { ControlCenterListPager(navController,parentRoute) }
 
-    composable(ControlCenterList.MEDIA) { MediaSettingsPager(navController,currentStartDestination) }
+    composable(ControlCenterList.MEDIA) { MediaSettingsPager(navController,parentRoute) }
 
-    composable(ControlCenterList.CARD_LIST) { QSCardListPager(navController,currentStartDestination) }
+    composable(ControlCenterList.CARD_LIST) { QSCardListPager(navController,parentRoute) }
 
-    composable(ControlCenterList.TILE_LAYOUT) { QsListViewPager(navController,currentStartDestination) }
+    composable(ControlCenterList.TILE_LAYOUT) { QsListViewPager(navController,parentRoute) }
 
-    composable(ControlCenterList.MEDIA_APP) { MediaAppSettingsPager(navController,currentStartDestination) }
+    composable(ControlCenterList.MEDIA_APP) { MediaAppSettingsPager(navController,parentRoute) }
 
-    composable(CenterColorList.CARD_TILE) { QSCardColorPager(navController,currentStartDestination) }
+    composable(CenterColorList.CARD_TILE) { QSCardColorPager(navController,parentRoute) }
 
-    composable(CenterColorList.TOGGLE_SLIDER) { ToggleSliderColorsPager(navController,currentStartDestination) }
+    composable(CenterColorList.TOGGLE_SLIDER) { ToggleSliderColorsPager(navController,parentRoute) }
 
-    composable(CenterColorList.DEVICE_CENTER) { DeviceCenterColorPager(navController,currentStartDestination) }
+    composable(CenterColorList.DEVICE_CENTER) { DeviceCenterColorPager(navController,parentRoute) }
 
-    composable(CenterColorList.LIST_COLOR) { QSListColorPager(navController,currentStartDestination) }
+    composable(CenterColorList.LIST_COLOR) { QSListColorPager(navController,parentRoute) }
 
-    composable(PagerList.GO_ROOT){ GoRootPager(navController,currentStartDestination) }
+    composable(PagerList.GO_ROOT){ GoRootPager(navController,parentRoute) }
 
-    composable(PagerList.LANGUAGE){ LanguagePager(navController,currentStartDestination) }
+    composable(PagerList.LANGUAGE){ LanguagePager(navController,parentRoute) }
 
-    composable(PagerList.TRANSLATOR) { TranslatorPager(navController,currentStartDestination) }
+    composable(PagerList.TRANSLATOR) { TranslatorPager(navController,parentRoute) }
 
-    composable(PagerList.DONATION) { DonationPage(navController,currentStartDestination)  }
+    composable(PagerList.DONATION) { DonationPage(navController,parentRoute)  }
 
-    composable(PagerList.SHOW){ SettingsShowPage(navController,currentStartDestination) }
-    composable(PagerList.MESSAGE) { NeedMessagePager(navController,currentStartDestination)  }
+    composable(PagerList.SHOW){ SettingsShowPage(navController,parentRoute) }
 
-    composable(PagerList.REFERENCES) { ReferencesPager(navController,currentStartDestination)  }
+    composable(PagerList.MESSAGE) { NeedMessagePager(navController,parentRoute)  }
 
-    composable(PagerList.HOME) { HomePage(navController,currentStartDestination) }
+    composable(PagerList.REFERENCES) { ReferencesPager(navController,parentRoute)  }
 
-    composable(SystemUIList.VOLUME_DIALOG) { VolumePager(navController,currentStartDestination) }
+    composable(PagerList.HOME) { HomePage(navController,parentRoute) }
 
-    composable(SystemUIList.MORE) { SystemUIOtherPager(navController,currentStartDestination) }
+    composable(SystemUIList.VOLUME_DIALOG) { VolumePager(navController,parentRoute) }
 
-    composable(SystemUIList.POWERMENU){ PowerMenuStylePager(navController,currentStartDestination) }
+    composable(SystemUIList.MORE) { SystemUIOtherPager(navController,parentRoute) }
+
+    composable(SystemUIList.POWERMENU){ PowerMenuStylePager(navController,parentRoute) }
 
 
     composable(
@@ -178,27 +226,18 @@ fun NavGraphBuilder.pagerContent(
                 type = pagersJson<PagersModel>()
             }
         )
-    ){ SelectFunPager(navController,it,currentStartDestination) }
+    ){ SelectFunPager(navController,it,parentRoute) }
 
 }
 
 @Composable
-fun PortraitLayout(
+fun OneLayout(
+    initialPage: PagerState,
     navController: NavHostController,
-    currentStartDestination: SnapshotStateList<String>
+    parentRoute: MutableState<String>
 ){
     val windowWidth = getWindowSize().width
 
-//    LaunchedEffect(navController) {
-//        currentStartDestination.value = PagerList.MAIN
-//        navController.addOnDestinationChangedListener { _, destination, _ ->
-//            if (destination.route == "EmptyPage") {
-//                navController.navigate(PagerList.MAIN) {
-//                    popUpTo(PagerList.MAIN) { inclusive = true }
-//                }
-//            }
-//        }
-//    }
 
     //val easing = CubicBezierEasing(0.12f, 0.38f, 0.2f, 1f)
     val easing = FastOutSlowInEasing
@@ -232,10 +271,10 @@ fun PortraitLayout(
         },
         builder = {
 
-            composable(PagerList.MAIN) { MainPager(navController) }
+            composable(PagerList.MAIN) { MainPager(navController,initialPage) }
             pagerContent(
                 navController,
-                currentStartDestination
+                parentRoute
             )
         }
     )
@@ -243,34 +282,15 @@ fun PortraitLayout(
 }
 
 @Composable
-fun LandscapeLayout(
+fun TwoLayout(
+    pagerState: PagerState,
     navController: NavHostController,
-    currentStartDestination: SnapshotStateList<String>
+    parentRoute: MutableState<String>
 ) {
     val windowWidth = getWindowSize().width
     val easing = CubicBezierEasing(0.12f, 0.88f, 0.2f, 1f)
     val dividerLineColor = colorScheme.dividerLine
 
-    val cc = navController.currentBackStackEntryAsState()
-//    cc.value.
-    LaunchedEffect(navController) {
-
-//        currentStartDestination.value = "EmptyPage"
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.route == null) return@addOnDestinationChangedListener
-
-            val ss = destination.route!!.split("/")
-            val aa = navController.currentBackStackEntryFlow
-//                .route!!.split("/")
-//            if (ss.size == aa?.size){
-//                Log.d("ggc", "LandscapeLayout: $ss\n$aa")
-//                navController.clearBackStack(navController.currentDestination?.route!!)
-////                navController.navigate(destination.route!!) {
-////                    popUpTo(PagerList.MAIN) { inclusive = true }
-////                }
-//            }
-        }
-    }
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -279,21 +299,15 @@ fun LandscapeLayout(
         Box(
             modifier = Modifier.weight(0.88f)
         ) {
-            MainPager(navController)
+            MainPager(navController, pagerState)
         }
-        Canvas(
-            Modifier
+        VerticalDivider(
+            modifier = Modifier
                 .fillMaxHeight()
                 .padding(horizontal = 12.dp)
-                .width(0.75.dp)
-        ) {
-            drawLine(
-                color = dividerLineColor,
-                strokeWidth = 0.75.dp.toPx(),
-                start = Offset(0.75.dp.toPx() / 2, 0f),
-                end = Offset(0.75.dp.toPx() / 2, size.height),
-            )
-        }
+                .width(0.75.dp),
+            color = dividerLineColor
+        )
         NavHost(
             modifier = Modifier
                 .weight(1f)
@@ -320,7 +334,7 @@ fun LandscapeLayout(
                 composable(PagerList.MAIN) { EmptyPage() }
                 pagerContent(
                     navController,
-                    currentStartDestination
+                    parentRoute
                 )
             }
         )
@@ -328,6 +342,65 @@ fun LandscapeLayout(
 }
 
 
+@Composable
+fun ExpandLayout(
+    pagerState: PagerState,
+    navController: NavHostController,
+    parentRoute: MutableState<String>
+) {
+    val windowWidth = getWindowSize().width
+    val easing = CubicBezierEasing(0.12f, 0.88f, 0.2f, 1f)
+    val dividerLineColor = colorScheme.dividerLine
+
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 12.dp)
+    ) {
+        Box(
+            modifier = Modifier.weight(0.88f)
+        ) {
+            MainPagerByThree(navController,pagerState)
+        }
+        VerticalDivider(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(horizontal = 12.dp)
+                .width(0.75.dp),
+            color = dividerLineColor
+        )
+        NavHost(
+            modifier = Modifier
+                .weight(1f)
+                .clip(RoundedCornerShape(0.dp)),
+            navController = navController,
+            startDestination = PagerList.MAIN,
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { windowWidth },
+                    animationSpec = tween(durationMillis = 500, easing = easing)
+                ) + fadeIn(
+                    animationSpec = tween(durationMillis = 200)
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { windowWidth / 5 },
+                    animationSpec = tween(durationMillis = 500, easing = easing)
+                ) + fadeOut(
+                    animationSpec = tween(durationMillis = 500)
+                )
+            },
+            builder = {
+                composable(PagerList.MAIN) { EmptyPage() }
+                pagerContent(
+                    navController,
+                    parentRoute
+                )
+            }
+        )
+    }
+}
 
 object PagerList {
 
@@ -353,14 +426,14 @@ object PagerList {
 
 object SystemUIList {
     //控制中心
-    const val CONTROL_CENTER = "$MAIN/control_center"
+    const val CONTROL_CENTER = "${PagerList.MAIN}/control_center"
 
     //音量条
-    const val VOLUME_DIALOG = "$MAIN/volumeDialog"
+    const val VOLUME_DIALOG = "${PagerList.MAIN}/volumeDialog"
     //系统界面更多
-    const val MORE = "$MAIN/systemUI_more"
+    const val MORE = "${PagerList.MAIN}/systemUI_more"
 
-    const val POWERMENU = "$MORE/powermenu"
+    const val POWERMENU = "${PagerList.MAIN}/powermenu"
 }
 
 

@@ -1,7 +1,5 @@
 package com.yunzia.hyperstar.ui.base
 
-import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,15 +8,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.ui.base.modifier.blur
 import com.yunzia.hyperstar.ui.base.modifier.showBlur
+import com.yunzia.hyperstar.ui.base.nav.backParentPager
 import dev.chrisbanes.haze.HazeState
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.LazyColumn
@@ -27,7 +25,6 @@ import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.getWindowSize
-import kotlin.math.log
 
 @Composable
 fun ModulePagers(
@@ -99,9 +96,9 @@ fun ModulePager(
 fun ModuleNavPagers(
     activityTitle: String,
     navController: NavController,
-    currentStartDestination: SnapshotStateList<String>,
+    parentRoute: MutableState<String>,
     startClick: () -> Unit =  {
-        navController.backParentPager()
+        navController.backParentPager(parentRoute.value)
     },
     endClick: () -> Unit,
     endIcon:  @Composable () -> Unit = {},
@@ -111,7 +108,7 @@ fun ModuleNavPagers(
     ModuleNavPager(
         activityTitle = activityTitle,
         navController = navController,
-        currentStartDestination = currentStartDestination,
+        parentRoute = parentRoute,
         startClick = startClick,
         endClick = endClick,
         endIcon = endIcon,
@@ -131,9 +128,9 @@ fun ModuleNavPagers(
 fun ModuleNavPager(
     activityTitle: String,
     navController: NavController,
-    currentStartDestination: SnapshotStateList<String>,
+    parentRoute: MutableState<String>,
     startClick: () -> Unit = {
-        navController.backParentPager()
+        navController.backParentPager(parentRoute.value)
     },
     endClick: () -> Unit,
     endIcon:  @Composable () -> Unit = {},
@@ -165,7 +162,7 @@ fun ModuleNavPager(
 
     ) { padding ->
         BackHandler(true) {
-            navController.backParentPager()
+            navController.backParentPager(parentRoute.value)
         }
         if (contents != null) {
             Box(Modifier.blur(hazeState)) {
@@ -178,43 +175,13 @@ fun ModuleNavPager(
 
 }
 
-fun NavController.backParentPager(){
-    val ss = this.currentDestination?.route!!.substringBeforeLast("/")
-    Log.d("ggc", "backParentPager: ${this.currentDestination?.route!!}\n$ss")
-    this.popBackStack(ss,false)
 
-}
-
-fun NavHostController.goBackRouteWithParams(
-    route: String,
-    autoPop: Boolean = true,
-    callback: (Bundle.() -> Unit)? = null,
-) {
-    getBackStackEntry(route).arguments?.let {
-        callback?.invoke(it)
-    }
-    if (autoPop) {
-        popBackStack()
-    }
-}
-
-fun NavHostController.goBackWithParams(
-    autoPop: Boolean = true,
-    callback: (Bundle.() -> Unit)? = null,
-) {
-    previousBackStackEntry?.arguments?.let {
-        callback?.invoke(it)
-    }
-    if (autoPop) {
-        popBackStack()
-    }
-}
 
 @Composable
 fun NavPager(
     activityTitle: String,
     navController: NavController,
-    currentStartDestination: SnapshotStateList<String>,
+    parentRoute: MutableState<String>,
     actions: @Composable() (RowScope.() -> Unit) = {},
     content: (LazyListScope.() -> Unit)? = null
 ) {
@@ -233,7 +200,7 @@ fun NavPager(
                 title = activityTitle,
                 scrollBehavior = topAppBarScrollBehavior,
                 navController = navController,
-                currentStartDestination = currentStartDestination,
+                parentRoute = parentRoute,
                 actions = actions
             )
 
@@ -241,7 +208,7 @@ fun NavPager(
     ) { padding ->
         if (content != null) {
             BackHandler(true) {
-                navController.backParentPager()
+                navController.backParentPager(parentRoute.value)
             }
             Box(Modifier.blur(hazeState)) {
                 LazyColumn(

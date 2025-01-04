@@ -31,11 +31,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -131,7 +131,7 @@ private fun saveList(items: List<Card>) {
 @Composable
 fun QSCardListPager(
     navController: NavController,
-    currentStartDestination: SnapshotStateList<String>
+    currentStartDestination: MutableState<String>
 ) {
     val mContext = navController.context
     val cardMap = mutableMapOf<String, Card>()
@@ -153,7 +153,7 @@ fun QSCardListPager(
 
     ModuleNavPagers(
         activityTitle = stringResource(R.string.card_tile_edit),
-        currentStartDestination = currentStartDestination,
+        parentRoute = currentStartDestination,
         navController = navController,
         endIcon = {
 

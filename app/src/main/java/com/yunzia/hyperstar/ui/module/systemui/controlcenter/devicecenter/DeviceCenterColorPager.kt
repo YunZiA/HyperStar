@@ -1,7 +1,7 @@
 package com.yunzia.hyperstar.ui.module.systemui.controlcenter.devicecenter
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
@@ -14,12 +14,12 @@ import com.yunzia.hyperstar.utils.Utils
 @Composable
 fun DeviceCenterColorPager(
     navController: NavController,
-    currentStartDestination: SnapshotStateList<String>
+    currentStartDestination: MutableState<String>
 ) {
     ModuleNavPagers(
         activityTitle = stringResource(R.string.smart_hub_color),
         navController = navController,
-        currentStartDestination = currentStartDestination,
+        parentRoute = currentStartDestination,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         },

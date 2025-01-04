@@ -19,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,7 +33,7 @@ import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.ModuleNavPager
 import com.yunzia.hyperstar.ui.base.enums.EventState
-import com.yunzia.hyperstar.ui.base.navtype.PagersModel
+import com.yunzia.hyperstar.ui.base.nav.PagersModel
 import com.yunzia.hyperstar.utils.SPUtils
 import com.yunzia.hyperstar.utils.Utils
 import top.yukonga.miuix.kmp.basic.Checkbox
@@ -66,7 +65,7 @@ fun getFunList():List<String>{
 fun SelectFunPager(
     navController: NavHostController,
     backStackEntry: NavBackStackEntry,
-    currentStartDestination: SnapshotStateList<String>
+    parentRoute: MutableState<String>
 ) {
 
     val funTypes = stringArrayResource(R.array.power_fun_types).toList()
@@ -81,7 +80,7 @@ fun SelectFunPager(
     ModuleNavPager(
         activityTitle = pagersJson.title,
         navController = navController,
-        currentStartDestination = currentStartDestination,
+        parentRoute = parentRoute,
         endClick = {
             Utils.rootShell("killall com.android.systemui")
         },

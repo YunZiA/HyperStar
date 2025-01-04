@@ -1,69 +1,51 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.yunzia.hyperstar.ui.pagers
 
-import android.util.Log
 import android.view.HapticFeedbackConstants
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.BlendModeColorFilter
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextIndent
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -72,42 +54,34 @@ import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.BaseButton
 import com.yunzia.hyperstar.ui.base.XScaffold
-import com.yunzia.hyperstar.ui.base.dialog.SuperCTDialogDefaults
 import com.yunzia.hyperstar.ui.base.dialog.SuperXDialog
 import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.ui.base.modifier.blur
 import com.yunzia.hyperstar.ui.base.modifier.showBlur
-import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.Utils
 import dev.chrisbanes.haze.HazeState
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.HorizontalPager
+import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.NavigationBar
 import top.yukonga.miuix.kmp.basic.NavigationItem
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
-import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.extra.CheckboxLocation
 import top.yukonga.miuix.kmp.extra.SuperCheckbox
-import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.ArrowRight
-import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.getWindowSize
 
-@OptIn(FlowPreview::class)
 @Composable
 fun MainPager(
     navController: NavHostController,
+    pagerState: PagerState,
 ) {
     val topAppBarScrollBehavior0 = MiuixScrollBehavior(rememberTopAppBarState())
     val topAppBarScrollBehavior1 = MiuixScrollBehavior(rememberTopAppBarState())
@@ -117,11 +91,15 @@ fun MainPager(
         topAppBarScrollBehavior0, topAppBarScrollBehavior1, topAppBarScrollBehavior2
     )
 
-    val pagerState = rememberPagerState(pageCount = { 3 })
-    val targetPage = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()
+//    LaunchedEffect(pagerState.currentPage) {
+//        if (initialPage.intValue == pagerState.currentPage) return@LaunchedEffect
+//        initialPage.intValue = pagerState.currentPage
+//    }
 
-    val currentScrollBehavior = when (targetPage) {
+    val currentPage = pagerState.currentPage
+
+    val currentScrollBehavior = when (currentPage) {
         0 -> topAppBarScrollBehaviorList[0]
         1 -> topAppBarScrollBehaviorList[1]
         else -> topAppBarScrollBehaviorList[2]
@@ -134,18 +112,9 @@ fun MainPager(
         NavigationItem(stringResource(R.string.about_page_title), ImageVector.vectorResource(id = R.drawable.about)),
     )
 
-    val pagerTitle = items[targetPage].label  //by remember { mutableStateOf(items[targetPage].label) }
-
-//    LaunchedEffect(pagerState) {
-//        snapshotFlow { pagerState.targetPage }
-//            .debounce(0)
-//            .collectLatest { currentPage ->
-//                targetPage = currentPage
-//            }
-//    }
+    val pagerTitle = items[currentPage].label
 
     val hazeState = remember { HazeState() }
-    val enablePageUserScroll = remember { mutableStateOf(PreferencesUtil.getBoolean("page_user_scroll",false)) }
 
     val show = remember { mutableStateOf(false) }
 
@@ -157,10 +126,10 @@ fun MainPager(
         popupHost = { },
         topBar = {
             TopAppBar(
-                modifier = if (targetPage == 2 && !showBlurs.value) Modifier else Modifier.showBlur(hazeState),
+                modifier = if (currentPage == 2 && !showBlurs.value) Modifier else Modifier.showBlur(hazeState),
                 color = Color.Transparent,
                 title = pagerTitle,
-                largeTitle = if (targetPage == 2) "" else pagerTitle,
+                largeTitle = if (currentPage == 2) "" else pagerTitle,
                 scrollBehavior = currentScrollBehavior,
                 actions = {
 
@@ -188,7 +157,7 @@ fun MainPager(
                 modifier = Modifier.showBlur(hazeState),
                 color = Color.Transparent,
                 items = items,
-                selected = targetPage,
+                selected = currentPage,
                 onClick = { index ->
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(index)
@@ -212,6 +181,213 @@ fun MainPager(
 
     RebootDialog(show)
 
+}
+
+@Composable
+fun MainPagerByThree(
+    navController: NavHostController,
+    pagerState: PagerState,
+) {
+
+    val topAppBarScrollBehavior0 = MiuixScrollBehavior(rememberTopAppBarState())
+    val topAppBarScrollBehavior1 = MiuixScrollBehavior(rememberTopAppBarState())
+    val topAppBarScrollBehavior2 = MiuixScrollBehavior(rememberTopAppBarState())
+
+    val topAppBarScrollBehaviorList = listOf(
+        topAppBarScrollBehavior0, topAppBarScrollBehavior1, topAppBarScrollBehavior2
+    )
+
+
+    val currentPage = pagerState.currentPage
+
+    val coroutineScope = rememberCoroutineScope()
+
+    val currentScrollBehavior = when (currentPage) {
+        0 -> topAppBarScrollBehaviorList[0]
+        1 -> topAppBarScrollBehaviorList[1]
+        else -> topAppBarScrollBehaviorList[2]
+    }
+
+    val items = listOf(
+
+        NavigationItem(stringResource(R.string.main_page_title), ImageVector.vectorResource(id = R.drawable.home)),
+        NavigationItem(stringResource(R.string.settings_page_title), ImageVector.vectorResource(id = R.drawable.setting)),
+        NavigationItem(stringResource(R.string.about_page_title), ImageVector.vectorResource(id = R.drawable.about)),
+    )
+
+    val pagerTitle = items[currentPage].label
+
+    val hazeState = remember { HazeState() }
+
+    val show = remember { mutableStateOf(false) }
+
+    val view = LocalView.current
+    val showBlurs = remember { mutableStateOf(false) }
+
+    Row {
+
+        NavigationBarForStart(
+            modifier = Modifier.width(130.dp),
+            items = items,
+            selected = currentPage,
+            onClick = { index ->
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(index)
+                }
+            }
+
+        )
+        VerticalDivider(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(horizontal = 12.dp)
+                .width(0.75.dp),
+            color = colorScheme.dividerLine
+        )
+
+        Scaffold(
+            modifier = Modifier.weight(1f),
+            popupHost = { },
+            contentWindowInsets = WindowInsets.navigationBars,
+            topBar = {
+                TopAppBar(
+                    modifier = if (currentPage == 2 && !showBlurs.value) Modifier else Modifier.showBlur(hazeState),
+                    color = Color.Transparent,
+                    title = pagerTitle,
+                    largeTitle = if (currentPage == 2) "" else pagerTitle,
+                    scrollBehavior = currentScrollBehavior,
+                    actions = {
+
+                        IconButton(
+
+                            modifier = Modifier.padding(end = 12.dp),
+                            onClick = {
+                                view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                                show.value = true
+                            }) {
+
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = "restart",
+                                tint = colorScheme.onBackground)
+
+                        }
+                    }
+                )
+
+
+            }
+        ) { padding ->
+            AppHorizontalPager(
+                modifier = Modifier.blur(hazeState),
+                navController = navController,
+                pagerState = pagerState,
+                topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
+                padding = padding,
+                showBlurs = showBlurs
+            )
+
+
+        }
+
+
+    }
+    RebootDialog(show)
+
+
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun NavigationBarForStart(
+    items: List<NavigationItem>,
+    selected: Int,
+    onClick: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Scaffold(
+        modifier,
+        popupHost= { },
+    ){
+        LazyColumn(
+            modifier = Modifier.height(getWindowSize().height.dp),
+            isEnabledOverScroll = { false },
+            contentPadding = it,
+        ) {
+
+            items.forEachIndexed { index, item ->
+                val isSelected = selected == index
+
+                item {
+
+                    val bgColor by animateColorAsState(
+                        targetValue = if (isSelected) {
+                            Color.Black.copy(alpha = 0.3f)
+                        } else {
+                            Color.Transparent
+                        }, label = ""
+                    )
+                    Box(
+                        Modifier
+                            .padding(bottom = 5.dp)
+                            .background(bgColor, SmoothRoundedCornerShape(8.dp, 0.5f))
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onTap = {
+                                        onClick.invoke(index)
+                                    }
+                                )
+                            }
+                        ,) {
+                        Row(
+                            Modifier.padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(
+                                imageVector = item.icon,
+                                contentDescription = item.label,
+                                modifier = Modifier.size(32.dp),
+                                tint = colorScheme.onBackground
+                            )
+                            Text(
+                                text = item.label,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 5.dp),
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium
+
+                            )
+                        }
+
+                    }
+
+                }
+
+            }
+        }
+
+    }
+}
+
+
+internal class MutableWindowInsets(initialInsets: WindowInsets = WindowInsets(0, 0, 0, 0)) :
+    WindowInsets {
+    /**
+     * The [WindowInsets] that are used for [left][getLeft], [top][getTop], [right][getRight], and
+     * [bottom][getBottom] values.
+     */
+    var insets by mutableStateOf(initialInsets)
+
+    override fun getLeft(density: Density, layoutDirection: LayoutDirection): Int =
+        insets.getLeft(density, layoutDirection)
+
+    override fun getTop(density: Density): Int = insets.getTop(density)
+
+    override fun getRight(density: Density, layoutDirection: LayoutDirection): Int =
+        insets.getRight(density, layoutDirection)
+
+    override fun getBottom(density: Density): Int = insets.getBottom(density)
 }
 
 @Composable

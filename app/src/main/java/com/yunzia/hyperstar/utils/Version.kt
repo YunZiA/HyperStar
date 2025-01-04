@@ -18,6 +18,10 @@ fun getOSVersion()= SystemProperties.getInt("ro.mi.os.version.code", 1)
 
 fun isBetaOs() = ReflectUtils.getStaticFieldValue(Build::class.java, "IS_DEV_VERSION", Boolean::class.java) as? Boolean ?: false
 
+fun isFold()= SystemProperties.getInt("persist.sys.muiltdisplay_type", 0) == 2
+
+fun isPad()= SystemProperties.get("ro.build.characteristics").contains("tablet")
+
 fun isOS2():Boolean{
     if (isBetaOs()) return false
     return getOSVersion() == 2
@@ -28,6 +32,8 @@ fun isOS2Settings():Boolean{
 fun isOS2Hook():Boolean{
     return XSPUtils.getInt("is_Hook_Channel",if (isOS2()) 1 else 0) == 1
 }
+
+
 
 fun getVersionCode(mContext: Context): Int {
     var versionCode = 0

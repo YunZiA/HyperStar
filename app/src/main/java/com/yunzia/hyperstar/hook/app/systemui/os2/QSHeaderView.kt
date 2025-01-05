@@ -14,7 +14,7 @@ import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.get
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
@@ -27,25 +27,25 @@ import java.util.Locale
 import kotlin.math.pow
 
 
-class QSHeaderView() : BaseHooker() {
+class QSHeaderView() : Hooker() {
     var viewId : Int = 0
     private val is_use_chaos_header = XSPUtils.getBoolean("is_use_chaos_header",false)
     var settingIcon = 0
     var editIcon = 0
     var editId = 0
 
-    override fun doResources(
+    override fun initResources(
         resparam: XC_InitPackageResources.InitPackageResourcesParam?,
         modRes: XModuleResources?
     ) {
-        super.doResources(resparam, modRes)
+        super.initResources(resparam, modRes)
         settingIcon = resparam?.res?.addResource(modRes,R.drawable.ic_header_settings)!!
         editIcon = resparam.res?.addResource(modRes, R.drawable.ic_controls_edit)!!
         editId = resparam.res?.addResource(modRes,R.id.cc_header_edit)!!
     }
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
 
         if (!is_use_chaos_header){
             return

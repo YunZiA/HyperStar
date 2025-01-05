@@ -7,7 +7,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.FrameLayout
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.Action
 import com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.menuA
 import com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.menuB
@@ -17,7 +17,7 @@ import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
 
-class PowerMenu : BaseHooker() {
+class PowerMenu : Hooker() {
 
     var icBootloader = 0
     var icRecovery = 0
@@ -37,11 +37,11 @@ class PowerMenu : BaseHooker() {
 
     val isPowerMenuStyle = XSPUtils.getInt("is_power_menu_style",0)
 
-    override fun doResources(
+    override fun initResources(
         resparam: XC_InitPackageResources.InitPackageResourcesParam?,
         modRes: XModuleResources?
     ) {
-        super.doResources(resparam, modRes)
+        super.initResources(resparam, modRes)
 
 
         xiaoai = resparam?.res?.addResource(modRes,R.drawable.xiaoai)!!
@@ -61,8 +61,8 @@ class PowerMenu : BaseHooker() {
 
 
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
 
         val MiuiGlobalActionsDialog = XposedHelpers.findClass("com.android.systemui.miui.globalactions.MiuiGlobalActionsDialog",classLoader)
         val VolumeUtil = XposedHelpers.findClass("com.android.systemui.miui.volume.VolumeUtil",classLoader)

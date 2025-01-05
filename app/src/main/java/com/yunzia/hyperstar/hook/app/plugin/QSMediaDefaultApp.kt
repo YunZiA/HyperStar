@@ -1,15 +1,15 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 
-class QSMediaDefaultApp :BaseHooker() {
+class QSMediaDefaultApp : Hooker() {
 
     val apps = XSPUtils.getString("media_default_app_package","")
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
         if (apps != ""){
             startMethodsHook()
 

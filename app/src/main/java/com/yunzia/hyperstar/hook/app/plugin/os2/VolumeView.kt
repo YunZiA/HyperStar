@@ -12,7 +12,7 @@ import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
@@ -22,7 +22,7 @@ import de.robv.android.xposed.XposedHelpers
 import yunzia.utils.DensityUtil.Companion.dpToPx
 
 
-class VolumeView: BaseHooker() {
+class VolumeView: Hooker() {
 
     val isPressExpandVolume = XSPUtils.getBoolean("is_press_expand_volume",false)
 
@@ -43,8 +43,8 @@ class VolumeView: BaseHooker() {
     val ShadowHeightP = XSPUtils.getFloat("volume_shadow_height_collapsed_p",-1f)
     val ShadowHeightL = XSPUtils.getFloat("volume_shadow_height_collapsed_l",-1f)
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
         startCollpasedColumn()
         startCollpasedColumnPress()
 

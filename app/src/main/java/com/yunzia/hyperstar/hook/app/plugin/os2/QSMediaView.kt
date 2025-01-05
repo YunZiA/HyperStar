@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.view.marginTop
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
@@ -15,7 +15,7 @@ import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 
 
-class QSMediaView : BaseHooker() {
+class QSMediaView : Hooker() {
 
     val isHideCover:Boolean = XSPUtils.getBoolean("is_hide_cover",false)
     val isTitleCenter:Boolean = XSPUtils.getBoolean("is_title_center",false)
@@ -23,8 +23,8 @@ class QSMediaView : BaseHooker() {
     val isArtistMarquee:Boolean = XSPUtils.getBoolean("is_artist_marquee",false)
     val isEmptyStateMarquee:Boolean = XSPUtils.getBoolean("is_emptyState_marquee",false)
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
         startMethodsHook()
     }
 

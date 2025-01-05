@@ -1,18 +1,18 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
 import android.content.res.Resources
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 
 
-class QSToggleSliderRadius : BaseHooker() {
+class QSToggleSliderRadius : Hooker() {
 
     val progressRadius = XSPUtils.getFloat("qs_progress_radius",2f)
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
         if (!XSPUtils.getBoolean("is_change_qs_progress_radius",false)) return
 
         startMethodsHook()

@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.Log
 import android.widget.LinearLayout
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.hook.tool.starLog.logE
 import com.yunzia.hyperstar.utils.XSPUtils
@@ -14,12 +14,12 @@ import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.XposedHelpers.findAndHookMethod
 
 
-class QSCardTileList :BaseHooker() {
+class QSCardTileList : Hooker() {
 
     private val mCardStyleTiles = XSPUtils.getString("card_tile_list","wifi|cell|")
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
         if (XSPUtils.getBoolean("use_card_tile_list",false)){
 
             startMethodsHook()

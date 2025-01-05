@@ -1,16 +1,16 @@
 package com.yunzia.hyperstar.hook.app.plugin.os1
 
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedHelpers
 
-class QSClockAnim : BaseHooker() {
+class QSClockAnim : Hooker() {
 
     val closeQsClockAnim = XSPUtils.getBoolean("close_qs_clock_anim",false)
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
 
         if (!closeQsClockAnim) return
 

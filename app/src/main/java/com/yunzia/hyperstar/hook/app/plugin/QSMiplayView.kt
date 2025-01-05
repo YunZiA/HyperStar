@@ -1,10 +1,10 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 
-class QSMiplayView : BaseHooker(){
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+class QSMiplayView : Hooker(){
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
 
         startMethodsHook(classLoader)
     }

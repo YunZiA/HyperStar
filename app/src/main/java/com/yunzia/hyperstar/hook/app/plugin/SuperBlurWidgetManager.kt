@@ -1,16 +1,16 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 
-class SuperBlurWidgetManager : BaseHooker() {
+class SuperBlurWidgetManager : Hooker() {
 
     val superBlurWidget = XSPUtils.getInt("is_super_blur_Widget",0)
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
         if (superBlurWidget != 0){
             startMethodsHook()
 

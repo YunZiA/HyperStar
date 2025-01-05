@@ -1,11 +1,11 @@
 package com.yunzia.hyperstar.hook.app.plugin.os1
 
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedHelpers
 
-class QSControlCenterList : BaseHooker() {
+class QSControlCenterList : Hooker() {
 
     private val priorityEnable = XSPUtils.getBoolean("controlCenter_priority_enable",false)
 
@@ -46,8 +46,8 @@ class QSControlCenterList : BaseHooker() {
     val listSpanSize = XSPUtils.getFloat("list_span_size", 1f).toInt()
     val editSpanSize = XSPUtils.getFloat("edit_span_size", 4f).toInt()
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
 
         startPriorityHook()
         startMethodsHook()

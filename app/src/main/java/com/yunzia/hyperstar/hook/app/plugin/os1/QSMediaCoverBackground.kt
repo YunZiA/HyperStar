@@ -11,7 +11,7 @@ import android.widget.ImageView
 import androidx.core.graphics.drawable.toDrawable
 import yunzia.utils.BitmapUtils
 import yunzia.utils.BitmapUtils.Companion.auto
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
@@ -22,7 +22,7 @@ import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
 
-class QSMediaCoverBackground: BaseHooker() {
+class QSMediaCoverBackground: Hooker() {
 
     private var vintage :Int? = null
 
@@ -40,18 +40,18 @@ class QSMediaCoverBackground: BaseHooker() {
     val coverAnciently:Boolean = XSPUtils.getBoolean("cover_anciently",false)
 
 
-    override fun doResources(
+    override fun initResources(
         resparam: XC_InitPackageResources.InitPackageResourcesParam?,
         modRes: XModuleResources?
     ) {
-        super.doResources(resparam, modRes)
+        super.initResources(resparam, modRes)
         vintage = resparam?.res?.addResource(modRes, R.drawable.vintage)!!
 
 
     }
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
         startMethodsHook()
 
     }

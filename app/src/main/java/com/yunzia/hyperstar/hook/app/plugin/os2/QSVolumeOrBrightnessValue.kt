@@ -5,7 +5,7 @@ import android.graphics.Color
 import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import de.robv.android.xposed.XC_MethodHook
@@ -13,7 +13,7 @@ import de.robv.android.xposed.XposedHelpers
 import java.lang.reflect.Method
 
 
-class QSVolumeOrBrightnessValue :BaseHooker() {
+class QSVolumeOrBrightnessValue : Hooker() {
     val mainValueBlendColor = XSPUtils.getString("toggle_slider_value_color_main", "null")
     val secondaryValueBlendColor = XSPUtils.getString("toggle_slider_value_color_secondary", "null")
 
@@ -25,8 +25,8 @@ class QSVolumeOrBrightnessValue :BaseHooker() {
     val volumeShowStyle = XSPUtils.getInt("qs_volume_top_value",0)
     private val brightnessShow = XSPUtils.getBoolean("qs_brightness_top_value_show",false)
     val brightnessShowStyle = XSPUtils.getInt("qs_brightness_top_value",0)
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
         startMethodsHook()
 
 

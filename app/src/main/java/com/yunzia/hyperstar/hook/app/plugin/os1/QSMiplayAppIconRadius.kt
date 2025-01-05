@@ -6,18 +6,18 @@ import android.util.Log
 import android.view.ViewGroup
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LayoutInflated
 
-class QSMiplayAppIconRadius: BaseHooker() {
+class QSMiplayAppIconRadius: Hooker() {
 
     private val disableAppIconRadius = XSPUtils.getBoolean("qs_detail_app_icon_radius",false)
     private val qsDetailProgressBgRadius = XSPUtils.getBoolean("qs_detail_progress_bg_radius",false)
 
-    override fun doResources(
+    override fun initResources(
         resparam: XC_InitPackageResources.InitPackageResourcesParam?,
         modRes: XModuleResources?
     ) {

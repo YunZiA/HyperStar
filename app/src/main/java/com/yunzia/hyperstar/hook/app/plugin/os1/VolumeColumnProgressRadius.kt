@@ -4,19 +4,19 @@ import android.graphics.Outline
 import android.view.View
 import android.view.ViewOutlineProvider
 import yunzia.utils.DensityUtil
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedHelpers
 
-class VolumeColumnProgressRadius :BaseHooker() {
+class VolumeColumnProgressRadius : Hooker() {
 
     val isChangeVolumeProgressRadius = XSPUtils.getBoolean("is_change_volume_progress_radius",false)
 
     val volumeProgressRadius = XSPUtils.getFloat("volume_progress_radius",2f)
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
         if (!isChangeVolumeProgressRadius) return
         startMethodsHook()
     }

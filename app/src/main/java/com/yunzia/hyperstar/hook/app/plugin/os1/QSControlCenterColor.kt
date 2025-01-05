@@ -11,7 +11,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
@@ -19,14 +19,14 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
-class QSControlCenterColor :BaseHooker() {
+class QSControlCenterColor : Hooker() {
 
 
-    override fun doResources(
+    override fun initResources(
         resparam: XC_InitPackageResources.InitPackageResourcesParam?,
         modRes: XModuleResources?
     ) {
-        super.doResources(resparam, modRes)
+        super.initResources(resparam, modRes)
         starBackgroundColorHook()
         startCardColorHook()
         startToggleSliderColorHook()
@@ -80,8 +80,8 @@ class QSControlCenterColor :BaseHooker() {
 
     }
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
 
         startCardTitleHook()
         startCardIconHook()

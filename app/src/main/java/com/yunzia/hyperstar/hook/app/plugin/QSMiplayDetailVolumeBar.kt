@@ -1,24 +1,23 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
-import android.content.Context
 import android.graphics.Typeface
 import android.util.TypedValue
 import android.widget.RelativeLayout
 import android.widget.SeekBar
 import android.widget.TextView
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 
 
-class QSMiplayDetailVolumeBar:BaseHooker() {
+class QSMiplayDetailVolumeBar: Hooker() {
 
     val isDetailVolumebarShowValue = XSPUtils.getBoolean("is_detail_volumebar_show_value",false)
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
 
         if (!isDetailVolumebarShowValue) return
 

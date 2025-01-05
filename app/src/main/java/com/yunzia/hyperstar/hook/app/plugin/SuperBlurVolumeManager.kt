@@ -1,16 +1,16 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 
-class SuperBlurVolumeManager : BaseHooker() {
+class SuperBlurVolumeManager : Hooker() {
 
     val superBlurVolume = XSPUtils.getInt("is_super_blur_volume",0)
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
         if (superBlurVolume != 0){
             startMethodsHook()
 

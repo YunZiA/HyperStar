@@ -17,7 +17,7 @@ import android.widget.SeekBar
 import android.widget.TextView
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
@@ -26,12 +26,12 @@ import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LayoutInflated
 import kotlin.math.roundToInt
 
-class PadVolume : BaseHooker() {
+class PadVolume : Hooker() {
 
     private val padVolume = XSPUtils.getBoolean("is_use_pad_volume", false)
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
         if (!padVolume){
             return
         }
@@ -111,11 +111,11 @@ class PadVolume : BaseHooker() {
 
     }
 
-    override fun doResources(
+    override fun initResources(
         resparam: XC_InitPackageResources.InitPackageResourcesParam?,
         modRes: XModuleResources?
     ) {
-        super.doResources(resparam, modRes)
+        super.initResources(resparam, modRes)
 
         if (!padVolume){
             return

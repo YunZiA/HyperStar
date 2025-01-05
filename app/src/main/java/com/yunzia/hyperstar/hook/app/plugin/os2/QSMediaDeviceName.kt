@@ -1,14 +1,14 @@
 package com.yunzia.hyperstar.hook.app.plugin.os2
 
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 
-class QSMediaDeviceName :BaseHooker() {
+class QSMediaDeviceName : Hooker() {
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
 
         if (XSPUtils.getInt("is_local_speaker",0) == 1){
             startMethodsHook()

@@ -3,19 +3,19 @@ package com.yunzia.hyperstar.hook.app.plugin
 import android.content.Context
 import android.view.View
 import android.widget.LinearLayout
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 
-class QSCardTile : BaseHooker() {
+class QSCardTile : Hooker() {
 
 
 
     private val clickClose = XSPUtils.getBoolean("card_tile_click_close",false)
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
 
         startMethodsHook()
     }

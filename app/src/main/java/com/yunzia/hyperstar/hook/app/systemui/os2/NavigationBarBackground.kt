@@ -1,18 +1,18 @@
 package com.yunzia.hyperstar.hook.app.systemui.os2
 
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 
 
-class NavigationBarBackground :BaseHooker() {
+class NavigationBarBackground : Hooker() {
 
     private val isTransparentNavigationBarBackground = XSPUtils.getBoolean("is_transparent_navigationBar_background",false)
     private val isTransparentStatusBarBackground = XSPUtils.getBoolean("is_transparent_statusBar_background",false)
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
 
         transparentNavigationBarBackground()
         transparentStatusBarBackground()

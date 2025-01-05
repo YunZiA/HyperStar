@@ -1,16 +1,16 @@
 package com.yunzia.hyperstar.hook.app.plugin.os1
 
-import com.yunzia.hyperstar.hook.base.BaseHooker
+import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodReplacement.returnConstant
 import de.robv.android.xposed.XposedHelpers
 
-class QSEditButton : BaseHooker() {
+class QSEditButton : Hooker() {
 
     private val closeEditButtonShow = XSPUtils.getBoolean("close_edit_button_show",false)
 
-    override fun doMethods(classLoader: ClassLoader?) {
-        super.doMethods(classLoader)
+    override fun initHook(classLoader: ClassLoader?) {
+        super.initHook(classLoader)
         if (!closeEditButtonShow){
             return
         }

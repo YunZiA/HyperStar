@@ -6,6 +6,8 @@ import com.yunzia.hyperstar.hook.tool.starLog;
 
 import java.util.Objects;
 
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
@@ -35,6 +37,8 @@ public abstract class InitHooker extends HookHelper  {
         if (Objects.equals(lpparam.packageName, init.packageName())){
             starLog.log("Loaded app: " + lpparam.packageName);
             this.classLoader = lpparam.classLoader;
+
+
             initHook();
 
         }

@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.get
 import com.yunzia.hyperstar.R
@@ -329,14 +330,17 @@ class QSHeaderView() : Hooker() {
         val context = controlCenterHeaderView.context
         val res = controlCenterHeaderView.resources
 
-        val size = dpToPx(res,21.4f).toInt()
+        val size = (getDimensionPixelOffset(res,"shade_header_control_center_carrier_text_size",systemUI)/2*3).toInt()
+        val bottom = (getDimensionPixelOffset(res,"shade_header_bottom_padding",systemUI)*2.85).toInt()
+            //dpToPx(res,21.4f).toInt()
         val lp = ViewGroup.MarginLayoutParams(size, size).apply {
-            topMargin = 100
+            bottomMargin = bottom
+            //topMargin = 100
         }
 
         val setting = Button(context).apply {
             setBackgroundResource(settingIcon)
-            layoutParams =lp
+            layoutParams = lp
             setOnClickListener{
                 if(controlCenterHeaderView.alpha == 0f) return@setOnClickListener
                 it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
@@ -362,10 +366,11 @@ class QSHeaderView() : Hooker() {
         val space = View(context).apply {
             layoutParams = spaceLp
         }
+        ViewGroup.LayoutParams.WRAP_CONTENT
 
         val header = LinearLayout(context).apply {
-            layoutParams = ViewGroup.LayoutParams(-1,-2)
-            gravity = Gravity.END
+            layoutParams = ViewGroup.LayoutParams(-1,-1)
+            gravity = Gravity.END+Gravity.BOTTOM
             orientation = LinearLayout.HORIZONTAL
             addView(setting)
             addView(space)
@@ -374,6 +379,12 @@ class QSHeaderView() : Hooker() {
         }
 
         controlCenterHeaderView.addView(header)
+
+//        controlCenterHeaderView as ConstraintLayout
+//        val setaddtop = ConstraintSet()
+//        setaddtop.clone(controlCenterHeaderView)
+//        setaddtop.connect(R.id.button_addtop, ConstraintSet.TOP, textView.id, ConstraintSet.BOTTOM)
+//        setaddtop.applyTo(root)
 
         starLog.logD("ControlCenterHeaderController ${controlCenterHeaderView.findViewById<View>(editId)}")
 

@@ -17,6 +17,7 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import xyz.xfqlittlefan.notdeveloper.xposed.NotDeveloperHooker;
 
 public class InitHook implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
 
@@ -49,8 +50,11 @@ public class InitHook implements IXposedHookLoadPackage, IXposedHookInitPackageR
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         if (lpparam.packageName.equals(APPLICATION_ID)){
-            XposedHelpers.findAndHookMethod("com.yunzia.hyperstar.utils.Utils", lpparam.classLoader, "isModuleActive", XC_MethodReplacement.returnConstant(true));
+
+            XposedHelpers.findAndHookMethod("com.yunzia.hyperstar.utils.Helper", lpparam.classLoader, "isModuleActive", XC_MethodReplacement.returnConstant(true));
         }
+
+        new NotDeveloperHooker().initHook(lpparam);
 
         if (isOS2Hook){
             systemUIHook0S2.initHook(lpparam);

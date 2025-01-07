@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="status">
+        <item>关闭</item>
+        <item>开启</item>
+    </string-array>
     <array name="control_center_item_list_name">
         <item>卡片磁贴</item>
         <item>妙播</item>

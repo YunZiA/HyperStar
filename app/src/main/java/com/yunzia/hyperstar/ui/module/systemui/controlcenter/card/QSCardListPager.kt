@@ -58,7 +58,7 @@ import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
 import com.yunzia.hyperstar.ui.base.modifier.elevation
 import com.yunzia.hyperstar.utils.SPUtils
-import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.Helper
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
@@ -179,7 +179,7 @@ fun QSCardListPager(
 
         },
         endClick = {
-            Utils.rootShell("killall com.android.systemui")
+            Helper.rootShell("killall com.android.systemui")
         },
     ){
 

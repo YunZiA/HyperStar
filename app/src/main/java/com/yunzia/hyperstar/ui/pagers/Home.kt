@@ -2,7 +2,6 @@ package com.yunzia.hyperstar.ui.pagers
 
 import android.content.Intent
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,14 +30,11 @@ import com.yunzia.hyperstar.ui.base.Classes
 import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
-import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.pagers.dialog.checkApplication
-import com.yunzia.hyperstar.utils.Utils
-import com.yunzia.hyperstar.utils.Utils.isModuleActive
-import com.yunzia.hyperstar.utils.Utils.isRoot
-import com.yunzia.hyperstar.utils.getOSVersion
-import com.yunzia.hyperstar.utils.isOS2
+import com.yunzia.hyperstar.utils.Helper
+import com.yunzia.hyperstar.utils.Helper.isModuleActive
+import com.yunzia.hyperstar.utils.Helper.isRoot
 import com.yunzia.hyperstar.utils.isOS2Settings
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
@@ -47,7 +43,6 @@ import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.ArrowRight
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.getWindowSize
-import yunzia.utils.SystemProperties
 
 @Composable
 fun Home(
@@ -81,7 +76,7 @@ fun Home(
                             if (go){
                                 activity.startActivity(intent)
                             }else{
-                                val result = Utils.rootShell("am start -c 'org.lsposed.manager.LAUNCH_MANAGER' 'com.android.shell/.BugreportWarningActivity'")
+                                val result = Helper.rootShell("am start -c 'org.lsposed.manager.LAUNCH_MANAGER' 'com.android.shell/.BugreportWarningActivity'")
                                 if (result != "0"){
                                     Toast.makeText(activity,result,Toast.LENGTH_SHORT).show()
                                 }
@@ -186,6 +181,13 @@ fun Home(
                     title = stringResource(R.string.hyper_home),
                     navController = navController,
                     route = PagerList.HOME
+
+                )
+                SuperNavHostArrow(
+                    leftIcon = R.drawable.not_developer,
+                    title = stringResource(R.string.not_developer),
+                    navController = navController,
+                    route = PagerList.NOTDEVELOP
 
                 )
 

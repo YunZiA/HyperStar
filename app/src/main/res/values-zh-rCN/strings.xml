@@ -250,5 +250,12 @@
     <string name="hook_channel">当前hook通道</string>
     <string name="err_find">故障排查</string>
     <string name="title_reboot_menus_style">重启菜单风格</string>
+    <string name="notdevelop_content">开发者模式状态：%1$s\nUSB 调试状态：%2$s\n无线调试状态：%3$s</string>
+    <string name="nodevelop_warning">请尽量不要在作用域中勾选任何系统应用，这有可能使您的手机无法启动（本模块推荐的除外）</string>
+    <string name="nodevelop_info">您需要在本模块作用域中勾选您想要对其隐藏的非系统应用</string>
+    <string name="title_development_settings_enabled">隐藏开发者模式</string>
+    <string name="title_adb_enabled">隐藏USB调试</string>
+    <string name="title_adb_wifi_enabled">隐藏无线调试</string>
+    <string name="not_developer">我tm就不是开发者</string>
 
 </resources>

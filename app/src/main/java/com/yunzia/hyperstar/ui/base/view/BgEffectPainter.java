@@ -179,6 +179,15 @@ public class BgEffectPainter {
             setPhoneLight(this.bound);
         }
     }
+
+    public void showRuntimeShader(Context context, float height2,float width,int mode) {
+        calcAnimationBound(context, height2,width);
+        if (mode == 2) {
+            setPhoneDark(this.bound);
+        } else {
+            setPhoneLight(this.bound);
+        }
+    }
     public void updateMode(int mode) {
         if (mode == 2) {
             setPhoneDark(this.bound);
@@ -191,6 +200,16 @@ public class BgEffectPainter {
         float height =  context.getResources().getDimensionPixelSize(R.dimen.logo_area_height);
         float height2 = height / ((ViewGroup) view.getParent()).getHeight();
         float width = ((ViewGroup) view.getParent()).getWidth();
+        if (width <= height) {
+            this.bound = new float[]{0.0f, 1.0f - height2, 1.0f, height2};
+        } else {
+            this.bound = new float[]{((width - height) / 2.0f) / width, 1.0f - height2, height / width, height2};
+        }
+    }
+
+
+    private void calcAnimationBound(Context context, float height2,float width) {
+        float height =  context.getResources().getDimensionPixelSize(R.dimen.logo_area_height);
         if (width <= height) {
             this.bound = new float[]{0.0f, 1.0f - height2, 1.0f, height2};
         } else {

@@ -16,7 +16,7 @@ fun getMarketName(): String = SystemProperties.get("ro.product.marketname")
 
 fun getOSVersion()= SystemProperties.getInt("ro.mi.os.version.code", 1)
 
-fun isBetaOs() = ReflectUtils.getStaticFieldValue(Build::class.java, "IS_DEV_VERSION", Boolean::class.java) as? Boolean ?: false
+fun isBetaOs() = ReflectUtils.getStaticFieldValue(Build::class.java, "IS_DEV_VERSION", Boolean::class.java,false)
 
 fun isFold()= SystemProperties.getInt("persist.sys.muiltdisplay_type", 0) == 2
 

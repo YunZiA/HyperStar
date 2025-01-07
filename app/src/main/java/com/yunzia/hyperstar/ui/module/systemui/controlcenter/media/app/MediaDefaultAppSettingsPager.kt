@@ -67,7 +67,7 @@ import com.yunzia.hyperstar.ui.base.ModuleNavPager
 import com.yunzia.hyperstar.ui.base.XMiuixTextField
 
 import com.yunzia.hyperstar.utils.SPUtils
-import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.Helper
 import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
@@ -243,7 +243,7 @@ fun MediaAppSettingsPager(
         navController = navController,
         parentRoute = parentRoute,
         endClick = {
-            Utils.rootShell("killall com.android.systemui")
+            Helper.rootShell("killall com.android.systemui")
         },
     ){ topAppBarScrollBehavior,padding->
         val mContext = navController.context

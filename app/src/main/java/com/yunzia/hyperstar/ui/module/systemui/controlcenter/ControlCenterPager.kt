@@ -18,7 +18,7 @@ import com.yunzia.hyperstar.ui.base.XMiuixSuperSliderSwitch
 import com.yunzia.hyperstar.ui.base.XSuperSwitch
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
-import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.isOS2Settings
 
 
@@ -32,7 +32,7 @@ fun ControlCenterPager(
         navController = navController,
         parentRoute = currentStartDestination,
         endClick = {
-            Utils.rootShell("killall com.android.systemui")
+            Helper.rootShell("killall com.android.systemui")
         },
     ){
         firstClasses(

@@ -9,7 +9,7 @@ import com.yunzia.hyperstar.ui.base.ColorPickerTool
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
-import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.Helper
 
 @Composable
 fun QSCardColorPager(
@@ -21,7 +21,7 @@ fun QSCardColorPager(
         parentRoute = currentStartDestination,
         navController = navController,
         endClick = {
-            Utils.rootShell("killall com.android.systemui")
+            Helper.rootShell("killall com.android.systemui")
         },
     ) {
         firstClasses(

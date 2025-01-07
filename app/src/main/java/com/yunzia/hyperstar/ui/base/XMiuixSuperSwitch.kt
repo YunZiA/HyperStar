@@ -58,8 +58,8 @@ fun XSuperSwitch(
         insideMargin = insideMargin,
         onCheckedChange = {
             state.value = it
-            onStateChanged(state.value)
             SPUtils.setBoolean(key,state.value)
+            onStateChanged(state.value)
         },
     )
 

@@ -11,7 +11,7 @@ import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.base.XSuperSwitch
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
-import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.Helper
 
 @Composable
 fun SystemUIOtherPager(
@@ -23,7 +23,7 @@ fun SystemUIOtherPager(
         navController = navController,
         parentRoute = currentStartDestination,
         endClick = {
-            Utils.rootShell("killall com.android.systemui")
+            Helper.rootShell("killall com.android.systemui")
         },
     ) {
         firstClasses(

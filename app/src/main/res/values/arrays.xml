@@ -13,6 +13,12 @@
         <item>tiếng việt</item>
     </string-array>
 
+
+    <string-array name="status">
+        <item>Off</item>
+        <item>On</item>
+    </string-array>
+
     <string-array name="power_menu_style">
         <item>Default</item>
         <item>样式1</item>

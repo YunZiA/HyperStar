@@ -10,7 +10,7 @@ import com.yunzia.hyperstar.ui.base.XMiuixSlider
 import com.yunzia.hyperstar.ui.base.XSuperDropdown
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
-import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.Helper
 
 
 @Composable
@@ -23,7 +23,7 @@ fun QsListViewPager(
         parentRoute = currentStartDestination,
         navController = navController,
         endClick = {
-            Utils.rootShell("killall com.android.systemui")
+            Helper.rootShell("killall com.android.systemui")
         }
     ){
         firstClasses{

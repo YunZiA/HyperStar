@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,7 +31,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,8 +42,6 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -58,7 +54,7 @@ import com.yunzia.hyperstar.ui.base.dialog.SuperXDialog
 import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.ui.base.modifier.blur
 import com.yunzia.hyperstar.ui.base.modifier.showBlur
-import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.isOS2Settings
 import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.launch
@@ -428,7 +424,7 @@ fun  RebootPup(
                 isSelected = false,
                 index = 0,
                 onSelectedIndexChange = {
-                    Utils.rootShell("killall com.android.systemui")
+                    Helper.rootShell("killall com.android.systemui")
                     dismissPopup(show)
                 }
             )
@@ -439,7 +435,7 @@ fun  RebootPup(
                     isSelected = false,
                     index = 1,
                     onSelectedIndexChange = {
-                        Utils.rootShell("killall com.miui.home")
+                        Helper.rootShell("killall com.miui.home")
                         dismissPopup(show)
                     }
                 )
@@ -520,7 +516,7 @@ fun  RebootDialog(
                     dismissXDialog(show)
                     if (rebootList.isEmpty()) return@BaseButton
                     for(i in rebootList){
-                        Utils.rootShell("killall $i")
+                        Helper.rootShell("killall $i")
                     }
 
                 }

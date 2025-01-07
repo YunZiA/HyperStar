@@ -48,7 +48,7 @@ import com.yunzia.hyperstar.ui.module.systemui.controlcenter.item.ListItem
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.item.MediaItem
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.item.VolumeItem
 import com.yunzia.hyperstar.utils.SPUtils
-import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.Helper
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Switch
 import top.yukonga.miuix.kmp.basic.Text
@@ -201,7 +201,7 @@ fun ControlCenterListPager(
         },
         endClick = {
             //view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-            Utils.rootShell("killall com.android.systemui")
+            Helper.rootShell("killall com.android.systemui")
         },
     ){
         item {

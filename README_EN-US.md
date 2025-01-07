@@ -82,6 +82,9 @@ If you would like to contribute translations to the HyperStar project, please fe
 
 - [「HyperCeiler」by ReChronoRain](https://github.com/ReChronoRain/HyperCeiler)
 
+##### 未知
+
+- [「IAmNotADeveloper」by xfqwdsj](https://github.com/xfqwdsj/IAmNotADeveloper)
 
 
 

@@ -1,38 +1,16 @@
 package com.yunzia.hyperstar.ui.pagers.dialog
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.MainActivity
-import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.dialog.TopNotification
 import com.yunzia.hyperstar.utils.PreferencesUtil
-import com.yunzia.hyperstar.utils.Utils
-import com.yunzia.hyperstar.utils.Utils.isModuleActive
+import com.yunzia.hyperstar.utils.Helper
+import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import kotlinx.coroutines.delay
-import top.yukonga.miuix.kmp.basic.Box
-import yunzia.utils.SystemProperties
 
 @Composable
 fun FirstDialog(
@@ -47,7 +25,7 @@ fun FirstDialog(
 //        (SystemProperties.getInt("ro.mi.os.version.code", 1) != 2)
 
     val verShow = remember{ mutableStateOf(PreferencesUtil.getBoolean("ver_waring",errVersion))}
-    val rootShow = remember{ mutableStateOf(PreferencesUtil.getBoolean("no_root_waring",(Utils.getRootPermission() != 0)))}
+    val rootShow = remember{ mutableStateOf(PreferencesUtil.getBoolean("no_root_waring",(Helper.getRootPermission() != 0)))}
     val activeShow = remember{ mutableStateOf(PreferencesUtil.getBoolean("no_active_waring",!isModuleActive()))}
 
     val secShow = remember { mutableStateOf(false) }

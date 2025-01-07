@@ -2,14 +2,13 @@ package com.yunzia.hyperstar.ui.module.betahome
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.XSuperSwitch
 import com.yunzia.hyperstar.ui.base.firstClasses
-import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.Helper
 
 
 @Composable
@@ -22,7 +21,7 @@ fun BetaHomePager(
         navController = navController,
         parentRoute = parentRoute,
         endClick = {
-            Utils.rootShell("killall com.miui.home")
+            Helper.rootShell("killall com.miui.home")
         },
     ){
         firstClasses(

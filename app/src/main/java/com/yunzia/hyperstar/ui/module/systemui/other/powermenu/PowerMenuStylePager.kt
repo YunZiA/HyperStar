@@ -51,7 +51,7 @@ import com.yunzia.hyperstar.ui.base.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.SuperArgNavHostArrow
 import com.yunzia.hyperstar.ui.base.TopButton
 import com.yunzia.hyperstar.utils.SPUtils
-import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.Helper
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -99,7 +99,7 @@ fun PowerMenuStylePager(
 
         },
         endClick = {
-            Utils.rootShell("killall com.android.systemui")
+            Helper.rootShell("killall com.android.systemui")
         },
     ) {
 

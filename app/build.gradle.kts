@@ -95,7 +95,7 @@ dependencies {
 
     implementation(libs.gson)
     implementation(libs.androidx.navigation.compose)
-    implementation("com.github.skydoves:cloudy:0.2.3")
+    implementation("com.github.skydoves:cloudy:0.2.4")
     implementation(libs.haze)
 
     implementation (libs.androidx.palette.ktx)

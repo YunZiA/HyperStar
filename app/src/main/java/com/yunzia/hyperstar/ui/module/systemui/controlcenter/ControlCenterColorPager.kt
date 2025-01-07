@@ -13,7 +13,7 @@ import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.base.XMiuixContentDropdown
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
-import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.Helper
 
 @Composable
 fun ControlCenterColorPager(
@@ -25,7 +25,7 @@ fun ControlCenterColorPager(
         parentRoute = currentStartDestination,
         navController = navController,
         endClick = {
-            Utils.rootShell("killall com.android.systemui")
+            Helper.rootShell("killall com.android.systemui")
         },
     ) {
 

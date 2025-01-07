@@ -45,6 +45,8 @@ class QSHeaderView : Hooker() {
     private fun startMethodsHook() {
         var qsListControllerProvider: Any? = null
 
+        val CommonUtils = findClass("miui.systemui.util.CommonUtils",classLoader)
+
         val EditButtonController_Factory = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.qs.EditButtonController_Factory",classLoader)
         val MainPanelModeController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.MainPanelModeController\$MainPanelMode",classLoader)
 
@@ -75,15 +77,24 @@ class QSHeaderView : Hooker() {
                 val sysUIContext = XposedHelpers.getObjectField(thisObj,"sysUIContext") as Context
                 val view = XposedHelpers.callMethod(thisObj,"getView") as ViewGroup
                 val mContext = view.context
+                val res = mContext.resources
+                val IS_TABLET = XposedHelpers.getStaticBooleanField(CommonUtils,"IS_TABLET")
 
                 val ic_header_settings:Int = view.resources.getIdentifier("ic_header_settings", "drawable", "miui.systemui.plugin");
                 val ic_controls_edit = view.resources.getIdentifier("ic_controls_edit","drawable","miui.systemui.plugin")
 
 
+                val size = (getDimensionPixelOffset(res,"header_text_size",plugin)/2*3).toInt()
+                val bottom = (getDimensionPixelOffset(res,"header_carrier_vertical_mode_margin_bottom",plugin)*3.8).toInt()
+                    //(getDimensionPixelOffset(res,"header_carrier_vertical_mode_margin_bottom",plugin)*1.9).toInt()
+
                 val a = Button(mContext)
                 a.setBackgroundResource(ic_header_settings)
-                val lp = ViewGroup.MarginLayoutParams(60, 60)
-                lp.topMargin = 100
+                val lp = ViewGroup.MarginLayoutParams(size, size).apply {
+                    bottomMargin = bottom
+                }
+                //lp.topMargin = 100
+
                 a.layoutParams = lp
 
                 val b = Button(mContext)
@@ -96,11 +107,11 @@ class QSHeaderView : Hooker() {
 
                 val header = LinearLayout(sysUIContext)
 
-                val headerLp = ViewGroup.LayoutParams(-1,-2)
+                val headerLp = ViewGroup.LayoutParams(-1,-1)
                 header.layoutParams = headerLp
                 //header.top = 200
                 header.id = View.generateViewId()
-                header.gravity = Gravity.END
+                header.gravity = Gravity.END+Gravity.BOTTOM
                 viewId = header.id
 
                 header.orientation = LinearLayout.HORIZONTAL;

@@ -145,6 +145,15 @@ public class ReflectUtils {
             return null;
         }
     }
+    public static <T> T getStaticFieldValue(Class<?> cls, String str, Class<?> cls2,T value) {
+        try {
+            return (T) getField(cls, str, cls2).get(null);
+        } catch (Exception e) {
+            //Log.d(TAG, "getStaticFieldValue", e);
+            Log.d(TAG, "getStaticFieldValue "+str +" is not find");
+            return value;
+        }
+    }
 
     public static <T> T getFieldValue(Class<?> cls, Object obj, String str, String str2) {
         Field field = getField(cls, str, str2);

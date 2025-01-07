@@ -28,7 +28,7 @@ import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.NavPager
 import com.yunzia.hyperstar.ui.base.classes
-import com.yunzia.hyperstar.utils.Utils.isModuleActive
+import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.getAndroidVersion
 import com.yunzia.hyperstar.utils.getDeviceName
 import com.yunzia.hyperstar.utils.getMarketName
@@ -140,9 +140,6 @@ fun NeedMessagePager(
             }
         }
 
-        classes {
-
-        }
 
     }
 }

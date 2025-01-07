@@ -8,7 +8,7 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.XSuperSwitch
 import com.yunzia.hyperstar.ui.base.firstClasses
-import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.Helper
 
 @Composable
 fun HomePage(
@@ -20,7 +20,7 @@ fun HomePage(
         parentRoute = currentStartDestination,
         navController = navController,
         endClick = {
-            Utils.rootShell("killall com.miui.home")
+            Helper.rootShell("killall com.miui.home")
         },
     ){
         firstClasses(

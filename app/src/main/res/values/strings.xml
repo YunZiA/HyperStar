@@ -250,4 +250,11 @@
     <string name="hook_channel">The current hook channel</string>
     <string name="err_find">Troubleshooting</string>
     <string name="title_reboot_menus_style">Reboot menus style</string>
+    <string name="notdevelop_content">Development mode status: %1$s\nUSB debugging status: %2$s\nWireless debugging status: %3$s</string>
+    <string name="nodevelop_warning">Please try not to select any system applications within the scope of action, as this may prevent your phone from booting up (except for those recommended by this module)</string>
+    <string name="nodevelop_info">You need to select the non-system apps you want to hide within the scope of this module</string>
+    <string name="title_development_settings_enabled">Hide development mode</string>
+    <string name="title_adb_enabled">Hide USB debugging</string>
+    <string name="title_adb_wifi_enabled">Hide wireless debugging</string>
+    <string name="not_developer">I\'m not a Developer</string>
 </resources>

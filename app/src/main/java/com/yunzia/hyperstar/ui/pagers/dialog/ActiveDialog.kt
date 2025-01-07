@@ -25,7 +25,7 @@ import com.yunzia.hyperstar.ui.base.dialog.SuperCTDialogDefaults
 import com.yunzia.hyperstar.ui.base.dialog.SuperXDialog
 import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.utils.PreferencesUtil
-import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.Helper
 import top.yukonga.miuix.kmp.basic.Text
 
 
@@ -127,7 +127,7 @@ fun ActiveDialog(
 
             )
 
-        }else if (Utils.getRootPermission() == 0){
+        }else if (Helper.getRootPermission() == 0){
 
             Spacer(Modifier.height(12.dp))
             BaseButton(
@@ -136,7 +136,7 @@ fun ActiveDialog(
                 submit = true,
                 onClick = {
                     dismissXDialog(show)
-                    Utils.rootShell("am start -c 'org.lsposed.manager.LAUNCH_MANAGER' 'com.android.shell/.BugreportWarningActivity'")
+                    Helper.rootShell("am start -c 'org.lsposed.manager.LAUNCH_MANAGER' 'com.android.shell/.BugreportWarningActivity'")
 
 
                 }

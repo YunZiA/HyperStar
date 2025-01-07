@@ -18,7 +18,7 @@ import androidx.profileinstaller.ProfileInstaller
 import com.yunzia.hyperstar.ui.base.BaseActivity
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.SPUtils
-import com.yunzia.hyperstar.utils.Utils.isModuleActive
+import com.yunzia.hyperstar.utils.Helper.isModuleActive
 
 
 class MainActivity : BaseActivity() {

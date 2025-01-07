@@ -48,6 +48,7 @@ import com.yunzia.hyperstar.ui.base.XScaffold
 import com.yunzia.hyperstar.ui.base.nav.PagersModel
 import com.yunzia.hyperstar.ui.base.nav.pagersJson
 import com.yunzia.hyperstar.ui.base.showFPSMonitor
+import com.yunzia.hyperstar.ui.module.NotDeveloperPager
 import com.yunzia.hyperstar.ui.module.home.HomePage
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.list.QSListColorPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.list.QsListViewPager
@@ -200,6 +201,7 @@ fun NavGraphBuilder.pagerContent(
     composable(CenterColorList.LIST_COLOR) { QSListColorPager(navController,parentRoute) }
 
     composable(PagerList.GO_ROOT){ GoRootPager(navController,parentRoute) }
+    composable(PagerList.NOTDEVELOP){ NotDeveloperPager(navController,parentRoute) }
 
     composable(PagerList.LANGUAGE){ LanguagePager(navController,parentRoute) }
 
@@ -425,6 +427,8 @@ object PagerList {
     const val SHOW = "${MAIN}/show"
 
     const val MESSAGE = "${MAIN}/message"
+
+    const val NOTDEVELOP = "${MAIN}/notdeveloper"
 }
 
 object SystemUIList {

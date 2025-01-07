@@ -35,7 +35,7 @@ import com.yunzia.hyperstar.ui.base.ModuleNavPager
 import com.yunzia.hyperstar.ui.base.enums.EventState
 import com.yunzia.hyperstar.ui.base.nav.PagersModel
 import com.yunzia.hyperstar.utils.SPUtils
-import com.yunzia.hyperstar.utils.Utils
+import com.yunzia.hyperstar.utils.Helper
 import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.Text
@@ -82,7 +82,7 @@ fun SelectFunPager(
         navController = navController,
         parentRoute = parentRoute,
         endClick = {
-            Utils.rootShell("killall com.android.systemui")
+            Helper.rootShell("killall com.android.systemui")
         },
     ) {topAppBarScrollBehavior,padding->
 

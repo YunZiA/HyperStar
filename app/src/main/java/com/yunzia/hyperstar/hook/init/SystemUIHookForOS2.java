@@ -39,21 +39,7 @@ public class SystemUIHookForOS2 extends InitHooker {
 
 
     private void doTestHook() {
-//        XposedHelpers.findAndHookMethod("miui.systemui.controlcenter.qs.tileview.QSTileItemIconView", classLoader,
-//                "getActiveBackgroundDrawable", "com.android.systemui.plugins.qs.QSTile$State",
-//                new XC_MethodHook() {
-//                    @Override
-//                    protected void afterHookedMethod(MethodHookParam param) {
-//                        Drawable drawable = (Drawable) param.getResult();
-//                        if (drawable instanceof GradientDrawable){
-//                            //drawable.setColorFilter();
-//                            ( (GradientDrawable) drawable).setColor(Color.WHITE);
-//                            param.setResult(drawable);
-//                        }
-//
-//                    }
-//                }
-//        );
+
 
     }
 
@@ -68,11 +54,5 @@ public class SystemUIHookForOS2 extends InitHooker {
     }
 
 
-
-//    private void doResHook(XC_InitPackageResources.InitPackageResourcesParam resparam){
-//
-//        resparam.res.setReplacement(resparam.packageName,"drawable","qs");
-//
-//    }
 
 }

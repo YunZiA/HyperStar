@@ -1,10 +1,13 @@
 package com.yunzia.hyperstar.hook.tool;
 
+import com.yunzia.hyperstar.utils.XSPUtils;
+
 import de.robv.android.xposed.XposedBridge;
 
 public class starLog {
-    private static  final Boolean show = false;
+    private static  final Boolean show = XSPUtils.INSTANCE.getInt("log_level",0)==1;
     private static final String HOOK_TAG = "[HyperStar]";
+
     public static void log(String msg) {
         XposedBridge.log(HOOK_TAG+"{ " + msg + " }");
     }
@@ -18,7 +21,7 @@ public class starLog {
     }
 
     public static void logI(String tag, String pkg, String msg) {
-        XposedBridge.log(HOOK_TAG+" [I][" + pkg + "][" + tag + "]: " + msg);
+        XposedBridge.log(HOOK_TAG+"[I][" + pkg + "][" + tag + "]: " + msg);
     }
 
     public static void logW(String msg) {
@@ -26,71 +29,72 @@ public class starLog {
     }
 
     public static void logW(String tag, String pkg, String msg) {
-        XposedBridge.log(HOOK_TAG+" [W][" + pkg + "][" + tag + "]: " + msg);
+        XposedBridge.log(HOOK_TAG+"[W][" + pkg + "][" + tag + "]: " + msg);
     }
 
     public static void logW(String tag, String pkg, Throwable log) {
-        XposedBridge.log(HOOK_TAG+" [W][" + pkg + "][" + tag + "]: " + log);
+        XposedBridge.log(HOOK_TAG+"[W][" + pkg + "][" + tag + "]: " + log);
     }
 
     public static void logW(String tag, String pkg, String msg, Exception exp) {
-        XposedBridge.log(HOOK_TAG+" [W][" + pkg + "][" + tag + "]: " + msg + ", by: " + exp);
+        XposedBridge.log(HOOK_TAG+"[W][" + pkg + "][" + tag + "]: " + msg + ", by: " + exp);
     }
 
     public static void logW(String tag, String pkg, String msg, Throwable log) {
-        XposedBridge.log(HOOK_TAG+" [W][" + pkg + "][" + tag + "]: " + msg + ", by: " + log);
+        XposedBridge.log(HOOK_TAG+"[W][" + pkg + "][" + tag + "]: " + msg + ", by: " + log);
     }
 
     public static void logW(String tag, String msg) {
-        XposedBridge.log(HOOK_TAG+" [W][" + tag + "]: " + msg);
+        XposedBridge.log(HOOK_TAG+"[W][" + tag + "]: " + msg);
     }
 
     public static void logW(String tag, Throwable log) {
-        XposedBridge.log(HOOK_TAG+" [W][" + tag + "]: " + log);
+        XposedBridge.log(HOOK_TAG+"[W][" + tag + "]: " + log);
     }
 
     public static void logW(String tag, String msg, Exception exp) {
-        XposedBridge.log(HOOK_TAG+" [W][" + tag + "]: " + msg + ", by: " + exp);
+        XposedBridge.log(HOOK_TAG+"[W][" + tag + "]: " + msg + ", by: " + exp);
     }
 
     public static void logE(String tag, String msg) {
-        XposedBridge.log(HOOK_TAG+" [E][" + tag + "]: " + msg);
+        XposedBridge.log(HOOK_TAG+"[E][" + tag + "]: " + msg);
     }
 
     public static void logE(String msg) {
-        XposedBridge.log(HOOK_TAG+" [E]: " + msg);
+        XposedBridge.log(HOOK_TAG+"[E]: " + msg);
     }
 
     public static void logE(String tag, Throwable log) {
-        XposedBridge.log(HOOK_TAG+" [E][" + tag + "]: " + log);
+        XposedBridge.log(HOOK_TAG+"[E][" + tag + "]: " + log);
     }
 
     public static void logE(String tag, String pkg, String msg) {
-        XposedBridge.log(HOOK_TAG+" [E][" + pkg + "][" + tag + "]: " + msg);
+        XposedBridge.log(HOOK_TAG+"[E][" + pkg + "][" + tag + "]: " + msg);
     }
 
     public static void logE(String tag, String pkg, Throwable log) {
-        XposedBridge.log(HOOK_TAG+" [E][" + pkg + "][" + tag + "]: " + log);
+        XposedBridge.log(HOOK_TAG+"[E][" + pkg + "][" + tag + "]: " + log);
     }
 
     public static void logE(String tag, String pkg, Exception exp) {
-        XposedBridge.log(HOOK_TAG+" [E][" + pkg + "][" + tag + "]: " + exp);
+        XposedBridge.log(HOOK_TAG+"[E][" + pkg + "][" + tag + "]: " + exp);
     }
 
     public static void logE(String tag, String pkg, String msg, Throwable log) {
-        XposedBridge.log(HOOK_TAG+" [E][" + pkg + "][" + tag + "]: " + msg + ", by: " + log);
+        XposedBridge.log(HOOK_TAG+"[E][" + pkg + "][" + tag + "]: " + msg + ", by: " + log);
     }
 
     public static void logE(String tag, String pkg, String msg, Exception exp) {
-        XposedBridge.log(HOOK_TAG+" [E]{" + pkg + "][" + tag + "]: " + msg + ", by: " + exp);
+        XposedBridge.log(HOOK_TAG+"[E]{" + pkg + "][" + tag + "]: " + msg + ", by: " + exp);
     }
 
     public static void logD(String msg) {
         if (!show) return;
-        XposedBridge.log(HOOK_TAG+" [D]: " + msg);
+        XposedBridge.log(HOOK_TAG+"[D]: " + msg);
     }
 
     public static void logD(String tag, String pkg, String msg) {
+        if (!show) return;
         XposedBridge.log(HOOK_TAG+"[D][" + pkg + "][" + tag + "]: " + msg);
     }
 }

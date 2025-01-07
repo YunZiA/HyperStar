@@ -117,8 +117,8 @@
     <string name="basics">General Settings</string>
     <string name="widget_advanced_textures">Advanced Textures of Widget</string>
     <string name="is_super_blur_volume_title">Advanced Textures</string>
-    <string name="is_use_pad_volume_title">Pad Volume Panel Style</string>
-    <string name="is_use_pad_volume_summary">Please be mindful that the tablet volume panel\'s unique characteristics may result in overwriting the relevant data of the original side volume panel</string>
+    <string name="title_use_pad_volume">Pad Volume Panel Style</string>
+    <string name="summary_use_pad_volume">Please be mindful that the tablet volume panel\'s unique characteristics may result in overwriting the relevant data of the original side volume panel</string>
     <string name="is_use_beta_home_cc_title">Unlock some beta features</string>
     <string name="is_use_beta_home_cc_summary"><![CDATA[Rounded Rectangular Large Icon Widget > OS2 Setup Style]]></string>
     <string name="volume">Volume Bar</string>
@@ -175,7 +175,7 @@
     <string name="progress_radius_summary">Ensure the custom corner radius does not exceed the background corner radius</string>
     <string name="media_background_style_title">Media background style</string>
     <string name="is_power_menu_nav_show_title">Show the Navigation Bar</string>
-    <string name="is_use_power_menu_plus_title">Expanded power menu</string>
+    <string name="title_use_power_menu_plus">Expanded power menu</string>
     <string name="power_menu">Power Menu</string>
     <string name="title_qs_detail_app_icon_radius">Disable app icon clipping</string>
     <string name="title_qs_detail_progress_bg_radius">Rounded rectangle volume progress bar</string>
@@ -239,7 +239,7 @@
     <string name="file_not_exist">File does not exist</string>
     <string name="restore_success">Restore success！！</string>
     <string name="recovery_default">restore defaults</string>
-    <string name="focus_notification_content">点击</string>
+    <string name="focus_notification_content">click</string>
     <string name="error_title">An Error Has Been Detected!</string>
     <string name="send_developer">Please forward this prompt to the developers:</string>
     <string name="title_detail_volumebar_show_value">Volume bar progress display</string>
@@ -257,4 +257,6 @@
     <string name="title_adb_enabled">Hide USB debugging</string>
     <string name="title_adb_wifi_enabled">Hide wireless debugging</string>
     <string name="not_developer">I\'m not a Developer</string>
+    <string name="title_log_level">Log level</string>
+    <string name="summary_log_level">Restart to activate changes in scope</string>
 </resources>

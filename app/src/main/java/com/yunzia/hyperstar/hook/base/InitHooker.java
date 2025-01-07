@@ -21,15 +21,10 @@ public abstract class InitHooker extends HookHelper  {
     public ClassLoader classLoader;
     public ClassLoader secClassLoader;
 
-    public String mPackageName;
+    public final String mPackageName = init != null ? init.packageName() : "null";
 
     public InitHooker(){
-        if (init != null) {
-            mPackageName = init.packageName();
-            if (mPackageName == null){
-                starLog.logE(this + " mPackageName == null");
-            }
-        }
+
     }
 
     public void initHook(XC_LoadPackage.LoadPackageParam lpparam){
@@ -37,7 +32,6 @@ public abstract class InitHooker extends HookHelper  {
         if (Objects.equals(lpparam.packageName, init.packageName())){
             starLog.log("Loaded app: " + lpparam.packageName);
             this.classLoader = lpparam.classLoader;
-
 
             initHook();
 

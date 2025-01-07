@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar;
 
 import static com.yunzia.hyperstar.BuildConfig.APPLICATION_ID;
+import static com.yunzia.hyperstar.utils.VersionKt.isHookChannel;
 import static com.yunzia.hyperstar.utils.VersionKt.isOS2Hook;
 
 import android.content.res.XModuleResources;
@@ -23,14 +24,13 @@ public class InitHook implements IXposedHookLoadPackage, IXposedHookInitPackageR
 
     private final SystemUIHookForOS2 systemUIHook0S2 = new SystemUIHookForOS2();
     private final SystemUIHookForOS1 systemUIHook0S1 = new SystemUIHookForOS1();
-    private final Boolean isOS2Hook = isOS2Hook();
     private String mPath;
+    private final int isHookChannel = isHookChannel()+1;
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
         mPath=startupParam.modulePath;
-        String hookChannel = isOS2Hook ? "OS2" : "OS1";
-        starLog.log("hook channel is " + hookChannel);
+        starLog.log("HookChannel is currently configured for OS" + isHookChannel());
 
     }
 
@@ -38,12 +38,17 @@ public class InitHook implements IXposedHookLoadPackage, IXposedHookInitPackageR
     @Override
     public void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam resparam) throws Throwable {
         XModuleResources modRes = XModuleResources.createInstance(mPath, resparam.res);
-        if (isOS2Hook){
-            systemUIHook0S2.initResources(resparam,modRes);
-        }else {
-            systemUIHook0S1.initResources(resparam,modRes);
-
+        switch (isHookChannel){
+            case 1:
+                systemUIHook0S1.initResources(resparam,modRes);
+                break;
+            case 2:
+                systemUIHook0S2.initResources(resparam,modRes);
+                break;
+            default:
+                starLog.logE("Resource initialization failed! Because the HookChannel is OS"+isHookChannel);
         }
+
 
     }
 
@@ -56,11 +61,16 @@ public class InitHook implements IXposedHookLoadPackage, IXposedHookInitPackageR
 
         new NotDeveloperHooker().initHook(lpparam);
 
-        if (isOS2Hook){
-            systemUIHook0S2.initHook(lpparam);
-            new InitMiuiHomeHook().initHook(lpparam);
-        }else {
-            systemUIHook0S1.initHook(lpparam);
+        switch (isHookChannel) {
+            case 1:
+                systemUIHook0S1.initHook(lpparam);
+                break;
+            case 2:
+                systemUIHook0S2.initHook(lpparam);
+                new InitMiuiHomeHook().initHook(lpparam);
+                break;
+            default:
+                starLog.logE("Hook initialization failed! Because the HookChannel is OS"+isHookChannel);
 
         }
 

@@ -118,7 +118,7 @@ fun MainPager(
     val show = remember { mutableStateOf(false) }
 
     val view = LocalView.current
-    val showBlurs = remember { mutableStateOf(false) }
+    val showBlurs = remember { mutableStateOf(true) }
 
     val context = LocalContext.current
     val activity = context as MainActivity
@@ -129,7 +129,7 @@ fun MainPager(
         popupHost = { },
         topBar = {
             TopAppBar(
-                modifier = if (currentPage == 2 && !showBlurs.value) Modifier else Modifier.showBlur(hazeState),
+                modifier = if (currentPage == 2 && showBlurs.value) Modifier else Modifier.showBlur(hazeState),
                 color = Color.Transparent,
                 title = pagerTitle,
                 largeTitle = if (currentPage == 2) "" else pagerTitle,

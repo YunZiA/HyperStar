@@ -18,6 +18,8 @@ class CrashHooker : InitHooker() {
 
     override fun initHook(lpparam: XC_LoadPackage.LoadPackageParam?) {
 
+        lpparam?.classLoader?.let { init(it) }
+
     }
 
     @Throws(Exception::class)

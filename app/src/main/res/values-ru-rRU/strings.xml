@@ -5,6 +5,8 @@
     <string name="LANDSCAPE">Пейзаж</string>
     <string name="Lightness">Легкость</string>
     <string name="Opacity">Непрозрачность</string>
+    <string name="title_press_expand_volume">Press to expand secondary volume bar</string>
+    <string name="summary_press_expand_volume">Enabling this feature will disable the expand button</string>
     <string name="PORTRAIT">Портрет</string>
     <string name="Saturation">Насыщенность</string>
     <string name="Slider">Ползунок</string>
@@ -12,7 +14,6 @@
     <string name="active_faster">Быстрая активация</string>
     <string name="advanced_textures">Расширенные текстуры</string>
     <string name="alipay">Alipay</string>
-    <string name="app_name">HyperStar</string>
     <string name="app_name_type">Название приложения</string>
     <string name="artist">Исполнитель </string>
     <string name="background">Фон</string>
@@ -46,6 +47,7 @@
     <string name="color_mix_main">Смешанный цвет · Лорд</string>
     <string name="color_mix_secondary">Смешанный цвет · Времена</string>
     <string name="color_mode_title">Цветовой режим</string>
+    <string name="over_scroll_title">Enable Over Scroll</string>
     <string name="control_center">Центр управления</string>
     <string name="control_center_background_color">Цвет фона виджета</string>
     <string name="control_center_color_edit">@string/color_edit</string>
@@ -118,8 +120,8 @@ o(╥﹏╥)o</string>
     <string name="is_use_beta_home_cc_summary">Виджет со скругленными прямоугольными большими значками &gt; Стиль установки OS2</string>
     <string name="is_use_beta_home_cc_title">Разблокируйте некоторые бета-функции</string>
     <string name="is_use_chaos_header_title">Добавить кнопку Настройки и редактирования на верхнюю панель</string>
-    <string name="is_use_pad_volume_summary">Пожалуйста, имейте в виду, что уникальные характеристики панели регулировки громкости планшета могут привести к перезаписи соответствующих данных на оригинальной боковой панели регулировки громкости</string>
-    <string name="is_use_pad_volume_title">Стиль панели громкости Pad</string>
+    <string name="summary_use_pad_volume">Пожалуйста, имейте в виду, что уникальные характеристики панели регулировки громкости планшета могут привести к перезаписи соответствующих данных на оригинальной боковой панели регулировки громкости</string>
+    <string name="title_use_pad_volume">Стиль панели громкости Pad</string>
     <string name="land_rightOrLeft">Пейзаж занимает всю панель</string>
     <string name="language">Язык</string>
     <string name="list_tile_click_close_summary">При включении клик по стандартной плитке автоматически сворачивает строку состояния</string>
@@ -138,6 +140,8 @@ o(╥﹏╥)o</string>
     <string name="menu_style_2">Стиль 2</string>
     <string name="mipalyer_normal">Общая страница воспроизведения</string>
     <string name="miplayer_expand">Страница расширенных сведений</string>
+    <string name="hyper_home">System launcher</string>
+    <string name="remove_no_support_blur_device">Force recognition as blur-supported device</string>
     <string name="model_pager_setting">Настройки страницы модуля</string>
     <string name="more">Другие настройки </string>
     <string name="navigation_bar">Панель навигации</string>
@@ -158,6 +162,7 @@ o(╥﹏╥)o</string>
     <string name="others">ДРУГИЕ</string>
     <string name="page_user_scroll_title">Включить прокрутку страницы пользователем</string>
     <string name="partial_clear_successful">Частичная очистка прошла успешно！</string>
+    <string name="title_use_power_menu_plus">Expanded power menu</string>
     <string name="power_menu">Меню питания</string>
     <string name="power_menu_extra">Редактирование меню</string>
     <string name="progress_bar">Индикатор выполнения</string>
@@ -200,6 +205,7 @@ o(╥﹏╥)o</string>
     <string name="tile">Стандартная плитка</string>
     <string name="tile_color">Стандартный цвет плитки</string>
     <string name="tile_layout">Раскладка плитки</string>
+    <string name="home">System Launcher</string>
     <string name="tips">⚠️Предупреждение⚠️</string>
     <string name="title">Название</string>
     <string name="title_activity_beta_home_settings">Бета-настройки активности</string>
@@ -221,6 +227,7 @@ o(╥﹏╥)o</string>
     <string name="title_volume_shadow_margin_top_collapsed">Теневое поле сверху</string>
     <string name="title_width">Ширина заголовка</string>
     <string name="toggle_slider_color">Переключение цвета ползунка</string>
+    <string name="expanded_mode">Expanded Mode</string>
     <string name="toggle_slider_value">Значение прогресса</string>
     <string name="translator">Переводчик</string>
     <string name="transparent_navigationBar_background">Удалить полупрозрачный фон</string>
@@ -239,4 +246,25 @@ o(╥﹏╥)o</string>
     <string name="widget_advanced_textures">Расширенные текстуры виджета</string>
     <string name="wordless_mode">Беззвучный режим</string>
     <string name="xposed_desc">Доверьтесь Hyper, вы будете жить вечно!</string>
+    <string name="title_log_level">Log level</string>
+    <string name="summary_log_level">Restart to activate changes in scope</string>
+    <string name="focus_notification_content">click</string>
+    <string name="error_title">An Error Has Been Detected!</string>
+    <string name="send_developer">Please forward this prompt to the developers:</string>
+    <string name="title_detail_volumebar_show_value">Volume bar progress display</string>
+    <string name="title_miplay_detail_header_no_song">Custom text for no playback</string>
+    <string name="title_qs_customize_entry_button_text">Custom edit text</string>
+    <string name="debug_message">Debug info</string>
+    <string name="debug_message_header_text">After a long press or double-click, the content will be automatically copied. You can provide this content as feedback to the developer.</string>
+    <string name="hook_channel">The current hook channel</string>
+    <string name="err_find">Troubleshooting</string>
+    <string name="title_reboot_menus_style">Reboot menus style</string>
+    <string name="notdevelop_content">Development mode status: %1$s</string>
+    <string name="nodevelop_warning">Please try not to select any system applications within the scope of action, as this may prevent your phone from booting up (except for those recommended by this module)</string>
+    <string name="nodevelop_info">You need to select the non-system apps you want to hide within the scope of this module</string>
+    <string name="title_development_settings_enabled">Hide development mode</string>
+    <string name="title_adb_enabled">Hide USB debugging</string>
+    <string name="title_adb_wifi_enabled">Hide wireless debugging</string>
+    <string name="not_developer">I\'m not a Developer</string>
+    <string name="recovery_default">restore defaults</string>
 </resources>

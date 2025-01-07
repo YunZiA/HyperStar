@@ -126,16 +126,17 @@ fun ThirdPage(
         snapshotFlow { scroll.firstVisibleItemScrollOffset }
             .onEach {
 
-                Log.d("ggc", "ThirdPage: ${it}")
+                Log.d("ggc", "ThirdPage: $it")
                 if (scroll.firstVisibleItemIndex > 0){
                     bgAlpha.floatValue = 0f
                     secAlpha.floatValue = 0f
                     mainAlpha.floatValue = 0f
+                    //showBlurs.value = true
                     return@onEach
                 }
                 val alpha = ((bgHeight-it.toFloat().coerceIn(min,bgHeight))/ bgHeight).coerceIn(0f, 1f)
-                showBlurs.value = alpha == 0f
                 bgAlpha.floatValue = alpha
+                showBlurs.value = alpha != 0f
                 val secValue =  ((sec-it.toFloat().coerceIn(min,sec))/ sec).coerceIn(0f, 1f)
 
                 secAlpha.floatValue = secValue

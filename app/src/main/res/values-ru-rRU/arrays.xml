@@ -1,5 +1,9 @@
 <?xml version='1.0' encoding='utf-8' ?>
 <resources>
+    <string-array name="status">
+        <item>Off</item>
+        <item>On</item>
+    </string-array>
     <string-array name="card_tile_name">
         <item>Wi-Fi</item>
         <item>Мобильные сети</item>
@@ -34,6 +38,10 @@
         <item>Система</item>
         <item>Светлый</item>
         <item>Темный</item>
+    </string-array>
+    <string-array name="reboot_menus_style">
+        <item>dialog</item>
+        <item>popup</item>
     </string-array>
     <string-array name="control_center_item_list_name">
         <item>Карточная плитка</item>
@@ -95,20 +103,6 @@
         <item>Wechat деньги</item>
         <item>Alipay сканер</item>
         <item>Alipay деньги</item>
-    </string-array>
-    <string-array name="power_fun_types">
-        <item>null</item>
-        <item>пусто</item>
-        <item>рекавери</item>
-        <item>загрузчик</item>
-        <item>xiaoai</item>
-        <item>скриншот</item>
-        <item>silentMode</item>
-        <item>В самолете</item>
-        <item>wcScan</item>
-        <item>wcCode</item>
-        <item>apScan</item>
-        <item>apCode</item>
     </string-array>
     <string-array name="power_menu_style">
         <item>По умолчанию</item>

@@ -32,6 +32,9 @@ fun isOS2Settings():Boolean{
 fun isOS2Hook():Boolean{
     return XSPUtils.getInt("is_Hook_Channel",if (isOS2()) 1 else 0) == 1
 }
+fun isHookChannel():Int{
+    return XSPUtils.getInt("is_Hook_Channel",if (isOS2()) 1 else 0)
+}
 
 
 

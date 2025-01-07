@@ -43,6 +43,7 @@ import com.yunzia.hyperstar.ui.base.PMiuixSuperSwitch
 import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.base.SuperSpinner
 import com.yunzia.hyperstar.ui.base.SuperWarnDialogArrow
+import com.yunzia.hyperstar.ui.base.XSuperDropdown
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.colorMode
 import com.yunzia.hyperstar.ui.base.dialog.SuperCTDialogDefaults
@@ -171,6 +172,13 @@ fun Settings(
             ) {
                 activity.recreate()
             }
+            XSuperDropdown(
+                title = stringResource(R.string.title_log_level),
+                summary = stringResource(R.string.summary_log_level),
+                dfOpt = 0,
+                option = R.array.log_level,
+                key = "log_level"
+            )
 
             SuperNavHostArrow(
                 title = stringResource(R.string.debug_message),

@@ -116,8 +116,8 @@
     <string name="basics">基础</string>
     <string name="widget_advanced_textures">控件·高级材质</string>
     <string name="is_super_blur_volume_title">音量条·高级材质</string>
-    <string name="is_use_pad_volume_title">平板音量条</string>
-    <string name="is_use_pad_volume_summary">因为平板音量条自身特殊的原因，会覆盖原有侧边音量条的相关数据</string>
+    <string name="title_use_pad_volume">平板音量条</string>
+    <string name="summary_use_pad_volume">因为平板音量条自身特殊的原因，会覆盖原有侧边音量条的相关数据</string>
     <string name="is_use_beta_home_cc_title">解锁部分beta特性</string>
     <string name="is_use_beta_home_cc_summary"><![CDATA[圆角矩形大图标小部件 && OS2设置风格]]></string>
     <string name="volume">音量条</string>
@@ -173,7 +173,7 @@
     <string name="progress_radius_summary">自定义的圆角不会大于背景圆角</string>
     <string name="media_background_style_title">妙播背景样式</string>
     <string name="is_power_menu_nav_show_title">拒绝隐藏小白条</string>
-    <string name="is_use_power_menu_plus_title">扩展电源菜单</string>
+    <string name="title_use_power_menu_plus">扩展电源菜单</string>
     <string name="power_menu">电源菜单</string>
     <string name="title_qs_detail_app_icon_radius">禁止裁切应用图标</string>
     <string name="title_qs_detail_progress_bg_radius">圆角矩形音量进度条</string>
@@ -257,5 +257,7 @@
     <string name="title_adb_enabled">隐藏USB调试</string>
     <string name="title_adb_wifi_enabled">隐藏无线调试</string>
     <string name="not_developer">我tm就不是开发者</string>
+    <string name="title_log_level">日志输出等级</string>
+    <string name="summary_log_level">重启作用域应用生效</string>
 
 </resources>

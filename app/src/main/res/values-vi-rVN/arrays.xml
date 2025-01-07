@@ -1,5 +1,9 @@
 <?xml version='1.0' encoding='utf-8' ?>
 <resources>
+    <string-array name="status">
+        <item>Off</item>
+        <item>On</item>
+    </string-array>
     <string-array name="card_tile_name">
         <item>Wi-fi</item>
         <item>Dữ liệu di động</item>
@@ -34,6 +38,10 @@
         <item>Hệ thống</item>
         <item>Sáng</item>
         <item>Tối</item>
+    </string-array>
+    <string-array name="reboot_menus_style">
+        <item>dialog</item>
+        <item>popup</item>
     </string-array>
     <string-array name="control_center_item_list_name">
         <item>Tiêu đề ô</item>

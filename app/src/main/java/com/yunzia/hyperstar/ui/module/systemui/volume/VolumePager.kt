@@ -40,8 +40,8 @@ fun VolumePager(
 
             if (!isOS2Settings()){
                 XSuperSwitch(
-                    title = stringResource(R.string.is_use_pad_volume_title),
-                    summary = stringResource(R.string.is_use_pad_volume_summary),
+                    title = stringResource(R.string.title_use_pad_volume),
+                    summary = stringResource(R.string.summary_use_pad_volume),
                     key = "is_use_pad_volume"
                 )
             }

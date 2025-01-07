@@ -61,5 +61,15 @@ fun ReferencesPager(
             )
 
         }
+        classes(title = "Unknown") {
+
+            SuperIntentArrow(
+                title = "IAmNotADeveloper",
+                summary = "ReChronoRain",
+                navController = navController,
+                url = "https://github.com/xfqwdsj/IAmNotADeveloper"
+            )
+
+        }
     }
 }

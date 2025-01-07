@@ -44,6 +44,11 @@
         <item>超级省电</item>
         <item>多机联录</item>
     </array>
+    <string-array name="power_menu_style">
+        <item>Default</item>
+        <item>样式1</item>
+        <item>样式2</item>
+    </string-array>
     <string-array name="reboot_menus_style">
         <item>对话框</item>
         <item>弹出式</item>

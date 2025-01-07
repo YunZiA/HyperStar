@@ -81,7 +81,7 @@ fun Home(
                                     Toast.makeText(activity,result,Toast.LENGTH_SHORT).show()
                                 }
                             }
-                                                                     },
+                        },
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
 
@@ -172,10 +172,10 @@ fun Home(
 
 
         }
-        if (isOS2Settings()){
-            classes (
-                title = R.string.other_settings
-            ){
+        classes (
+            title = R.string.other_settings
+        ){
+            if (isOS2Settings()){
                 SuperNavHostArrow(
                     leftIcon = R.drawable.ic_miui_home_settings,
                     title = stringResource(R.string.hyper_home),
@@ -183,15 +183,15 @@ fun Home(
                     route = PagerList.HOME
 
                 )
-                SuperNavHostArrow(
-                    leftIcon = R.drawable.not_developer,
-                    title = stringResource(R.string.not_developer),
-                    navController = navController,
-                    route = PagerList.NOTDEVELOP
-
-                )
 
             }
+            SuperNavHostArrow(
+                leftIcon = R.drawable.not_developer,
+                title = stringResource(R.string.not_developer),
+                navController = navController,
+                route = PagerList.NOTDEVELOP
+
+            )
 
         }
 

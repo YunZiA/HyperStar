@@ -6,6 +6,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.Button
+import com.yunzia.hyperstar.ui.base.colorMode
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import top.yukonga.miuix.kmp.basic.Text
 
@@ -49,6 +51,12 @@ fun EnterPager(show: MutableState<Boolean>, pagerState: PagerState) {
         animationSpec = tween(durationMillis = 1150,easing = easing),
         label = "alpha"
     )
+    val darkTheme = isSystemInDarkTheme()
+    val logo = when (colorMode.intValue) {
+        1 -> painterResource(R.drawable.hyperstar2)
+        2 -> painterResource(R.drawable.hyperstar2_dark)
+        else -> if (darkTheme) painterResource(R.drawable.hyperstar2_dark) else painterResource(R.drawable.hyperstar2)
+    }
 
     LaunchedEffect(
         pagerState.currentPage
@@ -71,7 +79,7 @@ fun EnterPager(show: MutableState<Boolean>, pagerState: PagerState) {
         ) {
             Image(
                 contentDescription = "",
-                painter = painterResource(R.drawable.hyperstar2),
+                painter = logo,
                 modifier = Modifier
                     .width(260.dp)
             )

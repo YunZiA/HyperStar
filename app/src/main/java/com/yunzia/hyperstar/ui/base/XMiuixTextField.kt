@@ -35,7 +35,6 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
-import top.yukonga.miuix.kmp.utils.squircleshape.CornerSmoothing
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 @Composable
@@ -211,7 +210,7 @@ fun MTextField(
         interactionSource = interactionSource,
         cursorBrush = SolidColor(colorScheme.primary),
         decorationBox = { innerTextField ->
-            top.yukonga.miuix.kmp.basic.Box(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
@@ -228,7 +227,7 @@ fun MTextField(
                     if (leadingIcon != null) {
                         leadingIcon()
                     }
-                    top.yukonga.miuix.kmp.basic.Box(
+                    Box(
                         modifier = Modifier
                             .weight(1f)
                             .then(paddingModifier)
@@ -241,7 +240,7 @@ fun MTextField(
                             modifier = Modifier.then(labelOffset),
                             color = labelColor
                         )
-                        top.yukonga.miuix.kmp.basic.Box(
+                        Box(
                             modifier = Modifier.then(innerTextOffset),
                             contentAlignment = Alignment.BottomStart
                         ) {

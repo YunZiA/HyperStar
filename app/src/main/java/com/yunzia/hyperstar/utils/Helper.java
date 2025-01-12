@@ -11,7 +11,7 @@ public class Helper {
         return false;
     }
 
-    public static boolean isRoot = getRootPermission() != 0;
+    public static boolean isRoot = getRootPermission() == 0;
 
     public static int getRootPermission(){
         Process process = null;
@@ -80,6 +80,23 @@ public class Helper {
             }
         }
         return output.toString();
+    }
+    public static int run(String command){
+        Process process = null;
+        int exitCode = -1;
+        try {
+            process = Runtime.getRuntime().exec(command);
+            exitCode = process.waitFor();
+        } catch (IOException e) {
+            // Handle IOException
+        } catch (InterruptedException e) {
+            // Handle InterruptedException
+        } finally {
+            if (process != null) {
+                process.destroy();
+            }
+        }
+        return exitCode;
     }
 
 

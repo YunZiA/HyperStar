@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.ui.base.modifier
 
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
@@ -9,31 +8,32 @@ import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeChild
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 
-fun Modifier.blur(hazeState: HazeState) = this.haze(hazeState)
+fun Modifier.blur(hazeState: HazeState) = this.hazeSource(hazeState)
+
 
 fun Modifier.showBlur(hazeState: HazeState) = composed {
 
     val containerColor: Color = colorScheme.background
-    val alpha = 0.6f
-    val blurRadius: Dp = 30.dp
+    val alpha = 0.67f
+    val blurRadius: Dp = 25.dp
     val noiseFactor = 0f
-    val hazeStyle = remember(containerColor, alpha, blurRadius, noiseFactor) {
-        HazeStyle(
-            backgroundColor = containerColor,
+    val hazeStyle = HazeStyle(
+            backgroundColor =  containerColor,
             tint = HazeTint(containerColor.copy(alpha)),
             blurRadius = blurRadius,
-            //noiseFactor = noiseFactor
+            noiseFactor = noiseFactor
         )
-    }
 
-    this.hazeChild(
+
+    this.hazeEffect(
         hazeState,
         hazeStyle
+
     )
 
 }

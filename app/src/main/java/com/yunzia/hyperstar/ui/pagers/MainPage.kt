@@ -4,6 +4,7 @@ import android.view.HapticFeedbackConstants
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -58,7 +59,6 @@ import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.isOS2Settings
 import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.launch
-import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.HorizontalPager
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ListPopup
@@ -123,13 +123,12 @@ fun MainPager(
     val context = LocalContext.current
     val activity = context as MainActivity
     val rebootStyle = activity.rebootStyle
-
     XScaffold(
         modifier = Modifier.fillMaxSize(),
         popupHost = { },
         topBar = {
             TopAppBar(
-                modifier = if (currentPage == 2 && showBlurs.value) Modifier else Modifier.showBlur(hazeState),
+                modifier = if (currentPage == 2 && showBlurs.value) Modifier else  Modifier.showBlur(hazeState),
                 color = Color.Transparent,
                 title = pagerTitle,
                 largeTitle = if (currentPage == 2) "" else pagerTitle,
@@ -140,7 +139,6 @@ fun MainPager(
 
                     }
                     IconButton(
-
                         modifier = Modifier.padding(end = 12.dp),
                         onClick = {
                             view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
@@ -159,17 +157,22 @@ fun MainPager(
 
         },
         bottomBar = {
-            NavigationBar(
+            Box(
                 modifier = Modifier.showBlur(hazeState),
-                color = Color.Transparent,
-                items = items,
-                selected = currentPage,
-                onClick = { index ->
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(index)
+
+            ) {
+                NavigationBar(
+                    color = Color.Transparent,
+                    items = items,
+                    selected = currentPage,
+                    onClick = { index ->
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
                     }
-                }
-            )
+                )
+
+            }
 
         },
     ) { padding ->
@@ -264,7 +267,9 @@ fun MainPagerByThree(
             contentWindowInsets = WindowInsets.navigationBars,
             topBar = {
                 TopAppBar(
-                    modifier = if (currentPage == 2 && !showBlurs.value) Modifier else Modifier.showBlur(hazeState),
+                    modifier = if (currentPage == 2 && !showBlurs.value) Modifier else Modifier.showBlur(
+                        hazeState
+                    ),
                     color = Color.Transparent,
                     title = pagerTitle,
                     largeTitle = if (currentPage == 2) "" else pagerTitle,

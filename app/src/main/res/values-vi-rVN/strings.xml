@@ -259,4 +259,22 @@
     <string name="installed">Installed</string>
     <string name="fast_reboot_systemui_summary">Would you like to quickly restart the SystemUI?</string>
     <string name="empty_device">Empty Device Status</string>
+    <string name="no_active_des_sum">Please go to the XP Module Manager to activate it.</string>
+    <string name="welcome_debug_info_tip">If the module fails to activate, copy the following text by double-clicking or long-pressing and send it to developers for help.</string>
+    <string name="open_lsp_manager">Open LSP Manager</string>
+    <string name="exit">Exit</string>
+    <string name="root_access">Root Access</string>
+    <string name="statement">Statement:</string>
+    <string name="root_statement">ROOT permissions are solely used for restarting default scope applications and initiating the LSP manager, with no additional operations performed. Please rest assured in granting them!</string>
+    <string name="no_root_access_obtained">No root access obtained!</string>
+    <string name="auth_next">I\'ve authorized. Next</string>
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
+    <string name="set_language">Set Language</string>
+    <string name="import_from_local">Import from Local</string>
+    <string name="data_import">Data Import</string>
+    <string name="basic_settings">Basic Settings</string>
+    <string name="title_hook_channel">Hook Channel</string>
+    <string name="setup_successful">Setup successful!</string>
+    <string name="enter_module">Enter Module</string>
 </resources>

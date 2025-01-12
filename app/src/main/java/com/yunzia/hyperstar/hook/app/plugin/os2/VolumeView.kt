@@ -470,8 +470,6 @@ class VolumeView: Hooker() {
 
         val MiuiVolumeSeekBar = XposedHelpers.findClass("com.android.systemui.miui.volume.MiuiVolumeSeekBar",classLoader)
 
-
-
         XposedHelpers.findAndHookMethod(MiuiVolumeSeekBar,"onTouchEvent",MotionEvent::class.java,object :XC_MethodHook(){
             override fun afterHookedMethod(param: MethodHookParam?) {
                 super.afterHookedMethod(param)
@@ -484,7 +482,6 @@ class VolumeView: Hooker() {
                     val mMoveY = XposedHelpers.getFloatField(thisObj, "mMoveY")
                     if (longClick){
                         thisObj as View
-                        //thisObj.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                         XposedHelpers.callMethod(mSeekBarOnclickListener, "onClick")
                     }
                 }
@@ -504,13 +501,11 @@ class VolumeView: Hooker() {
                         }
                         1-> {
                             longClick = false
-                            handler.removeCallbacks(mLongPressRunnable)
                             XposedHelpers.setLongField(thisObj,"mCurrentMS",0L)
                         }
 
                         2 -> {
                             longClick = false
-                            handler.removeCallbacks(mLongPressRunnable)
 
 
                         }

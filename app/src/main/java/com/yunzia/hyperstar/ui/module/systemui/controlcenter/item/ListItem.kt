@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.ui.base.dialog.MSuperDialog
-import yunzia.ui.Card
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemDropdown
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemSlider
 import com.yunzia.hyperstar.utils.SPUtils
@@ -31,6 +30,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
+import yunzia.ui.Card
 
 
 @Composable
@@ -127,7 +127,7 @@ fun ListItem(
                         .padding(vertical = 4.dp, horizontal = 4.dp),
                     shape = SquircleShape(18.dp),
                     color = colorScheme.secondary,
-                    shadowElevation = 2f,
+                    shadowElevation = 2.dp,
                     content = {}
                 )
             }

@@ -86,9 +86,6 @@ private fun getRootManagerInfo(
     }
     noRoot.value = rootList
 
-
-
-
     return appBeanList
 }
 
@@ -109,22 +106,22 @@ fun GoRootPager(
         AppInfo(
             label = "Alpha",
             packageName = "io.github.vvb2060.magisk",
-            icon =  mContext.resources.getDrawable(R.drawable.alpha)
+            icon = mContext.resources.getDrawable(R.drawable.alpha)
         ),
         AppInfo(
             label = "Kitsune Mask",
             packageName = "io.github.huskydg.magisk",
-            icon =  mContext.resources.getDrawable(R.drawable.kitsune_mask)
+            icon = mContext.resources.getDrawable(R.drawable.kitsune_mask)
         ),
         AppInfo(
             label = "KernelSU",
             packageName = "me.weishu.kernelsu",
-            icon =  mContext.resources.getDrawable(R.drawable.kernelsu)
+            icon = mContext.resources.getDrawable(R.drawable.kernelsu)
         ),
         AppInfo(
             label = "APatch",
             packageName = "me.bmax.apatch",
-            icon =  mContext.resources.getDrawable(R.drawable.apatch)
+            icon = mContext.resources.getDrawable(R.drawable.apatch)
         )
     )
 
@@ -137,7 +134,7 @@ fun GoRootPager(
     LaunchedEffect(Unit) {
         coroutineScope.launch {
             val result = withContext(Dispatchers.IO) {
-                getRootManagerInfo(mContext,root,noRoot)
+                getRootManagerInfo(mContext, root, noRoot)
             }
             rootList.value = result
         }

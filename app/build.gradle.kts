@@ -1,27 +1,66 @@
 
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Properties
 
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.serialization)
 
     id ("kotlin-parcelize")
 }
 
 android {
 
-    fun getVersionCode():Int{
-        val formatter = DateTimeFormatter.ofPattern("MMddHHm")
-        val createTime = LocalDateTime.now().format(formatter)
-        return createTime.toInt()
+    val versionFile = file("version.properties")
+    val properties = Properties().apply {
+        load(FileInputStream(versionFile))
     }
-    fun getVersionName(version:String):String{
-        val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHm")
-        val createTime = LocalDateTime.now().format(formatter)
-        return "${version}_$createTime"
+
+    fun getVersionCode():Int {
+        if (versionFile.canRead()) {
+
+            val versionName = properties["VERSION_NAME"].toString().split(".")[0]
+            val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+            val createTime = LocalDateTime.now().format(formatter).takeLast(  6)
+            val baseVersionCode = "$versionName$createTime"
+            var versionCode = "${baseVersionCode}00".toInt()
+            val runTasks = gradle.startParameter.taskNames
+            if (":app:assembleRelease" in runTasks){
+                val lastVersionCode = properties["VERSION_CODE"].toString()
+                if (lastVersionCode.take(7) == baseVersionCode){
+                    versionCode = lastVersionCode.toInt()+1
+                }
+                System.out.println("> Configure project :app:assembleRelease versionCode = $versionCode")
+
+                properties["VERSION_CODE"] = versionCode.toString()
+                FileOutputStream(versionFile).use { output ->
+                    properties.store(output, null)
+                }
+            }
+
+            return versionCode
+        } else {
+            throw GradleException("Could not find version.properties!")
+        }
+    }
+
+    fun getVersionName():String{
+        if (versionFile.canRead()) {
+
+            val versionName = properties["VERSION_NAME"].toString()
+            val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHm")
+            val createTime = LocalDateTime.now().format(formatter)
+            return "${versionName}_$createTime"
+        } else {
+            throw GradleException("Could not find version.properties!")
+        }
+
     }
     namespace = "com.yunzia.hyperstar"
     compileSdk = 35
@@ -31,7 +70,7 @@ android {
         minSdk = 33
         targetSdk = 35
         versionCode = getVersionCode()
-        versionName = getVersionName("2.0.0")
+        versionName = getVersionName()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -39,15 +78,19 @@ android {
         }
     }
 
-    android.applicationVariants.all {
+    applicationVariants.all {
         outputs.all {
             if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
                 val config = project.android.defaultConfig
                 val appName = "HyperStar"
                 val versionName = "v"+config.versionName
+
                 this.outputFileName = "${appName}_${versionName}_dev.apk"
             }
         }
+
+
+
     }
 
     buildTypes {
@@ -99,6 +142,7 @@ dependencies {
     implementation(libs.haze)
 
     implementation (libs.androidx.palette.ktx)
+    implementation(libs.kotlinx.serialization.json)
 
     //implementation ("com.godaddy.android.colorpicker:compose-color-picker-android:0.7.0")
     implementation(libs.github.colormath.ext.jetpack.compose)

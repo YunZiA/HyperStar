@@ -2,7 +2,9 @@ package com.yunzia.hyperstar.ui.base
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,12 +27,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
-import top.yukonga.miuix.kmp.utils.squircleshape.CornerSmoothing
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 
 @Composable
@@ -58,6 +59,38 @@ fun MiniTextButton(
             fontSize = fontSize,
             fontWeight = FontWeight.SemiBold,
             text = text
+        )
+    }
+}
+
+@Composable
+fun Button(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    cornerRadius: Dp = ButtonDefaults.ConorRadius,
+    minWidth: Dp = ButtonDefaults.MinWidth,
+    minHeight: Dp = ButtonDefaults.MinHeight,
+    colors: Color = colorScheme.secondaryVariant,
+    insideMargin: PaddingValues = ButtonDefaults.InsideMargin,
+    content: @Composable RowScope.() -> Unit
+) {
+    Surface(
+        onClick = {
+            onClick()
+        },
+        enabled = enabled,
+        modifier = modifier.semantics { role = Role.Button },
+        shape = SmoothRoundedCornerShape(cornerRadius,0.8f),
+        color = colors
+    ) {
+        Row(
+            Modifier
+                .defaultMinSize(minWidth = minWidth, minHeight = minHeight)
+                .padding(insideMargin),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            content = content
         )
     }
 }

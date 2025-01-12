@@ -7,9 +7,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.MainActivity
-import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
+import com.yunzia.hyperstar.utils.PreferencesUtil
 import kotlinx.coroutines.delay
 
 @Composable
@@ -46,6 +46,7 @@ fun FirstDialog(
         }
 
     }
+
 
 
     //VerDialog(verShow,navController)

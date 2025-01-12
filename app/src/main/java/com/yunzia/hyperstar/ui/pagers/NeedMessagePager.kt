@@ -2,6 +2,7 @@ package com.yunzia.hyperstar.ui.pagers
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,7 +28,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.NavPager
-import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.getAndroidVersion
 import com.yunzia.hyperstar.utils.getDeviceName
@@ -40,7 +40,6 @@ import com.yunzia.hyperstar.utils.isBetaOs
 import com.yunzia.hyperstar.utils.isFold
 import com.yunzia.hyperstar.utils.isOS2Settings
 import com.yunzia.hyperstar.utils.isPad
-import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme

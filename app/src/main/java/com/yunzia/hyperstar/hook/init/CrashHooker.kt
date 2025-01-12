@@ -56,6 +56,7 @@ class CrashHooker : InitHooker() {
                             + " long: " + longMsg + " stack: " + stackTrace + " time: " + timeMillis + " pid: " + callingPid + " uid: " + callingUid)
                 )
                 if (mContext.packageName == "com.android.systemui"){
+                    Settings.System.putString(mContext.contentResolver, "hyperstar_crash_record_data", mContext.packageName);
 
                 }
 

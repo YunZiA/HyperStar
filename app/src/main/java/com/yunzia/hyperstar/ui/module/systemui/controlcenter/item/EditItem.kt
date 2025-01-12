@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yunzia.hyperstar.ui.base.dialog.MSuperDialog
-import yunzia.ui.Card
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemSlider
 import com.yunzia.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.basic.Card
@@ -30,6 +29,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
+import yunzia.ui.Card
 
 @Composable
 fun EditItem(
@@ -108,7 +108,7 @@ fun EditItem(
                 },
             shape = SquircleShape(18.dp),
             color = colorScheme.secondary,
-            shadowElevation = 2f,
+            shadowElevation = 2.dp,
             content = {}
         )
         Text(

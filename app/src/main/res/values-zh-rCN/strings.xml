@@ -259,5 +259,23 @@
     <string name="not_developer">我tm就不是开发者</string>
     <string name="title_log_level">日志输出等级</string>
     <string name="summary_log_level">重启作用域应用生效</string>
+    <string name="no_active_des_sum">请前往XP模块管理器激活</string>
+    <string name="welcome_debug_info_tip">若您遇到本模块无法激活的情况，请通过双击或长按以下文本内容进行复制，随后将其反馈给开发者以寻求帮助</string>
+    <string name="open_lsp_manager">打开LSP管理器</string>
+    <string name="exit">退出应用</string>
+    <string name="root_access">Root权限</string>
+    <string name="statement">声明：</string>
+    <string name="root_statement">ROOT权限仅用于重启默认作用域应用以及启动LSP管理器，并不会有任何的额外操作，请您放心授予！</string>
+    <string name="no_root_access_obtained">未获取到root权限!</string>
+    <string name="auth_next">我已授权，下一步</string>
+    <string name="skip">跳过</string>
+    <string name="next">继续</string>
+    <string name="set_language">设置语言</string>
+    <string name="import_from_local">从本地导入</string>
+    <string name="data_import">数据导入</string>
+    <string name="basic_settings">基础设置</string>
+    <string name="title_hook_channel">Hook通道</string>
+    <string name="setup_successful">设置成功！</string>
+    <string name="enter_module">进入模块</string>
 
 </resources>

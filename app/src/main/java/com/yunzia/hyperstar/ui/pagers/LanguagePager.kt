@@ -60,7 +60,7 @@ fun LanguagePager(
 }
 
 
-fun LazyListScope.languageItem(
+private fun LazyListScope.languageItem(
     activity : MainActivity,
     language:String,
     index:Int,

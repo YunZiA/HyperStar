@@ -4,16 +4,16 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.chaos.hyperstar",
+  "applicationId": "com.yunzia.hyperstar",
   "variantName": "debug",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 1,
-      "versionName": "1.0",
-      "outputFile": "HyperStar_v1.0_2024082913_test.apk"
+      "versionCode": 1225010900,
+      "versionName": "2.0.0_20250109060",
+      "outputFile": "HyperStar_v2.0.0_20250109060_dev.apk"
     }
   ],
   "elementType": "File",

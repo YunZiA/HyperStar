@@ -10,8 +10,11 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -50,35 +53,37 @@ import com.yunzia.hyperstar.ui.base.nav.pagersJson
 import com.yunzia.hyperstar.ui.base.showFPSMonitor
 import com.yunzia.hyperstar.ui.module.NotDeveloperPager
 import com.yunzia.hyperstar.ui.module.home.HomePage
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.list.QSListColorPager
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.list.QsListViewPager
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.MediaSettingsPager
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.app.MediaAppSettingsPager
-import com.yunzia.hyperstar.ui.module.systemui.other.SystemUIOtherPager
-import com.yunzia.hyperstar.ui.module.systemui.volume.VolumePager
-import com.yunzia.hyperstar.ui.pagers.TranslatorPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterColorPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterListPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.card.QSCardColorPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.card.QSCardListPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.devicecenter.DeviceCenterColorPager
+import com.yunzia.hyperstar.ui.module.systemui.controlcenter.list.QSListColorPager
+import com.yunzia.hyperstar.ui.module.systemui.controlcenter.list.QsListViewPager
+import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.MediaSettingsPager
+import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.app.MediaAppSettingsPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.slider.ToggleSliderColorsPager
+import com.yunzia.hyperstar.ui.module.systemui.other.SystemUIOtherPager
 import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.PowerMenuStylePager
 import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.SelectFunPager
+import com.yunzia.hyperstar.ui.module.systemui.volume.VolumePager
 import com.yunzia.hyperstar.ui.pagers.DonationPage
 import com.yunzia.hyperstar.ui.pagers.FPSMonitor
 import com.yunzia.hyperstar.ui.pagers.GoRootPager
 import com.yunzia.hyperstar.ui.pagers.LanguagePager
-import com.yunzia.hyperstar.ui.pagers.ReferencesPager
 import com.yunzia.hyperstar.ui.pagers.MainPager
 import com.yunzia.hyperstar.ui.pagers.MainPagerByThree
 import com.yunzia.hyperstar.ui.pagers.NeedMessagePager
+import com.yunzia.hyperstar.ui.pagers.ReferencesPager
 import com.yunzia.hyperstar.ui.pagers.SettingsShowPage
-import com.yunzia.hyperstar.ui.pagers.dialog.FirstDialog
+import com.yunzia.hyperstar.ui.pagers.TranslatorPager
+import com.yunzia.hyperstar.ui.welcome.ActivePage
+import com.yunzia.hyperstar.ui.welcome.WelcomePager
+import com.yunzia.hyperstar.utils.Helper.isModuleActive
+import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.isFold
 import com.yunzia.hyperstar.utils.isPad
-import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -95,6 +100,9 @@ fun App(){
     val parentRoute = remember { mutableStateOf(PagerList.MAIN) }
     val pagerState = rememberPagerState(initialPage = 0 ,pageCount = { 3 })
 
+    val welcome = remember { mutableStateOf(PreferencesUtil.getBoolean("is_first_use",true)) }
+    val easing  = CubicBezierEasing(.42f,0f,0.26f,.85f)
+
     val navController = rememberNavController()
 
     LaunchedEffect(navController) {
@@ -104,69 +112,88 @@ fun App(){
     }
 
     XScaffold {
-        BoxWithConstraints {
-            FirstDialog(navController)
-            Log.d("ggc", "App:  $maxWidth")
+        if (!isModuleActive()){
+            ActivePage()
+            return@XScaffold
+        }
 
-            val layoutType = remember { mutableIntStateOf(1) }
+        AnimatedVisibility(
+            !welcome.value,
+            enter = fadeIn(animationSpec = tween(300, easing = easing)) + scaleIn(animationSpec = tween(300, easing = easing),initialScale = 0.9f),
+            exit = fadeOut()+scaleOut()
+        ) {
+            BoxWithConstraints {
+                //FirstDialog(navController)
+                Log.d("ggc", "App:  $maxWidth")
 
-            layoutType.intValue = if (isFold()){
-                if (maxWidth > 480.dp && Settings.Global.getInt(context.contentResolver, "device_posture", 0) != 1){
-                    2
-                }else{
-                    1
-                }
-            }else if (isPad()){
-                if (isLandscape){
-                    3
-                }else{
-                    1
-                }
-            }else{
-                if (isLandscape && maxWidth > 480.dp){
-                    2
-                }else{
-                    1
-                }
-            }
+                val layoutType = remember { mutableIntStateOf(1) }
 
-            when(layoutType.intValue){
-                1->{
-                    OneLayout(
-                        pagerState,
-                        navController,
-                        parentRoute
+                layoutType.intValue = if (isFold()){
+                    if (maxWidth > 480.dp && Settings.Global.getInt(context.contentResolver, "device_posture", 0) != 1){
+                        2
+                    }else{
+                        1
+                    }
+                }else if (isPad()){
+                    if (isLandscape){
+                        3
+                    }else{
+                        1
+                    }
+                }else{
+                    if (isLandscape && maxWidth > 480.dp){
+                        2
+                    }else{
+                        1
+                    }
+                }
+
+                when(layoutType.intValue){
+                    1->{
+                        OneLayout(
+                            pagerState,
+                            navController,
+                            parentRoute
+                        )
+
+                    }
+                    2->{
+                        TwoLayout(
+                            pagerState,
+                            navController,
+                            parentRoute
+                        )
+
+                    }
+                    3->{
+                        ExpandLayout(
+                            pagerState,
+                            navController,
+                            parentRoute
+                        )
+                    }
+                }
+
+                AnimatedVisibility(
+                    showFPSMonitor.value
+                ) {
+                    FPSMonitor(
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .padding(horizontal = 28.dp)
                     )
 
                 }
-                2->{
-                    TwoLayout(
-                        pagerState,
-                        navController,
-                        parentRoute
-                    )
-
-                }
-                3->{
-                    ExpandLayout(
-                        pagerState,
-                        navController,
-                        parentRoute
-                    )
-                }
             }
 
-            AnimatedVisibility(
-                showFPSMonitor.value
-            ) {
-                FPSMonitor(
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .padding(horizontal = 28.dp)
-                )
 
-            }
 
+        }
+        AnimatedVisibility(
+            welcome.value,
+            exit = fadeOut(animationSpec = tween(300, easing = easing))+ scaleOut(animationSpec = tween(300, easing = easing),targetScale = 0.9f)
+        ) {
+            WelcomePager(welcome)
         }
 
     }

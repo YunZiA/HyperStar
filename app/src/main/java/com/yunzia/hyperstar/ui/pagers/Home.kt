@@ -109,7 +109,7 @@ fun Home(
                 Spacer(Modifier.height(12.dp))
 
             }
-            if (isRoot){
+            if (!isRoot){
                 Classes(
                     modifier = Modifier.bounceAnimN()
                 ){

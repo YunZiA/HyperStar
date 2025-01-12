@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.module.systemui.other.powermenu
 
+//import com.chaos.hyperstar.R
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -14,6 +15,7 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -44,15 +46,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.FunList
-//import com.chaos.hyperstar.R
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.Classes
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.SuperArgNavHostArrow
 import com.yunzia.hyperstar.ui.base.TopButton
-import com.yunzia.hyperstar.utils.SPUtils
 import com.yunzia.hyperstar.utils.Helper
-import top.yukonga.miuix.kmp.basic.Box
+import com.yunzia.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape

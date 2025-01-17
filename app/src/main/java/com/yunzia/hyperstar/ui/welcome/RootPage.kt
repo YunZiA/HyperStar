@@ -6,6 +6,14 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
 import android.view.HapticFeedbackConstants
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,22 +28,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
@@ -47,7 +57,6 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Icon
 import com.google.accompanist.drawablepainter.DrawablePainter
-import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.Button
 import com.yunzia.hyperstar.ui.base.enums.EventState
@@ -56,7 +65,7 @@ import com.yunzia.hyperstar.ui.base.modifier.bounceScale
 import com.yunzia.hyperstar.ui.miuiStrongToast.MiuiStrongToast
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.app.AppInfo
 import com.yunzia.hyperstar.utils.Helper
-import com.yunzia.hyperstar.utils.PreferencesUtil
+import com.yunzia.hyperstar.utils.root
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -64,7 +73,6 @@ import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.HorizontalDivider
 
 
 @SuppressLint("QueryPermissionsNeeded")
@@ -111,59 +119,31 @@ private fun getRootManagerInfo(
 fun RootPage(pagerState: PagerState) {
     val view = LocalView.current
     val coroutineScope = rememberCoroutineScope()
-    val selectedItem = remember { mutableIntStateOf(PreferencesUtil.getInt("app_language",0)) }
-    val activity = LocalContext.current as MainActivity
 
     val mContext = LocalContext.current
     ///val rootList = getRootManagerInfo(mContext)
-    val root = listOf(
-        AppInfo(
-            label = "Magisk",
-            packageName = "com.topjohnwu.magisk",
-            icon = mContext.resources.getDrawable(R.drawable.magisk)
-        ),
-        AppInfo(
-            label = "Alpha",
-            packageName = "io.github.vvb2060.magisk",
-            icon =  mContext.resources.getDrawable(R.drawable.alpha)
-        ),
-        AppInfo(
-            label = "Kitsune Mask",
-            packageName = "io.github.huskydg.magisk",
-            icon =  mContext.resources.getDrawable(R.drawable.kitsune_mask)
-        ),
-        AppInfo(
-            label = "KernelSU",
-            packageName = "me.weishu.kernelsu",
-            icon =  mContext.resources.getDrawable(R.drawable.kernelsu)
-        ),
-        AppInfo(
-            label = "APatch",
-            packageName = "me.bmax.apatch",
-            icon =  mContext.resources.getDrawable(R.drawable.apatch)
-        )
-    )
+
 
     val noRoot = remember { mutableStateOf<List<AppInfo>?>(null) }
+    val isLoading = remember { mutableStateOf(true) }
 
     val rootList = remember { mutableStateOf<ArrayList<AppInfo>?>(null) }
     LaunchedEffect(pagerState.currentPage) {
 
         if (pagerState.currentPage == 1){
             Helper.isRoot
-        }
-    }
 
-    LaunchedEffect(Unit) {
-
-        coroutineScope.launch {
-            val result = withContext(Dispatchers.IO) {
-                getRootManagerInfo(mContext,root,noRoot)
+            coroutineScope.launch {
+                val result = withContext(Dispatchers.IO) {
+                    getRootManagerInfo(mContext,root(mContext),noRoot)
+                }
+                rootList.value = result
+                isLoading.value = false
             }
-            rootList.value = result
-        }
 
+        }
     }
+
     Column (
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -201,61 +181,95 @@ fun RootPage(pagerState: PagerState) {
             ,
             modifier = Modifier
                 .padding(horizontal = 36.dp)
-                .padding(top = 0.dp, bottom = 13.dp),
+                .padding(top = 0.dp, bottom = 10.dp),
             fontSize = 13.sp,
             color = colorScheme.onSurfaceVariantSummary,
             fontWeight = FontWeight.Medium,
             style = TextStyle(textIndent = TextIndent(1.8.em, 0.em))
         )
-        HorizontalDivider(
+
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 28.dp),0.6.dp,
-            colorScheme.dividerLine)
-        LazyColumn(modifier = Modifier
             .weight(1f)
-            .padding(bottom = 10.dp)) {
+            .padding(bottom = 10.dp)
 
-            item {
-                Text(
-                    stringResource(R.string.installed),
+        ){
+
+            this@Column.AnimatedVisibility(
+                isLoading.value,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Column(
                     modifier = Modifier
-                        .padding(horizontal = 36.dp)
-                        .padding(top = 6.dp),
-                    color = colorResource(R.color.class_name_color),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                )
-            }
-            rootList.value?.forEach {
-                item {
-                    AppItem(mContext,it)
-                }
-            }
+                        .padding(bottom = 0.dp)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
 
-            item {
-                Text(
-                    stringResource(R.string.uninstalled),
-                    modifier = Modifier
-                        .padding(horizontal = 36.dp)
-                        .padding(top = 18.dp),
-                    color = colorScheme.onBackgroundVariant,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                )
-            }
+                    ShowLoading()
 
-            noRoot.value?.forEach {
 
-                item {
-                    AppItem(mContext,it)
                 }
 
             }
 
+            this@Column.AnimatedVisibility(
+                !isLoading.value,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+
+                LazyColumn() {
+
+                    item {
+                        Text(
+                            stringResource(R.string.installed),
+                            modifier = Modifier
+                                .padding(horizontal = 36.dp)
+                                .padding(top = 4.dp),
+                            color = colorResource(R.color.class_name_color),
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                        )
+                    }
+                    rootList.value?.forEach {
+                        item {
+                            AppItem(mContext,it)
+                        }
+                    }
+
+                    item {
+                        Text(
+                            stringResource(R.string.uninstalled),
+                            modifier = Modifier
+                                .padding(horizontal = 36.dp)
+                                .padding(top = 18.dp),
+                            color = colorScheme.onBackgroundVariant,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                        )
+                    }
+
+                    noRoot.value?.forEach {
+
+                        item {
+                            AppItem(mContext,it)
+                        }
+
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(4.dp))
+                    }
 
 
+
+                }
+            }
         }
+
+
         Button(
             modifier = Modifier
                 .fillMaxWidth()
@@ -314,6 +328,39 @@ fun RootPage(pagerState: PagerState) {
 
     }
 
+}
+
+
+@Composable
+private fun ShowLoading() {
+    val rotation = remember { Animatable(0f) }
+    // 开启旋转动画
+    val isRotating = true
+    LaunchedEffect(isRotating) {
+        launch {
+            rotation.animateTo(
+                targetValue = 360f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(
+                        durationMillis = 400,
+                        easing = LinearEasing
+                    ),
+                    repeatMode = RepeatMode.Restart
+                )
+            )
+        }
+    }
+
+    // 旋转的图片 - rotate(rotation.value)
+    Image(
+        colorFilter = ColorFilter.tint(colorScheme.onSurface),
+        painter = painterResource(id = R.drawable.loading_progress),
+        contentDescription = null,
+        modifier = Modifier
+            .wrapContentSize()
+            .padding(15.dp)
+            .rotate(rotation.value)
+    )
 }
 
 @Composable

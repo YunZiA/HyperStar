@@ -1,30 +1,30 @@
 package com.yunzia.hyperstar.hook.init;
 
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-
-import android.content.res.XModuleResources;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 
+import com.yunzia.hyperstar.hook.app.systemui.os2.AddCatPaw;
 import com.yunzia.hyperstar.hook.app.systemui.os2.NavigationBarBackground;
 import com.yunzia.hyperstar.hook.app.systemui.os2.QSHeaderView;
 import com.yunzia.hyperstar.hook.base.Init;
 import com.yunzia.hyperstar.hook.base.InitHooker;
-
-import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 
 @Init(packageName = "com.android.systemui")
 public class SystemUIHookForOS2 extends InitHooker {
 
     private final PluginHookForOS2 pluginHookForOS2 = new PluginHookForOS2();
     private final QSHeaderView qsHeaderView = new QSHeaderView();
+    private final AddCatPaw addCatPaw = new AddCatPaw();
 
     @Override
     public void initResources() {
-        initResource(pluginHookForOS2);
-        if (!resparam.packageName.equals(mPackageName)) return;
+        if (!resparam.packageName.equals(mPackageName)){
+            initResource(pluginHookForOS2);
+            return;
+        }
         initResource(qsHeaderView);
+        //initResource(addCatPaw);
 
     }
 
@@ -33,6 +33,7 @@ public class SystemUIHookForOS2 extends InitHooker {
         initHooker(new NavigationBarBackground());
         initHooker(qsHeaderView);
         initHooker(pluginHookForOS2);
+        //initHooker(addCatPaw);
 
         //doTestHook();
     }

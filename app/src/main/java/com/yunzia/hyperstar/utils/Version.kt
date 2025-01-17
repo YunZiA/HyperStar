@@ -16,14 +16,14 @@ fun getMarketName(): String = SystemProperties.get("ro.product.marketname")
 
 fun getOSVersion()= SystemProperties.getInt("ro.mi.os.version.code", 1)
 
-fun isBetaOs() = ReflectUtils.getStaticFieldValue(Build::class.java, "IS_DEV_VERSION", Boolean::class.java,false)
+fun isBetaOS() = ReflectUtils.getStaticFieldValue(Build::class.java, "IS_DEV_VERSION", Boolean::class.java,false)
 
 fun isFold()= SystemProperties.getInt("persist.sys.muiltdisplay_type", 0) == 2
 
 fun isPad()= SystemProperties.get("ro.build.characteristics").contains("tablet")
 
 fun isOS2():Boolean{
-    if (isBetaOs()) return false
+    if (isBetaOS()) return false
     return getOSVersion() == 2
 }
 fun isOS2Settings():Boolean{

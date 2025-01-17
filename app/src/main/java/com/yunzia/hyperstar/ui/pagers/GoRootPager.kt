@@ -41,6 +41,7 @@ import com.yunzia.hyperstar.ui.base.enums.EventState
 import com.yunzia.hyperstar.ui.base.modifier.bounceClick
 import com.yunzia.hyperstar.ui.base.modifier.bounceScale
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.app.AppInfo
+import com.yunzia.hyperstar.utils.root
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -97,34 +98,7 @@ fun GoRootPager(
 ) {
     val mContext = LocalContext.current
     ///val rootList = getRootManagerInfo(mContext)
-    val root = listOf(
-        AppInfo(
-            label = "Magisk",
-            packageName = "com.topjohnwu.magisk",
-            icon = mContext.resources.getDrawable(R.drawable.magisk)
-        ),
-        AppInfo(
-            label = "Alpha",
-            packageName = "io.github.vvb2060.magisk",
-            icon = mContext.resources.getDrawable(R.drawable.alpha)
-        ),
-        AppInfo(
-            label = "Kitsune Mask",
-            packageName = "io.github.huskydg.magisk",
-            icon = mContext.resources.getDrawable(R.drawable.kitsune_mask)
-        ),
-        AppInfo(
-            label = "KernelSU",
-            packageName = "me.weishu.kernelsu",
-            icon = mContext.resources.getDrawable(R.drawable.kernelsu)
-        ),
-        AppInfo(
-            label = "APatch",
-            packageName = "me.bmax.apatch",
-            icon = mContext.resources.getDrawable(R.drawable.apatch)
-        )
-    )
-
+    
     val noRoot = remember { mutableStateOf<List<AppInfo>?>(null) }
 
     val rootList = remember { mutableStateOf<ArrayList<AppInfo>?>(null) }
@@ -134,7 +108,7 @@ fun GoRootPager(
     LaunchedEffect(Unit) {
         coroutineScope.launch {
             val result = withContext(Dispatchers.IO) {
-                getRootManagerInfo(mContext, root, noRoot)
+                getRootManagerInfo(mContext, root(mContext), noRoot)
             }
             rootList.value = result
         }

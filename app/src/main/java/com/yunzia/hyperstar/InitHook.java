@@ -30,7 +30,7 @@ public class InitHook implements IXposedHookLoadPackage, IXposedHookInitPackageR
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
         mPath=startupParam.modulePath;
-        starLog.log("HookChannel is currently configured for OS" + isHookChannel());
+        starLog.log("HookChannel is currently configured for OS" + isHookChannel);
 
     }
 

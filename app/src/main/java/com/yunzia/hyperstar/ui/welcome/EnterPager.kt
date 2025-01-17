@@ -61,9 +61,7 @@ fun EnterPager(show: MutableState<Boolean>, pagerState: PagerState) {
     LaunchedEffect(
         pagerState.currentPage
     ) {
-        if (pagerState.currentPage == 6){
-            go.value = true
-        }
+        go.value = pagerState.currentPage == 6
     }
 
     Column {

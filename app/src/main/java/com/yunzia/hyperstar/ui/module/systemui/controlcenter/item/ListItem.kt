@@ -127,7 +127,7 @@ fun ListItem(
                         .padding(vertical = 4.dp, horizontal = 4.dp),
                     shape = SquircleShape(18.dp),
                     color = colorScheme.secondary,
-                    shadowElevation = 2.dp,
+                    shadowElevation = 2.0.dp,
                     content = {}
                 )
             }

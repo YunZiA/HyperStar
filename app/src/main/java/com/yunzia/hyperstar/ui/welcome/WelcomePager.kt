@@ -10,11 +10,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,14 +20,13 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.vectorResource
@@ -44,20 +41,21 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun WelcomePager(
-    show:MutableState<Boolean>
+    show:MutableState<Boolean>,
+    pagerState: PagerState
 ) {
     val view = LocalView.current
-    val pagerState = rememberPagerState(initialPage = 0 ,pageCount = { 7 })
 
     val coroutineScope = rememberCoroutineScope()
     Log.d("ggc", "WelcomePager: ${pagerState.currentPage}")
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding()
             .background(colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.statusBarsPadding())
         Row(
             modifier = Modifier
                 .height(56.dp)
@@ -111,7 +109,6 @@ fun WelcomePager(
             modifier = Modifier
                 .widthIn(max = 480.dp)
                 .fillMaxWidth()
-                .navigationBarsPadding()
                 .padding(bottom = 24.dp),
             pagerState = pagerState,
             userScrollEnabled = false,
@@ -146,20 +143,6 @@ fun WelcomePager(
                     }
                     6->{
                         EnterPager(show,pagerState)
-                    }
-                    7->{
-
-                    }
-
-                    else -> {
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.Yellow)
-                        ) {
-
-                        }
                     }
                 }
             }

@@ -62,8 +62,8 @@ fun WelcomeEnterPager(pagerState: PagerState) {
         else -> if (darkTheme) painterResource(R.drawable.hyperstar2_dark) else painterResource(R.drawable.hyperstar2)
     }
 
-    LaunchedEffect(Unit) {
-        go.value = true
+    LaunchedEffect(pagerState.currentPage) {
+        go.value = pagerState.currentPage == 0
 
     }
 

@@ -36,7 +36,7 @@ import com.yunzia.hyperstar.utils.getOSVersion
 import com.yunzia.hyperstar.utils.getSystemVersionIncremental
 import com.yunzia.hyperstar.utils.getVerName
 import com.yunzia.hyperstar.utils.getVersionCode
-import com.yunzia.hyperstar.utils.isBetaOs
+import com.yunzia.hyperstar.utils.isBetaOS
 import com.yunzia.hyperstar.utils.isFold
 import com.yunzia.hyperstar.utils.isOS2Settings
 import com.yunzia.hyperstar.utils.isPad
@@ -62,7 +62,7 @@ fun NeedMessagePager(
             "isPad = ${isPad()}\n" +
             "AndroidVersion = ${getAndroidVersion()}\n" +
             "HyperOSVersion = ${getOSVersion()}\n" +
-            "IsBetaVersion = ${isBetaOs()}\n" +
+            "IsBetaVersion = ${isBetaOS()}\n" +
             "SystemVersion = ${getSystemVersionIncremental()}"
 
 

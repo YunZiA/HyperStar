@@ -30,6 +30,7 @@ class QSMediaView : Hooker() {
 
     private fun startMethodsHook() {
         val ReflectionHelper = findClass("miuix.reflect.ReflectionHelper",classLoader)
+        val fadingEdgeLength = 40
 
         val MediaPlayerViewHolder  = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",classLoader)
         XposedHelpers.findAndHookMethod(MediaPlayerViewHolder, "updateSize", object : XC_MethodHook() {
@@ -49,21 +50,39 @@ class QSMediaView : Hooker() {
                     title.setPadding(0, top, 0, 0)
                 }
                 if (isTitleMarquee){
-                    title.ellipsize = TextUtils.TruncateAt.MARQUEE
-                    title.focusable = View.NOT_FOCUSABLE
-                    title.isSelected = true
+                    title.apply {
+                        ellipsize = TextUtils.TruncateAt.MARQUEE
+                        isFocusable = true
+                        isSelected = true
+                        marqueeRepeatLimit = 3
+                        isHorizontalFadingEdgeEnabled = true
+                        setFadingEdgeLength(fadingEdgeLength)
+                        forceHasOverlappingRendering(false)
+                    }
 
                 }
                 if (isArtistMarquee){
-                    artist.ellipsize = TextUtils.TruncateAt.MARQUEE
-                    artist.focusable = View.NOT_FOCUSABLE
-                    artist.isSelected = true
+                    artist.apply {
+                        ellipsize = TextUtils.TruncateAt.MARQUEE
+                        isFocusable = true
+                        isSelected = true
+                        marqueeRepeatLimit = 3
+                        isHorizontalFadingEdgeEnabled = true
+                        setFadingEdgeLength(fadingEdgeLength)
+                        forceHasOverlappingRendering(false)
+                    }
 
                 }
                 if (isEmptyStateMarquee){
-                    emptyState.ellipsize = TextUtils.TruncateAt.MARQUEE
-                    emptyState.focusable = View.NOT_FOCUSABLE
-                    emptyState.isSelected = true
+                    emptyState.apply {
+                        ellipsize = TextUtils.TruncateAt.MARQUEE
+                        isFocusable = true
+                        isSelected = true
+                        marqueeRepeatLimit = 3
+                        isHorizontalFadingEdgeEnabled = true
+                        setFadingEdgeLength(fadingEdgeLength)
+                        forceHasOverlappingRendering(false)
+                    }
 
                 }
 
@@ -88,21 +107,40 @@ class QSMediaView : Hooker() {
                     title.setPadding(0, top, 0, 0)
                 }
                 if (isTitleMarquee){
-                    title.ellipsize = TextUtils.TruncateAt.MARQUEE
-                    title.focusable = View.NOT_FOCUSABLE
-                    title.isSelected = true
+                    //setDeclaredBooleanField(title::class.java,"mHasOverlappingRendering",false)
+                    title.apply {
+                        ellipsize = TextUtils.TruncateAt.MARQUEE
+                        isFocusable = true
+                        isSelected = true
+                        marqueeRepeatLimit = 3
+                        isHorizontalFadingEdgeEnabled = true
+                        setFadingEdgeLength(fadingEdgeLength)
+                        forceHasOverlappingRendering(false)
+                    }
 
                 }
                 if (isArtistMarquee){
-                    artist.ellipsize = TextUtils.TruncateAt.MARQUEE
-                    artist.focusable = View.NOT_FOCUSABLE
-                    artist.isSelected = true
+                    artist.apply {
+                        ellipsize = TextUtils.TruncateAt.MARQUEE
+                        isFocusable = true
+                        isSelected = true
+                        marqueeRepeatLimit = 3
+                        isHorizontalFadingEdgeEnabled = true
+                        setFadingEdgeLength(fadingEdgeLength)
+                        forceHasOverlappingRendering(false)
+                    }
 
                 }
                 if (isEmptyStateMarquee){
-                    emptyState.ellipsize = TextUtils.TruncateAt.MARQUEE
-                    emptyState.focusable = View.NOT_FOCUSABLE
-                    emptyState.isSelected = true
+                    emptyState.apply {
+                        ellipsize = TextUtils.TruncateAt.MARQUEE
+                        isFocusable = true
+                        isSelected = true
+                        marqueeRepeatLimit = 3
+                        isHorizontalFadingEdgeEnabled = true
+                        setFadingEdgeLength(fadingEdgeLength)
+                        forceHasOverlappingRendering(false)
+                    }
 
                 }
             }

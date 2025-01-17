@@ -174,10 +174,18 @@ class QSListView : Hooker() {
 
                     }
                     if(labelMarquee){
-                        label.ellipsize = TextUtils.TruncateAt.MARQUEE
-                        label.focusable = View.NOT_FOCUSABLE
-                        label.isSelected = true
-                        label.setSingleLine()
+
+                        label.apply {
+                            ellipsize = TextUtils.TruncateAt.MARQUEE
+                            isFocusable = true
+                            isSelected = true
+                            marqueeRepeatLimit = 3
+                            setSingleLine()
+                            isHorizontalFadingEdgeEnabled = true
+                            setFadingEdgeLength(25)
+                            setFocusableInTouchMode(true)
+                            forceHasOverlappingRendering(false)
+                        }
                     }
 
 

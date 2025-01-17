@@ -477,11 +477,19 @@ class QSListView : Hooker() {
                     }
                     if(labelMarquee){
 
-                        label.ellipsize = TextUtils.TruncateAt.MARQUEE
-                        label.isFocusable = true
-                        label.isSelected = true
-                        label.marqueeRepeatLimit = 3
-                        label.setSingleLine()
+                        label.apply {
+                            ellipsize = TextUtils.TruncateAt.MARQUEE
+                            isFocusable = true
+                            isSelected = true
+                            marqueeRepeatLimit = 3
+                            isSingleLine = true
+                            isHorizontalFadingEdgeEnabled = true
+                            setFadingEdgeLength(25)
+                            setFocusableInTouchMode(true)
+                            forceHasOverlappingRendering(false)
+                        }
+
+                        //XposedHelpers.setBooleanField(label,"mHasOverlappingRendering",false)
                     }
 
 

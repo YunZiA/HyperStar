@@ -1,6 +1,6 @@
 package com.yunzia.hyperstar
 
-import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.provider.Settings
 import android.util.Log
@@ -81,7 +81,6 @@ import com.yunzia.hyperstar.ui.pagers.TranslatorPager
 import com.yunzia.hyperstar.ui.welcome.ActivePage
 import com.yunzia.hyperstar.ui.welcome.WelcomePager
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
-import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.isFold
 import com.yunzia.hyperstar.utils.isPad
 import top.yukonga.miuix.kmp.basic.Icon
@@ -90,26 +89,29 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
-@SuppressLint("RestrictedApi", "StateFlowValueCalledInComposition")
 @Composable
 fun App(){
 
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    val context = LocalContext.current
+    val context = LocalContext.current as MainActivity
     val parentRoute = remember { mutableStateOf(PagerList.MAIN) }
     val pagerState = rememberPagerState(initialPage = 0 ,pageCount = { 3 })
 
-    val welcome = remember { mutableStateOf(PreferencesUtil.getBoolean("is_first_use",true)) }
+    //val welcome = remember { mutableStateOf(PreferencesUtil.getBoolean("is_first_use",true)) }
+    val welcome = remember { mutableStateOf(true )}
     val easing  = CubicBezierEasing(.42f,0f,0.26f,.85f)
 
     val navController = rememberNavController()
+
+    val layoutType = remember { mutableIntStateOf(1) }
 
     LaunchedEffect(navController) {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             parentRoute.value = destination.route!!.substringBeforeLast("/")
         }
     }
+    val welcomeState = rememberPagerState(initialPage = 0 ,pageCount = { 7 })
 
     XScaffold {
         if (!isModuleActive()){
@@ -125,8 +127,6 @@ fun App(){
             BoxWithConstraints {
                 //FirstDialog(navController)
                 Log.d("ggc", "App:  $maxWidth")
-
-                val layoutType = remember { mutableIntStateOf(1) }
 
                 layoutType.intValue = if (isFold()){
                     if (maxWidth > 480.dp && Settings.Global.getInt(context.contentResolver, "device_posture", 0) != 1){
@@ -193,7 +193,13 @@ fun App(){
             welcome.value,
             exit = fadeOut(animationSpec = tween(300, easing = easing))+ scaleOut(animationSpec = tween(300, easing = easing),targetScale = 0.9f)
         ) {
-            WelcomePager(welcome)
+
+            if (!isFold() && !isPad()){
+
+                context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+            }
+
+            WelcomePager(welcome,welcomeState)
         }
 
     }

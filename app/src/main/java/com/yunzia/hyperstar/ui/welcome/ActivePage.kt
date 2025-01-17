@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -49,7 +50,7 @@ import com.yunzia.hyperstar.utils.getOSVersion
 import com.yunzia.hyperstar.utils.getSystemVersionIncremental
 import com.yunzia.hyperstar.utils.getVerName
 import com.yunzia.hyperstar.utils.getVersionCode
-import com.yunzia.hyperstar.utils.isBetaOs
+import com.yunzia.hyperstar.utils.isBetaOS
 import com.yunzia.hyperstar.utils.isFold
 import com.yunzia.hyperstar.utils.isOS2Settings
 import com.yunzia.hyperstar.utils.isPad
@@ -90,7 +91,7 @@ fun ActivePage(
             "isPad = ${isPad()}\n" +
             "AndroidVersion = ${getAndroidVersion()}\n" +
             "HyperOSVersion = ${getOSVersion()}\n" +
-            "IsBetaVersion = ${isBetaOs()}\n" +
+            "IsBetaVersion = ${isBetaOS()}\n" +
             "SystemVersion = ${getSystemVersionIncremental()}"
     val debugInfoString = buildAnnotatedString {
         withStyle(SpanStyle(color = colorScheme.onSurface)) {
@@ -101,6 +102,7 @@ fun ActivePage(
     Column (
         modifier = Modifier
             .fillMaxSize()
+            .widthIn(max=480.dp)
             .padding(vertical = 26.dp)
             .statusBarsPadding()
             .navigationBarsPadding(),

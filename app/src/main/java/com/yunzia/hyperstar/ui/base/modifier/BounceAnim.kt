@@ -1,19 +1,12 @@
 package com.yunzia.hyperstar.ui.base.modifier
 
-import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,11 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.ui.base.enums.EventState
 import com.yunzia.hyperstar.utils.PreferencesUtil
@@ -35,7 +26,6 @@ import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
-import kotlin.math.log
 
 
 fun Modifier.bounceAnimN(
@@ -48,7 +38,7 @@ fun Modifier.bounceAnimN(
             finishedListener?.invoke(it)
         }
         .bounceClick(eventState, enabled)
-        .clip(SmoothRoundedCornerShape(8.dp, 0.5f))
+        .clip(RoundedCornerShape(8.dp))
 }
 
 fun Modifier.bounceAnim(
@@ -64,7 +54,7 @@ fun Modifier.bounceAnim(
                     finishedListener?.invoke(it)
                 }
                 .bounceClick(eventState, enabled)
-                .clip(SmoothRoundedCornerShape(8.dp, 0.5f))
+                .clip(RoundedCornerShape(8.dp))
 
         }else{
             finishedListener?.invoke(1f)

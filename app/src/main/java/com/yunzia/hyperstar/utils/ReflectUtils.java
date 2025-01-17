@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.utils;
 
 import android.util.Log;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -230,6 +231,16 @@ public class ReflectUtils {
         sb.append(')');
         sb.append(getSignature(cls));
         return sb.toString();
+    }
+
+    public static void setDeclaredBooleanField(Class<?> cls,String fieldName, boolean bool) {
+        try {
+            Field field = cls.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.setBoolean(cls, bool);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public static String getSignature(Class<?> cls) {

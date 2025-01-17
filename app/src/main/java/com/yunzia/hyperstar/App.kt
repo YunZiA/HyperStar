@@ -81,6 +81,7 @@ import com.yunzia.hyperstar.ui.pagers.TranslatorPager
 import com.yunzia.hyperstar.ui.welcome.ActivePage
 import com.yunzia.hyperstar.ui.welcome.WelcomePager
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
+import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.isFold
 import com.yunzia.hyperstar.utils.isPad
 import top.yukonga.miuix.kmp.basic.Icon
@@ -98,8 +99,8 @@ fun App(){
     val parentRoute = remember { mutableStateOf(PagerList.MAIN) }
     val pagerState = rememberPagerState(initialPage = 0 ,pageCount = { 3 })
 
-    //val welcome = remember { mutableStateOf(PreferencesUtil.getBoolean("is_first_use",true)) }
-    val welcome = remember { mutableStateOf(true )}
+    val welcome = remember { mutableStateOf(PreferencesUtil.getBoolean("is_first_use",true)) }
+    //val welcome = remember { mutableStateOf(true )}
     val easing  = CubicBezierEasing(.42f,0f,0.26f,.85f)
 
     val navController = rememberNavController()

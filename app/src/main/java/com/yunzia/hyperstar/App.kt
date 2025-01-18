@@ -116,6 +116,10 @@ fun App(){
 
     XScaffold {
         if (!isModuleActive()){
+            if (!isFold() && !isPad()){
+
+                context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+            }
             ActivePage()
             return@XScaffold
         }

@@ -67,7 +67,8 @@ fun SuperDialog(
     onDismissRequest: (() -> Unit)? = null,
     outsideMargin: DpSize = SuperDialogDefaults.outsideMargin,
     insideMargin: DpSize = SuperDialogDefaults.insideMargin,
-    defaultWindowInsetsPadding: Boolean = true,
+    navigationBarsPadding: Boolean = true,
+    imePadding:Boolean = true,
     content: @Composable () -> Unit
 ) {
     if (show.value) {
@@ -95,14 +96,9 @@ fun SuperDialog(
         showDialog(
             content = {
                 Box(
-                    modifier = if (defaultWindowInsetsPadding) {
-                        Modifier
-                            .imePadding()
-                            .navigationBarsPadding()
-                    } else {
-                        Modifier
-                    }
-                        .fillMaxSize()
+                    modifier =
+                        Modifier.then(if (navigationBarsPadding) Modifier.navigationBarsPadding() else Modifier)
+                            .then(if (imePadding) Modifier.imePadding() else Modifier).fillMaxSize()
                         .pointerInput(Unit) {
                             detectTapGestures(
                                 onTap = {

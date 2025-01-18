@@ -46,13 +46,11 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.BaseButton
-import com.yunzia.hyperstar.ui.base.tool.FilterColorHex
 import com.yunzia.hyperstar.ui.base.MTextField
-import com.yunzia.hyperstar.ui.base.dialog.MSuperDialog
 import com.yunzia.hyperstar.ui.base.dialog.SuperDialog
+import com.yunzia.hyperstar.ui.base.tool.FilterColorHex
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showDialog
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 
@@ -75,128 +73,132 @@ fun ColorPickerDialog(
     val filter = remember(key1 = color.value) { FilterColorHex(color.value.toHex()) }
 
 
-        SuperDialog(
-            title = title,
-            show = showDialog,
-            onFocus = {
+    SuperDialog(
+        title = title,
+        show = showDialog,
+        imePadding = false,
+        onFocus = {
+            kc?.hide()
+            focusManager.clearFocus()
+        },
+        onDismissRequest = {
+            if (hasFocus){
                 kc?.hide()
                 focusManager.clearFocus()
-            },
-            onDismissRequest = {
-                if (hasFocus){
-                    kc?.hide()
-                    focusManager.clearFocus()
-                    return@SuperDialog
-                }
-                if (doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)){
+                return@SuperDialog
+            }
+            if (doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)){
 
-                    color.value = HsvColor.from(fColor)
-                    dismissDialog(showDialog)
-                }
-            },
+                color.value = HsvColor.from(fColor)
+                dismissDialog(showDialog)
+            }
+        },
+    ) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(bottom = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(bottom = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
 
-                Row {
-                    Image(
-                        modifier = Modifier
-                            .size(60.dp)
-                            .clip(SmoothRoundedCornerShape(10.dp,0.8f))
-                            .border(
-                                2.dp,
-                                if (color.value.toColor() == colorScheme.surfaceVariant) colorScheme.secondaryContainer else Color.Transparent,
-                                SmoothRoundedCornerShape(10.dp,0.8f)
-                            ),
-                        imageVector = ImageVector.vectorResource(R.drawable.transparent),
-                        colorFilter = ColorFilter.tint(
-                            color.value.toColor(),
-                            BlendMode.SrcOver
+            Row {
+                Image(
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clip(SmoothRoundedCornerShape(10.dp,0.8f))
+                        .border(
+                            2.dp,
+                            if (color.value.toColor() == colorScheme.surfaceVariant) colorScheme.secondaryContainer else Color.Transparent,
+                            SmoothRoundedCornerShape(10.dp,0.8f)
                         ),
-                        contentDescription = "ColorImage"
-                    )
-                    MTextField(
-                        modifier = Modifier
-                            .height(60.dp)
-                            .padding(start = 20.dp)
-                            .onFocusChanged {
-                                hasFocus = it.hasFocus
-                            },
-                        value = filter.getInputValue(),
-                        singleLine = true,
-                        onValueChange = filter.onValueChange(),
-                        trailingIcon = {
-                            if (hasFocus){
-                                Button(
-                                    modifier = Modifier.size(60.dp),
-                                    onClick = {
-                                        doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
-                                    },
-                                    contentPadding = PaddingValues(10.dp,16.dp),
-                                    shape = SmoothRoundedCornerShape(8.dp,0.8f),
-                                    colors = ButtonColors(Color.Transparent, Color.Transparent,Color.Transparent,Color.Transparent)
-                                ) {
-                                    Icon(
-                                        ImageVector.vectorResource(R.drawable.yes),
-                                        contentDescription = "yes",
-                                        Modifier.size(25.dp),
-                                        tint = colorScheme.outline
-                                    )
-
-                                }
+                    imageVector = ImageVector.vectorResource(R.drawable.transparent),
+                    colorFilter = ColorFilter.tint(
+                        color.value.toColor(),
+                        BlendMode.SrcOver
+                    ),
+                    contentDescription = "ColorImage"
+                )
+                MTextField(
+                    modifier = Modifier
+                        .height(60.dp)
+                        .padding(start = 20.dp)
+                        .onFocusChanged {
+                            hasFocus = it.hasFocus
+                        },
+                    value = filter.getInputValue(),
+                    singleLine = true,
+                    cornerRadius = 12.dp,
+                    onValueChange = filter.onValueChange(),
+                    trailingIcon = {
+                        if (hasFocus){
+                            Button(
+                                modifier = Modifier.size(60.dp),
+                                onClick = {
+                                    doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
+                                },
+                                contentPadding = PaddingValues(10.dp,16.dp),
+                                shape = SmoothRoundedCornerShape(12.dp,0.8f),
+                                colors = ButtonColors(Color.Transparent, Color.Transparent,Color.Transparent,Color.Transparent)
+                            ) {
+                                Icon(
+                                    ImageVector.vectorResource(R.drawable.yes),
+                                    contentDescription = "yes",
+                                    Modifier.size(25.dp),
+                                    tint = colorScheme.outline
+                                )
 
                             }
-                        },
-                        keyboardActions = KeyboardActions(onDone = {
-                            doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
 
-
-                        }),
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    )
-                }
-
-
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                ClassicColorPicker(
-                    modifier = Modifier.wrapContentHeight(),
-                    color = color
-                ) {
-                    color.value = it
-                    clearFocus(hasFocus,focusManager)
-                }
-            }
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                BaseButton(
-                    modifier = Modifier.weight(1f),
-                    text = stringResource(R.string.cancel),
-                    onClick = {
-                        dismissDialog(showDialog)
-                        color.value = HsvColor.from(fColor)
-                    }
-                )
-                Spacer(Modifier.width(20.dp))
-                BaseButton(
-                    modifier = Modifier.weight(1f),
-                    text = stringResource(R.string.save),
-                    submit = true,
-                    onClick = {
+                        }
+                    },
+                    keyboardActions = KeyboardActions(onDone = {
                         doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
-                        onColorListener(color.value.toColor())
-                        dismissDialog(showDialog)
-                    }
+
+
+                    }),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 )
+            }
+
+
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            ClassicColorPicker(
+                modifier = Modifier.wrapContentHeight(),
+                color = color
+            ) {
+                color.value = it
+                clearFocus(hasFocus,focusManager)
             }
         }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            BaseButton(
+                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.cancel),
+                cornerRadius = 15.dp,
+                onClick = {
+                    dismissDialog(showDialog)
+                    color.value = HsvColor.from(fColor)
+                }
+            )
+            Spacer(Modifier.width(20.dp))
+            BaseButton(
+                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.save),
+                cornerRadius = 15.dp,
+                submit = true,
+                onClick = {
+                    doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
+                    onColorListener(color.value.toColor())
+                    dismissDialog(showDialog)
+                }
+            )
+        }
+    }
 
 
 

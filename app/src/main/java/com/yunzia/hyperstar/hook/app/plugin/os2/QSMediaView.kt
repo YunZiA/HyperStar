@@ -8,7 +8,8 @@ import android.widget.TextView
 import androidx.core.view.marginTop
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.startMarqueeOfFading
+import com.yunzia.hyperstar.hook.util.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
@@ -50,39 +51,15 @@ class QSMediaView : Hooker() {
                     title.setPadding(0, top, 0, 0)
                 }
                 if (isTitleMarquee){
-                    title.apply {
-                        ellipsize = TextUtils.TruncateAt.MARQUEE
-                        isFocusable = true
-                        isSelected = true
-                        marqueeRepeatLimit = 3
-                        isHorizontalFadingEdgeEnabled = true
-                        setFadingEdgeLength(fadingEdgeLength)
-                        forceHasOverlappingRendering(false)
-                    }
+                    title.startMarqueeOfFading(fadingEdgeLength)
 
                 }
                 if (isArtistMarquee){
-                    artist.apply {
-                        ellipsize = TextUtils.TruncateAt.MARQUEE
-                        isFocusable = true
-                        isSelected = true
-                        marqueeRepeatLimit = 3
-                        isHorizontalFadingEdgeEnabled = true
-                        setFadingEdgeLength(fadingEdgeLength)
-                        forceHasOverlappingRendering(false)
-                    }
+                    artist.startMarqueeOfFading(fadingEdgeLength)
 
                 }
                 if (isEmptyStateMarquee){
-                    emptyState.apply {
-                        ellipsize = TextUtils.TruncateAt.MARQUEE
-                        isFocusable = true
-                        isSelected = true
-                        marqueeRepeatLimit = 3
-                        isHorizontalFadingEdgeEnabled = true
-                        setFadingEdgeLength(fadingEdgeLength)
-                        forceHasOverlappingRendering(false)
-                    }
+                    emptyState.startMarqueeOfFading(fadingEdgeLength)
 
                 }
 

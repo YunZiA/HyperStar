@@ -2,11 +2,11 @@ package com.yunzia.hyperstar.hook.app.plugin.os2
 
 import android.content.Context
 import android.util.AttributeSet
-import yunzia.utils.DensityUtil
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
+import yunzia.utils.DensityUtil
 
 class VolumeColumnProgressRadius : Hooker() {
 
@@ -31,8 +31,7 @@ class VolumeColumnProgressRadius : Hooker() {
                 val mContext = XposedHelpers.getObjectField(thisObj,"mContext") as Context
                 val res = mContext.resources
 
-                val miuiVolumeBgRadius = res.getIdentifier("miui_volume_bg_radius","dimen",plugin)
-                val maxRadius = res.getDimensionPixelOffset(miuiVolumeBgRadius).toFloat()
+                val maxRadius = getDimensionPixelOffset(res,"miui_volume_bg_radius",plugin).toFloat()
 
                 val radius = DensityUtil.dpToPx(res, volumeProgressRadius)
 

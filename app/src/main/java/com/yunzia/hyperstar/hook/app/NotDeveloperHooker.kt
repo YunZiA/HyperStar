@@ -2,12 +2,9 @@ package xyz.xfqlittlefan.notdeveloper.xposed
 
 import android.content.ContentResolver
 import android.provider.Settings
-import android.util.Log
-import androidx.annotation.Keep
 import com.yunzia.hyperstar.hook.base.InitHooker
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodHook.MethodHookParam
 import de.robv.android.xposed.XposedBridge

@@ -10,7 +10,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
@@ -28,8 +28,6 @@ class QSHeaderView : Hooker() {
         }
 
         startMethodsHook()
-        //startMethodsHook1(classLoader)
-        //starLog.log(mPath)
 
     }
 
@@ -44,8 +42,6 @@ class QSHeaderView : Hooker() {
 
     private fun startMethodsHook() {
         var qsListControllerProvider: Any? = null
-
-        val CommonUtils = findClass("miui.systemui.util.CommonUtils",classLoader)
 
         val EditButtonController_Factory = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.qs.EditButtonController_Factory",classLoader)
         val MainPanelModeController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.MainPanelModeController\$MainPanelMode",classLoader)
@@ -78,13 +74,12 @@ class QSHeaderView : Hooker() {
                 val view = XposedHelpers.callMethod(thisObj,"getView") as ViewGroup
                 val mContext = view.context
                 val res = mContext.resources
-                val IS_TABLET = XposedHelpers.getStaticBooleanField(CommonUtils,"IS_TABLET")
 
                 val ic_header_settings:Int = view.resources.getIdentifier("ic_header_settings", "drawable", "miui.systemui.plugin");
                 val ic_controls_edit = view.resources.getIdentifier("ic_controls_edit","drawable","miui.systemui.plugin")
 
 
-                val size = (getDimensionPixelOffset(res,"header_text_size",plugin)/2*3).toInt()
+                val size = getDimensionPixelOffset(res,"header_text_size",plugin)/2*3
                 val bottom = (getDimensionPixelOffset(res,"header_carrier_vertical_mode_margin_bottom",plugin)*3.8).toInt()
                     //(getDimensionPixelOffset(res,"header_carrier_vertical_mode_margin_bottom",plugin)*1.9).toInt()
 
@@ -172,7 +167,7 @@ class QSHeaderView : Hooker() {
                 val y = param?.args?.get(0) as Float
                 val view = XposedHelpers.callMethod(thisObj,"getView") as View
 
-                val textView: View = view.findViewById(viewId) as View
+                val textView: View = view.findViewById(viewId)
                 textView.translationY = y
 
             }

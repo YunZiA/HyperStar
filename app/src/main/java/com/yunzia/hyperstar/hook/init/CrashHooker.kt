@@ -4,9 +4,8 @@ import android.app.ApplicationErrorReport.CrashInfo
 import android.content.Context
 import android.provider.Settings
 import com.yunzia.hyperstar.hook.base.InitHooker
-import com.yunzia.hyperstar.hook.tool.starLog.logE
+import com.yunzia.hyperstar.hook.util.starLog.logE
 import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XC_MethodHook.MethodHookParam
 import de.robv.android.xposed.XposedBridge.hookMethod
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.XposedHelpers.findClassIfExists

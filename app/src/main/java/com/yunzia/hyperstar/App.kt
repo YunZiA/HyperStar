@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar
 
+import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.provider.Settings
@@ -90,6 +91,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
+@SuppressLint("ContextCastToActivity")
 @Composable
 fun App(){
 
@@ -117,7 +119,6 @@ fun App(){
     XScaffold {
         if (!isModuleActive()){
             if (!isFold() && !isPad()){
-
                 context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             }
             ActivePage()

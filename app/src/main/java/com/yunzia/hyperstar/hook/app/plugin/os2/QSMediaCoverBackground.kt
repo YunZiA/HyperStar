@@ -9,18 +9,18 @@ import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import androidx.core.graphics.drawable.toDrawable
-import yunzia.utils.BitmapUtils
-import yunzia.utils.BitmapUtils.Companion.auto
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.tool.starLog
-import com.yunzia.hyperstar.utils.XSPUtils
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.util.starLog
+import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
+import yunzia.utils.BitmapUtils
+import yunzia.utils.BitmapUtils.Companion.auto
 
 
 class QSMediaCoverBackground: Hooker() {
@@ -119,12 +119,16 @@ class QSMediaCoverBackground: Hooker() {
 
                 }
 
-                art = if (mediaBackground == 1){
-                    auto(art)
-                }else if (mediaBackground == 2){
-                    BitmapUtils.doBitmap(art,isScale,scaleFactor,isBlur,blurRadius,isDim,-alpha)
-                }else{
-                    return
+                art = when (mediaBackground) {
+                    1 -> {
+                        auto(art)
+                    }
+                    2 -> {
+                        BitmapUtils.doBitmap(art,isScale,scaleFactor,isBlur,blurRadius,isDim,-alpha)
+                    }
+                    else -> {
+                        return
+                    }
                 }
 
                 val artDrawable = art.toDrawable(res)

@@ -6,7 +6,8 @@ import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.plugin.CommonUtils
+import com.yunzia.hyperstar.hook.util.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
@@ -71,7 +72,7 @@ class DeviceCenterRow: Hooker() {
             val DetailViewHolder = findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.DetailViewHolder",classLoader)
             val DeviceItemViewHolder = findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.DeviceItemViewHolder",classLoader)
 
-            val CommonUtils = findClass("miui.systemui.util.CommonUtils",classLoader)
+            val commonUtils = CommonUtils(classLoader)
 
 
             XposedHelpers.findAndHookMethod(DetailViewHolder,"onConfigurationChanged",Int::class.java,object : XC_MethodHook() {
@@ -80,16 +81,12 @@ class DeviceCenterRow: Hooker() {
                     val thisObj = param?.thisObject
 
                     val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
+
                     val res = itemView.resources
 
-                    val deviceCenterItemHeight = res.getIdentifier("device_center_item_height","dimen",plugin)
-                    val size = res.getDimensionPixelSize(deviceCenterItemHeight)
+                    val size = getDimensionPixelSize(res,"device_center_item_height",plugin)
 
-                    val INSTANCE = XposedHelpers.getStaticObjectField(CommonUtils,"INSTANCE")
-                    XposedHelpers.callStaticMethod(
-                        CommonUtils,
-                        "setLayoutSize\$default",
-                        INSTANCE,
+                    commonUtils.setLayoutSizeDefault(
                         itemView,
                         size,
                         size,
@@ -110,14 +107,9 @@ class DeviceCenterRow: Hooker() {
                     val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
                     val res = itemView.resources
 
-                    val deviceCenterItemHeight = res.getIdentifier("device_center_item_height","dimen",plugin)
-                    val size = res.getDimensionPixelSize(deviceCenterItemHeight)
+                    val size = getDimensionPixelSize(res,"device_center_item_height",plugin)
 
-                    val INSTANCE = XposedHelpers.getStaticObjectField(CommonUtils,"INSTANCE")
-                    XposedHelpers.callStaticMethod(
-                        CommonUtils,
-                        "setLayoutSize\$default",
-                        INSTANCE,
+                    commonUtils.setLayoutSizeDefault(
                         itemView,
                         size,
                         size,
@@ -187,7 +179,7 @@ class DeviceCenterRow: Hooker() {
                 override fun replaceHookedMethod(param: MethodHookParam?): Any {
                     val thisObj = param?.thisObject
                     val deviceItems = XposedHelpers.getObjectField(thisObj,"deviceItems") as ArrayList<*>
-                    val rowMode: Array<out Any> = DeviceCenterEntryViewHolderMode.getEnumConstants()!!
+                    val rowMode: Array<out Any> = DeviceCenterEntryViewHolderMode?.getEnumConstants()!!
 
                     if (deviceItems.size == 1 || deviceCenterSpanSize == 1 || isDeviceCenterMode == 1){
                         return rowMode[0]

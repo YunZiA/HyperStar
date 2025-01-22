@@ -6,14 +6,13 @@ import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LayoutInflated
-import java.util.ArrayList
 
 class DeviceCenterRow: Hooker() {
 
@@ -72,9 +71,6 @@ class DeviceCenterRow: Hooker() {
 
 
         val a = XposedHelpers.findClass("h.a.g.a",classLoader)
-
-
-
 
         val DeviceCenterCardController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.DeviceCenterCardController",classLoader)
 

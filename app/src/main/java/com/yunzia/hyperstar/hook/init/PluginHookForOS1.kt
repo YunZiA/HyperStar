@@ -1,13 +1,18 @@
 package com.yunzia.hyperstar.hook.init
 
 import android.content.Context
-import android.content.res.XModuleResources
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.hook.app.plugin.os1.DeviceCenterRow
-import com.yunzia.hyperstar.hook.app.plugin.os1.PadVolume
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTile
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTileList
 import com.yunzia.hyperstar.hook.app.plugin.QSEditText
+import com.yunzia.hyperstar.hook.app.plugin.QSMediaDefaultApp
+import com.yunzia.hyperstar.hook.app.plugin.QSMediaNoPlayTitle
+import com.yunzia.hyperstar.hook.app.plugin.QSMiplayDetailVolumeBar
+import com.yunzia.hyperstar.hook.app.plugin.QSToggleSliderRadius
+import com.yunzia.hyperstar.hook.app.plugin.SuperBlurVolumeManager
+import com.yunzia.hyperstar.hook.app.plugin.SuperBlurWidgetManager
+import com.yunzia.hyperstar.hook.app.plugin.os1.DeviceCenterRow
+import com.yunzia.hyperstar.hook.app.plugin.os1.PadVolume
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSClockAnim
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSControlCenterColor
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSControlCenterList
@@ -16,23 +21,16 @@ import com.yunzia.hyperstar.hook.app.plugin.os1.QSHeaderMessage
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSHeaderView
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSListView
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSMediaCoverBackground
-import com.yunzia.hyperstar.hook.app.plugin.QSMediaDefaultApp
-import com.yunzia.hyperstar.hook.app.plugin.QSMediaNoPlayTitle
-import com.yunzia.hyperstar.hook.app.plugin.QSMiplayDetailVolumeBar
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSMediaDeviceName
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSMediaView
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSMiplayAppIconRadius
-import com.yunzia.hyperstar.hook.app.plugin.SuperBlurVolumeManager
-import com.yunzia.hyperstar.hook.app.plugin.QSToggleSliderRadius
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSVolumeOrBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeView
-import com.yunzia.hyperstar.hook.app.plugin.SuperBlurWidgetManager
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
 import com.yunzia.hyperstar.hook.base.InitHooker
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.starLog
 import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
 
 class PluginHookForOS1() : InitHooker() {
@@ -82,18 +80,18 @@ class PluginHookForOS1() : InitHooker() {
 
     private fun startSystemUIPluginHook(){
 
-        hookAllMethods(classLoader, "com.android.systemui.shared.plugins.PluginInstance\$Factory", "create",object :
-            MethodHook {
-                override fun before(param: XC_MethodHook.MethodHookParam) {
-                    if (param.args.isNotEmpty() && param.args[0] is Context) {
-                        mContext = param.args[0] as Context
-                    }
-                }
+        hookAllMethods(classLoader, "com.android.systemui.shared.plugins.PluginInstance\$Factory", "create",object : MethodHook {
 
-                override fun after(param: XC_MethodHook.MethodHookParam) {
-
+            override fun before(param: XC_MethodHook.MethodHookParam) {
+                if (param.args.isNotEmpty() && param.args[0] is Context) {
+                    mContext = param.args[0] as Context
                 }
             }
+
+            override fun after(param: XC_MethodHook.MethodHookParam) {
+
+            }
+        }
         )
         hookAllMethods(classLoader,
             "com.android.systemui.shared.plugins.PluginInstance\$Factory$\$ExternalSyntheticLambda0",
@@ -128,6 +126,8 @@ class PluginHookForOS1() : InitHooker() {
 
     override fun initSecHook(classLoader: ClassLoader?) {
         super.initSecHook(classLoader)
+
+
         initSecHooker(QSClockAnim())
         initSecHooker(SuperBlurWidgetManager())
         initSecHooker(SuperBlurVolumeManager())

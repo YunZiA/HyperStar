@@ -9,7 +9,6 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.SystemClock
 import android.provider.Settings
-import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -18,7 +17,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.plugin.CommonUtils
+import com.yunzia.hyperstar.hook.util.startMarqueeOfFading
+import com.yunzia.hyperstar.hook.util.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
@@ -150,8 +151,6 @@ class QSListView : Hooker() {
 
                     if (labelMode == 1){
                         qSItemView.removeView(label)
-                        qSItemView.removeView(icon)
-                        qSItemView.addView(icon,0)
                         qSItemView.addView(label,1)
                         label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 8f)
 
@@ -160,8 +159,6 @@ class QSListView : Hooker() {
                         label.layoutParams = layoutParam
                     } else if (labelMode == 2){
                         qSItemView.removeView(label)
-                        qSItemView.removeView(icon)
-                        qSItemView.addView(icon,0)
                         qSItemView.addView(label,1)
 
                         label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
@@ -175,17 +172,8 @@ class QSListView : Hooker() {
                     }
                     if(labelMarquee){
 
-                        label.apply {
-                            ellipsize = TextUtils.TruncateAt.MARQUEE
-                            isFocusable = true
-                            isSelected = true
-                            marqueeRepeatLimit = 3
-                            setSingleLine()
-                            isHorizontalFadingEdgeEnabled = true
-                            setFadingEdgeLength(25)
-                            setFocusableInTouchMode(true)
-                            forceHasOverlappingRendering(false)
-                        }
+                        label.startMarqueeOfFading(25)
+
                     }
 
 
@@ -195,7 +183,7 @@ class QSListView : Hooker() {
         }
 
 
-        val CommonUtils = XposedHelpers.findClass("miui.systemui.util.CommonUtils", classLoader)
+        val commonUtils = CommonUtils(classLoader)
 
         if ( labelMode != 0 ){
 
@@ -269,12 +257,8 @@ class QSListView : Hooker() {
                         space = (space*listSpacingY).toInt()
                     }
                     label.translationY = y
-                    val setLayoutHeight = XposedHelpers.findMethodBestMatch(
-                        CommonUtils,"setLayoutHeight\$default",
-                        CommonUtils,Class.forName("android.view.View"), Int::class.java, Boolean::class.java,Int::class.java,Object::class.java
-                    )
 
-                    setLayoutHeight.invoke(CommonUtils.newInstance(),CommonUtils.newInstance(), thisObj, space, false, 2, null)
+                    commonUtils.setLayoutHeightDefault(thisObj, space, false, 2, null)
 
                     return null;
                 }
@@ -447,8 +431,8 @@ class QSListView : Hooker() {
             "updateIcon",
             object : MethodHook {
 
-                override fun before(param: XC_MethodHook.MethodHookParam?) {
-                    val thisObj = param?.thisObject
+                override fun before(param: XC_MethodHook.MethodHookParam) {
+                    val thisObj = param.thisObject
                     if ( labelMode != 0 ) {
 
                         val tileSize = XposedHelpers.getFloatField(thisObj,"tileSize").toInt()
@@ -457,12 +441,12 @@ class QSListView : Hooker() {
 
                 }
 
-                override fun after(param: XC_MethodHook.MethodHookParam?) {
+                override fun after(param: XC_MethodHook.MethodHookParam) {
                     if (labelMode == 0){
                         return
                     }
 
-                    val z = param?.args?.get(1) as Boolean
+                    val z = param.args?.get(1) as Boolean
 
                     if (z) {
                         val thisObj = param.thisObject

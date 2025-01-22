@@ -3,11 +3,11 @@ package com.yunzia.hyperstar.hook.app.plugin.os1
 import android.graphics.Outline
 import android.view.View
 import android.view.ViewOutlineProvider
-import yunzia.utils.DensityUtil
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedHelpers
+import yunzia.utils.DensityUtil
 
 class VolumeColumnProgressRadius : Hooker() {
 
@@ -31,8 +31,7 @@ class VolumeColumnProgressRadius : Hooker() {
                 val height = param.args?.get(0) as Int
                 val res = mView.resources
 
-                val miuiVolumeBgRadius = res.getIdentifier("miui_volume_bg_radius","dimen",plugin)
-                val maxRadius = res.getDimensionPixelOffset(miuiVolumeBgRadius).toFloat()
+                val maxRadius = getDimensionPixelOffset(res,"miui_volume_bg_radius",plugin).toFloat()
 
                 val radius = DensityUtil.dpToPx(res, volumeProgressRadius)
 
@@ -65,8 +64,7 @@ class VolumeColumnProgressRadius : Hooker() {
                 val width = param.args?.get(0) as Int
                 val res = mView.resources
 
-                val miuiVolumeBgRadius = res.getIdentifier("miui_volume_bg_radius","dimen",plugin)
-                val maxRadius = res.getDimensionPixelOffset(miuiVolumeBgRadius).toFloat()
+                val maxRadius = getDimensionPixelOffset(res,"miui_volume_bg_radius",plugin).toFloat()
 
                 val radius = DensityUtil.dpToPx(res, volumeProgressRadius)
 
@@ -99,8 +97,7 @@ class VolumeColumnProgressRadius : Hooker() {
                 val height = param.args?.get(0) as Int
                 val res = mView.resources
 
-                val miuiVolumeBgRadius = res.getIdentifier("miui_volume_bg_radius","dimen",plugin)
-                val maxRadius = res.getDimensionPixelOffset(miuiVolumeBgRadius).toFloat()
+                val maxRadius = getDimensionPixelOffset(res,"miui_volume_bg_radius",plugin).toFloat()
 
                 val radius = DensityUtil.dpToPx(res, volumeProgressRadius)
 

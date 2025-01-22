@@ -12,7 +12,7 @@ import androidx.core.graphics.drawable.toDrawable
 import yunzia.utils.BitmapUtils
 import yunzia.utils.BitmapUtils.Companion.auto
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.R

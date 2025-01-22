@@ -6,8 +6,8 @@ import android.util.AttributeSet
 import android.util.Log
 import android.widget.LinearLayout
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.tool.starLog
-import com.yunzia.hyperstar.hook.tool.starLog.logE
+import com.yunzia.hyperstar.hook.util.starLog
+import com.yunzia.hyperstar.hook.util.starLog.logE
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers

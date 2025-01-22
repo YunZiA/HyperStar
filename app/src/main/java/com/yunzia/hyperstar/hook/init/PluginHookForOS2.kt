@@ -1,36 +1,34 @@
 package com.yunzia.hyperstar.hook.init
 
 import android.content.ContextWrapper
-import android.content.res.XModuleResources
+import com.yunzia.hyperstar.hook.app.plugin.QSCardTile
+import com.yunzia.hyperstar.hook.app.plugin.QSCardTileList
+import com.yunzia.hyperstar.hook.app.plugin.QSEditText
+import com.yunzia.hyperstar.hook.app.plugin.QSMediaDefaultApp
+import com.yunzia.hyperstar.hook.app.plugin.QSMediaNoPlayTitle
+import com.yunzia.hyperstar.hook.app.plugin.QSMiplayDetailVolumeBar
+import com.yunzia.hyperstar.hook.app.plugin.QSToggleSliderRadius
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurWidgetManager
 import com.yunzia.hyperstar.hook.app.plugin.os2.DeviceCenterRow
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSControlCenterColor
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSControlCenterList
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSEditButton
-import com.yunzia.hyperstar.hook.app.plugin.QSEditText
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSHeaderMessage
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSHeaderViewListener
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSListView
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMediaCoverBackground
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMediaDeviceName
-import com.yunzia.hyperstar.hook.app.plugin.QSMediaNoPlayTitle
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMediaView
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMiplayAppIconRadius
-import com.yunzia.hyperstar.hook.app.plugin.QSMiplayDetailVolumeBar
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSVolumeOrBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeView
-import com.yunzia.hyperstar.hook.app.plugin.QSCardTile
-import com.yunzia.hyperstar.hook.app.plugin.QSCardTileList
-import com.yunzia.hyperstar.hook.app.plugin.QSMediaDefaultApp
-import com.yunzia.hyperstar.hook.app.plugin.QSToggleSliderRadius
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
 import com.yunzia.hyperstar.hook.base.InitHooker
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.starLog
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
-import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
 
 class PluginHookForOS2 : InitHooker() {
@@ -39,6 +37,7 @@ class PluginHookForOS2 : InitHooker() {
     private val qsControlCenterColor = QSControlCenterColor()
     private val powerMenu = PowerMenu()
     private val deviceCenterRow = DeviceCenterRow()
+    private val qsVolumeOrBrightnessValue = QSVolumeOrBrightnessValue()
 
     override fun initHook() {
         startSystemUIPluginHook()
@@ -56,6 +55,7 @@ class PluginHookForOS2 : InitHooker() {
         initResource(deviceCenterRow)
         initResource(QSMediaNoPlayTitle())
         initResource(QSEditText())
+        initResource(qsVolumeOrBrightnessValue)
 
 
 
@@ -66,14 +66,13 @@ class PluginHookForOS2 : InitHooker() {
 
     private fun startSystemUIPluginHook(){
 
-        val pluginInstance = findClass("com.android.systemui.shared.plugins.PluginInstance",classLoader)
+        val pluginInstancePluginFactory = findClass("com.android.systemui.shared.plugins.PluginInstance\$PluginFactory",classLoader)
 
-        XposedHelpers.findAndHookMethod(pluginInstance,"loadPlugin",object : XC_MethodHook(){
+        XposedHelpers.findAndHookMethod(pluginInstancePluginFactory,"createPluginContext",object : XC_MethodHook(){
 
             override fun afterHookedMethod(param: MethodHookParam?) {
                 super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
-                val mPluginContext = XposedHelpers.getObjectField(thisObj,"mPluginContext") as ContextWrapper
+                val mPluginContext = param?.result as ContextWrapper
                 val pathClassLoader = mPluginContext.classLoader
 
                 if (pathClassLoader == null) {
@@ -109,7 +108,7 @@ class PluginHookForOS2 : InitHooker() {
         initSecHooker(QSMediaView())
         initSecHooker(qsControlCenterColor)
         initSecHooker(QSListView())
-        initSecHooker(QSVolumeOrBrightnessValue())
+        initSecHooker(qsVolumeOrBrightnessValue)
         initSecHooker(QSCardTileList())
         initSecHooker(QSCardTile())
         initSecHooker(QSToggleSliderRadius())

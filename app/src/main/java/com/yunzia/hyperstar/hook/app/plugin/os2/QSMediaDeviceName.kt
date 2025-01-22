@@ -22,13 +22,13 @@ class QSMediaDeviceName : Hooker() {
         hookAllMethods(MiPlayExtentionsKt,
             "getFullName",
             object : MethodHook{
-                override fun before(param: XC_MethodHook.MethodHookParam?) {
+                override fun before(param: XC_MethodHook.MethodHookParam) {
 
 
                 }
 
-                override fun after(param: XC_MethodHook.MethodHookParam?) {
-                    val p0Vars = param?.args?.get(0)
+                override fun after(param: XC_MethodHook.MethodHookParam) {
+                    val p0Vars = param.args?.get(0)
 
                     val isLocalSpeaker : Boolean = XposedHelpers.callStaticMethod(MiPlayExtentionsKt,"isLocalSpeaker",p0Vars) as Boolean
                     if (isLocalSpeaker){

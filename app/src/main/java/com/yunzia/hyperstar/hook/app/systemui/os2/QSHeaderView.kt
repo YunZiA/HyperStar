@@ -11,19 +11,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.get
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
-import yunzia.utils.DensityUtil.Companion.dpToPx
 import java.util.Locale
 import kotlin.math.pow
 
@@ -53,8 +51,6 @@ class QSHeaderView() : Hooker() {
         }
 
         startMethodsHook()
-        //startMethodsHook1(classLoader)
-        //starLog.log(mPath)
 
     }
 

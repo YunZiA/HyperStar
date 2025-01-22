@@ -5,12 +5,13 @@ import android.graphics.Color
 import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.utils.XSPUtils
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
+import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.util.plugin.ControlCenterUtils
+import com.yunzia.hyperstar.hook.util.plugin.MiBlurCompat
+import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
-import java.lang.reflect.Method
 
 
 class QSVolumeOrBrightnessValue : Hooker() {
@@ -90,8 +91,8 @@ class QSVolumeOrBrightnessValue : Hooker() {
         }
 
         val ToggleSliderViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.recyclerview.ToggleSliderViewHolder",classLoader)
-        val ControlCenterUtils = XposedHelpers.findClass("miui.systemui.controlcenter.utils.ControlCenterUtils",classLoader)
-        val MiBlurCompat = XposedHelpers.findClass("miui.systemui.util.MiBlurCompat",classLoader)
+        val controlCenterUtils = ControlCenterUtils(classLoader)
+        val miBlurCompat = MiBlurCompat(classLoader)
         var colorArray : IntArray? = null
 
         XposedHelpers.findAndHookMethod(ToggleSliderViewHolder,"updateBlendBlur",object : XC_MethodHook(){
@@ -102,38 +103,29 @@ class QSVolumeOrBrightnessValue : Hooker() {
 
                 val context = XposedHelpers.callMethod(thisObj,"getContext") as Context
 
-                val default = XposedHelpers.callStaticMethod(ControlCenterUtils,"getBackgroundBlurOpenedInDefaultTheme",context) as Boolean
-
                 val item = XposedHelpers.getObjectField(thisObj,"itemView") as View
                 val topValue = item.findViewByIdName("top_text") as TextView
                 val icon = item.findViewByIdName("icon")
 
-                if (!default){
+                if (!controlCenterUtils.getBackgroundBlurOpenedInDefaultTheme(context)){
                     val colorId = context.resources.getIdentifier("toggle_slider_top_text_color", "color", "miui.systemui.plugin")
                     val color = item.resources.getColor(colorId)
 
                     topValue.setTextColor(color)
-                    XposedHelpers.callStaticMethod(MiBlurCompat,"setMiViewBlurModeCompat",topValue,0)
-                    XposedHelpers.callStaticMethod(MiBlurCompat,"clearMiBackgroundBlendColorCompat",topValue)
+
+                    miBlurCompat.setMiViewBlurModeCompat(topValue,0)
+                    miBlurCompat.clearMiBackgroundBlendColorCompat(topValue)
 
                     return
                 }
                 //Color.WHITE Color.parseColor("#959595")
                 topValue.setTextColor(Color.WHITE)
-                XposedHelpers.callStaticMethod(MiBlurCompat,"setMiViewBlurModeCompat",topValue,3)
+                miBlurCompat.setMiViewBlurModeCompat(topValue,3)
                 if (colorArray == null){
                     val array = context.resources.getIdentifier("toggle_slider_icon_blend_colors", "array", "miui.systemui.plugin")
 
                     colorArray = item.resources.getIntArray(array)
                 }
-
-                //val setMiProgressIconBackgroundBlendColors = XposedHelpers.findMethodBestMatch(MiBlurCompat,"setMiProgressIconBackgroundBlendColors",View::class.java,Int::class.java,Float::class.java)
-                val method: Method = MiBlurCompat.getDeclaredMethod(
-                    "setMiBackgroundBlendColors",
-                    View::class.java,
-                    IntArray::class.java,
-                    Float::class.java
-                )
 
                 val iconColorArray : IntArray = colorArray as IntArray
 
@@ -145,7 +137,7 @@ class QSVolumeOrBrightnessValue : Hooker() {
                     iconColorArray[2] = Color.parseColor(secondaryIconBlendColor)
 
                 }
-                method.invoke(thisObj,icon,iconColorArray,1f)
+                miBlurCompat.setMiBackgroundBlendColors(icon,iconColorArray,1f)
 
                 val valueColorArray : IntArray = colorArray as IntArray
 
@@ -157,13 +149,7 @@ class QSVolumeOrBrightnessValue : Hooker() {
                     valueColorArray[2] = Color.parseColor(secondaryValueBlendColor)
 
                 }
-                method.invoke(thisObj,topValue,valueColorArray,1f)
-
-
-
-
-
-
+                miBlurCompat.setMiBackgroundBlendColors(topValue,valueColorArray,1f)
 
             }
         })

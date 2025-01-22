@@ -6,7 +6,7 @@ import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.ViewGroup
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
@@ -51,7 +51,7 @@ class QSHeaderViewListener : Hooker() {
                     it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     if (qsListController != null){
 
-                        val mainPanelMode: Array<out Any>? = MainPanelModeController.enumConstants
+                        val mainPanelMode: Array<out Any>? = MainPanelModeController?.enumConstants
                         if (mainPanelMode == null){
                             starLog.logE("enumConstants == null")
                             return@setOnClickListener

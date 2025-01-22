@@ -31,7 +31,7 @@ fun GridTabView(
             text = stringResource(R.string.Hue),
             color = Color(0xFF74777F),
             fontSize = TextUnit(13f, TextUnitType.Sp),
-            modifier = Modifier.padding(bottom = 14.dp, top = 2.5.dp)
+            modifier = Modifier.padding(bottom = 13.dp, top = 2.5.dp)
         )
 
         ColorGrid(

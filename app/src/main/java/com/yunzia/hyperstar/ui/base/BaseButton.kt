@@ -41,7 +41,7 @@ fun MiniTextButton(
     textColor: Color = colorScheme.onBackground,
     fontSize: TextUnit = 12.sp,
     modifier: Modifier = Modifier,
-    radius: Dp = 8.dp,
+    radius: Dp = 10.dp,
     onClick: () -> Unit,
 ) {
 
@@ -137,7 +137,7 @@ fun BaseButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     submit: Boolean = false,
-    cornerRadius: Dp = 12.dp,
+    cornerRadius: Dp = 16.dp,
     interactionSource: MutableInteractionSource? = null
 ) {
     @Suppress("NAME_SHADOWING")

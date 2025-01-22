@@ -21,13 +21,13 @@ class QSMediaDefaultApp : Hooker() {
         hookAllMethods(classLoader, "com.android.systemui.QSControlMiPlayDetailHeader\$Companion\$getLastPlayingAppPackageName\$2",
             "invokeSuspend",
             object : MethodHook {
-                override fun before(param: XC_MethodHook.MethodHookParam?) {
+                override fun before(param: XC_MethodHook.MethodHookParam) {
 
                 }
 
-                override fun after(param: XC_MethodHook.MethodHookParam?) {
+                override fun after(param: XC_MethodHook.MethodHookParam) {
 
-                    param?.result = apps
+                    param.result = apps
 
                 }
             })

@@ -2,16 +2,14 @@ package com.yunzia.hyperstar.hook.base;
 
 import android.content.res.XModuleResources;
 
-import com.yunzia.hyperstar.hook.tool.starLog;
+import com.yunzia.hyperstar.hook.util.starLog;
 
 import java.util.Objects;
 
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
-public abstract class InitHooker extends HookHelper  {
+public abstract class InitHooker extends HookerHelper  {
 
     public String plugin = "miui.systemui.plugin";
     public Init init = getClass().getAnnotation(Init.class);

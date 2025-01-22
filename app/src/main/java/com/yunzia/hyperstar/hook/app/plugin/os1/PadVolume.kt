@@ -36,7 +36,6 @@ class PadVolume : Hooker() {
             return
         }
 
-
         val MiuiVolumeTimerDrawableHelper = XposedHelpers.findClass(
             "com.android.systemui.miui.volume.MiuiVolumeTimerDrawableHelper",
             classLoader
@@ -57,7 +56,7 @@ class PadVolume : Hooker() {
             "com.android.systemui.miui.volume.MiuiVerticalVolumeTimerSeekBar",
             classLoader
         )
-        //val MiuiVolumeTimerSeekBar = XposedHelpers.findClass("com.android.systemui.miui.volume.MiuiVolumeTimerSeekBar",classLoader)
+
 
         XposedHelpers.findAndHookConstructor(
             MiuiVerticalVolumeTimerSeekBar,
@@ -98,8 +97,7 @@ class PadVolume : Hooker() {
                     val canvas = param?.args?.get(0) as Canvas
 
                     val progressDrawable: Drawable =
-                        (XposedHelpers.callMethod(thisObject, "getProgressDrawable")
-                            ?: return) as Drawable
+                        (XposedHelpers.callMethod(thisObject, "getProgressDrawable") ?: return) as Drawable
                     canvas.save()
 
                     progressDrawable.draw(canvas)
@@ -500,15 +498,12 @@ class PadVolume : Hooker() {
                 }
 
                 val timerSeekbar = root.findViewByIdName("timer_seekbar") as SeekBar
-                timerSeekbar.maxHeight = res.getDimensionPixelSize(res.getIdentifier("miui_volume_timer_seekbar_height",
-                    "dimen",plugin))
+                timerSeekbar.maxHeight = getDimensionPixelSize(res,"miui_volume_timer_seekbar_height", plugin)
                 val timerSeekbarlp = timerSeekbar.layoutParams
                 if (timerSeekbarlp is ViewGroup.MarginLayoutParams) {
                     val marginParams = timerSeekbarlp
-                    marginParams.topMargin = res.getDimensionPixelSize(res.getIdentifier("miui_volume_timer_margin",
-                        "dimen",plugin))
-                    marginParams.bottomMargin = res.getDimensionPixelSize(res.getIdentifier("miui_volume_timer_margin",
-                        "dimen",plugin))
+                    marginParams.topMargin = getDimensionPixelSize(res,"miui_volume_timer_margin", plugin)
+                    marginParams.bottomMargin = getDimensionPixelSize(res,"miui_volume_timer_margin", plugin)
                     timerSeekbar.layoutParams = marginParams
                 }
 
@@ -517,10 +512,8 @@ class PadVolume : Hooker() {
                 val volumeTimerViewlp = volumeTimerView.layoutParams
                 if (volumeTimerViewlp is ViewGroup.MarginLayoutParams) {
                     val marginParams = volumeTimerViewlp
-                    marginParams.topMargin = res.getDimensionPixelSize(res.getIdentifier("miui_volume_timer_margin",
-                        "dimen",plugin))
-                    marginParams.bottomMargin = res.getDimensionPixelSize(res.getIdentifier("miui_volume_timer_margin",
-                        "dimen",plugin))
+                    marginParams.topMargin = getDimensionPixelSize(res,"miui_volume_timer_margin", plugin)
+                    marginParams.bottomMargin = getDimensionPixelSize(res,"miui_volume_timer_margin", plugin)
 
                     volumeTimerView.layoutParams = marginParams
                 }
@@ -541,8 +534,7 @@ class PadVolume : Hooker() {
                 val timerBglp = timerBg.layoutParams
                 if (timerBglp is ViewGroup.MarginLayoutParams) {
                     val marginParams = timerBglp
-                    marginParams.topMargin = res.getDimensionPixelSize(res.getIdentifier("miui_volume_timer_popup_text_margin_top",
-                        "dimen",plugin))
+                    marginParams.topMargin = getDimensionPixelSize(res,"miui_volume_timer_popup_text_margin_top", plugin)
 
                     marginParams.leftMargin = 0
 

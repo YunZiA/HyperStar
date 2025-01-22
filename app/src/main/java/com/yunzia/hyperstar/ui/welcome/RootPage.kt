@@ -73,6 +73,7 @@ import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
+import top.yukonga.miuix.kmp.utils.HorizontalDivider
 
 
 @SuppressLint("QueryPermissionsNeeded")
@@ -180,13 +181,14 @@ fun RootPage(pagerState: PagerState) {
             text = stringResource(R.string.root_statement)
             ,
             modifier = Modifier
-                .padding(horizontal = 36.dp)
-                .padding(top = 0.dp, bottom = 10.dp),
+                .padding(horizontal = 36.dp),
             fontSize = 13.sp,
             color = colorScheme.onSurfaceVariantSummary,
             fontWeight = FontWeight.Medium,
             style = TextStyle(textIndent = TextIndent(1.8.em, 0.em))
         )
+
+        HorizontalDivider(Modifier.padding(horizontal = 32.dp).padding(top = 10.dp, bottom = 6.dp),1.dp, colorScheme.dividerLine)
 
         Box(
             modifier = Modifier

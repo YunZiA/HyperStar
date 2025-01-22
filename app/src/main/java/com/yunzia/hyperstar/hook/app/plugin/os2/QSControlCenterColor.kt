@@ -11,15 +11,17 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.tool.starLog
-import com.yunzia.hyperstar.utils.XSPUtils
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
+import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.util.plugin.ConfigUtils
+import com.yunzia.hyperstar.hook.util.starLog
+import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
+//这里是改变控制中心臭臭颜色的地方
 class QSControlCenterColor : Hooker() {
 
 
@@ -28,26 +30,16 @@ class QSControlCenterColor : Hooker() {
         modRes: XModuleResources?
     ) {
         super.initResources(resparam, modRes)
-        starBackgroundColorHook()
-        startCardColorHook()
-        startToggleSliderColorHook()
-        startListColorHook()
-        startDeviceColorRes()
-//        resparam?.res?.setReplacement(plugin, "drawable", "qs_background_disabled", object : XResources.DrawableLoader() {
-//            override fun newDrawable(res: XResources?, id: Int): Drawable {
-//                val newDraw = res?.getDrawable(id) as Drawable
-//                if (newDraw is GradientDrawable){
-//                    newDraw.setStroke(20,Color.RED)
-//                }
-//                return newDraw
-//
-//
-//            }
-//        })
+        starBackgroundColorsByRes() //背景颜色-资源替换
+        startCardColorsByRes() //卡片磁贴颜色替换
+        startToggleSliderColorsByRes() //滑条颜色-资源替换
+        startListColorsByRes() //普通磁贴颜色-资源替换
+        startDeviceColorsByRes() //设备中心-资源替换
+
 
     }
 
-    private fun startDeviceColorRes() {
+    private fun startDeviceColorsByRes() {
 
         val deviceCenterItemBackgroundColor = XSPUtils.getString("device_center_item_background_color","null")
         val deviceCenterDetailIconColor = XSPUtils.getString("device_center_detail_icon_color","null")
@@ -64,6 +56,7 @@ class QSControlCenterColor : Hooker() {
 
         }
 
+        //单个设备项颜色替换
         if (deviceCenterItemBackgroundColor != "null"){
             resparam.res.setReplacement(plugin, "drawable", "ic_device_center_item_background_default", object : XResources.DrawableLoader(){
                 override fun newDrawable(res: XResources?, id: Int): Drawable {
@@ -84,7 +77,7 @@ class QSControlCenterColor : Hooker() {
     override fun initHook(classLoader: ClassLoader?) {
         super.initHook(classLoader)
 
-        startCardTitleHook()
+        startCardTitleHook() //卡片磁贴标题颜色
         startCardIconHook()
         startMediaColorsHook()
         startToggleSliderIconColorHook()
@@ -144,10 +137,11 @@ class QSControlCenterColor : Hooker() {
     }
 
     private fun startDeviceColor() {
+        val configUtils = ConfigUtils(classLoader)
         val deviceCenterIconColor = XSPUtils.getString("device_center_icon_color","null")
         val deviceCenterTitleColor = XSPUtils.getString("device_center_title_color","null")
 
-        val ConfigUtils = XposedHelpers.findClass("miui.systemui.controlcenter.ConfigUtils",classLoader)
+        //val ConfigUtils = XposedHelpers.findClass("miui.systemui.controlcenter.ConfigUtils",classLoader)
         val EmptyDeviceViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.EmptyDeviceViewHolder",classLoader)
 
 
@@ -178,10 +172,8 @@ class QSControlCenterColor : Hooker() {
                     super.afterHookedMethod(param)
                     val p1 = param?.args?.get(0)
                     val thisObj = param?.thisObject
-                    val INSTANCE = XposedHelpers.getStaticObjectField(ConfigUtils,"INSTANCE")
 
-                    val textAppearanceChanged = XposedHelpers.callMethod(INSTANCE,"textAppearanceChanged",p1) as Boolean
-                    if (textAppearanceChanged){
+                    if (configUtils.textAppearanceChanged(p1)){
 
                         val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
                         val title =  itemView.findViewByIdName("title") as TextView
@@ -224,10 +216,8 @@ class QSControlCenterColor : Hooker() {
                     super.afterHookedMethod(param)
                     val p1 = param?.args?.get(0)
                     val thisObj = param?.thisObject
-                    val INSTANCE = XposedHelpers.getStaticObjectField(ConfigUtils,"INSTANCE")
 
-                    val textAppearanceChanged = XposedHelpers.callMethod(INSTANCE,"textAppearanceChanged",p1) as Boolean
-                    if (textAppearanceChanged){
+                    if (configUtils.textAppearanceChanged(p1)){
 
                         val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
                         val entryTitle =  itemView.findViewByIdName("entry_title") as TextView
@@ -241,7 +231,7 @@ class QSControlCenterColor : Hooker() {
 
     }
 
-    private fun startToggleSliderColorHook() {
+    private fun startToggleSliderColorsByRes() {
         val mainProgressBlendColor = XSPUtils.getString("toggle_slider_progress_color_main", "null")
         val secondaryProgressBlendColor = XSPUtils.getString("toggle_slider_progress_color_secondary", "null")
 
@@ -274,7 +264,7 @@ class QSControlCenterColor : Hooker() {
 
 
 
-    private fun starBackgroundColorHook() {
+    private fun starBackgroundColorsByRes() {
         val backgroundColor = XSPUtils.getString("background_color", "null")
         val editBackgroundColor = XSPUtils.getString("edit_background_color", "null")
         val editBackgroundMode =XSPUtils.getInt("edit_background_mode",0)
@@ -344,7 +334,7 @@ class QSControlCenterColor : Hooker() {
 
     }
 
-    private fun startCardColorHook() {
+    private fun startCardColorsByRes() {
         val enableColor = XSPUtils.getString("card_enabled_color", "null")
         val restrictedColor = XSPUtils.getString("card_restricted_color", "null")
         val unavailableColor = XSPUtils.getString("card_unavailable_color", "null")
@@ -366,7 +356,7 @@ class QSControlCenterColor : Hooker() {
 
     }
 
-    private fun startListColorHook() {
+    private fun startListColorsByRes() {
 
         val enableColor = XSPUtils.getString("list_enabled_color", "null")
         val restrictedColor = XSPUtils.getString("list_restricted_color", "null")
@@ -455,6 +445,7 @@ class QSControlCenterColor : Hooker() {
     }
 
     private fun startMediaColorsHook() {
+        val configUtils = ConfigUtils(classLoader)
         val titleColor = XSPUtils.getString("media_title_color", "null")
         val artistColor = XSPUtils.getString("media_artist_color", "null")
         val emptyStateColor = XSPUtils.getString("media_empty_state_color", "null")
@@ -463,7 +454,8 @@ class QSControlCenterColor : Hooker() {
         val deviceIconColor = XSPUtils.getString("media_device_icon_color", "null")
 
         val MediaPlayerViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",classLoader)
-        val ConfigUtils = XposedHelpers.findClass("miui.systemui.controlcenter.ConfigUtils",classLoader)
+
+
         val MediaPlayerIconsInfo = XposedHelpers.findClass("miui.systemui.controlcenter.media.MediaPlayerIconsInfo",classLoader)
 
         XposedBridge.hookAllConstructors(MediaPlayerViewHolder, object : XC_MethodHook() {
@@ -532,10 +524,8 @@ class QSControlCenterColor : Hooker() {
                 val thisObj = param?.thisObject
                 val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
                 val configuration = param?.args?.get(0)
-                val instances = XposedHelpers.getStaticObjectField(ConfigUtils,"INSTANCE")
 
-                val textAppearanceChanged = XposedHelpers.callMethod(instances,"textAppearanceChanged",configuration) as Boolean
-                if (textAppearanceChanged){
+                if (configUtils.textAppearanceChanged(configuration)){
                     if (titleColor != "null"){
                         val title = itemView.findViewByIdName("title") as TextView
                         title.setTextColor(Color.parseColor(titleColor))

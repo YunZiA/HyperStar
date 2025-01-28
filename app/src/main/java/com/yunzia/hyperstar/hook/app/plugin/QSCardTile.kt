@@ -5,8 +5,6 @@ import android.view.View
 import android.widget.LinearLayout
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedHelpers
 
 class QSCardTile : Hooker() {
 
@@ -20,7 +18,7 @@ class QSCardTile : Hooker() {
         startMethodsHook()
     }
 
-    fun collapseStatusBar(context: Context) {
+    private fun collapseStatusBar(context: Context) {
         try {
             val systemService = context.getSystemService("statusbar")
             systemService.javaClass.getMethod("collapsePanels", *arrayOfNulls(0)).invoke(systemService, *arrayOfNulls(0))
@@ -35,25 +33,18 @@ class QSCardTile : Hooker() {
             return
         }
 
-        val onFinishInflate  = XposedHelpers.findClassIfExists("miui.systemui.controlcenter.qs.tileview.QSCardItemView\$onFinishInflate\$1",classLoader)
+        findClass(
+            "miui.systemui.controlcenter.qs.tileview.QSCardItemView\$onFinishInflate\$1",
+            classLoader
+        ).afterHookMethod("invoke",View::class.java){
 
+            val qsCardItemView = this.getObjectFieldAs<LinearLayout>("this$0")
 
-        XposedHelpers.findAndHookMethod(onFinishInflate,"invoke",View::class.java,object : XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
+            val clickAction = qsCardItemView.getObjectField("clickAction") ?: return@afterHookMethod
 
+            collapseStatusBar(qsCardItemView.context)
 
-                val qsCardItemView = XposedHelpers.getObjectField(thisObj,"this$0") as LinearLayout
-
-                val clickAction = XposedHelpers.getObjectField(qsCardItemView,"clickAction") ?: return
-
-                collapseStatusBar(qsCardItemView.context)
-
-            }
-        })
-
-
+        }
 
     }
 

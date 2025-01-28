@@ -2,8 +2,6 @@ package com.yunzia.hyperstar.hook.app.home
 
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodReplacement.returnConstant
-import de.robv.android.xposed.XposedHelpers
 
 class RemoveNoBlurDevice : Hooker() {
 
@@ -16,10 +14,14 @@ class RemoveNoBlurDevice : Hooker() {
 
         if (!isUnlock) return
 
-        val BlurUtilities = XposedHelpers.findClass("com.miui.home.launcher.common.BlurUtilities",classLoader)
-
-
-        XposedHelpers.findAndHookMethod(BlurUtilities,"isNotSupportBlurDevice", returnConstant(false))
+        findClass(
+            "com.miui.home.launcher.common.BlurUtilities",
+            classLoader
+        ).replaceHookMethod(
+            "isNotSupportBlurDevice"
+        ){
+            return@replaceHookMethod false
+        }
 
 
     }

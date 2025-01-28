@@ -3,8 +3,6 @@ package com.yunzia.hyperstar.hook.app.plugin
 import android.content.res.Resources
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedHelpers
 
 
 class QSToggleSliderRadius : Hooker() {
@@ -19,23 +17,13 @@ class QSToggleSliderRadius : Hooker() {
     }
 
     private fun startMethodsHook() {
-        val ToggleSliderViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.recyclerview.ToggleSliderViewHolder",classLoader)
-
-        XposedHelpers.findAndHookMethod(ToggleSliderViewHolder,"updateSize",object : XC_MethodHook(){
-
-
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
-                val mContext = XposedHelpers.callMethod(thisObj,"getResources") as Resources
-
-                XposedHelpers.setFloatField(thisObj,"progressRadius",dpToPx(mContext,progressRadius))
-
-
-
-            }
-        })
-
+        findClass(
+            "miui.systemui.controlcenter.panel.main.recyclerview.ToggleSliderViewHolder",
+            classLoader
+        ).afterHookMethod("updateSize"){
+            val mContext = this.callMethodAs<Resources>("getResources")!!
+            this.setFloatField("progressRadius",dpToPx(mContext,progressRadius))
+        }
 
     }
 

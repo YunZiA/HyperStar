@@ -10,9 +10,9 @@ import com.yunzia.hyperstar.hook.app.plugin.QSMiplayDetailVolumeBar
 import com.yunzia.hyperstar.hook.app.plugin.QSToggleSliderRadius
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurWidgetManager
+import com.yunzia.hyperstar.hook.app.plugin.QSControlCenterList
 import com.yunzia.hyperstar.hook.app.plugin.os2.DeviceCenterRow
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSControlCenterColor
-import com.yunzia.hyperstar.hook.app.plugin.os2.QSControlCenterList
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSEditButton
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSHeaderMessage
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSHeaderViewListener
@@ -21,14 +21,12 @@ import com.yunzia.hyperstar.hook.app.plugin.os2.QSMediaCoverBackground
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMediaDeviceName
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMediaView
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMiplayAppIconRadius
-import com.yunzia.hyperstar.hook.app.plugin.os2.QSVolumeOrBrightnessValue
+import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeOrQSBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeView
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
 import com.yunzia.hyperstar.hook.base.InitHooker
 import com.yunzia.hyperstar.hook.util.starLog
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedHelpers
 
 
 class PluginHookForOS2 : InitHooker() {
@@ -37,7 +35,6 @@ class PluginHookForOS2 : InitHooker() {
     private val qsControlCenterColor = QSControlCenterColor()
     private val powerMenu = PowerMenu()
     private val deviceCenterRow = DeviceCenterRow()
-    private val qsVolumeOrBrightnessValue = QSVolumeOrBrightnessValue()
 
     override fun initHook() {
         startSystemUIPluginHook()
@@ -55,7 +52,7 @@ class PluginHookForOS2 : InitHooker() {
         initResource(deviceCenterRow)
         initResource(QSMediaNoPlayTitle())
         initResource(QSEditText())
-        initResource(qsVolumeOrBrightnessValue)
+        initResource(VolumeOrQSBrightnessValue())
 
 
 
@@ -68,31 +65,25 @@ class PluginHookForOS2 : InitHooker() {
 
         val pluginInstancePluginFactory = findClass("com.android.systemui.shared.plugins.PluginInstance\$PluginFactory",classLoader)
 
-        XposedHelpers.findAndHookMethod(pluginInstancePluginFactory,"createPluginContext",object : XC_MethodHook(){
+        pluginInstancePluginFactory.afterHookMethod("createPluginContext"){
+            val mPluginContext = it.result as ContextWrapper
+            val pathClassLoader = mPluginContext.classLoader
 
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val mPluginContext = param?.result as ContextWrapper
-                val pathClassLoader = mPluginContext.classLoader
-
-                if (pathClassLoader == null) {
-                    starLog.log("Failed to load pluginClassLoader: null returned")
-                    return
-                }
-                if (!isHooked) {
-                    starLog.log("Loaded pluginClassLoader: $pathClassLoader")
-                    initSecHook(pathClassLoader)
-                    isHooked = true
-                }else if (secClassLoader != pathClassLoader){
-                    starLog.log("pluginClassLoader is changed")
-                    isHooked = false
-
-                }
-
+            if (pathClassLoader == null) {
+                starLog.log("Failed to load pluginClassLoader: null returned")
+                return@afterHookMethod
+            }
+            if (!isHooked) {
+                starLog.log("Loaded pluginClassLoader: $pathClassLoader")
+                initSecHook(pathClassLoader)
+                isHooked = true
+            }else if (secClassLoader != pathClassLoader){
+                starLog.log("pluginClassLoader is changed")
+                isHooked = false
 
             }
-        })
 
+        }
 
     }
 
@@ -108,7 +99,7 @@ class PluginHookForOS2 : InitHooker() {
         initSecHooker(QSMediaView())
         initSecHooker(qsControlCenterColor)
         initSecHooker(QSListView())
-        initSecHooker(qsVolumeOrBrightnessValue)
+        initSecHooker(VolumeOrQSBrightnessValue())
         initSecHooker(QSCardTileList())
         initSecHooker(QSCardTile())
         initSecHooker(QSToggleSliderRadius())

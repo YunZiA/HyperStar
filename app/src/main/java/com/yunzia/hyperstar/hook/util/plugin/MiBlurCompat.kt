@@ -3,7 +3,7 @@ package com.yunzia.hyperstar.hook.util.plugin
 import android.view.View
 import de.robv.android.xposed.XposedHelpers
 
-class MiBlurCompat(classLoader: ClassLoader?) {
+class MiBlurCompat(private val classLoader: ClassLoader?) {
 
     private val miBlurCompat = XposedHelpers.findClass("miui.systemui.util.MiBlurCompat",classLoader)
 

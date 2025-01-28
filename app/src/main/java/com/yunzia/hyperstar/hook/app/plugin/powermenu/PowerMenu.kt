@@ -12,8 +12,6 @@ import com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.Action
 import com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.menuA
 import com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.menuB
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
 
@@ -64,45 +62,39 @@ class PowerMenu : Hooker() {
     override fun initHook(classLoader: ClassLoader?) {
         super.initHook(classLoader)
 
-        val MiuiGlobalActionsDialog = XposedHelpers.findClass("com.android.systemui.miui.globalactions.MiuiGlobalActionsDialog",classLoader)
-        val VolumeUtil = XposedHelpers.findClass("com.android.systemui.miui.volume.VolumeUtil",classLoader)
+        val MiuiGlobalActionsDialog = findClass("com.android.systemui.miui.globalactions.MiuiGlobalActionsDialog",classLoader)
+        val VolumeUtil = findClass("com.android.systemui.miui.volume.VolumeUtil",classLoader)
 
-        if (isPowerMenuNavShow){
-            XposedHelpers.findAndHookMethod(MiuiGlobalActionsDialog,"initDialog",object : XC_MethodHook() {
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    val thisObj = param?.thisObject
-                    val mRoot = XposedHelpers.getObjectField(thisObj,"mRoot") as FrameLayout
-                    val flags = (View.SYSTEM_UI_FLAG_VISIBLE
-                            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
-                    mRoot.systemUiVisibility = flags
+        if (isPowerMenuNavShow) {
+            MiuiGlobalActionsDialog.afterHookMethod(
+                "initDialog"
+            ) {
+                val flags = (View.SYSTEM_UI_FLAG_VISIBLE or
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+                this.getObjectFieldAs<FrameLayout>("mRoot").systemUiVisibility = flags
 
-                }
-            })
-
+            }
         }
 
-        if (isPowerMenuStyle == 0) return
 
+        if (isPowerMenuStyle == 0) return
         var group: View? = null
-        XposedHelpers.findAndHookMethod(MiuiGlobalActionsDialog,"initViews",object : XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
-                val mContext = XposedHelpers.getObjectField(thisObj,"mContext") as Context
+        MiuiGlobalActionsDialog.apply {
+            afterHookMethod(
+                "initViews"
+            ) {
+                val mContext = this.getObjectFieldAs<Context>("mContext")
                 val res = mContext.resources
-                val mTalkbackLayout = XposedHelpers.getObjectField(thisObj,"mTalkbackLayout") as FrameLayout
-                val mSliderView = XposedHelpers.getObjectField(thisObj,"mSliderView") as FrameLayout
+                val mTalkbackLayout = this.getObjectFieldAs<FrameLayout>("mTalkbackLayout")
+                val mSliderView = this.getObjectFieldAs<FrameLayout>("mSliderView")
 
                 val s = mSliderView.layoutParams as FrameLayout.LayoutParams
                 //mSliderView.translationX = 250f
                 val action = Action(
                     mContext,xiaoai, icBootloader, icRecovery, icAirplaneOn, icAirplaneOff,
-                    icSilentOn, icSilentOff, icQsScreenshot, alipayPay, wechatScan, alipayScan, wechatPay , VolumeUtil
+                    icSilentOn, icSilentOff, icQsScreenshot, alipayPay, wechatScan, alipayScan, wechatPay , VolumeUtil!!
                 )
-
-
-
 
                 when(isPowerMenuStyle){
                     1->{
@@ -113,7 +105,7 @@ class PowerMenu : Hooker() {
                         )
 
                         group = menuB(
-                            mContext, thisObj, items1, mTalkbackLayout, mSliderView
+                            mContext, this, items1, mTalkbackLayout, mSliderView
                         )
                     }
                     2->{
@@ -132,43 +124,33 @@ class PowerMenu : Hooker() {
 
 
                         group = menuA(
-                            mContext, thisObj, items1, mTalkbackLayout, mSliderView
+                            mContext, this, items1, mTalkbackLayout, mSliderView
                         )
                     }
                 }
-
             }
-        })
-
-        val SliderView = XposedHelpers.findClass("com.android.systemui.miui.globalactions.SliderView",classLoader)
-
-        XposedHelpers.findAndHookMethod(SliderView,"handleActionMoveForAlpha",Float::class.java,object : XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                if (group == null) return
-                val thisObj = param?.thisObject
-                val mDark = XposedHelpers.getObjectField(thisObj,"mDark") as View
-
-
-
-                group!!.alpha = (1-mDark.alpha)
-
-
-            }
-        })
-
-        XposedHelpers.findAndHookMethod(MiuiGlobalActionsDialog,"dismiss",Int::class.java,object : XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                if (group == null) return
-                //group!!.clearAnimation()
-                //group!!.animatin
+            afterHookMethod(
+                "dismiss",
+                Int::class.java
+            ){
+                if (group == null) return@afterHookMethod
 
                 group!!.visibility = View.GONE
 
-
             }
-        })
+
+        }
+        findClass(
+            "com.android.systemui.miui.globalactions.SliderView",
+            classLoader
+        ).afterHookMethod(
+            "handleActionMoveForAlpha",
+            Float::class.java
+        ) {
+            if (group == null) return@afterHookMethod
+            val mDark = this.getObjectFieldAs<View>("mDark")
+            group!!.alpha = (1-mDark.alpha)
+        }
 
     }
 

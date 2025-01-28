@@ -2,12 +2,14 @@ package com.yunzia.hyperstar.hook.util.plugin
 
 import de.robv.android.xposed.XposedHelpers
 
-class ConfigUtils(classLoader: ClassLoader?) {
+class ConfigUtils(private val classLoader: ClassLoader?) {
 
     private var configUtils:Class<*> = XposedHelpers.findClass("miui.systemui.controlcenter.ConfigUtils",classLoader)
 
 
-    val INSTANCE = XposedHelpers.getStaticObjectField(configUtils,"INSTANCE")
+    val INSTANCE by lazy {
+        XposedHelpers.getStaticObjectField(configUtils,"INSTANCE")
+    }
 
 
     fun textAppearanceChanged(configuration: Any?):Boolean{

@@ -8,9 +8,6 @@ import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.util.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodReplacement
-import de.robv.android.xposed.XposedBridge
-import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LayoutInflated
 
@@ -24,8 +21,6 @@ class DeviceCenterRow: Hooker() {
         modRes: XModuleResources?
     ) {
         super.initResources(resparam, modRes)
-
-
 
         if (deviceCenterSpanSize == 1){
             resparam?.res?.hookLayout(plugin,"layout","device_center_empty_item",object : XC_LayoutInflated(){
@@ -70,88 +65,68 @@ class DeviceCenterRow: Hooker() {
         super.initHook(classLoader)
 
 
-        val a = XposedHelpers.findClass("h.a.g.a",classLoader)
+        val a = findClass("h.a.g.a",classLoader)
 
-        val DeviceCenterCardController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.DeviceCenterCardController",classLoader)
+        val DeviceCenterCardController = findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.DeviceCenterCardController",classLoader)
 
-        val DeviceCenterEntryViewHolderMode = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.devicecenter.entry.DeviceCenterEntryViewHolder\$Mode",classLoader)
+        val DeviceCenterEntryViewHolderMode = findClass("miui.systemui.controlcenter.panel.main.devicecenter.entry.DeviceCenterEntryViewHolder\$Mode",classLoader)
 
         if (isDeviceCenterMode != 0 || deviceCenterSpanSize !=4){
+            a.replaceHookedAllConstructors {
+                this.setObjectField("a", it.args[0])
+                val list = it.args[1] as List<*>
 
-            XposedBridge.hookAllConstructors(a,object :XC_MethodReplacement(){
-                override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-                    val thisObj = param?.thisObject
-                    XposedHelpers.setObjectField(thisObj,"a",param?.args?.get(0))
-                    val list = param?.args?.get(1) as List<*>
-
-                    if (deviceCenterSpanSize == 1 || isDeviceCenterMode == 1){
-                        val lists = list.subList(0,0 )
-                        XposedHelpers.setObjectField(thisObj,"f",lists)
-                        return null
-                    }
-                    if (isDeviceCenterMode == 2){
-                        val size = deviceCenterSpanSize-1
-                        if (list.size <= size){
-                            XposedHelpers.setObjectField(thisObj,"f",list)
-
-                        }else{
-                            val lists = list.subList(0,size)
-                            XposedHelpers.setObjectField(thisObj,"f",lists)
-
-                        }
-                        return null
-                    }
-                    val size = deviceCenterSpanSize*2-1
+                if (deviceCenterSpanSize == 1 || isDeviceCenterMode == 1){
+                    val lists = list.subList(0,0 )
+                    this.setObjectField("f",lists)
+                    return@replaceHookedAllConstructors null
+                }
+                if (isDeviceCenterMode == 2){
+                    val size = deviceCenterSpanSize-1
                     if (list.size <= size){
-
-                        XposedHelpers.setObjectField(thisObj,"f",list)
+                        this.setObjectField("f",list)
 
                     }else{
-                        val lists = list.subList(0,size )
-                        XposedHelpers.setObjectField(thisObj,"f",lists)
+                        val lists = list.subList(0,size)
+                        this.setObjectField("f",lists)
 
                     }
-
-
-                    return null
-
+                    return@replaceHookedAllConstructors null
+                }
+                val size = deviceCenterSpanSize*2-1
+                if (list.size <= size){
+                    this.setObjectField("f",list)
+                }else{
+                    val lists = list.subList(0,size )
+                    this.setObjectField("f",lists)
                 }
 
-            })
 
-            XposedHelpers.findAndHookMethod(DeviceCenterCardController,"getMode",object :XC_MethodReplacement(){
-                override fun replaceHookedMethod(param: MethodHookParam?): Any {
-                    val thisObj = param?.thisObject
-                    val deviceItems = XposedHelpers.getObjectField(thisObj,"deviceItems") as ArrayList<*>
-                    val rowMode: Array<out Any> = DeviceCenterEntryViewHolderMode.getEnumConstants()!!
+                return@replaceHookedAllConstructors null
 
-                    if (deviceItems.size == 1 || deviceCenterSpanSize == 1 || isDeviceCenterMode == 1){
-                        starLog.logD("1")
-                        return rowMode[0]
-                    }else{
-                        starLog.logD(">1")
-                        return if (deviceItems.size > deviceCenterSpanSize){
-                            if (isDeviceCenterMode == 2){
+            }
+            DeviceCenterCardController.replaceHookMethod("getMode"){
+                val deviceItems = this.getObjectFieldAs<ArrayList<*>>("deviceItems")
+                val rowMode: Array<out Any> = DeviceCenterEntryViewHolderMode?.getEnumConstants()!!
 
-                                rowMode[1]
-
-                            }else{
-
-                                rowMode[2]
-
-                            }
-                        }else{
+                if (deviceItems.size == 1 || deviceCenterSpanSize == 1 || isDeviceCenterMode == 1){
+                    starLog.logD("1")
+                    return@replaceHookMethod rowMode[0]
+                }else{
+                    starLog.logD(">1")
+                    return@replaceHookMethod if (deviceItems.size > deviceCenterSpanSize){
+                        if (isDeviceCenterMode == 2){
                             rowMode[1]
+                        }else{
+                            rowMode[2]
                         }
-
-
+                    }else{
+                        rowMode[1]
                     }
-
-
-
                 }
 
-            })
+            }
+
         }
 
 

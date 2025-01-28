@@ -1,9 +1,8 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
+import android.content.Context
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedHelpers
 
 class SuperBlurVolumeManager : Hooker() {
 
@@ -13,31 +12,23 @@ class SuperBlurVolumeManager : Hooker() {
         super.initHook(classLoader)
         if (superBlurVolume != 0){
             startMethodsHook()
-
         }
     }
 
     private fun startMethodsHook() {
-        val MiBlurCompat  = XposedHelpers.findClass("miui.systemui.util.MiBlurCompat",classLoader)
-        XposedHelpers.findAndHookMethod(MiBlurCompat, "getBackgroundBlurOpened", Class.forName("android.content.Context") , object : XC_MethodHook() {
-            override fun beforeHookedMethod(param: MethodHookParam?) {
+        findClass(
+            "miui.systemui.util.MiBlurCompat",
+            classLoader
+        ).afterHookMethod("getBackgroundBlurOpened",Context::class.java){
+
+            if (superBlurVolume == 1){
+                it.result = false
+
+            }else if (superBlurVolume == 2){
+                it.result = true
 
             }
-
-            override fun afterHookedMethod(param: MethodHookParam?) {
-
-                if (superBlurVolume == 1){
-                    param?.result = false
-
-                }else if (superBlurVolume == 2){
-                    param?.result = true
-
-                }
-
-            }
-
-        })
-
+        }
 
     }
 }

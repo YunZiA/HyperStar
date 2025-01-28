@@ -1,25 +1,19 @@
 package com.yunzia.hyperstar.hook.app.plugin.os2
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.content.Context
 import android.content.res.Configuration
-import android.os.Handler
-import android.os.Looper
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.util.plugin.Util
 import com.yunzia.hyperstar.hook.util.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XC_MethodReplacement
-import de.robv.android.xposed.XposedBridge
-import de.robv.android.xposed.XposedHelpers
 import yunzia.utils.DensityUtil.Companion.dpToPx
+import kotlin.math.abs
 
 
 class VolumeView: Hooker() {
@@ -57,324 +51,239 @@ class VolumeView: Hooker() {
 
     private fun startCollpasedColumn() {
 
+        findClass(
+            "com.android.systemui.miui.ViewStateGroup\$Builder",
+            classLoader
+        ).afterHookMethod(
+            "addStateWithIntDimen",
+            Int::class.java,
+            Int::class.java,
+            Int::class.java
+        ) {
 
-        val Builder = XposedHelpers.findClass("com.android.systemui.miui.ViewStateGroup\$Builder",classLoader)
+            val i3 = it.args[2] as Int
+            val mContext = this.getObjectFieldAs<Context>("mContext")
+            val res = mContext.resources
+            val miuiVolumeOffsetTopCollapsed = res.getIdentifier("miui_volume_offset_top_collapsed","dimen",plugin)
+            val miuiVolumeDialogShadowMarginTop = res.getIdentifier("miui_volume_dialog_shadow_margin_top","dimen",plugin)
 
-
-        XposedHelpers.findAndHookMethod(Builder,"addStateWithIntDimen",Int::class.java,Int::class.java,Int::class.java,object :XC_MethodHook(){
-
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                val thisObj = param?.thisObject
-                val mContext = XposedHelpers.getObjectField(thisObj,"mContext") as Context
-                val res = mContext.theme.resources
-                val i3 = param?.args?.get(2) as Int
-                val miuiVolumeOffsetTopCollapsed = res.getIdentifier("miui_volume_offset_top_collapsed","dimen",plugin)
-
-                val miuiVolumeDialogShadowMarginTop = res.getIdentifier("miui_volume_dialog_shadow_margin_top","dimen",plugin)
-                when(i3){
-                    miuiVolumeOffsetTopCollapsed->{
-                        val VolumeOffsetTop:Float
-                        if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-                            if (VolumeOffsetTopCollapsedP == -1f) return
-                            VolumeOffsetTop = VolumeOffsetTopCollapsedP
-                        }else{
-                            if (VolumeOffsetTopCollapsedL == -1f) return
-                            VolumeOffsetTop = VolumeOffsetTopCollapsedL
-
-                        }
-                        param.result = XposedHelpers.callMethod(thisObj,"addState",param.args?.get(0),param.args?.get(1),dpToPx(res,VolumeOffsetTop).toInt())
-
-                    }
-                    miuiVolumeDialogShadowMarginTop->{
-                        val ShadowMarginTop:Float
-                        if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-                            if (ShadowMarginTopP == -1f) return
-                            ShadowMarginTop = ShadowMarginTopP
-                        }else{
-                            if (ShadowMarginTopL == -1f) return
-                            ShadowMarginTop = ShadowMarginTopL
-
-                        }
-                        param.result = XposedHelpers.callMethod(thisObj,"addState",param.args?.get(0),param.args?.get(1),dpToPx(res,ShadowMarginTop).toInt())
+            when(i3) {
+                miuiVolumeOffsetTopCollapsed -> {
+                    val VolumeOffsetTop: Float
+                    if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        if (VolumeOffsetTopCollapsedP == -1f) return@afterHookMethod
+                        VolumeOffsetTop = VolumeOffsetTopCollapsedP
+                    } else {
+                        if (VolumeOffsetTopCollapsedL == -1f) return@afterHookMethod
+                        VolumeOffsetTop = VolumeOffsetTopCollapsedL
 
                     }
+                    it.result = this.callMethod(
+                        "addState",
+                        it.args[0],
+                        it.args[1],
+                        dpToPx(res, VolumeOffsetTop).toInt()
+                    )
+
                 }
 
+                miuiVolumeDialogShadowMarginTop -> {
+                    val ShadowMarginTop: Float
+                    if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        if (ShadowMarginTopP == -1f) return@afterHookMethod
+                        ShadowMarginTop = ShadowMarginTopP
+                    } else {
+                        if (ShadowMarginTopL == -1f) return@afterHookMethod
+                        ShadowMarginTop = ShadowMarginTopL
+                    }
+                    it.result = this.callMethod(
+                        "addState",
+                        it.args[0],
+                        it.args[1],
+                        dpToPx(res, ShadowMarginTop).toInt()
+                    )
 
+                }
+            }
+        }
+
+        findClass(
+            "com.android.systemui.miui.volume.MiuiVolumeDialogMotion",
+            classLoader
+        ).afterHookMethod(
+            "updateShadowState"
+        ){
+            val mContext = this.getObjectField("mContext") as Context
+            val res = mContext.resources
+            val mShadowView = this.getObjectFieldAs<View>("mShadowView")
+            val mVolumeView =  this.getObjectFieldAs<View>("mVolumeView")
+            val mSuperVolume = this.getObjectFieldAs<View>("mSuperVolume")
+            val mRingerModeLayout = this.getObjectFieldAs<View>("mRingerModeLayout")
+            val layoutParams = mShadowView.layoutParams as ViewGroup.MarginLayoutParams
+            val shadowHeight:Float
+
+            if (!(this.callMethodAs<Boolean>("isLandscape")!!)){
+                if (ShadowMarginTopP == -1f) return@afterHookMethod
+                var top= dpToPx(res,ShadowMarginTopP).toInt()
+                if (mSuperVolume.visibility == View.VISIBLE) {
+                    top -= getDimensionPixelSize(res,"miui_shadow_super_volume_height",plugin)
+                }
+                layoutParams.topMargin = top
+                mShadowView.layoutParams = layoutParams
 
             }
-        })
+            if (mRingerModeLayout.visibility == View.VISIBLE){
 
-
-
-        val MiuiVolumeDialogMotion = XposedHelpers.findClass("com.android.systemui.miui.volume.MiuiVolumeDialogMotion",classLoader)
-        XposedHelpers.findAndHookMethod(MiuiVolumeDialogMotion,"updateShadowState",object :XC_MethodHook(){
-
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                val thisObj = param?.thisObject
-                val mContext = XposedHelpers.getObjectField(thisObj,"mContext") as Context
-                val res = mContext.theme.resources
-                val mShadowView = XposedHelpers.getObjectField(thisObj,"mShadowView") as View
-                val mVolumeView =  XposedHelpers.getObjectField(thisObj,"mVolumeView") as View
-                val mSuperVolume = XposedHelpers.getObjectField(thisObj,"mSuperVolume") as View
-                val mRingerModeLayout = XposedHelpers.getObjectField(thisObj,"mRingerModeLayout") as View
-                val shadowHeight:Float
-                val layoutParams = mShadowView.layoutParams as ViewGroup.MarginLayoutParams
-
-                if (!(XposedHelpers.callMethod(thisObj,"isLandscape") as Boolean)){
-                    if (ShadowMarginTopP == -1f) return
-                    var top= dpToPx(res,ShadowMarginTopP).toInt()
-                    if (mSuperVolume.visibility == View.VISIBLE) {
-                        val miuiShadowSuperVolumeHeight = res.getIdentifier("miui_shadow_super_volume_height","dimen",plugin)
-                        top -= res.getDimensionPixelSize(miuiShadowSuperVolumeHeight)
-                    }
-                    layoutParams.topMargin = top
-                    mShadowView.layoutParams = layoutParams
-
-                }
-                if (mRingerModeLayout.visibility == View.VISIBLE){
-
-                    if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-                        if (ShadowHeightP == -1f) return
-                        shadowHeight = ShadowHeightP
-                    }else{
-                        if (ShadowHeightL == -1f) return
-                        shadowHeight = ShadowHeightL
-
-                    }
+                if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+                    if (ShadowHeightP == -1f) return@afterHookMethod
+                    shadowHeight = ShadowHeightP
                 }else{
-                    return
+                    if (ShadowHeightL == -1f) return@afterHookMethod
+                    shadowHeight = ShadowHeightL
+
                 }
-                mShadowView.layoutParams.height = dpToPx(res,shadowHeight).toInt()
+            }else return@afterHookMethod
 
+            mShadowView.layoutParams.height = dpToPx(res,shadowHeight).toInt()
 
+        }
 
+        findClass(
+            "com.android.systemui.miui.volume.DndPopupWindow",
+            classLoader
+        ).replaceHookMethod(
+            "getPositionY",
+            Int::class.java
+        ){
+            val i = it.args[0] as Int
+            val mContext = this.getObjectFieldAs<Context>("mContext")
+            val res = mContext.resources
 
+            var miuiVolumeOffsetTopCollapsed = getDimensionPixelSize(res,"miui_volume_offset_top_collapsed",plugin)
 
+            if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+                if (VolumeHeightCollapsedP != -1f) {
+                    miuiVolumeOffsetTopCollapsed = dpToPx(res,VolumeHeightCollapsedP).toInt()
+                }
+            } else {
+                if (VolumeHeightCollapsedL != -1f){
+                    miuiVolumeOffsetTopCollapsed= dpToPx(res,VolumeHeightCollapsedL).toInt()
+                }
             }
-        })
+            val miuiVolumeFooterMarginTop = getDimensionPixelSize(res,"miui_volume_footer_margin_top",plugin)
+            val miuiVolumeSilenceButtonHeight = getDimensionPixelSize(res,"miui_volume_silence_button_height",plugin)
+            var miuiVolumeColumnHeight = getDimensionPixelSize(res,"miui_volume_column_height",plugin)
+            if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+                if (VolumeHeightCollapsedP == -1f){
+                    miuiVolumeColumnHeight = dpToPx(res,VolumeHeightCollapsedP).toInt()
+                }
+            } else {
+                if (VolumeHeightCollapsedL != -1f){
+                    miuiVolumeColumnHeight =  dpToPx(res,VolumeHeightCollapsedL).toInt()
+                }
+            }
 
-//        XposedHelpers.findAndHookMethod(MiuiVolumeDialogMotion,"updateShadowState",object :XC_MethodReplacement(){
-//            override fun replaceHookedMethod(param: MethodHookParam?): Any {
-//                val thisObj = param?.thisObject
-//                val mContext = XposedHelpers.getObjectField(thisObj, "mContext") as Context
-//                val res = mContext.theme.resources
-//
-//                val miui_volume_column_width = res.getIdentifier("miui_volume_column_width","dimen",plugin)
-//                var width = res.getDimensionPixelSize(miui_volume_column_width);
-//
-//                if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-//                    if (volumeWidthCollapsedP != -1f) {
-//                        width = dpToPx(res,volumeWidthCollapsedP).toInt()
-//                    }
-//                } else {
-//                    if (volumeWidthCollapsedL != -1f){
-//                        width= dpToPx(res,volumeWidthCollapsedL).toInt()
-//
-//                    }
-//                }
-//
-//
-//                val widthPixels = (XposedHelpers.callMethod(thisObj,"provideDisplayMetrics") as DisplayMetrics).widthPixels
-//                val mVisibleNumber = XposedHelpers.getIntField(thisObj,"mVisibleNumber")
-//                var i3 = widthPixels - (width * mVisibleNumber)
-//
-//                if (width == 2) {
-//                    val miui_volume_temp_margin_active = res.getIdentifier("miui_volume_temp_margin_active","dimen",plugin)
-//                    i3 -= res.getDimensionPixelSize(miui_volume_temp_margin_active);
-//                }
-//
-//                var seekbarMarginRight = i3 - (XposedHelpers.callMethod(thisObj,"getSeekbarMarginRight") as Int)
-//                if (XposedHelpers.callMethod(thisObj,"volumeShowLeft") as Boolean) {
-//                    seekbarMarginRight = XposedHelpers.callMethod(thisObj,"getSeekbarMarginRight") as Int
-//                }
-//                return if(
-//                    XposedHelpers.callMethod(thisObj,"isLandscape") as Boolean){
-//                    seekbarMarginRight - (XposedHelpers.callMethod(thisObj,"getInsetRight")as Int )
-//                } else{
-//                    seekbarMarginRight
-//                }
-//
-//            }
-//
-//        })
+            val result = (((miuiVolumeOffsetTopCollapsed + miuiVolumeColumnHeight)
+                    + (miuiVolumeSilenceButtonHeight  * 1.5))
+                    + (miuiVolumeFooterMarginTop * 2)) - (i * 0.8f)
+            return@replaceHookMethod result.toInt()
 
-        val DndPopupWindow = XposedHelpers.findClass("com.android.systemui.miui.volume.DndPopupWindow",classLoader)
+        }
 
-        XposedHelpers.findAndHookMethod(DndPopupWindow,"getPositionY",Int::class.java,object :XC_MethodReplacement(){
-
-            override fun replaceHookedMethod(param: MethodHookParam?): Any {
-                val thisObj = param?.thisObject
-                val i = param?.args?.get(0) as Int
-                val mContext = XposedHelpers.getObjectField(thisObj, "mContext") as Context
-                val res = mContext.theme.resources
-
-                var miuiVolumeOffsetTopCollapsed = res.getIdentifier("miui_volume_offset_top_collapsed","dimen",plugin)
-
+        findClass(
+            "com.android.systemui.miui.volume.VolumePanelViewController",
+            classLoader
+        ).afterHookMethod(
+            "updateColumnsSizeH",
+            View::class.java
+        ){
+            val view = it.args[0] as View
+            val mContext = this.getObjectFieldAs<Context>("mContext")
+            val res = mContext.resources
+            if (!this.getBooleanField("mExpanded")) {
+                val marginLayoutParams = view.layoutParams
+                //marginLayoutParams.width = dpToPx(res,80f).toInt()
+                val height :Float
                 if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-                    if (VolumeHeightCollapsedP != -1f) {
-
-                        miuiVolumeOffsetTopCollapsed = dpToPx(res,VolumeHeightCollapsedP).toInt()
-
-                    }
+                    if (VolumeHeightCollapsedP == -1f) return@afterHookMethod
+                    height = VolumeHeightCollapsedP
                 } else {
-                    if (VolumeHeightCollapsedL != -1f){
-
-                        miuiVolumeOffsetTopCollapsed= dpToPx(res,VolumeHeightCollapsedL).toInt()
-
-                    }
+                    if (VolumeHeightCollapsedL == -1f) return@afterHookMethod
+                    height= VolumeHeightCollapsedL
                 }
-                val miuiVolumeFooterMarginTop = res.getIdentifier("miui_volume_footer_margin_top","dimen",plugin)
-                val miuiVolumeSilenceButtonHeight = res.getIdentifier("miui_volume_silence_button_height","dimen",plugin)
-                var miuiVolumeColumnHeight = res.getDimensionPixelSize(res.getIdentifier("miui_volume_column_height","dimen",plugin))
+                marginLayoutParams.height = dpToPx(res,height).toInt()
+                view.layoutParams = marginLayoutParams
+            }
+
+        }
+
+        findClass(
+            "com.android.systemui.miui.volume.MiuiVolumeSeekBarProgressView",
+            classLoader
+        ).afterHookMethod(
+            "updateProgressViewSize",
+            Boolean::class.java,
+            Boolean::class.java
+        ) { this as View
+            val mContext = this.getObjectField("mContext") as Context
+            val res = mContext.resources
+            val mExpanded =  it.args[0] as Boolean
+            if (!mExpanded) {
+                val marginLayoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
+                //marginLayoutParams.width = dpToPx(res,80f).toInt()
+                var height: Int
+                if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    if (VolumeHeightCollapsedP == -1f) return@afterHookMethod
+                    height = dpToPx(res, VolumeHeightCollapsedP).toInt()
+                } else {
+                    if (VolumeHeightCollapsedL == -1f) return@afterHookMethod
+                    height = dpToPx(res, VolumeHeightCollapsedL).toInt()
+                }
+                if (height % 2 == 1) {
+                    height++
+                    marginLayoutParams.height = height
+                } else {
+                    marginLayoutParams.height = height
+
+                }
+                this.setObjectField( "mHeight", height)
+                this.layoutParams = marginLayoutParams
+            }
+
+        }
+
+        findClass(
+            "com.android.systemui.miui.volume.RoundRectFrameLayout",
+            classLoader
+        ).afterHookMethod(
+            "updateProgressViewSize",
+            Boolean::class.java,
+            Boolean::class.java
+        ) { this as View
+            val mContext = this.getObjectField("mContext") as Context
+            val res = mContext.resources
+            val mExpanded =  it.args[0] as Boolean
+            if (!mExpanded) {
+                val marginLayoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
+                var height :Int
                 if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-                    if (VolumeHeightCollapsedP != -1f){
-
-                        miuiVolumeColumnHeight = dpToPx(res,VolumeHeightCollapsedP).toInt()
-
-                    }
+                    if (VolumeHeightCollapsedP == -1f) return@afterHookMethod
+                    height = dpToPx(res,VolumeHeightCollapsedP).toInt()
                 } else {
-                    if (VolumeHeightCollapsedL != -1f){
-
-                        miuiVolumeColumnHeight =  dpToPx(res,VolumeHeightCollapsedL).toInt()
-
-                    }
+                    if (VolumeHeightCollapsedL == -1f) return@afterHookMethod
+                    height= dpToPx(res,VolumeHeightCollapsedL).toInt()
                 }
+                if (height %2 == 1){
+                    height++
+                    marginLayoutParams.height = height
+                }else{
+                    marginLayoutParams.height = height
 
-                val result = (((miuiVolumeOffsetTopCollapsed + miuiVolumeColumnHeight)
-                        + ((res.getDimensionPixelSize(miuiVolumeSilenceButtonHeight)  * 1.5)))
-                        + (res.getDimensionPixelSize(miuiVolumeFooterMarginTop) * 2)) - (i * 0.8f)
-                return result.toInt()
-            }
-        })
-
-//        XposedHelpers.findAndHookMethod(DndPopupWindow,"init",object :XC_MethodHook(){
-//            override fun afterHookedMethod(param: MethodHookParam?) {
-//                super.afterHookedMethod(param)
-//                val thisObj = param?.thisObject
-//                val mContext = XposedHelpers.getObjectField(thisObj, "mContext") as Context
-//                val res = mContext.theme.resources
-//                val mParams = XposedHelpers.getObjectField(thisObj,"mParams") as WindowManager.LayoutParams
-//                val miui_volume_offset_end = res.getIdentifier("miui_volume_offset_end","dimen",plugin)
-//                val miui_volume_column_width = res.getIdentifier("miui_volume_column_width","dimen",plugin)
-//
-//                val end = res.getDimensionPixelSize(miui_volume_offset_end) * 2
-//                var width = res.getDimensionPixelSize(miui_volume_column_width)
-//                if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-//                    if (volumeWidthCollapsedP != -1f){
-//                        width = dpToPx(res,volumeWidthCollapsedP).toInt()
-//
-//                    }
-//                } else {
-//                    if (volumeWidthCollapsedL != -1f){
-//                        width = dpToPx(res,volumeWidthCollapsedL).toInt()
-//
-//                    }
-//                }
-//                mParams.x = end + width
-//
-//            }
-//
-//        })
-
-        val VolumePanelViewController = XposedHelpers.findClass("com.android.systemui.miui.volume.VolumePanelViewController",classLoader)
-
-        XposedHelpers.findAndHookMethod(VolumePanelViewController,"updateColumnsSizeH",View::class.java,object :XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                val thisObj = param?.thisObject
-                val view = param?.args?.get(0) as View
-                val mContext = XposedHelpers.getObjectField(thisObj,"mContext") as Context
-                val res = mContext.theme.resources
-                val mExpanded =  XposedHelpers.getBooleanField(thisObj,"mExpanded")
-                if (!mExpanded) {
-                    val marginLayoutParams = view.layoutParams
-                    //marginLayoutParams.width = dpToPx(res,80f).toInt()
-                    val height :Float
-                    if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-                        if (VolumeHeightCollapsedP == -1f) return
-                        height = VolumeHeightCollapsedP
-                    } else {
-                        if (VolumeHeightCollapsedL == -1f) return
-                        height= VolumeHeightCollapsedL
-                    }
-                    marginLayoutParams.height = dpToPx(res,height).toInt()
-                    view.layoutParams = marginLayoutParams
                 }
-
-
-
+                this.layoutParams = marginLayoutParams
             }
-        })
-        val MiuiVolumeSeekBarProgressView = XposedHelpers.findClass("com.android.systemui.miui.volume.MiuiVolumeSeekBarProgressView",classLoader)
 
-        XposedHelpers.findAndHookMethod(MiuiVolumeSeekBarProgressView,"updateProgressViewSize",Boolean::class.java,Boolean::class.java,object :XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                val thisObj = param?.thisObject
-                val mContext = XposedHelpers.getObjectField(thisObj,"mContext") as Context
-                val res = mContext.theme.resources
-                val mExpanded =  param?.args?.get(0) as Boolean
-                if (!mExpanded) {
-                    val view = thisObj as View
-                    val marginLayoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
-                    //marginLayoutParams.width = dpToPx(res,80f).toInt()
-                    var height :Int
-                    if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-                        if (VolumeHeightCollapsedP == -1f) return
-                        height = dpToPx(res,VolumeHeightCollapsedP).toInt()
-                    } else {
-                        if (VolumeHeightCollapsedL == -1f) return
-                        height= dpToPx(res,VolumeHeightCollapsedL).toInt()
-                    }
-                    if (height %2 == 1){
-                        height++
-                        marginLayoutParams.height = height
-                    }else{
-                        marginLayoutParams.height = height
-
-                    }
-                    XposedHelpers.setObjectField(thisObj,"mHeight",height)
-                    view.layoutParams = marginLayoutParams
-                }
-
-
-
-            }
-        })
-
-        val RoundRectFrameLayout = XposedHelpers.findClass("com.android.systemui.miui.volume.RoundRectFrameLayout",classLoader)
-
-        XposedHelpers.findAndHookMethod(RoundRectFrameLayout,"updateProgressViewSize",Boolean::class.java,Boolean::class.java,object :XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                val thisObj = param?.thisObject
-                val mContext = XposedHelpers.getObjectField(thisObj,"mContext") as Context
-                val res = mContext.resources
-                val mExpanded =  param?.args?.get(0) as Boolean
-                if (!mExpanded) {
-                    val view = thisObj as View
-                    val marginLayoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
-                    //marginLayoutParams.width = dpToPx(res,80f).toInt()
-                    var height :Int
-                    if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-                        if (VolumeHeightCollapsedP == -1f) return
-                        height = dpToPx(res,VolumeHeightCollapsedP).toInt()
-                    } else {
-                        if (VolumeHeightCollapsedL == -1f) return
-                        height= dpToPx(res,VolumeHeightCollapsedL).toInt()
-                    }
-                    if (height %2 == 1){
-                        height++
-                        marginLayoutParams.height = height
-                    }else{
-                        marginLayoutParams.height = height
-
-                    }
-                    view.layoutParams = marginLayoutParams
-                }
-
-
-
-            }
-        })
+        }
 
     }
 
@@ -382,139 +291,152 @@ class VolumeView: Hooker() {
 
         if (!isPressExpandVolume) return
 
-        val MiuiVolumeDialogView = XposedHelpers.findClass("com.android.systemui.miui.volume.MiuiVolumeDialogView",classLoader)
-
-        XposedHelpers.findAndHookMethod(MiuiVolumeDialogView,"onFinishInflate",object :XC_MethodHook(){
-
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                val thisObj = param?.thisObject
-                val mExpandButton = XposedHelpers.getObjectField(thisObj,"mExpandButton") as View
-                mExpandButton.setOnClickListener(null)
-                mExpandButton.alpha = 0f
-                mExpandButton.isClickable = false
-                mExpandButton.visibility = View.GONE
-
-
-
-            }
-        })
-
-
-        XposedHelpers.findAndHookMethod(MiuiVolumeDialogView,"notifyAccessibilityChanged",Boolean::class.java,object :XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                val thisObj = param?.thisObject
-                val mExpandButton = XposedHelpers.getObjectField(thisObj,"mExpandButton") as View
-                mExpandButton.setOnClickListener(null)
-                mExpandButton.isClickable = false
-                mExpandButton.visibility = View.GONE
-
+        findClass(
+            "com.android.systemui.miui.volume.MiuiVolumeDialogView",
+            classLoader
+        ).apply {
+            afterHookMethod(
+                "onFinishInflate"
+            ) {
+                this.getObjectFieldAs<View>("mExpandButton").apply {
+                    setOnClickListener(null)
+                    alpha = 0f
+                    isClickable = false
+                    visibility = View.GONE
+                }
 
             }
-        })
-
-
-
-        val MiuiVolumeDialogMotion = findClass("com.android.systemui.miui.volume.MiuiVolumeDialogMotion",classLoader)
-
-        XposedBridge.hookAllConstructors(MiuiVolumeDialogMotion,object :XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
-                val mExpandButton =  XposedHelpers.getObjectField(thisObj,"mExpandButton") as View
-                mExpandButton.setOnTouchListener(null)
-
-
+            afterHookMethod(
+                "notifyAccessibilityChanged",
+                Boolean::class.java
+            ) {
+                this.getObjectFieldAs<View>("mExpandButton").apply {
+                    setOnClickListener(null)
+                    isClickable = false
+                    visibility = View.GONE
+                }
 
             }
-        })
+        }
 
+        findClass(
+            "com.android.systemui.miui.volume.MiuiVolumeDialogMotion", classLoader
+        ).apply {
+            afterHookAllConstructors {
+                this.getObjectFieldAs<View>("mExpandButton").setOnTouchListener(null)
+                val mVolumeView = this.getObjectFieldAs<View>("mVolumeView")
+                mVolumeView.setOnTouchListener { v, motionEvent ->
+                    starLog.log("mVolumeView touch")
+                    if ( this.getBooleanField("mExpanded")) return@setOnTouchListener false
 
+                    val mLongPressRunnable = Runnable {
+                        val currentTimeMillis: Long =
+                            System.currentTimeMillis() - this.getLongField("mCurrentMS")
+                        val mMoveY = this.getFloatField("mMoveY")
+                        if (currentTimeMillis > 300 && mMoveY < 20.0f) {
 
-        var longClick = false
-        XposedHelpers.findAndHookMethod(MiuiVolumeDialogMotion,"lambda\$processExpandTouch\$1",object :XC_MethodReplacement(){
-
-            override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-                val thisObj = param?.thisObject
-                if ( XposedHelpers.getBooleanField(thisObj,"mExpanded") || !longClick ) return null
-                val mVolumeView = XposedHelpers.getObjectField(thisObj, "mVolumeView") as View
-
-                starLog.logD("processExpandTouch")
-
-                with(AnimatorSet()) {
-                    playTogether(
-                        ObjectAnimator.ofFloat(mVolumeView, "scaleX", 0.95f),
-                        ObjectAnimator.ofFloat(mVolumeView, "scaleY", 0.95f)
-                    )
-                    duration = 100L
-                    addListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            super.onAnimationEnd(animation)
-                            mVolumeView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                            val mVolumeExpandCollapsedAnimator = XposedHelpers.getObjectField(thisObj, "mVolumeExpandCollapsedAnimator")
-                            val mCallback = XposedHelpers.getObjectField(thisObj, "mCallback")
-                            XposedHelpers.callMethod(mVolumeExpandCollapsedAnimator,"calculateFromViewValues",true)
-                            XposedHelpers.callMethod(mCallback,"onExpandClicked")
-
-                            mVolumeView.scaleX = 1f
-                            mVolumeView.scaleY = 1f
+                            v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                            this.callMethod("lambda\$processExpandTouch\$1")
+                            v.apply {
+                                scaleX = 1f
+                                scaleY = 1f
+                            }
                         }
-                    })
-                    start()
-                }
-                return null
-            }
-
-        })
-
-
-
-        val MiuiVolumeSeekBar = XposedHelpers.findClass("com.android.systemui.miui.volume.MiuiVolumeSeekBar",classLoader)
-
-        XposedHelpers.findAndHookMethod(MiuiVolumeSeekBar,"onTouchEvent",MotionEvent::class.java,object :XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
-                val mSeekBarOnclickListener =
-                    XposedHelpers.getObjectField(thisObj, "mSeekBarOnclickListener")
-
-                val handler = Handler(Looper.getMainLooper())
-                val mLongPressRunnable = Runnable {
-                    val mMoveY = XposedHelpers.getFloatField(thisObj, "mMoveY")
-                    if (longClick){
-                        thisObj as View
-                        XposedHelpers.callMethod(mSeekBarOnclickListener, "onClick")
                     }
-                }
-
-                if (mSeekBarOnclickListener != null) {
-                    val motionEvent = param?.args?.get(0) as MotionEvent
 
                     val action = motionEvent.action
+
+
                     when (action) {
                         0 -> {
 
-                            longClick = true
-                            XposedHelpers.setLongField(thisObj,"mCurrentMS",0L)
-
-                            handler.postDelayed(mLongPressRunnable, 300L)
+                            val scaleDown = ObjectAnimator.ofPropertyValuesHolder(
+                                v,
+                                PropertyValuesHolder.ofFloat("scaleX", 0.9f),
+                                PropertyValuesHolder.ofFloat("scaleY", 0.9f)
+                            ).apply {
+                                duration = 120
+                            }
+                            scaleDown.start()
+                            this.setFloatField("mDownY", motionEvent.y)
+                            this.setFloatField("mMoveY", 0.0f)
+                            this.setLongField("mCurrentMS", System.currentTimeMillis())
+                            v.postDelayed(mLongPressRunnable, 300L)
 
                         }
-                        1-> {
-                            longClick = false
-                            XposedHelpers.setLongField(thisObj,"mCurrentMS",0L)
+
+                        1 -> {
+                            v.removeCallbacks(mLongPressRunnable)
+                            val currentTimeMillis: Long =
+                                System.currentTimeMillis() - this.getLongField("mCurrentMS")
+                            val mMoveY = this.getFloatField("mMoveY")
+                            val scaleUp = ObjectAnimator.ofPropertyValuesHolder(
+                                v,
+                                PropertyValuesHolder.ofFloat("scaleX", 1.0f),
+                                PropertyValuesHolder.ofFloat("scaleY", 1.0f)
+                            ).apply {
+                                duration = 120
+                            }
+                            scaleUp.start()
                         }
 
                         2 -> {
-                            longClick = false
+                            v.removeCallbacks(mLongPressRunnable)
+                            val scaleUp = ObjectAnimator.ofPropertyValuesHolder(
+                                v,
+                                PropertyValuesHolder.ofFloat("scaleX", 1.0f),
+                                PropertyValuesHolder.ofFloat("scaleY", 1.0f)
+                            ).apply {
+                                duration = 120
+                            }
+                            scaleUp.start()
+                            val mDownY = this.getFloatField("mDownY")
 
+                            this.setFloatField("mMoveY", abs(motionEvent.y - mDownY))
+                            this.setFloatField("mDownY", motionEvent.y)
 
+                        }
+
+                        else -> {
+                            return@setOnTouchListener false
                         }
                     }
 
+
+                    return@setOnTouchListener true
                 }
+
+            }
+            replaceHookMethod(
+                "lambda\$processExpandTouch\$1"
+            ) {
+                if ( this.getBooleanField("mExpanded")) return@replaceHookMethod null
+                val mVolumeView = this.getObjectFieldAs<View>("mVolumeView")
+
+                starLog.logD("processExpandTouch")
+                val mVolumeExpandCollapsedAnimator = this.getObjectField("mVolumeExpandCollapsedAnimator")
+                val mCallback = this.getObjectField("mCallback")
+                mVolumeExpandCollapsedAnimator.callMethod("calculateFromViewValues",true)
+                mCallback.callMethod("onExpandClicked")
+
             }
 
-        })
+        }
+
+        val VolumeVerticalSeekBar = findClass("com.android.systemui.miui.volume.widget.VolumeVerticalSeekBar",classLoader)
+        val util = Util(classLoader)
+        val VerticalSeekBar = findClass("miui.systemui.widget.VerticalSeekBar",classLoader)
+         findClass(
+             "com.android.systemui.miui.volume.MiuiVolumeSeekBar",
+             classLoader
+         ).replaceHookMethod(
+             "onTouchEvent",
+             MotionEvent::class.java
+         ) {
+            val motionEvent = it.args[0] as MotionEvent
+            this.getObjectField("mInjector").callMethod("transformTouchEvent",motionEvent)
+            it.callSuperMethod() as Boolean
+        }
 
     }
 
@@ -522,16 +444,15 @@ class VolumeView: Hooker() {
 
         if (!isHideStandardView) return
 
-        val RingerButtonHelper = XposedHelpers.findClass("com.android.systemui.miui.volume.MiuiRingerModeLayout\$RingerButtonHelper",classLoader)
-        XposedHelpers.findAndHookMethod(RingerButtonHelper,"updateState",object :XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-
-                val thisObj = param?.thisObject
-
-                val mIcon = XposedHelpers.getObjectField(thisObj,"mIcon") as View
-                val mStandardView = XposedHelpers.getObjectField(thisObj,"mStandardView") as View
-                val mExpanded = XposedHelpers.getBooleanField(thisObj,"mExpanded")
-                if (mExpanded){
+        findClass("com.android.systemui.miui.volume.MiuiRingerModeLayout\$RingerButtonHelper",
+            classLoader
+        ).apply {
+            afterHookMethod(
+                "updateState"
+            ) {
+                val mIcon = this.getObjectFieldAs<View>("mIcon")
+                val mStandardView = this.getObjectFieldAs<View>("mStandardView")
+                if (this.getBooleanField("mExpanded")){
                     mIcon.visibility = View.VISIBLE
                     mStandardView.visibility = View.VISIBLE
                 }else{
@@ -539,44 +460,36 @@ class VolumeView: Hooker() {
                     mStandardView.visibility = View.GONE
 
                 }
-
             }
-        })
+            afterHookMethod(
+                "onExpanded",
+                Boolean::class.java,
+                Boolean::class.java
+            ){
 
+                val z1 = it.args[0] as Boolean
+                val z2 = it.args[1] as Boolean
+                val mStandardView = this.getObjectFieldAs<View>("mStandardView")
 
-        XposedHelpers.findAndHookMethod(RingerButtonHelper,"onExpanded",Boolean::class.java,Boolean::class.java,object :XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-
-                val thisObj = param?.thisObject
-
-                val z1 = param?.args?.get(0) as Boolean
-                val z2 = param.args?.get(1) as Boolean
-
-                val mStandardView = XposedHelpers.getObjectField(thisObj,"mStandardView") as View
-                val mExpanded = XposedHelpers.getBooleanField(thisObj,"mExpanded")
-
-                if (mExpanded != z1 || z2){
-                    mStandardView.visibility = View.GONE
+                mStandardView.visibility = if (this.getBooleanField("mExpanded") != z1 || z2){
+                    View.GONE
                 }else{
-                    mStandardView.visibility = View.VISIBLE
+                    View.VISIBLE
                 }
-
             }
-        })
-        val TimerItem = XposedHelpers.findClass("com.android.systemui.miui.volume.TimerItem",classLoader)
+        }
 
-        XposedHelpers.findAndHookMethod(TimerItem,"updateExpanded",Boolean::class.java,object :XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
 
-                val thisObj = param?.thisObject
+        findClass("com.android.systemui.miui.volume.TimerItem",
+            classLoader
+        ).afterHookMethod(
+            "updateExpanded",
+            Boolean::class.java
+        ){
 
-                val mCountDownProgressBar = XposedHelpers.getObjectField(thisObj,"mCountDownProgressBar") as View
+            this.getObjectFieldAs<View>("mCountDownProgressBar").visibility = View.GONE
 
-                mCountDownProgressBar.visibility = View.GONE
-
-            }
-        })
-
+        }
 
     }
 

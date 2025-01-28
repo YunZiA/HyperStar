@@ -4,8 +4,11 @@ import android.content.res.XModuleResources;
 
 import com.yunzia.hyperstar.hook.util.starLog;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
@@ -89,5 +92,7 @@ public abstract class InitHooker extends HookerHelper  {
         }
 
     }
+
+
 
 }

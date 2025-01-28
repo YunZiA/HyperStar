@@ -17,10 +17,6 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.util.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XC_MethodReplacement
-import de.robv.android.xposed.XposedBridge
-import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import java.util.Locale
 import kotlin.math.pow
@@ -46,9 +42,7 @@ class QSHeaderView() : Hooker() {
     override fun initHook(classLoader: ClassLoader?) {
         super.initHook(classLoader)
 
-        if (!is_use_chaos_header){
-            return
-        }
+        if (!is_use_chaos_header) return
 
         startMethodsHook()
 
@@ -67,113 +61,124 @@ class QSHeaderView() : Hooker() {
 
         var header : ViewGroup? = null
         val ControlCenterHeaderController  = findClass("com.android.systemui.controlcenter.shade.ControlCenterHeaderController",classLoader)
-
-        XposedBridge.hookAllConstructors(ControlCenterHeaderController,object :XC_MethodHook() {
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                val combinedHeaderController = param?.args?.get(0)
-                val controlCenterHeaderView = XposedHelpers.getObjectField(combinedHeaderController,"controlCenterHeaderView") as ViewGroup
-                header = addButton(controlCenterHeaderView)
-            }
-        })
-
         val MiuiConfigs = findClass("com.miui.utils.configs.MiuiConfigs",classLoader)
-        XposedBridge.hookAllMethods(ControlCenterHeaderController,"updateDateVisibility",object :XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
-                val mView = XposedHelpers.getObjectField(thisObj,"mView") as View
+
+        ControlCenterHeaderController.apply {
+            afterHookAllConstructors {
+                val combinedHeaderController = it.args[0]
+                val controlCenterHeaderView = combinedHeaderController.getObjectFieldAs<ViewGroup>("controlCenterHeaderView")
+                header = addButton(controlCenterHeaderView)
+
+            }
+            afterHookAllMethods(
+                "updateDateVisibility"
+            ) {
+                val mView = this.getObjectFieldAs<View>("mView")
                 val context = mView.context
                 val localId = Settings.System.getInt(context.contentResolver,"cc_edit_Id",0)
                 if (localId != editId){
                     Settings.System.putInt(context.contentResolver,"cc_edit_Id",editId)
                 }
-                val isVerticalMode = XposedHelpers.callStaticMethod(MiuiConfigs,"isVerticalMode",context) as Boolean
+                val isVerticalMode = MiuiConfigs.callStaticMethodAs<Boolean>("isVerticalMode",context)
                 if (isVerticalMode ){
                     header?.visibility = View.VISIBLE
                 }else{
                     header?.visibility = View.GONE
 
                 }
-            }
-        })
 
-        val controlCenterCallback = findClass("com.android.systemui.controlcenter.shade.ControlCenterHeaderExpandController\$controlCenterCallback\$1",classLoader)
+            }
+
+        }
+
         val ControlCenterHeaderExpandController = findClass("com.android.systemui.controlcenter.shade.ControlCenterHeaderExpandController",classLoader)
         val Folme = findClass("miuix.animation.Folme",classLoader)
 
-        XposedHelpers.findAndHookMethod(controlCenterCallback,"onAppearanceChanged",Boolean::class.java,Boolean::class.java,object :XC_MethodHook(){
-
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
-                val z = param?.args?.get(0) as Boolean
-                val z2 = param.args?.get(1) as Boolean
-                val controlCenterHeaderExpandController = XposedHelpers.getObjectField(thisObj,"this\$0")
-                val context = XposedHelpers.getObjectField(controlCenterHeaderExpandController,"context") as Context
-                val controlCenterCarrierViewFolme = XposedHelpers.callStaticMethod(Folme,"useAt",arrayOf(header))
+        findClass(
+            "com.android.systemui.controlcenter.shade.ControlCenterHeaderExpandController\$controlCenterCallback\$1",
+            classLoader
+        ).apply {
+            afterHookMethod(
+                "onAppearanceChanged",
+                Boolean::class.java,
+                Boolean::class.java
+            ) {
+                val z = it.args[0] as Boolean
+                val z2 = it.args[1] as Boolean
+                val controlCenterHeaderExpandController = this.getObjectField("this\$0")
+                val context =
+                    controlCenterHeaderExpandController.getObjectFieldAs<Context>("context")
+                val controlCenterCarrierViewFolme = Folme.callStaticMethod("useAt", arrayOf(header))
                 val setting = header?.get(0)
-                val settingViewFolme = XposedHelpers.callStaticMethod(Folme,"useAt",arrayOf(setting))
+                val settingViewFolme = Folme.callStaticMethod(
+                    "useAt",
+                    arrayOf(setting)
+                )
 
-                val isVerticalMode = XposedHelpers.callStaticMethod(MiuiConfigs,"isVerticalMode",context) as Boolean
-                if (isVerticalMode ) {
-                    if (!z){
-
-                        XposedHelpers.callStaticMethod(ControlCenterHeaderExpandController,"access\$startFolmeAnimationAlpha",
+                val isVerticalMode =
+                    MiuiConfigs.callStaticMethodAs<Boolean>("isVerticalMode", context)
+                if (isVerticalMode) {
+                    if (!z) {
+                        ControlCenterHeaderExpandController.callStaticMethod(
+                            "access\$startFolmeAnimationAlpha",
                             controlCenterHeaderExpandController,
                             header,
                             controlCenterCarrierViewFolme,
-                            0f,z2
+                            0f, z2
                         )
-                        val normalControlDateTranslationX = XposedHelpers.getIntField(controlCenterHeaderExpandController,"normalControlDateTranslationX")
-                        XposedHelpers.callStaticMethod(ControlCenterHeaderExpandController,"access\$startFolmeAnimationTranslationX",
+                        val normalControlDateTranslationX =
+                            controlCenterHeaderExpandController.getIntField(
+                                "normalControlDateTranslationX"
+                            )
+                        ControlCenterHeaderExpandController.callStaticMethod(
+                            "access\$startFolmeAnimationTranslationX",
                             controlCenterHeaderExpandController,
                             setting,
                             settingViewFolme,
-                            (normalControlDateTranslationX*0.6).toInt(),z2
+                            (normalControlDateTranslationX * 0.6).toInt(), z2
                         )
 
-                    }else{
+                    } else {
 
-                        XposedHelpers.callStaticMethod(ControlCenterHeaderExpandController,"access\$startFolmeAnimationAlpha",
+                        ControlCenterHeaderExpandController.callStaticMethod(
+                            "access\$startFolmeAnimationAlpha",
                             controlCenterHeaderExpandController,
                             header,
                             controlCenterCarrierViewFolme,
-                            1f,z2
+                            1f, z2
                         )
-                        XposedHelpers.callStaticMethod(ControlCenterHeaderExpandController,"access\$startFolmeAnimationTranslationX",
+                        ControlCenterHeaderExpandController.callStaticMethod(
+                            "access\$startFolmeAnimationTranslationX",
                             controlCenterHeaderExpandController,
                             setting,
                             settingViewFolme,
-                            0,z2
+                            0, z2
                         )
-
 
 
                     }
+
                 }
-
-
-
             }
-        })
-
-        XposedHelpers.findAndHookMethod(controlCenterCallback,"onExpansionChanged",Float::class.java,object :XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
-                val f = param?.args?.get(0) as Float
+            afterHookMethod(
+                "onExpansionChanged",
+                Float::class.java
+            ) {
+                val f = it.args[0] as Float
                 if (f in 0f..1f){
-                    val controlCenterHeaderExpandController = XposedHelpers.getObjectField(thisObj,"this\$0")
-                    val context = XposedHelpers.getObjectField(controlCenterHeaderExpandController,"context") as Context
+                    val controlCenterHeaderExpandController = this.getObjectField("this\$0")
+                    val context = controlCenterHeaderExpandController.getObjectFieldAs<Context>("context")
 
-                    val headerController = XposedHelpers.getObjectField(controlCenterHeaderExpandController,"headerController")
-                    val combinedHeaderController = XposedHelpers.callMethod(headerController, "get")
-                    val switching = XposedHelpers.getBooleanField(combinedHeaderController,"switching")
+                    val headerController = controlCenterHeaderExpandController.getObjectField("headerController")
+                    val combinedHeaderController = headerController.callMethod( "get")
+                    val switching = combinedHeaderController.getBooleanField("switching")
                     if (!switching || f!= 1f){
-                        val isVerticalMode = XposedHelpers.callStaticMethod(MiuiConfigs,"isVerticalMode",context) as Boolean
+                        val isVerticalMode = MiuiConfigs.callStaticMethodAs<Boolean>("isVerticalMode",context)
                         if (isVerticalMode ){
                             val f2 = 1-f
-                            val normalControlStatusBarTranslationY = XposedHelpers.getIntField(controlCenterHeaderExpandController,"normalControlStatusBarTranslationY")
+                            val normalControlStatusBarTranslationY = controlCenterHeaderExpandController.getIntField(
+                                "normalControlStatusBarTranslationY"
+                            )
                             header?.translationY = normalControlStatusBarTranslationY * f2
                         }
 
@@ -181,142 +186,134 @@ class QSHeaderView() : Hooker() {
 
 
                 }
-
-
             }
-        })
 
-        val CombinedHeaderController = findClass("com.android.systemui.controlcenter.shade.CombinedHeaderController",classLoader)
+        }
+
         val PanelExpandControllerExt = findClass("com.miui.interfaces.shade.PanelExpandControllerExt",classLoader)
 
-
-        XposedHelpers.findAndHookMethod(CombinedHeaderController,"onSwitchProgressChanged",Float::class.java,object :XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
-                val f = param?.args?.get(0) as Float
-                val context = XposedHelpers.getObjectField(thisObj,"context") as Context
-                val controlCenterExpandController = XposedHelpers.getObjectField(thisObj,"controlCenterExpandController")
-
-                val getAppearance = XposedHelpers.findMethodExactIfExists(PanelExpandControllerExt,"getAppearance")
-
-                if (!(getAppearance.invoke(controlCenterExpandController) as Boolean)) {
-                    return;
-                }
-
-                if ( f <= 0.5f ){
-                    val controlLocationX =  XposedHelpers.getFloatField(thisObj,"controlLocationX")
-                    val notificationLocationY =  XposedHelpers.getFloatField(thisObj,"notificationLocationY")
-                    val notificationLocationX =  XposedHelpers.getFloatField(thisObj,"notificationLocationX")
-                    val controlLocationY =  XposedHelpers.getFloatField(thisObj,"controlLocationY")
-                    val f2 = 1f
-                    val f3 = 2f
-                    val pow = (f2-(f2 - (f * f3)).coerceIn(0.0f, 1.0f)).pow(2.0f)
-                    var moveX: Float =
-                        (controlLocationX - notificationLocationX) * pow / f3
-                    var moveY: Float =
-                        (notificationLocationY - controlLocationY) * pow / f3
-                    if (TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == 1) {
-                        moveX = -moveX
-                        moveY = -moveY
-                    }
-                    val isFlipTinyScreen = XposedHelpers.callStaticMethod(MiuiConfigs,"isFlipTinyScreen",context) as Boolean
-                    if (isFlipTinyScreen){
-                        header?.translationY = moveY
-                        header?.get(0)?.translationX = -moveX
-                        header?.get(2)?.translationX = -moveX
-                        return
-
-                    }
-                    val isVerticalMode = XposedHelpers.callStaticMethod(MiuiConfigs,"isVerticalMode",context) as Boolean
-                    if (isVerticalMode){
-                        header?.translationY = moveY
-                        header?.get(0)?.translationX = -moveX
-                        header?.get(2)?.translationX = moveX
-                        return
-
-                    }
-                }
-
-
+        findClass(
+            "com.android.systemui.controlcenter.shade.CombinedHeaderController",
+            classLoader
+        ).afterHookMethod(
+            "onSwitchProgressChanged",
+            Float::class.java
+        ){
+            val f = it.args[0] as Float
+            val context = this.getObjectFieldAs<Context>("context")
+            val controlCenterExpandController = this.getObjectField("controlCenterExpandController")
+            val getAppearance = PanelExpandControllerExt.findMethodExactIfExists("getAppearance")
+            if (!(getAppearance?.invoke(controlCenterExpandController) as Boolean)) {
+                return@afterHookMethod
             }
-        })
 
+            if ( f <= 0.5f ){
+                val controlLocationX =  this.getFloatField("controlLocationX")
+                val notificationLocationY =  this.getFloatField("notificationLocationY")
+                val notificationLocationX =  this.getFloatField("notificationLocationX")
+                val controlLocationY =  this.getFloatField("controlLocationY")
+                val f2 = 1f
+                val f3 = 2f
+                val pow = (f2-(f2 - (f * f3)).coerceIn(0.0f, 1.0f)).pow(2.0f)
+                var moveX: Float =
+                    (controlLocationX - notificationLocationX) * pow / f3
+                var moveY: Float =
+                    (notificationLocationY - controlLocationY) * pow / f3
+                if (TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == 1) {
+                    moveX = -moveX
+                    moveY = -moveY
+                }
+                val isFlipTinyScreen = MiuiConfigs.callStaticMethodAs<Boolean>("isFlipTinyScreen",context)
+                if (isFlipTinyScreen){
+                    header?.translationY = moveY
+                    header?.get(0)?.translationX = -moveX
+                    header?.get(2)?.translationX = -moveX
+                    return@afterHookMethod
 
+                }
+                val isVerticalMode = MiuiConfigs.callStaticMethodAs<Boolean>("isVerticalMode",context)
+                if (isVerticalMode){
+                    header?.translationY = moveY
+                    header?.get(0)?.translationX = -moveX
+                    header?.get(2)?.translationX = moveX
+                    return@afterHookMethod
+
+                }
+            }
+
+        }
 
     }
 
     private fun startMethodsHook1(classLoader: ClassLoader?) {
-        val MainHeader  = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.header.StatusHeaderController",classLoader)
-        val CommonUtils = XposedHelpers.findClass("miui.systemui.util.CommonUtils",classLoader)
-        XposedHelpers.findAndHookMethod(MainHeader, "updateConstraint" , object : XC_MethodReplacement(){
-            override fun replaceHookedMethod(param: MethodHookParam?): Any? {
+        val CommonUtils = findClass("miui.systemui.util.CommonUtils",classLoader)
+        findClass(
+            "miui.systemui.controlcenter.panel.main.header.StatusHeaderController",
+            classLoader
+        ).replaceHookMethod(
+            "updateConstraint"
+        ) {
 
-                val thisObj = param?.thisObject
+            val fakeStatusBarViewController  = this.getObjectField("fakeStatusBarViewController")
+            val sysUIContext   = this.getObjectField("sysUIContext") as Context
+            val parent = this.callMethod("getView") as ViewGroup
+            val mContext = this.callMethod("getContext") as Context
 
-                val fakeStatusBarViewController  = XposedHelpers.getObjectField(thisObj,"fakeStatusBarViewController")
-                val sysUIContext : Context  = XposedHelpers.getObjectField(thisObj,"sysUIContext") as Context
-                val parent = XposedHelpers.callMethod(thisObj,"getView") as ViewGroup
-                val mContext = XposedHelpers.callMethod(thisObj,"getContext") as Context
-
-                if (fakeStatusBarViewController == null) {
-                    return null
-                }
-
-                val constraintSet = ConstraintSet()
-                //val header_status_bar_icon:Int = sysUIContext.resources.get("header_status_bar_icons", "id", "miui.systemui.plugin");
-
-                val header_carrier_vertical_mode_margin_bottom = mContext.resources.getIdentifier("header_carrier_vertical_mode_margin_bottom","dimen","miui.systemui.plugin")
-
-                val header_status_bar_icons:Int = mContext.resources.getIdentifier("header_status_bar_icons", "id", "miui.systemui.plugin");
-                val header_date:Int = mContext.resources.getIdentifier("header_date", "id", "miui.systemui.plugin");
-                val header_carrier_view:Int = mContext.resources.getIdentifier("header_carrier_view", "id", "miui.systemui.plugin");
-                val privacy_container:Int = mContext.resources.getIdentifier("privacy_container", "id", "miui.systemui.plugin");
-                starLog.log(""+header_status_bar_icons+header_date+header_carrier_view+privacy_container)
-                constraintSet.constrainWidth(header_status_bar_icons, -2)
-                constraintSet.constrainHeight(header_status_bar_icons, -2)
-                constraintSet.constrainWidth(header_date, -2)
-                constraintSet.constrainHeight(header_date, -2)
-                constraintSet.constrainWidth(header_carrier_view, -2)
-                constraintSet.constrainHeight(header_carrier_view, -2)
-                val header_privacy_container_height:Int = mContext.resources.getIdentifier("header_privacy_container_height", "dimen", "miui.systemui.plugin");
-
-                constraintSet.constrainWidth(privacy_container, -2)
-                constraintSet.constrainHeight(
-                    privacy_container,
-                    mContext.resources.getDimensionPixelSize(header_privacy_container_height)
-                )
-
-                val INSTANCE = XposedHelpers.getStaticObjectField(CommonUtils,"INSTANCE")
-                val orientation = XposedHelpers.callMethod(INSTANCE,"getInVerticalMode",mContext) as Boolean
-
-                if (orientation) {
-                    constraintSet.connect(header_status_bar_icons, 4, 0, 4);
-                    constraintSet.connect(header_date, 3, header_status_bar_icons, 3);
-                    constraintSet.connect(header_date, 4, header_status_bar_icons, 4);
-                    constraintSet.createHorizontalChainRtl(0, 6, 0, 7, intArrayOf(header_date, header_status_bar_icons), null as FloatArray? , 1);
-                    val dimensionPixelSize = mContext.resources.getDimensionPixelSize(header_carrier_vertical_mode_margin_bottom);
-                    constraintSet.connect(header_carrier_view, 4, header_status_bar_icons, 3, dimensionPixelSize);
-                    constraintSet.connect(header_carrier_view, 7, 0, 7);
-                    constraintSet.connect(privacy_container, 4, header_status_bar_icons, 3, dimensionPixelSize);
-                    constraintSet.connect(privacy_container, 7, 0, 7);
-                } else {
-                    constraintSet.connect(header_status_bar_icons, 4, 0, 4);
-                    constraintSet.connect(header_carrier_view, 3, header_status_bar_icons, 3);
-                    constraintSet.connect(header_carrier_view, 4, header_status_bar_icons, 4);
-                    constraintSet.connect(privacy_container, 3, header_status_bar_icons, 3);
-                    constraintSet.connect(privacy_container, 4, header_status_bar_icons, 4);
-                    constraintSet.connect(privacy_container, 7, 0, 7);
-                    constraintSet.createHorizontalChainRtl(0, 6, privacy_container, 6,intArrayOf(header_carrier_view, header_status_bar_icons) , null as FloatArray? , 1);
-                }
-
-                XposedHelpers.callMethod(constraintSet,"applyTo", parent )
-
-                return null;
-
+            if (fakeStatusBarViewController == null) {
+                return@replaceHookMethod null
             }
 
-        })
+            val constraintSet = ConstraintSet()
+            //val header_status_bar_icon:Int = sysUIContext.resources.get("header_status_bar_icons", "id", "miui.systemui.plugin");
+
+            val header_carrier_vertical_mode_margin_bottom = mContext.resources.getIdentifier("header_carrier_vertical_mode_margin_bottom","dimen","miui.systemui.plugin")
+
+            val header_status_bar_icons:Int = mContext.resources.getIdentifier("header_status_bar_icons", "id", "miui.systemui.plugin");
+            val header_date:Int = mContext.resources.getIdentifier("header_date", "id", "miui.systemui.plugin");
+            val header_carrier_view:Int = mContext.resources.getIdentifier("header_carrier_view", "id", "miui.systemui.plugin");
+            val privacy_container:Int = mContext.resources.getIdentifier("privacy_container", "id", "miui.systemui.plugin");
+            starLog.log(""+header_status_bar_icons+header_date+header_carrier_view+privacy_container)
+            constraintSet.constrainWidth(header_status_bar_icons, -2)
+            constraintSet.constrainHeight(header_status_bar_icons, -2)
+            constraintSet.constrainWidth(header_date, -2)
+            constraintSet.constrainHeight(header_date, -2)
+            constraintSet.constrainWidth(header_carrier_view, -2)
+            constraintSet.constrainHeight(header_carrier_view, -2)
+            val header_privacy_container_height:Int = mContext.resources.getIdentifier("header_privacy_container_height", "dimen", "miui.systemui.plugin");
+
+            constraintSet.constrainWidth(privacy_container, -2)
+            constraintSet.constrainHeight(
+                privacy_container,
+                mContext.resources.getDimensionPixelSize(header_privacy_container_height)
+            )
+
+            val INSTANCE = CommonUtils.getStaticObjectField("INSTANCE")
+            val orientation = INSTANCE.callMethod("getInVerticalMode",mContext) as Boolean
+
+            if (orientation) {
+                constraintSet.connect(header_status_bar_icons, 4, 0, 4);
+                constraintSet.connect(header_date, 3, header_status_bar_icons, 3);
+                constraintSet.connect(header_date, 4, header_status_bar_icons, 4);
+                constraintSet.createHorizontalChainRtl(0, 6, 0, 7, intArrayOf(header_date, header_status_bar_icons), null as FloatArray? , 1);
+                val dimensionPixelSize = mContext.resources.getDimensionPixelSize(header_carrier_vertical_mode_margin_bottom);
+                constraintSet.connect(header_carrier_view, 4, header_status_bar_icons, 3, dimensionPixelSize);
+                constraintSet.connect(header_carrier_view, 7, 0, 7);
+                constraintSet.connect(privacy_container, 4, header_status_bar_icons, 3, dimensionPixelSize);
+                constraintSet.connect(privacy_container, 7, 0, 7);
+            } else {
+                constraintSet.connect(header_status_bar_icons, 4, 0, 4);
+                constraintSet.connect(header_carrier_view, 3, header_status_bar_icons, 3);
+                constraintSet.connect(header_carrier_view, 4, header_status_bar_icons, 4);
+                constraintSet.connect(privacy_container, 3, header_status_bar_icons, 3);
+                constraintSet.connect(privacy_container, 4, header_status_bar_icons, 4);
+                constraintSet.connect(privacy_container, 7, 0, 7);
+                constraintSet.createHorizontalChainRtl(0, 6, privacy_container, 6,intArrayOf(header_carrier_view, header_status_bar_icons) , null as FloatArray? , 1);
+            }
+
+            constraintSet.callMethod("applyTo", parent )
+
+            return@replaceHookMethod null;
+        }
 
     }
 

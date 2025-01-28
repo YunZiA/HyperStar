@@ -9,9 +9,6 @@ import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.util.starLog
 import com.yunzia.hyperstar.hook.util.starLog.logE
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedHelpers
-import de.robv.android.xposed.XposedHelpers.findAndHookMethod
 
 
 class QSCardTileList : Hooker() {
@@ -43,63 +40,86 @@ class QSCardTileList : Hooker() {
 
         //var cornerRadiusF = -1f
 
-        findAndHookMethod("miui.systemui.controlcenter.qs.QSController", classLoader,
-            "getCardStyleTileSpecs",
-            object : XC_MethodHook() {
-                override fun beforeHookedMethod(param: MethodHookParam) {
-                    param.result = cardStyleTiles
-                }
-            })
+        findClass(
+            "miui.systemui.controlcenter.qs.QSController",
+            classLoader
+        ).beforeHookMethod(
+            "getCardStyleTileSpecs"
+        ){
+            it.result = cardStyleTiles
 
+        }
 
-        val QSCardItemView  = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSCardItemView",classLoader)
+        findClass(
+            "miui.systemui.controlcenter.qs.tileview.QSCardItemView",
+            classLoader
+        ).apply {
+            afterHookConstructor(
+                Context::class.java,
+                AttributeSet::class.java
+            ){
+                this as LinearLayout
+                idEnable = this.context.resources.getIdentifier(
+                    "qs_card_wifi_background_enabled",
+                    "drawable", plugin
+                )
+                idDisabled = this.context.resources.getIdentifier(
+                    "qs_card_wifi_background_disabled",
+                    "drawable", plugin
+                )
+                idUnavailable = this.context.resources.getIdentifier(
+                    "qs_card_cell_background_unavailable",
+                    "drawable", plugin)
 
-        XposedHelpers.findAndHookConstructor(QSCardItemView,
-            Context::class.java,
-            AttributeSet::class.java,
-            object : XC_MethodHook() {
-                override fun afterHookedMethod(param: MethodHookParam) {
-                    val linearLayout = param.thisObject as LinearLayout
-                    idEnable = linearLayout.context.resources.getIdentifier(
-                        "qs_card_wifi_background_enabled",
-                        "drawable", "miui.systemui.plugin"
-                    )
-                    idDisabled = linearLayout.context.resources.getIdentifier(
-                        "qs_card_wifi_background_disabled",
-                        "drawable", "miui.systemui.plugin"
-                    )
-                    idUnavailable = linearLayout.context.resources.getIdentifier("qs_card_cell_background_unavailable",
-                        "drawable", "miui.systemui.plugin");
-//                    val cornerRadius = linearLayout.context.resources.getIdentifier(
-//                        "control_center_universal_corner_radius", "dimen", "miui.systemui.plugin"
-//                    )
-//                    cornerRadiusF = linearLayout.context.resources.getDimensionPixelSize(cornerRadius).toFloat()
-                }
             }
-        )
-        findAndHookMethod(QSCardItemView,"setCornerRadius",Float::class.java,object : XC_MethodHook(){
-            override fun beforeHookedMethod(param: MethodHookParam?) {
-                super.beforeHookedMethod(param)
-                val linearLayout = param?.thisObject as LinearLayout
-                val cornerRadius = XposedHelpers.getFloatField(linearLayout, "_cornerRadius")
-                param.args[0] = cornerRadius
+            beforeHookMethod("setCornerRadius",Float::class.java){
+                this as LinearLayout
+                val cornerRadius = this.getFloatField("_cornerRadius")
+                it.args[0] = cornerRadius
+
             }
-
-
-        })
-//
-        findAndHookMethod(QSCardItemView, "updateBackground", object : XC_MethodHook() {
-                override fun afterHookedMethod(param: MethodHookParam) {
-                    val linearLayout: LinearLayout = param.thisObject as LinearLayout
-                    val state = XposedHelpers.getObjectField(param.thisObject, "state")
-                    if (state == null){
-                        starLog.logE("state == null")
-                        return
+            beforeHookMethod("updateBackground"){
+                this as LinearLayout
+                val state = this.getObjectField("state")
+                if (state == null){
+                    starLog.logE("state == null")
+                    return@beforeHookMethod
+                }
+                val i = state.getIntField("state")
+                val spec = state.getObjectField("spec")
+                val cornerRadius = this.getObjectField("_cornerRadius")
+                if(spec == null){
+                    val id :Int = when (i) {
+                        0 -> {
+                            idUnavailable
+                        }
+                        2 -> {
+                            idEnable
+                        }
+                        1 -> {
+                            idDisabled
+                        }
+                        else -> {
+                            return@beforeHookMethod
+                        }
                     }
-                    val i = XposedHelpers.getIntField(state, "state")
-                    val spec = XposedHelpers.getObjectField(state, "spec")
-                    val cornerRadius = XposedHelpers.getObjectField(param.thisObject, "_cornerRadius")
-                    if(spec == null){
+                    if (id == -1 ) {
+                        logE("updateBackground", "id is -1!!")
+                        return@beforeHookMethod
+                    }
+                    val background: Drawable = this.context.theme.resources.getDrawable(id, this.context.theme)
+                    this.background = background
+                    this.callMethod(
+                        "setCornerRadius",
+                        cornerRadius
+                    )
+                    return@beforeHookMethod
+                }
+                when (spec.toString()) {
+                    "bt", "cell", "flashlight", "wifi", "vowifi1", "vowifi2" -> {
+
+                    }
+                    else -> {
                         val id :Int = when (i) {
                             0 -> {
                                 idUnavailable
@@ -111,78 +131,37 @@ class QSCardTileList : Hooker() {
                                 idDisabled
                             }
                             else -> {
-                                return
+                                return@beforeHookMethod
                             }
                         }
                         if (id == -1 ) {
                             logE("updateBackground", "id is -1!!")
-                            return
+                            return@beforeHookMethod
                         }
-                        val background: Drawable = linearLayout.context.theme.resources.getDrawable(id, linearLayout.context.theme)
-                        linearLayout.background = background
-                        XposedHelpers.callMethod(
-                            param.thisObject,
+                        val background: Drawable = this.context.theme.resources.getDrawable(id, this.context.theme)
+                        this.background = background
+
+                        this.callMethod(
                             "setCornerRadius",
                             cornerRadius
                         )
-                        return
-                    }
-                    when (spec.toString()) {
-                        "bt", "cell", "flashlight", "wifi", "vowifi1", "vowifi2" -> {
-
-                        }
-                        else -> {
-                            val id :Int = when (i) {
-                                0 -> {
-                                    idUnavailable
-                                }
-                                2 -> {
-                                    idEnable
-                                }
-                                1 -> {
-                                    idDisabled
-                                }
-                                else -> {
-                                    return
-                                }
-                            }
-                            if (id == -1 ) {
-                                logE("updateBackground", "id is -1!!")
-                                return
-                            }
-                            val background: Drawable = linearLayout.context.theme.resources.getDrawable(id, linearLayout.context.theme)
-                            linearLayout.background = background
-
-                            XposedHelpers.callMethod(
-                                param.thisObject,
-                                "setCornerRadius",
-                                cornerRadius
-                            )
-                        }
                     }
                 }
             }
-        )
+
+
+        }
 
     }
 
-    fun getList():ArrayList<String> {
+    private fun getList():ArrayList<String> {
 
-
-
-        if (mCardStyleTiles == null) {
-            return ArrayList()
-        }
-
-        if (mCardStyleTiles.isEmpty()) {
-                // 字符串为空，没有数据可以处理，直接返回
-            return ArrayList()
-        }
+        if (mCardStyleTiles.isNullOrEmpty()) return ArrayList()
 
         val listFromString: List<String> = mCardStyleTiles.split("|")
-
         val cardLists =  emptyList<String>().toMutableList()
         val tileList = ArrayList<String>()
+
         for (tag in listFromString){
             if (tag.isEmpty()){
                 break

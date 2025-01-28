@@ -15,15 +15,11 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.util.plugin.CommonUtils
-import com.yunzia.hyperstar.hook.util.startMarqueeOfFading
 import com.yunzia.hyperstar.hook.util.starLog
+import com.yunzia.hyperstar.hook.util.startMarqueeOfFading
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XC_MethodReplacement
-import de.robv.android.xposed.XposedHelpers
 import yunzia.utils.DensityUtil.Companion.dpToPx
 
 
@@ -58,30 +54,33 @@ class QSListView : Hooker() {
         val fix = XSPUtils.getBoolean("fix_list_tile_icon_scale",false)
         if (!fix) return
 
-        val QSTileItemIconView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",classLoader)
-
-        XposedHelpers.findAndHookMethod(QSTileItemIconView,"getProperIconSize",Drawable::class.java,object : XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
-                val tileSize = XposedHelpers.getFloatField(thisObj,"tileSize").toInt()
+        findClass(
+            "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
+            classLoader
+        ).apply {
+            afterHookMethod(
+                "getProperIconSize",
+                Drawable::class.java
+            ){
+                val tileSize = this.getFloatField("tileSize").toInt()
                 //height = tileSize
 
-                val drawable = param?.args?.get(0) as Drawable
+                val drawable = it.args[0] as Drawable
 
-                val isCustomTile = XposedHelpers.getBooleanField(thisObj,"isCustomTile")
-                if (isCustomTile) return
+                val isCustomTile = this.getBooleanField("isCustomTile")
+                if (isCustomTile) return@afterHookMethod
 
-                if(drawable !is AnimatedVectorDrawable) return
+                if(drawable !is AnimatedVectorDrawable) return@afterHookMethod
 
-                val customTileSize = XposedHelpers.getFloatField(thisObj,"customTileSize").toInt()
+                val customTileSize = this.getFloatField("customTileSize").toInt()
                 if (drawable.intrinsicHeight < customTileSize){
-                    param.result = customTileSize
+                    it.result = customTileSize
 
                 }
 
             }
-        })
+        }
+
     }
 
     fun collapseStatusBar(context: Context) {
@@ -95,35 +94,37 @@ class QSListView : Hooker() {
 
     private fun startMethodsHook() {
 
-        val QSItemViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder", classLoader)
-        val QSItemView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSItemView", classLoader)
-        val QSTileItemView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemView", classLoader)
+        val QSItemViewHolder = findClass("miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder", classLoader)
+        val QSItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSItemView", classLoader)
+        val QSTileItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemView", classLoader)
 
-        val MainPanelModeController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.MainPanelModeController\$MainPanelMode",classLoader)
+        val MainPanelModeController = findClass("miui.systemui.controlcenter.panel.main.MainPanelModeController\$MainPanelMode",classLoader)
 
-        if (clickClose){
-            XposedHelpers.findAndHookMethod(QSTileItemView, "onFinishInflate\$lambda-0", QSTileItemView,View::class.java,object : XC_MethodHook() {
 
-                override fun beforeHookedMethod(param: MethodHookParam?) {
-                    super.beforeHookedMethod(param)
-                    val qSTileItemView = param?.args?.get(0) as FrameLayout
-
-                    val lastTriggeredTime = XposedHelpers.getLongField(qSTileItemView,"lastTriggeredTime")
-
+        QSTileItemView.apply {
+            if (clickClose) {
+                beforeHookMethod(
+                    "onFinishInflate\$lambda-0",
+                    QSTileItemView,
+                    View::class.java
+                ){
+                    val qSTileItemView = it.args[0] as FrameLayout
+                    val lastTriggeredTime = qSTileItemView.getLongField("lastTriggeredTime")
                     val elapsedRealtime = SystemClock.elapsedRealtime()
+
                     if (elapsedRealtime > lastTriggeredTime + 200) {
-                        val clickAction = XposedHelpers.getObjectField(qSTileItemView,"clickAction")
+                        val clickAction = qSTileItemView.getObjectField("clickAction")
                         if (clickAction == null){
                             starLog.logE("clickAction == null")
-                            return
+                            return@beforeHookMethod
                         }
 
-                        val enumConstants: Array<out Any>? = MainPanelModeController.getEnumConstants()
+                        val enumConstants: Array<out Any>? = MainPanelModeController?.getEnumConstants()
                         if (enumConstants == null){
                             starLog.logE("enumConstants == null")
-                            return
+                            return@beforeHookMethod
                         }
-                        val mainPanelMode = XposedHelpers.getObjectField(qSTileItemView,"mode")
+                        val mainPanelMode = qSTileItemView.getObjectField("mode")
                         if (mainPanelMode != enumConstants[2]) {
                             val mContext = qSTileItemView.context
                             collapseStatusBar(mContext)
@@ -132,54 +133,57 @@ class QSListView : Hooker() {
 
                         }
                     }
+
                 }
 
-            })
+            }
 
         }
 
         if (labelMarquee || labelMode!=0 ){
 
-            XposedHelpers.findAndHookConstructor(QSItemViewHolder,QSItemView,object : XC_MethodHook(){
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    super.afterHookedMethod(param)
-                    val thisObj = param?.thisObject
-                    val qSItemView = XposedHelpers.callMethod(thisObj,"getQsItemView") as FrameLayout
+            QSItemViewHolder.afterHookConstructor(
+                QSItemView
+            ){
+                val qSItemView = this.callMethodAs<FrameLayout>("getQsItemView")!!
 
-                    val label = qSItemView.findViewByIdName("tile_label") as TextView
-                    val icon = qSItemView.findViewByIdName("icon_frame") as FrameLayout
+                val label = qSItemView.findViewByIdNameAs<TextView>("tile_label")
+                val icon = qSItemView.findViewByIdNameAs<FrameLayout>("icon_frame")
 
-                    if (labelMode == 1){
-                        qSItemView.removeView(label)
-                        qSItemView.addView(label,1)
-                        label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 8f)
-
-                        val layoutParam =  label.layoutParams
-                        layoutParam.width = icon.layoutParams.width/10*9
-                        label.layoutParams = layoutParam
-                    } else if (labelMode == 2){
-                        qSItemView.removeView(label)
-                        qSItemView.addView(label,1)
-
-                        label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
-                        val layoutParam =  label.layoutParams
-                        qSItemView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-                        starLog.logD("${qSItemView.layoutParams.width}+${qSItemView.measuredWidth}")
-                        val width = qSItemView.measuredWidth*labelWidth
-                        layoutParam.width = width.toInt()
-                        label.layoutParams = layoutParam
-
+                if (labelMode == 1){
+                    qSItemView.apply {
+                        removeView(label)
+                        addView(label,1)
                     }
-                    if(labelMarquee){
-
-                        label.startMarqueeOfFading(25)
-
+                    val layoutParam =  label.layoutParams.apply {
+                        width = icon.layoutParams.width/10*9
                     }
-
-
-
+                    label.apply {
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 8f)
+                        layoutParams = layoutParam
+                    }
+                } else if (labelMode == 2){
+                    qSItemView.apply {
+                        removeView(label)
+                        addView(label,1)
+                    }
+                    qSItemView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                    val layoutWidth = qSItemView.measuredWidth*labelWidth
+                    val layoutParam =  label.layoutParams.apply {
+                        width = layoutWidth.toInt()
+                    }
+                    label.apply {
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
+                        layoutParams = layoutParam
+                    }
+                    starLog.logD("${qSItemView.layoutParams.width}+${qSItemView.measuredWidth}")
                 }
-            })
+                if(labelMarquee){
+                    label.startMarqueeOfFading(25)
+                }
+
+            }
+
         }
 
 
@@ -187,100 +191,84 @@ class QSListView : Hooker() {
 
         if ( labelMode != 0 ){
 
-            val QSListController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.qs.QSListController",classLoader)
+            findClass(
+                "miui.systemui.controlcenter.panel.main.qs.QSListController",
+                classLoader
+            ).beforeHookMethod(
+                "updateTextMode"
+            ){
+                val contentResolver = this.getObjectFieldAs<ContentResolver>("contentResolver")
+                when (labelMode) {
 
-            XposedHelpers.findAndHookMethod(QSListController,"updateTextMode",object : XC_MethodHook(){
-                override fun beforeHookedMethod(param: MethodHookParam?) {
-                    super.beforeHookedMethod(param)
-                    val thisObj = param?.thisObject
-                    val contentResolver = XposedHelpers.getObjectField(thisObj,"contentResolver")  as ContentResolver
-                    when (labelMode) {
+                    1 -> {
+                        Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
 
-                        1 -> {
-                            Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
 
+                    }
+                    2 -> {
+                        when (isWordlessMode2) {
+                            2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
+                            1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
 
                         }
-                        2 -> {
-                            when (isWordlessMode2) {
-                                2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
-                                1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+                    }
+                    else -> {
+                        when (isWordlessMode0) {
+                            2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
+                            1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
 
-                            }
+                        }
+                        return@beforeHookMethod
+                    }
+                }
+
+            }
+
+            QSTileItemView.replaceHookMethod(
+                "changeExpand"
+            ){
+                this as FrameLayout
+                val res = this.resources
+                val label = this.findViewByIdNameAs<TextView>("tile_label")
+                val isShowLabel = this.callMethodAs<Boolean>("getShowLabel")!!
+                var space : Int = this.getIntField("containerHeight")
+                val labelHeight = this.getIntField("labelHeight")
+                val y : Float
+                if (isShowLabel){
+                    when (labelMode) {
+                        2 -> {
+                            y = dpToPx(res,listLabelTop)
+                            space += labelHeight
+                            space = (space*listLabelSpacingY).toInt()
+                        }
+                        1 -> {
+                            y = 2f
                         }
                         else -> {
-                            when (isWordlessMode0) {
-                                2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
-                                1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
-
-                            }
-                            return
+                            return@replaceHookMethod null
                         }
                     }
-
-
-
+                }else{
+                    y = labelHeight.toFloat()
+                    space = (space*listSpacingY).toInt()
                 }
-            })
+                label.translationY = y
 
+                commonUtils.setLayoutHeightDefault(this, space, false, 2, null)
 
-            XposedHelpers.findAndHookMethod(QSTileItemView, "changeExpand", object : XC_MethodReplacement() {
-
-                override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-                    val thisObj = param?.thisObject as FrameLayout
-                    val res = thisObj.resources
-                    val label = thisObj.findViewByIdName("tile_label") as TextView
-                    val isShowLabel = XposedHelpers.callMethod(thisObj,"getShowLabel") as Boolean
-                    val y : Float
-                    var space : Int = XposedHelpers.getIntField(thisObj,"containerHeight")
-                    val labelHeight = XposedHelpers.getIntField(thisObj,"labelHeight")
-                    if (isShowLabel){
-                        when (labelMode) {
-                            2 -> {
-                                y = dpToPx(res,listLabelTop)
-
-                                space += labelHeight
-                                space = (space*listLabelSpacingY).toInt()
-
-                            }
-                            1 -> {
-
-                                y = 2f
-
-                            }
-                            else -> {
-                                return null
-                            }
-                        }
-                    }else{
-                        y = labelHeight.toFloat()
-                        space = (space*listSpacingY).toInt()
-                    }
-                    label.translationY = y
-
-                    commonUtils.setLayoutHeightDefault(thisObj, space, false, 2, null)
-
-                    return null;
-                }
-
-            })
+                return@replaceHookMethod null
+            }
 
         }
 
         if (tileColorForState != 0 || labelMode != 0){
-            XposedHelpers.findAndHookMethod(QSTileItemView, "updateTextAppearance", object : XC_MethodReplacement() {
-
-                override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-
-                    return null
-                }
-            })
+            QSTileItemView.replaceHookMethod(
+                "updateTextAppearance"
+            ){
+                return@replaceHookMethod null
+            }
 
         }
-
-
-
-
 
         if (tileColorForState != 0){
 
@@ -289,73 +277,65 @@ class QSListView : Hooker() {
             val restrictedColor = XSPUtils.getString("list_title_restricted_color", "null")
             val unavailableColor = XSPUtils.getString("list_title_unavailable_color", "null")
 
-            XposedHelpers.findAndHookMethod(QSTileItemView, "onStateUpdated",
-                Boolean::class.java, object : XC_MethodHook(){
-                    override fun beforeHookedMethod(param: MethodHookParam?) {
-                        super.beforeHookedMethod(param)
-                        val thisObj = param?.thisObject  as FrameLayout
-                        val mode = XposedHelpers.getObjectField(thisObj,"mode") as Enum<*>
+            QSTileItemView.beforeHookMethod(
+                "onStateUpdated",
+                Boolean::class.java
+            ){
+                this as FrameLayout
+                val mode = this.getObjectFieldAs<Enum<*>>("mode")
+                val copy :Any
+                val Companion = QSItemView.getStaticObjectField("Companion")
+                val sta = this.getObjectField("state")
 
-                        val copy :Any
-
-                        val Companion = XposedHelpers.getStaticObjectField(QSItemView,"Companion")
-                        val sta = XposedHelpers.getObjectField(thisObj,"state")
-
-                        if (mode.ordinal == 0){
-                            if (sta == null){
-                                return
-                            }
-                            copy = sta
-
-                        }else{
-                            var customizeState = XposedHelpers.getObjectField(thisObj,"customizeState")
-                            if (customizeState == null){
-                                customizeState = sta
-                                if (customizeState == null){
-                                    return
-                                }
-                            }
-                            copy = XposedHelpers.callMethod(customizeState,"copy")
-                            XposedHelpers.setIntField(copy,"state",1)
-                            XposedHelpers.callMethod(Companion,"setRestrictedCompat", copy,false)
-
-                        }
-
-                        val state:Int = XposedHelpers.getIntField(copy,"state")
-                        val states = XposedHelpers.callMethod(Companion,"isRestrictedCompat",copy) as Boolean
-
-                        val label = thisObj.findViewByIdName("tile_label") as TextView
-                        val icon = XposedHelpers.callMethod(thisObj,"getIcon")
-
-                        var off = XposedHelpers.getIntField(icon,"iconColorOff")
-                        var enable = XposedHelpers.getIntField(icon,"iconColor")
-                        var unavailable = XposedHelpers.getIntField(icon,"iconColorUnavailable")
-                        var restrict = XposedHelpers.getIntField(icon,"iconColorRestrict")
-                        if (tileColorForState == 2){
-                            if (disableColor != "null")  off = Color.parseColor(disableColor)
-                            if (enableColor != "null")  enable = Color.parseColor(enableColor)
-                            if (restrictedColor != "null")  unavailable = Color.parseColor(restrictedColor)
-                            if (unavailableColor != "null")  restrict = Color.parseColor(unavailableColor)
-                        }
-
-
-                        if (state == 0) {
-                            label.setTextColor(unavailable)
-                        } else if (state == 1 && states) {
-                            label.setTextColor(restrict)
-                        } else if (state != 2) {
-                            label.setTextColor(off)
-                        } else {
-                            label.setTextColor(enable)
-                        }
-
-
+                if (mode.ordinal == 0){
+                    if (sta == null){
+                        return@beforeHookMethod
                     }
+                    copy = sta
+
+                }else{
+                    var customizeState = this.getObjectField("customizeState")
+                    if (customizeState == null){
+                        customizeState = sta
+                        if (customizeState == null){
+                            return@beforeHookMethod
+                        }
+                    }
+                    copy = customizeState.callMethod("copy")!!
+                    copy.setIntField("state",1)
+                    Companion.callMethod("setRestrictedCompat", copy,false)
+
+                }
+
+                val state:Int = copy.getIntField("state")
+                val states = Companion.callMethodAs<Boolean>("isRestrictedCompat",copy)!!
+
+                val label = this.findViewByIdNameAs<TextView>("tile_label")
+                val icon = this.callMethod("getIcon")
+
+                var off = icon.getIntField("iconColorOff")
+                var enable = icon.getIntField("iconColor")
+                var unavailable = icon.getIntField("iconColorUnavailable")
+                var restrict = icon.getIntField("iconColorRestrict")
+                if (tileColorForState == 2){
+                    if (disableColor != "null")  off = Color.parseColor(disableColor)
+                    if (enableColor != "null")  enable = Color.parseColor(enableColor)
+                    if (restrictedColor != "null")  unavailable = Color.parseColor(restrictedColor)
+                    if (unavailableColor != "null")  restrict = Color.parseColor(unavailableColor)
+                }
 
 
-                })
+                if (state == 0) {
+                    label.setTextColor(unavailable)
+                } else if (state == 1 && states) {
+                    label.setTextColor(restrict)
+                } else if (state != 2) {
+                    label.setTextColor(off)
+                } else {
+                    label.setTextColor(enable)
+                }
 
-
+            }
 
         }
 
@@ -366,170 +346,146 @@ class QSListView : Hooker() {
 
     private fun qsTileRadius() {
 
-        val QSTileItemIconView = XposedHelpers.findClass(
+        var height = 0
+
+        findClass(
             "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
             classLoader
-        )
-        if (isQSListTileRadius){
+        ).apply {
 
-            XposedHelpers.findAndHookMethod(QSTileItemIconView,
-                "setCornerRadius", Float::class.java, object : XC_MethodHook() {
-                    override fun beforeHookedMethod(param: MethodHookParam) {
+            if (isQSListTileRadius){
 
-                        val pluginContext: Context = XposedHelpers.getObjectField(param.thisObject, "pluginContext") as Context;
+                replaceHookMethod("getCornerRadius"){
+                    val pluginContext = this.getObjectFieldAs<Context>( "pluginContext")
+                    return@replaceHookMethod dpToPx(pluginContext.resources,qsListTileRadius)
 
-                        param.args[0] = dpToPx(pluginContext.resources,qsListTileRadius)
-
-                    }
-
-                    override fun afterHookedMethod(param: MethodHookParam) {
-
-                    }
-                })
-
-            XposedHelpers.findAndHookMethod(QSTileItemIconView, "setDisabledBg", Drawable::class.java, object : XC_MethodHook(){
-                override fun beforeHookedMethod(param: MethodHookParam?) {
-                    super.beforeHookedMethod(param)
-                    val drawable = param?.args?.get(0) as Drawable
+                }
+                beforeHookMethod("setDisabledBg", Drawable::class.java){
+                    val drawable = it.args.get(0) as Drawable
                     if (drawable is GradientDrawable){
                         val cc = drawable.cornerRadius
-                        val pluginContext: Context = XposedHelpers.getObjectField(param.thisObject, "pluginContext") as Context
+                        val pluginContext = this.getObjectFieldAs<Context>( "pluginContext")
                         val mRadius = dpToPx(pluginContext.resources,qsListTileRadius)
                         if (cc != mRadius){
                             drawable.cornerRadius = mRadius
-                            param.args[0] = drawable
+                            it.args[0] = drawable
 
                         }
                     }
+
                 }
-            })
-            XposedHelpers.findAndHookMethod(QSTileItemIconView, "setEnabledBg", Drawable::class.java, object : XC_MethodHook(){
-                override fun beforeHookedMethod(param: MethodHookParam?) {
-                    super.beforeHookedMethod(param)
-                    val drawable = param?.args?.get(0) as Drawable
+                beforeHookMethod("setEnabledBg", Drawable::class.java){
+                    val drawable = it.args?.get(0) as Drawable
                     if (drawable is GradientDrawable){
                         val cc = drawable.cornerRadius
-                        val pluginContext: Context = XposedHelpers.getObjectField(param.thisObject, "pluginContext") as Context
+                        val pluginContext = this.getObjectFieldAs<Context>("pluginContext")
                         val mRadius = dpToPx(pluginContext.resources,qsListTileRadius)
                         if (cc != mRadius){
                             drawable.cornerRadius = mRadius
-                            param.args[0] = drawable
-
+                            it.args[0] = drawable
                         }
-                    }
-                }
-            })
-
-
-
-        }
-
-        var height :Int = 0
-
-
-        hookAllMethods(classLoader, "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
-            "updateIcon",
-            object : MethodHook {
-
-                override fun before(param: XC_MethodHook.MethodHookParam) {
-                    val thisObj = param.thisObject
-                    if ( labelMode != 0 ) {
-
-                        val tileSize = XposedHelpers.getFloatField(thisObj,"tileSize").toInt()
-                        height = tileSize
                     }
 
                 }
 
-                override fun after(param: XC_MethodHook.MethodHookParam) {
-                    if (labelMode == 0){
-                        return
-                    }
 
-                    val z = param.args?.get(1) as Boolean
+            }
+            beforeHookAllMethods("updateIcon"){
+                if ( labelMode != 0 ) {
+                    val tileSize = this.getFloatField("tileSize").toInt()
+                    height = tileSize
+                }
+            }
+            afterHookAllMethods("updateIcon"){
+                if (labelMode == 0) return@afterHookAllMethods
 
-                    if (z) {
-                        val thisObj = param.thisObject
-                        val Icon: ImageView =
-                            XposedHelpers.getObjectField(thisObj, "icon") as ImageView;
-                        val combine = Icon.drawable
 
-                        if (combine !is LayerDrawable) {
-                            return
-                        }
+                val z = it.args[1] as Boolean
 
-                        val num = combine.numberOfLayers
+                if (z) {
+                    val Icon = this.getObjectFieldAs<ImageView>("icon")
+                    val combine = Icon.drawable
+                    if (combine !is LayerDrawable) return@afterHookAllMethods
 
-                        when (num) {
-                            2 -> {
-                                return
-                            }
-                            3 -> {
-                                val disabledBg = XposedHelpers.getObjectField(thisObj,"disabledBg") as Drawable
-                                val enabledBg = XposedHelpers.getObjectField(thisObj,"enabledBg") as Drawable
-                                val invisibleDrawableCompat = combine.getDrawable(2)
-                                val iconDrawable = LayerDrawable(
-                                    arrayOf(
-                                        disabledBg,
-                                        enabledBg,
-                                        invisibleDrawableCompat
-                                    )
+                    val num = combine.numberOfLayers
+
+                    when (num) {
+                        2 -> return@afterHookAllMethods
+
+                        3 -> {
+                            val disabledBg = this.getObjectFieldAs<Drawable>("disabledBg")
+                            val enabledBg = this.getObjectFieldAs<Drawable>("enabledBg")
+                            val invisibleDrawableCompat = combine.getDrawable(2)
+
+                            val size = this.callMethodAs<Int>(
+                                "getProperIconSize",
+                                invisibleDrawableCompat
+                            )!!
+                            val tileSize = this.getFloatField("tileSize").toInt()
+
+                            val iconDrawable = LayerDrawable(
+                                arrayOf(
+                                    disabledBg,
+                                    enabledBg,
+                                    invisibleDrawableCompat
                                 )
-
-                                val size = XposedHelpers.callMethod(thisObj, "getProperIconSize",invisibleDrawableCompat) as Int
-                                val tileSize = XposedHelpers.getFloatField(thisObj,"tileSize").toInt()
-
-                                iconDrawable.setLayerGravity(2, Gravity.CENTER)
-                                if (listIconTop != 0f){
-                                    iconDrawable.setLayerInsetBottom(2,
-                                        (tileSize*listIconTop).toInt()
+                            ).apply {
+                                setLayerGravity(2, Gravity.CENTER)
+                                if (listIconTop != 0f) {
+                                    setLayerInsetBottom(
+                                        2,
+                                        (tileSize * listIconTop).toInt()
                                     )
 
                                 }
-                                iconDrawable.setLayerSize(2, size, size)
-
-                                Icon.setImageDrawable(iconDrawable)
-
+                                setLayerSize(2, size, size)
                             }
-                            else -> {
-                                return
-                            }
+
+                            Icon.setImageDrawable(iconDrawable)
+
                         }
 
-
+                        else -> {
+                            return@afterHookAllMethods
+                        }
                     }
-
-
                 }
-            })
+
+            }
+        }
 
         if ( labelMode != 0 ) {
-            val DrawableUtils = XposedHelpers.findClass("miui.systemui.util.DrawableUtils", classLoader)
+            findClass(
+                "miui.systemui.util.DrawableUtils",
+                classLoader
+            ).apply {
+                replaceHookMethod(
+                    "combine",
+                    Drawable::class.java,
+                    Drawable::class.java,
+                    Int::class.java
+                ){
+                    val args: Array<Any> = it.args as Array<Any>
+                    val dra = args[0] as Drawable
+                    val dra2 = args[1] as Drawable
+                    val i = args[2] as Int
 
-            XposedHelpers.findAndHookMethod(DrawableUtils, "combine", Drawable::class.java, Drawable::class.java, Int::class.java,
-                object : XC_MethodReplacement() {
-                    override fun replaceHookedMethod(param: MethodHookParam?): Any {
-                        val args: Array<Any> = param?.args as Array<Any>
-                        val dra = args[0] as Drawable
-                        val dra2 = args[1] as Drawable
-                        val i = args[2] as Int
-
-                        val icon = LayerDrawable(arrayOf(dra, dra2))
-                        icon.setLayerGravity(1, i)
-
-                        if (height == 0) return icon
-                        if (listIconTop != 0f) {
-                            icon.setLayerInsetBottom(1,
-                                (height * listIconTop).toInt()
-                            )
-
-                        }
-
-                        return icon
+                    val icon = LayerDrawable(arrayOf(dra, dra2)).apply {
+                        setLayerGravity(1, i)
+                    }
+                    if (height == 0) return@replaceHookMethod icon
+                    if (listIconTop != 0f) {
+                        icon.setLayerInsetBottom(1,
+                            (height * listIconTop).toInt()
+                        )
 
                     }
 
-                })
+                    return@replaceHookMethod icon
+
+                }
+            }
+
         }
     }
 

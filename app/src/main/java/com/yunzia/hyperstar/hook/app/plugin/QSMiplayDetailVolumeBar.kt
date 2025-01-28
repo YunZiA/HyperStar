@@ -7,9 +7,6 @@ import android.widget.SeekBar
 import android.widget.TextView
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
-import de.robv.android.xposed.XposedHelpers
 
 
 class QSMiplayDetailVolumeBar: Hooker() {
@@ -27,11 +24,9 @@ class QSMiplayDetailVolumeBar: Hooker() {
     private fun starMethodHook() {
         val QSControlMiPlayDetailHeader = findClass("com.android.systemui.QSControlMiPlayDetailHeader",classLoader)
 
-        XposedHelpers.findAndHookMethod(QSControlMiPlayDetailHeader,"initUI", object : XC_MethodHook() {
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
-                val volumeBarContainer = XposedHelpers.getObjectField(thisObj,"volumeBarContainer") as RelativeLayout
+        QSControlMiPlayDetailHeader.apply {
+            afterHookMethod("initUI"){
+                val volumeBarContainer = this.getObjectFieldAs<RelativeLayout>("volumeBarContainer")
                 val context = volumeBarContainer.context
                 val res = context.resources
 
@@ -41,7 +36,10 @@ class QSMiplayDetailVolumeBar: Hooker() {
                     setTextColor(getColor(res,"miplay_detail_volume_icon_color",plugin,"#FF6E747B"))
                 }
 
-                val lp = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT).apply {
+                val lp = RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
                     addRule(RelativeLayout.CENTER_VERTICAL)
                     addRule(RelativeLayout.ALIGN_PARENT_END)
                     marginEnd = getDimension(res,"miplay_detail_header_volume_bar_icon_margin_start",plugin).toInt()
@@ -49,23 +47,20 @@ class QSMiplayDetailVolumeBar: Hooker() {
                 volumeBarContainer.addView(value,lp)
 
             }
-        })
-
-        XposedBridge.hookAllMethods(QSControlMiPlayDetailHeader,"addObservers\$lambda-29",object : XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val qSControlMiPlayDetailHeader = param?.args?.get(0)
-                val num = param?.args?.get(1) as Int
-                val volumeBarContainer = XposedHelpers.getObjectField(qSControlMiPlayDetailHeader,"volumeBarContainer") as RelativeLayout
-                if (volumeBarContainer.childCount < 3) return
-                val seekBar = XposedHelpers.getObjectField(qSControlMiPlayDetailHeader,"volumeBar") as SeekBar
+            afterHookAllMethods("addObservers\$lambda-29"){
+                val qSControlMiPlayDetailHeader = it.args[0]
+                val num = it.args[1] as Int
+                val volumeBarContainer = qSControlMiPlayDetailHeader.getObjectFieldAs<RelativeLayout>("volumeBarContainer")
+                if (volumeBarContainer.childCount < 3) return@afterHookAllMethods
+                val seekBar = qSControlMiPlayDetailHeader.getObjectFieldAs<SeekBar>("volumeBar")
                 val max = seekBar.max
                 val progress = seekBar.progress
 
                 val value = volumeBarContainer.getChildAt(2) as TextView
                 value.text = "${100*progress/max}%"
+
             }
-        })
+        }
 
     }
 

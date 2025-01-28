@@ -4,8 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedHelpers
 import yunzia.utils.DensityUtil
 
 class VolumeColumnProgressRadius : Hooker() {
@@ -21,31 +19,26 @@ class VolumeColumnProgressRadius : Hooker() {
     }
 
     private fun startMethodsHook() {
-        val MiuiVolumeSeekBarProgressView = XposedHelpers.findClass("com.android.systemui.miui.volume.MiuiVolumeSeekBarProgressView",classLoader)
-
-
-        XposedHelpers.findAndHookConstructor(MiuiVolumeSeekBarProgressView,Context::class.java,AttributeSet::class.java,Int::class.java,object :XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
-                val mContext = XposedHelpers.getObjectField(thisObj,"mContext") as Context
-                val res = mContext.resources
-
-                val maxRadius = getDimensionPixelOffset(res,"miui_volume_bg_radius",plugin).toFloat()
-
-                val radius = DensityUtil.dpToPx(res, volumeProgressRadius)
-
+        findClass(
+            "com.android.systemui.miui.volume.MiuiVolumeSeekBarProgressView",
+            classLoader
+        ).afterHookConstructor(
+            Context::class.java,
+            AttributeSet::class.java,
+            Int::class.java
+        ){
+            val mContext = this.getObjectFieldAs<Context>("mContext")
+            val res = mContext.resources
+            val maxRadius = getDimensionPixelOffset(res,"miui_volume_bg_radius",plugin).toFloat()
+            val radius = DensityUtil.dpToPx(res, volumeProgressRadius)
+            this.setFloatField("mProgressRadius",
                 if (radius >= maxRadius){
-                    XposedHelpers.setFloatField(thisObj,"mProgressRadius",maxRadius)
-
+                    maxRadius
                 }else{
-                    XposedHelpers.setFloatField(thisObj,"mProgressRadius",DensityUtil.dpToPx(res, volumeProgressRadius))
-
+                    DensityUtil.dpToPx(res, volumeProgressRadius)
                 }
-
-
-            }
-        })
+            )
+        }
 
     }
 }

@@ -16,9 +16,6 @@ import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.util.plugin.ConfigUtils
 import com.yunzia.hyperstar.hook.util.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
-import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
 //这里是改变控制中心臭臭颜色的地方
@@ -89,49 +86,34 @@ class QSControlCenterColor : Hooker() {
 
     private fun startEditColor() {
         val editTitleColor = XSPUtils.getString("edit_title_color","null")
-        val ConfigUtils = XposedHelpers.findClass("miui.systemui.controlcenter.ConfigUtils",classLoader)
-        val EditButtonViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.qs.EditButtonController\$EditButtonViewHolder",classLoader)
-
-        if (editTitleColor != "null"){
-
-            XposedHelpers.findAndHookConstructor(EditButtonViewHolder,View::class.java,object : XC_MethodHook(){
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    super.afterHookedMethod(param)
-                    val thisObj = param?.thisObject
-                    val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
-
-                    if (editTitleColor != "null"){
-                        val text =  itemView.findViewByIdName("text") as TextView
-                        text.setTextColor(Color.parseColor(editTitleColor))
-                    }
-
-
+        val ConfigUtils = findClass("miui.systemui.controlcenter.ConfigUtils",classLoader)
+        findClass(
+            "miui.systemui.controlcenter.panel.main.qs.EditButtonController\$EditButtonViewHolder",
+            classLoader
+        ).apply {
+            if (editTitleColor != "null"){
+                afterHookConstructor(View::class.java){
+                    val itemView = this.getObjectFieldAs<View>("itemView")
+                    val text =  itemView.findViewByIdName("text") as TextView
+                    text.setTextColor(Color.parseColor(editTitleColor))
                 }
-            })
+            }
+            if (editTitleColor != "null"){
+                afterHookMethod("onConfigurationChanged", Int::class.java){
+                    val p1 = it.args[0]
+                    val INSTANCE = ConfigUtils.getStaticObjectField("INSTANCE")
 
-        }
-        if (editTitleColor != "null"){
-            XposedHelpers.findAndHookMethod(EditButtonViewHolder,"onConfigurationChanged", Int::class.java, object :XC_MethodHook(){
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    super.afterHookedMethod(param)
-                    val p1 = param?.args?.get(0)
-                    val thisObj = param?.thisObject
-                    val INSTANCE = XposedHelpers.getStaticObjectField(ConfigUtils,"INSTANCE")
-
-                    val textAppearanceChanged = XposedHelpers.callMethod(INSTANCE,"textAppearanceChanged",p1) as Boolean
+                    val textAppearanceChanged = INSTANCE.callMethodAs<Boolean>("textAppearanceChanged",p1)!!
                     if (textAppearanceChanged){
-
-                        val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
-                        val text =  itemView.findViewByIdName("text") as TextView
+                        val itemView = this.getObjectFieldAs<View>("itemView")
+                        val text = itemView.findViewByIdNameAs<TextView>("text")
                         text.setTextColor(Color.parseColor(editTitleColor))
-
                     }
-
-
                 }
-            })
-
+            }
         }
+
+
 
 
     }
@@ -142,92 +124,72 @@ class QSControlCenterColor : Hooker() {
         val deviceCenterTitleColor = XSPUtils.getString("device_center_title_color","null")
 
         //val ConfigUtils = XposedHelpers.findClass("miui.systemui.controlcenter.ConfigUtils",classLoader)
-        val EmptyDeviceViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.EmptyDeviceViewHolder",classLoader)
-
-
-        if (deviceCenterTitleColor != "null" || deviceCenterIconColor != "null"){
-
-            XposedHelpers.findAndHookConstructor(EmptyDeviceViewHolder,View::class.java,object : XC_MethodHook(){
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    super.afterHookedMethod(param)
-                    val thisObj = param?.thisObject
-                    val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
+        findClass(
+            "miui.systemui.controlcenter.panel.main.devicecenter.devices.EmptyDeviceViewHolder",
+            classLoader
+        ).apply {
+            if (deviceCenterTitleColor != "null" || deviceCenterIconColor != "null"){
+                afterHookConstructor(View::class.java){
+                    val itemView = this.getObjectFieldAs<View>("itemView")
                     if (deviceCenterIconColor != "null"){
-                        val icon = itemView.findViewByIdName("icon") as ImageView
+                        val icon = itemView.findViewByIdNameAs<ImageView>("icon")
                         icon.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceCenterIconColor),PorterDuff.Mode.SRC_IN)
                     }
                     if (deviceCenterTitleColor != "null"){
-                        val title =  itemView.findViewByIdName("title") as TextView
+                        val title =  itemView.findViewByIdNameAs<TextView>("title")
                         title.setTextColor(Color.parseColor(deviceCenterTitleColor))
                     }
 
-
                 }
-            })
-
-        }
-        if (deviceCenterTitleColor != "null"){
-            XposedHelpers.findAndHookMethod(EmptyDeviceViewHolder,"onConfigurationChanged", Int::class.java, object :XC_MethodHook(){
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    super.afterHookedMethod(param)
-                    val p1 = param?.args?.get(0)
-                    val thisObj = param?.thisObject
-
+            }
+            if (deviceCenterTitleColor != "null"){
+                afterHookMethod("onConfigurationChanged", Int::class.java){
+                    val p1 = it.args[0]
                     if (configUtils.textAppearanceChanged(p1)){
-
-                        val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
-                        val title =  itemView.findViewByIdName("title") as TextView
+                        val itemView = this.getObjectFieldAs<View>("itemView")
+                        val title = itemView.findViewByIdNameAs<TextView>("title")
                         title.setTextColor(Color.parseColor(deviceCenterTitleColor))
-
                     }
 
-
                 }
-            })
+            }
 
         }
+
         val deviceControlIconColor = XSPUtils.getString("device_control_icon_color","null")
         val deviceControlTitleColor = XSPUtils.getString("device_control_title_color","null")
-
-        val DeviceControlEntryViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.devicecontrol.DeviceControlsEntryController\$DeviceControlEntryViewHolder",classLoader)
-        if (deviceControlTitleColor != "null" || deviceControlIconColor != "null"){
-            XposedHelpers.findAndHookConstructor(DeviceControlEntryViewHolder,View::class.java,object : XC_MethodHook(){
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    super.afterHookedMethod(param)
-                    val thisObj = param?.thisObject
-                    val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
+        findClass(
+            "miui.systemui.controlcenter.panel.main.devicecontrol.DeviceControlsEntryController\$DeviceControlEntryViewHolder",
+            classLoader
+        ).apply {
+            if (deviceControlTitleColor != "null" || deviceControlIconColor != "null"){
+                afterHookConstructor(View::class.java){
+                    val itemView = this.getObjectFieldAs<View>("itemView")
                     if (deviceCenterIconColor != "null"){
-                        val entryIcon = itemView.findViewByIdName("entry_icon") as ImageView
+                        val entryIcon = itemView.findViewByIdNameAs<ImageView>("entry_icon")
                         entryIcon.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceControlIconColor),PorterDuff.Mode.SRC_IN)
                     }
                     if (deviceCenterTitleColor != "null"){
-                        val entryTitle =  itemView.findViewByIdName("entry_title") as TextView
+                        val entryTitle =  itemView.findViewByIdNameAs<TextView>("entry_title")
                         entryTitle.setTextColor(Color.parseColor(deviceControlTitleColor))
                     }
 
-
                 }
-            })
-
-        }
-        if (deviceControlTitleColor != "null" ){
-            XposedHelpers.findAndHookMethod(DeviceControlEntryViewHolder,"onConfigurationChanged", Int::class.java, object :XC_MethodHook() {
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    super.afterHookedMethod(param)
-                    val p1 = param?.args?.get(0)
-                    val thisObj = param?.thisObject
-
+            }
+            if (deviceControlTitleColor != "null" ){
+                afterHookMethod("onConfigurationChanged", Int::class.java){
+                    val p1 = it.args[0]
                     if (configUtils.textAppearanceChanged(p1)){
-
-                        val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
-                        val entryTitle =  itemView.findViewByIdName("entry_title") as TextView
+                        val itemView = this.getObjectFieldAs<View>("itemView")
+                        val entryTitle =  itemView.findViewByIdNameAs<TextView>("entry_title")
                         entryTitle.setTextColor(Color.parseColor(deviceControlTitleColor))
-
                     }
+
                 }
-            })
+            }
 
         }
+
 
     }
 
@@ -239,7 +201,6 @@ class QSControlCenterColor : Hooker() {
         val valueColor = XSPUtils.getString("toggle_slider_value_color", "null")
 
         if (progressColor != "null") ReplaceColor("toggle_slider_progress_color",progressColor)
-
 
         //ReplaceColor("toggle_slider_icon_color",valueColor)
 
@@ -323,10 +284,9 @@ class QSControlCenterColor : Hooker() {
         }else{
 
             val res = resparam.res
-
-            val array = res.getIntArray(res.getIdentifier("control_center_list_items_blend_colors", "array", plugin))
+            val array = res.getIntArrayBy("control_center_list_items_blend_colors", plugin)
             res.setReplacement(plugin,"array","control_center_edit_button_blend_colors",array)
-            val color = res.getColor(res.getIdentifier("external_entry_background_color","color",plugin))
+            val color = res.getColorBy("external_entry_background_color",plugin)
             res.setReplacement(plugin,"color","qs_customize_entry_button_background_color",color)
 
         }
@@ -403,41 +363,31 @@ class QSControlCenterColor : Hooker() {
 
         val iconColor = XSPUtils.getString("toggle_slider_icon_color", "null")
 
-        val BrightnessSliderController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.brightness.BrightnessSliderController",classLoader)
-        val VolumeSliderController = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.volume.VolumeSliderController",classLoader)
+        val BrightnessSliderController = findClass("miui.systemui.controlcenter.panel.main.brightness.BrightnessSliderController",classLoader)
+        val VolumeSliderController = findClass("miui.systemui.controlcenter.panel.main.volume.VolumeSliderController",classLoader)
 
 
         if (iconColor != "null"){
-
-            XposedHelpers.findAndHookMethod(BrightnessSliderController,"updateIcon",object : XC_MethodHook(){
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    super.afterHookedMethod(param)
-                    val thisObj = param?.thisObject
-                    val sliderHolder = XposedHelpers.callMethod(thisObj,"getSliderHolder")
-                    val itemView = XposedHelpers.getObjectField(sliderHolder,"itemView") as View
-                    val icon = itemView.findViewByIdName("icon") as ImageView
-                    val drawable = icon.drawable
-                    if (drawable is AnimatedVectorDrawable){
-                        drawable.colorFilter = PorterDuffColorFilter(Color.parseColor(iconColor),PorterDuff.Mode.SRC_IN)
-                    }
-
+            BrightnessSliderController.afterHookMethod("updateIcon"){
+                val sliderHolder = this.callMethod("getSliderHolder")
+                val itemView = sliderHolder.getObjectFieldAs<View>("itemView")
+                val icon = itemView.findViewByIdNameAs<ImageView>("icon")
+                val drawable = icon.drawable
+                if (drawable is AnimatedVectorDrawable){
+                    drawable.colorFilter = PorterDuffColorFilter(Color.parseColor(iconColor),PorterDuff.Mode.SRC_IN)
                 }
-            })
+            }
 
-            XposedHelpers.findAndHookMethod(VolumeSliderController,"updateIcon",Boolean::class.java,object : XC_MethodHook(){
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    super.afterHookedMethod(param)
-                    val thisObj = param?.thisObject
-                    val sliderHolder = XposedHelpers.callMethod(thisObj,"getSliderHolder")
-                    val itemView = XposedHelpers.getObjectField(sliderHolder,"itemView") as View
-                    val icon = itemView.findViewByIdName("icon") as ImageView
-                    val drawable = icon.drawable
-                    if (drawable is AnimatedVectorDrawable){
-                        drawable.colorFilter = PorterDuffColorFilter(Color.parseColor(iconColor),PorterDuff.Mode.SRC_IN)
-                    }
-
+            VolumeSliderController.afterHookMethod("updateIcon",Boolean::class.java){
+                val sliderHolder = this.callMethod("getSliderHolder")
+                val itemView = sliderHolder.getObjectFieldAs<View>("itemView")
+                val icon = itemView.findViewByIdNameAs<ImageView>("icon")
+                val drawable = icon.drawable
+                if (drawable is AnimatedVectorDrawable){
+                    drawable.colorFilter = PorterDuffColorFilter(Color.parseColor(iconColor),PorterDuff.Mode.SRC_IN)
                 }
-            })
+
+            }
 
         }
 
@@ -453,111 +403,72 @@ class QSControlCenterColor : Hooker() {
         val enabledIconColor = XSPUtils.getString("media_icon_color_enabled", "null")
         val deviceIconColor = XSPUtils.getString("media_device_icon_color", "null")
 
-        val MediaPlayerViewHolder = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",classLoader)
 
+        val MediaPlayerIconsInfo = findClass("miui.systemui.controlcenter.media.MediaPlayerIconsInfo",classLoader)
 
-        val MediaPlayerIconsInfo = XposedHelpers.findClass("miui.systemui.controlcenter.media.MediaPlayerIconsInfo",classLoader)
-
-        XposedBridge.hookAllConstructors(MediaPlayerViewHolder, object : XC_MethodHook() {
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
-                val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
+        findClass(
+            "miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",
+            classLoader
+        ).apply {
+            afterHookAllConstructors {
+                val itemView = this.getObjectFieldAs<View>("itemView")
                 if (deviceIconColor != "null"){
-                    val deviceIcon = itemView.findViewByIdName("device_icon") as ImageView
+                    val deviceIcon = itemView.findViewByIdNameAs<ImageView>("device_icon")
                     deviceIcon.alpha = 1f
                     deviceIcon.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceIconColor), PorterDuff.Mode.SRC_IN)
 
                 }
 
                 if (titleColor != "null"){
-                    val title = itemView.findViewByIdName("title") as TextView
+                    val title = itemView.findViewByIdNameAs<TextView>("title")
                     title.setTextColor(Color.parseColor(titleColor))
 
                 }
 
                 if(artistColor != "null"){
-                    val artist = itemView.findViewByIdName("artist") as TextView
+                    val artist = itemView.findViewByIdNameAs<TextView>("artist")
                     artist.setTextColor(Color.parseColor(artistColor))
 
                 }
 
-                if (enabledIconColor != "null"){
+                if (emptyStateColor != "null"){
 
-                    val emptyState = itemView.findViewByIdName("empty_state") as TextView
+                    val emptyState = itemView.findViewByIdNameAs<TextView>("empty_state")
                     emptyState.setTextColor(Color.parseColor(emptyStateColor))
                 }
+
             }
-        })
-
-        if (deviceIconColor != null){
-            XposedHelpers.findAndHookMethod(MediaPlayerViewHolder,"updateIconsInfo",MediaPlayerIconsInfo, Boolean::class.java ,object : XC_MethodHook(){
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    super.afterHookedMethod(param)
-                    val thisObj = param?.thisObject
-                    val deviceRes = XposedHelpers.getObjectField(thisObj,"deviceRes")
-                    val mediaPlayerIconsInfo = param?.args?.get(0)
-                    val boolean = param?.args?.get(1) as Boolean
-                    val getDeviceRes = XposedHelpers.callMethod(mediaPlayerIconsInfo,"getDeviceRes") as Int
-                    if (deviceRes != getDeviceRes || boolean){
-                        val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
-                        val deviceIcon = itemView.findViewByIdName("device_icon") as ImageView
-                        deviceIcon.alpha = 1f
-                        deviceIcon.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceIconColor), PorterDuff.Mode.SRC_IN)
-
-                    }
-
-
-
-
-                }
-            })
-
-        }
-
-
-
-
-        XposedHelpers.findAndHookMethod(MediaPlayerViewHolder,"onConfigurationChanged", Int::class.java ,object : XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
-                val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
-                val configuration = param?.args?.get(0)
+            afterHookMethod("onConfigurationChanged", Int::class.java){
+                val itemView = this.getObjectFieldAs<View>("itemView")
+                val configuration = it.args[0]
 
                 if (configUtils.textAppearanceChanged(configuration)){
                     if (titleColor != "null"){
-                        val title = itemView.findViewByIdName("title") as TextView
+                        val title = itemView.findViewByIdNameAs<TextView>("title")
                         title.setTextColor(Color.parseColor(titleColor))
 
                     }
 
                     if(artistColor != "null"){
-                        val artist = itemView.findViewByIdName("artist") as TextView
+                        val artist = itemView.findViewByIdNameAs<TextView>("artist")
                         artist.setTextColor(Color.parseColor(artistColor))
 
                     }
 
                     if (enabledIconColor != "null"){
 
-                        val emptyState = itemView.findViewByIdName("empty_state") as TextView
+                        val emptyState = itemView.findViewByIdNameAs<TextView>("empty_state")
                         emptyState.setTextColor(Color.parseColor(emptyStateColor))
                     }
 
                 }
 
-
             }
-        })
-
-        XposedHelpers.findAndHookMethod(MediaPlayerViewHolder,"disableMediaController",object : XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
-                val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
+            afterHookMethod("disableMediaController"){
+                val itemView = this.getObjectFieldAs<View>("itemView")
                 if (disabledIconColor != "null"){
-                    val prev = itemView.findViewByIdName("prev") as ImageView
-                    val next = itemView.findViewByIdName("next") as ImageView
+                    val prev = itemView.findViewByIdNameAs<ImageView>("prev")
+                    val next = itemView.findViewByIdNameAs<ImageView>("next")
                     prev.colorFilter = PorterDuffColorFilter(Color.parseColor(disabledIconColor), PorterDuff.Mode.SRC_IN)
                     next.colorFilter = PorterDuffColorFilter(Color.parseColor(disabledIconColor), PorterDuff.Mode.SRC_IN)
 
@@ -568,31 +479,36 @@ class QSControlCenterColor : Hooker() {
                     play.colorFilter = PorterDuffColorFilter(Color.parseColor(enabledIconColor), PorterDuff.Mode.SRC_IN)
                 }
 
+            }
+            if (deviceIconColor != null){
+                afterHookMethod("updateIconsInfo",MediaPlayerIconsInfo, Boolean::class.java){
+                    val deviceRes = this.getObjectField("deviceRes")
+                    val mediaPlayerIconsInfo = it.args[0]
+                    val boolean = it.args[1] as Boolean
+                    val getDeviceRes = mediaPlayerIconsInfo.callMethodAs<Int>("getDeviceRes")
+                    if (deviceRes != getDeviceRes || boolean){
+                        val itemView = this.getObjectFieldAs<View>("itemView")
+                        val deviceIcon = itemView.findViewByIdNameAs<ImageView>("device_icon")
+                        deviceIcon.alpha = 1f
+                        deviceIcon.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceIconColor), PorterDuff.Mode.SRC_IN)
+
+                    }
+                }
 
             }
-        })
-
-
-        if (enabledIconColor != "null"){
-
-            XposedHelpers.findAndHookMethod(MediaPlayerViewHolder,"enableMediaController",object : XC_MethodHook(){
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    super.afterHookedMethod(param)
-                    val thisObj = param?.thisObject
-                    val itemView = XposedHelpers.getObjectField(thisObj,"itemView") as View
-                    val prev = itemView.findViewByIdName("prev") as ImageView
-                    val play = itemView.findViewByIdName("play") as ImageView
-                    val next = itemView.findViewByIdName("next") as ImageView
+            if (enabledIconColor != "null"){
+                afterHookMethod("enableMediaController"){
+                    val itemView = this.getObjectFieldAs<View>("itemView")
+                    val prev = itemView.findViewByIdNameAs<ImageView>("prev")
+                    val play = itemView.findViewByIdNameAs<ImageView>("play")
+                    val next = itemView.findViewByIdNameAs<ImageView>("next")
                     prev.colorFilter = PorterDuffColorFilter(Color.parseColor(enabledIconColor), PorterDuff.Mode.SRC_IN)
                     play.colorFilter = PorterDuffColorFilter(Color.parseColor(enabledIconColor), PorterDuff.Mode.SRC_IN)
                     next.colorFilter = PorterDuffColorFilter(Color.parseColor(enabledIconColor), PorterDuff.Mode.SRC_IN)
-
-
                 }
-            })
 
+            }
         }
-
 
     }
 
@@ -609,106 +525,79 @@ class QSControlCenterColor : Hooker() {
         val unavailableSecondaryColor = XSPUtils.getString("card_secondary_unavailable_color", "null")
 
 
-        val QSItemView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSItemView", classLoader)
-        val QSCardItemView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSCardItemView", classLoader)
+        val QSItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSItemView", classLoader)
+        val QSCardItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSCardItemView", classLoader)
 
-        XposedBridge.hookAllMethods(QSCardItemView,"updateState",object : XC_MethodHook(){
+        QSCardItemView.afterHookAllMethods(
+            "updateState"
+        ) { this as LinearLayout
 
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
+            val Companion = QSItemView.getStaticObjectField("Companion")
+            if (Companion == null) {
+                starLog.logE("QSItemView Companion is null")
+                return@afterHookAllMethods
+            }
+            val sta = this.getObjectField("state")
+            val states = Companion.callMethodAs<Boolean>("isRestrictedCompat",sta) ?: return@afterHookAllMethods
+            val state = sta.getIntField("state")
+            val title = this.findViewByIdNameAs<TextView>("title")
+            val status = this.findViewByIdNameAs<TextView>("status")
+            starLog.logD("status = $state")
 
-                if (thisObj == null) {
-                    starLog.logE("QSControlCenterColor View is null")
-                    return
+            when(state){
+
+                1->{
+                    if (disablePrimaryColor != "null") title.setTextColor(Color.parseColor(disablePrimaryColor))
+                    if (disableSecondaryColor != "null") status.setTextColor(Color.parseColor(disableSecondaryColor))
                 }
-
-                val Companion = XposedHelpers.getStaticObjectField(QSItemView,"Companion")
-
-                if (Companion == null) {
-                    starLog.logE("QSItemView Companion is null")
-                    return
+                2->{
+                    if (enablePrimaryColor != "null") title.setTextColor(Color.parseColor(enablePrimaryColor))
+                    if (enableSecondaryColor != "null") status.setTextColor(Color.parseColor(enableSecondaryColor))
                 }
-                val sta = XposedHelpers.getObjectField(thisObj,"state")
-
-                val states = XposedHelpers.callMethod(Companion,"isRestrictedCompat",sta) as Boolean
-
-                val state = XposedHelpers.getIntField(sta,"state")
-                thisObj as LinearLayout
-                val title = thisObj.findViewByIdName("title") as TextView
-
-                val status = thisObj.findViewByIdName("status") as TextView
-
-                starLog.logD("status = $state")
-
-                when(state){
-
-
-                    1->{
-                        if (disablePrimaryColor != "null") title.setTextColor(Color.parseColor(disablePrimaryColor))
-
-                        if (disableSecondaryColor != "null") status.setTextColor(Color.parseColor(disableSecondaryColor))
-
-                    }
-
-                    2->{
-
-                        if (enablePrimaryColor != "null") title.setTextColor(Color.parseColor(enablePrimaryColor))
-
-                        if (enableSecondaryColor != "null") status.setTextColor(Color.parseColor(enableSecondaryColor))
-
-                    }
-
-                    else->{
-
-                        if (states) {
-
-                            if (restrictedPrimaryColor != "null") title.setTextColor(Color.parseColor(restrictedPrimaryColor))
-
-                            if (restrictedSecondaryColor != "null") status.setTextColor(Color.parseColor(restrictedSecondaryColor))
-
-                        }else{
-
-                            if (unavailablePrimaryColor != "null") title.setTextColor(Color.parseColor(unavailablePrimaryColor))
-
-                            if (unavailableSecondaryColor != "null") status.setTextColor(Color.parseColor(unavailableSecondaryColor))
-
-                        }
-
+                else->{
+                    if (states) {
+                        if (restrictedPrimaryColor != "null") title.setTextColor(Color.parseColor(restrictedPrimaryColor))
+                        if (restrictedSecondaryColor != "null") status.setTextColor(Color.parseColor(restrictedSecondaryColor))
+                    }else{
+                        if (unavailablePrimaryColor != "null") title.setTextColor(Color.parseColor(unavailablePrimaryColor))
+                        if (unavailableSecondaryColor != "null") status.setTextColor(Color.parseColor(unavailableSecondaryColor))
                     }
 
                 }
 
             }
 
-        })
+        }
+
     }
 
     private fun startListIconColor() {
-        val QSTileItemIconView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemIconView", classLoader)
         val offColor = XSPUtils.getString("list_icon_off_color", "null")
         val onColor = XSPUtils.getString("list_icon_on_color", "null")
         val restrictedColor = XSPUtils.getString("list_icon_restricted_color", "null")
         val unavailableColor = XSPUtils.getString("list_icon_unavailable_color", "null")
-        XposedHelpers.findAndHookMethod(QSTileItemIconView,"updateResources",object : XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
 
-                if (onColor != "null"){
-                    setColorField(thisObj,"iconColor",onColor)
-                }
-                if (offColor != "null"){
-                    setColorField(thisObj,"iconColorOff",offColor)
-                }
-                if (restrictedColor != "null"){
-                    setColorField(thisObj,"iconColorRestrict",restrictedColor)
-                }
-                if (unavailableColor != "null"){
-                    setColorField(thisObj,"iconColorUnavailable",unavailableColor)
-                }
+        findClass(
+            "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
+            classLoader
+        ).afterHookMethod(
+            "updateResources"
+        ) {
+
+            if (onColor != "null"){
+                setColorField(this,"iconColor",onColor)
             }
-        })
+            if (offColor != "null"){
+                setColorField(this,"iconColorOff",offColor)
+            }
+            if (restrictedColor != "null"){
+                setColorField(this,"iconColorRestrict",restrictedColor)
+            }
+            if (unavailableColor != "null"){
+                setColorField(this,"iconColorUnavailable",unavailableColor)
+            }
+
+        }
 
     }
 
@@ -719,28 +608,24 @@ class QSControlCenterColor : Hooker() {
         val restrictedColor = XSPUtils.getString("card_icon_restricted_color", "null")
         val unavailableColor = XSPUtils.getString("card_icon_unavailable_color", "null")
 
-        val QSCardItemIconView = XposedHelpers.findClass("miui.systemui.controlcenter.qs.tileview.QSCardItemIconView", classLoader)
-        XposedHelpers.findAndHookMethod(QSCardItemIconView,"updateResources",object : XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val thisObj = param?.thisObject
-
-                if (onColor != "null"){
-                    setColorField(thisObj,"iconColor",onColor)
-                }
-                if (offColor != "null"){
-                    setColorField(thisObj,"iconColorOff",offColor)
-                }
-                if (restrictedColor != "null"){
-                    setColorField(thisObj,"iconColorRestricted",restrictedColor)
-                }
-                if (unavailableColor != "null"){
-                    setColorField(thisObj,"iconColorUnavailable",unavailableColor)
-                }
+        findClass(
+            "miui.systemui.controlcenter.qs.tileview.QSCardItemIconView",
+            classLoader
+        ).afterHookMethod("updateResources"){
+            if (onColor != "null"){
+                setColorField(this,"iconColor",onColor)
             }
-        })
+            if (offColor != "null"){
+                setColorField(this,"iconColorOff",offColor)
+            }
+            if (restrictedColor != "null"){
+                setColorField(this,"iconColorRestricted",restrictedColor)
+            }
+            if (unavailableColor != "null"){
+                setColorField(this,"iconColorUnavailable",unavailableColor)
+            }
 
-
+        }
 
     }
 

@@ -5,8 +5,6 @@ import android.view.View
 import android.view.ViewOutlineProvider
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodReplacement
-import de.robv.android.xposed.XposedHelpers
 import yunzia.utils.DensityUtil
 
 class VolumeColumnProgressRadius : Hooker() {
@@ -22,20 +20,22 @@ class VolumeColumnProgressRadius : Hooker() {
     }
 
     private fun startMethodsHook() {
-        val MiuiVolumeSeekBarProgressView = XposedHelpers.findClass("com.android.systemui.miui.volume.MiuiVolumeSeekBarProgressView",classLoader)
-
-
-        XposedHelpers.findAndHookMethod(MiuiVolumeSeekBarProgressView,"setRoundRect", Int::class.java,object :XC_MethodReplacement(){
-            override fun replaceHookedMethod(param: MethodHookParam?): Any?{
-                val mView = param?.thisObject as View
-                val height = param.args?.get(0) as Int
-                val res = mView.resources
-
+        findClass(
+            "com.android.systemui.miui.volume.MiuiVolumeSeekBarProgressView",
+            classLoader
+        ).apply {
+            replaceHookMethod(
+                "setRoundRect",
+                Int::class.java
+            ){
+                this as View
+                val height = it.args[0] as Int
+                val res = this.resources
                 val maxRadius = getDimensionPixelOffset(res,"miui_volume_bg_radius",plugin).toFloat()
-
                 val radius = DensityUtil.dpToPx(res, volumeProgressRadius)
 
-                mView.outlineProvider = object : ViewOutlineProvider(){
+                this.clipToOutline = true
+                this.outlineProvider = object : ViewOutlineProvider(){
                     override fun getOutline(view: View?, outline: Outline?) {
                         if (view == null) return
                         if (radius >= maxRadius){
@@ -50,25 +50,20 @@ class VolumeColumnProgressRadius : Hooker() {
 
                 }
 
-                mView.clipToOutline = true
 
-                return null
-
+                return@replaceHookMethod null
             }
-
-        })
-
-        XposedHelpers.findAndHookMethod(MiuiVolumeSeekBarProgressView,"setRoundRectTimerProgressHorizontal", Int::class.java,object :XC_MethodReplacement(){
-            override fun replaceHookedMethod(param: MethodHookParam?): Any?{
-                val mView = param?.thisObject as View
-                val width = param.args?.get(0) as Int
-                val res = mView.resources
-
+            replaceHookMethod(
+                "setRoundRectTimerProgressHorizontal",
+                Int::class.java
+            ){ this as View
+                val width = it.args[0] as Int
+                val res = this.resources
                 val maxRadius = getDimensionPixelOffset(res,"miui_volume_bg_radius",plugin).toFloat()
-
                 val radius = DensityUtil.dpToPx(res, volumeProgressRadius)
 
-                mView.outlineProvider = object : ViewOutlineProvider(){
+                this.clipToOutline = true
+                this.outlineProvider = object : ViewOutlineProvider(){
                     override fun getOutline(view: View?, outline: Outline?) {
                         if (view == null) return
                         if (radius >= maxRadius){
@@ -82,26 +77,19 @@ class VolumeColumnProgressRadius : Hooker() {
                     }
 
                 }
-
-                mView.clipToOutline = true
-
-                return null
-
+                return@replaceHookMethod null
             }
-
-        })
-
-        XposedHelpers.findAndHookMethod(MiuiVolumeSeekBarProgressView,"setRoundRectTimerProgressVertical", Int::class.java,object :XC_MethodReplacement(){
-            override fun replaceHookedMethod(param: MethodHookParam?): Any?{
-                val mView = param?.thisObject as View
-                val height = param.args?.get(0) as Int
-                val res = mView.resources
-
+            replaceHookMethod(
+                "setRoundRectTimerProgressVertical",
+                Int::class.java
+            ){ this as View
+                val height = it.args[0] as Int
+                val res = this.resources
                 val maxRadius = getDimensionPixelOffset(res,"miui_volume_bg_radius",plugin).toFloat()
-
                 val radius = DensityUtil.dpToPx(res, volumeProgressRadius)
 
-                mView.outlineProvider = object : ViewOutlineProvider(){
+                this.clipToOutline = true
+                this.outlineProvider = object : ViewOutlineProvider(){
                     override fun getOutline(view: View?, outline: Outline?) {
                         if (view == null) return
                         if (radius >= maxRadius){
@@ -116,12 +104,9 @@ class VolumeColumnProgressRadius : Hooker() {
 
                 }
 
-                mView.clipToOutline = true
-
-                return null
+                return@replaceHookMethod null
 
             }
-
-        })
+        }
     }
 }

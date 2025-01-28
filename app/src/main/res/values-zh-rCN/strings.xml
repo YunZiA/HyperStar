@@ -277,5 +277,6 @@
     <string name="title_hook_channel">Hook通道</string>
     <string name="setup_successful">设置成功！</string>
     <string name="enter_module">进入模块</string>
+    <string name="title_volume_top_value_show">百分比进度值显示</string>
 
 </resources>

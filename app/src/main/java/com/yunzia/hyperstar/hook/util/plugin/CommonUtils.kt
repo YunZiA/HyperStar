@@ -4,15 +4,19 @@ import android.view.View
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.XposedHelpers.findClass
 
-class CommonUtils(classLoader: ClassLoader?) {
+class CommonUtils(private val classLoader: ClassLoader?) {
 
 
     val CommonUtils = findClass("miui.systemui.util.CommonUtils",classLoader)
 
-    val INSTANCE = XposedHelpers.getStaticObjectField(CommonUtils,"INSTANCE")
+    val INSTANCE by lazy {
+        XposedHelpers.getStaticObjectField(CommonUtils,"INSTANCE")
+    }
 
 
-    val IS_TABLET = XposedHelpers.getStaticBooleanField(CommonUtils,"IS_TABLET")
+    val IS_TABLET by lazy {
+        XposedHelpers.getStaticBooleanField(CommonUtils,"IS_TABLET")
+    }
 
     fun setLayoutSizeDefault(
         view: View,

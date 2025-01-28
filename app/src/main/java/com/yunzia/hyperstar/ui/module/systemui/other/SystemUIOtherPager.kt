@@ -5,7 +5,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.SystemUIList
+import com.yunzia.hyperstar.SystemUIMoreList
 import com.yunzia.hyperstar.ui.base.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.base.XSuperSwitch
@@ -45,6 +45,17 @@ fun SystemUIOtherPager(
             )
         }
         classes(
+            title = "经典通知样式"
+        ) {
+            SuperNavHostArrow(
+                title = "图标优化白名单",
+                navController = navController,
+                route = SystemUIMoreList.NOTIFICATIONOFIM
+
+            )
+
+        }
+        classes(
             title = R.string.power_menu,
         ) {
             XSuperSwitch(
@@ -54,7 +65,7 @@ fun SystemUIOtherPager(
             SuperNavHostArrow(
                 title = stringResource(R.string.power_menu_extra),
                 navController = navController,
-                route = SystemUIList.POWERMENU
+                route = SystemUIMoreList.POWERMENU
 
             )
         }

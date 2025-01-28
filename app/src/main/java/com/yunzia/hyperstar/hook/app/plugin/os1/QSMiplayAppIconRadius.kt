@@ -8,7 +8,6 @@ import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LayoutInflated
 
@@ -30,8 +29,8 @@ class QSMiplayAppIconRadius: Hooker() {
                     val icon = root.findViewByIdName("app_icon")
                     val card = icon?.parent
                     //starLog.log("$card")
-                    XposedHelpers.callMethod(card,"setCardBackgroundColor",Color.TRANSPARENT)
-                    XposedHelpers.callMethod(card,"setRadius",0f)
+                    card.callMethod("setCardBackgroundColor",Color.TRANSPARENT)
+                    card.callMethod("setRadius",0f)
 
 
                 }
@@ -44,8 +43,8 @@ class QSMiplayAppIconRadius: Hooker() {
                         val root = liparam?.view as ViewGroup
                         val icon = root.findViewByIdName("app_icon")
                         val card = icon?.parent
-                        XposedHelpers.callMethod(card,"setCardBackgroundColor",Color.TRANSPARENT)
-                        XposedHelpers.callMethod(card,"setRadius",0f)
+                        card.callMethod("setCardBackgroundColor",Color.TRANSPARENT)
+                        card.callMethod("setRadius",0f)
 
                     }
 

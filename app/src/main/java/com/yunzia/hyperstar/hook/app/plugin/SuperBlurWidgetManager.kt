@@ -1,9 +1,8 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
+import android.content.Context
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedHelpers
 
 class SuperBlurWidgetManager : Hooker() {
 
@@ -18,25 +17,17 @@ class SuperBlurWidgetManager : Hooker() {
     }
 
     private fun startMethodsHook() {
-        val ControlCenterUtils  = XposedHelpers.findClass("miui.systemui.controlcenter.utils.ControlCenterUtils",classLoader)
-        XposedHelpers.findAndHookMethod(ControlCenterUtils, "getBackgroundBlurOpenedInDefaultTheme", Class.forName("android.content.Context") , object : XC_MethodHook() {
-            override fun beforeHookedMethod(param: MethodHookParam?) {
+        val controlCenterUtils  = findClass("miui.systemui.controlcenter.utils.ControlCenterUtils",classLoader)
+        controlCenterUtils.afterHookMethod("getBackgroundBlurOpenedInDefaultTheme",Context::class.java){
+
+            if (superBlurWidget == 1){
+                it.result = false
+
+            }else if (superBlurWidget == 2){
+                it.result = true
 
             }
-
-            override fun afterHookedMethod(param: MethodHookParam?) {
-
-                if (superBlurWidget == 1){
-                    param?.result = false
-
-                }else if (superBlurWidget == 2){
-                    param?.result = true
-
-                }
-
-            }
-
-        })
+        }
 
 
     }

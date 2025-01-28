@@ -17,8 +17,8 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.BaseAdapter
 import android.widget.FrameLayout
 import android.widget.ImageView
-import yunzia.utils.DensityUtil.Companion.dpToPx
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu.Item
+import yunzia.utils.DensityUtil.Companion.dpToPx
 
 class GridAdapter(private val context: Context, private val items: List<Item?>, private val itemClick: () -> Unit) : BaseAdapter() {
 
@@ -114,7 +114,9 @@ class GridAdapter(private val context: Context, private val items: List<Item?>, 
             Color.parseColor("#40FFFFFF")
         })
 
+
         val layout = FrameLayout(context).apply {
+            parent
             layoutParams = FrameLayout.LayoutParams(size, size).apply {
 
             }

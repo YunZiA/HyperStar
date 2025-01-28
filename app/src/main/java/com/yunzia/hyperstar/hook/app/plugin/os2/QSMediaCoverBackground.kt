@@ -9,15 +9,10 @@ import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import androidx.core.graphics.drawable.toDrawable
-import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.util.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XC_MethodReplacement
-import de.robv.android.xposed.XposedBridge
-import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import yunzia.utils.BitmapUtils
 import yunzia.utils.BitmapUtils.Companion.auto
@@ -61,102 +56,89 @@ class QSMediaCoverBackground: Hooker() {
 
     private fun startMethodsHook() {
         var foreground: Drawable? = null
-        val MediaPlayerMetaData  = XposedHelpers.findClass("miui.systemui.controlcenter.media.MediaPlayerMetaData",classLoader)
-        val MediaPlayerViewHolder  = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",classLoader)
-        val CommonUtils = XposedHelpers.findClass("miui.systemui.util.CommonUtils",classLoader)
+        val MediaPlayerMetaData  = findClass("miui.systemui.controlcenter.media.MediaPlayerMetaData",classLoader)
+        val MediaPlayerViewHolder  = findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",classLoader)
+        val CommonUtils = findClass("miui.systemui.util.CommonUtils",classLoader)
 
-        XposedHelpers.findAndHookMethod(MediaPlayerViewHolder, "updateMetaData", MediaPlayerMetaData , object : XC_MethodHook() {
-            override fun beforeHookedMethod(param: MethodHookParam?) {
+        MediaPlayerViewHolder.afterHookMethod("updateMetaData",MediaPlayerMetaData!!){
 
+            val mediaPlayerMetaData = it.args[0]
+            val itemView : View = this.getObjectFieldAs<View>("itemView")
+            val cover = itemView.findViewByIdNameAs<ImageView>("cover")
+            val res = itemView.resources
+
+            if (mediaPlayerMetaData == null) {
+                if (!defaultBackground){
+                    val background = itemView.resources.getIdentifier("media_player_background","drawable",plugin)
+                    itemView.setBackgroundResource(background)
+
+                }
+                return@afterHookMethod
             }
 
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                if (param == null) return
+            if (isHideCover){
+                if (isTitleCenter){
+                    cover.visibility = View.GONE
 
-                val mediaPlayerMetaData = param.args[0]
-                val thisObj = param.thisObject
-                val itemView : View = XposedHelpers.getObjectField(thisObj,"itemView") as View
-                val cover = itemView.findViewByIdName("cover") as ImageView
-                val res = itemView.resources
+                }else{
+                    cover.visibility = View.INVISIBLE
 
-                if (mediaPlayerMetaData == null) {
-
-                    if (!defaultBackground){
-                        val background = itemView.resources.getIdentifier("media_player_background","drawable",plugin)
-                        itemView.setBackgroundResource(background)
-
-                    }
-
-                    return
-                }
-
-                if (isHideCover){
-                    if (isTitleCenter){
-                        cover.visibility = View.GONE
-
-                    }else{
-                        cover.visibility = View.INVISIBLE
-
-                    }
-
-
-                }
-                if (defaultBackground){
-                    return
-                }
-
-
-                var art = XposedHelpers.callMethod(mediaPlayerMetaData,"getArt")
-                if (art == null){
-                    starLog.logE("art is null")
-                    return
-                }
-
-                if (art !is Bitmap){
-                    starLog.logE("mediaPlayerMetaData:art is not get!!!")
-                    XposedHelpers.callMethod(thisObj,"updateResources")
-                    return
-
-                }
-
-                art = when (mediaBackground) {
-                    1 -> {
-                        auto(art)
-                    }
-                    2 -> {
-                        BitmapUtils.doBitmap(art,isScale,scaleFactor,isBlur,blurRadius,isDim,-alpha)
-                    }
-                    else -> {
-                        return
-                    }
-                }
-
-                val artDrawable = art.toDrawable(res)
-
-                if (coverAnciently && foreground == null) {
-
-                    foreground = vintage?.let { res.getDrawable(it) }
-
-                }
-
-                itemView.background = if (coverAnciently) {
-                    val layerDrawable = LayerDrawable(arrayOf(artDrawable, foreground))
-                    layerDrawable
-                } else {
-                    artDrawable
                 }
 
 
             }
-        })
+            if (defaultBackground) return@afterHookMethod
+
+
+
+            var art = mediaPlayerMetaData.callMethod("getArt")
+            if (art == null){
+                starLog.logE("art is null")
+                return@afterHookMethod
+            }
+
+            if (art !is Bitmap){
+                starLog.logE("mediaPlayerMetaData:art is not get!!!")
+                this.callMethod("updateResources")
+                return@afterHookMethod
+
+            }
+
+            art = when (mediaBackground) {
+                1 -> {
+                    auto(art)
+                }
+                2 -> {
+                    BitmapUtils.doBitmap(art,isScale,scaleFactor,isBlur,blurRadius,isDim,-alpha)
+                }
+                else -> {
+                    return@afterHookMethod
+                }
+            }
+
+            val artDrawable = art.toDrawable(res)
+
+            if (coverAnciently && foreground == null) {
+
+                foreground = vintage?.let { res.getDrawable(it) }
+
+            }
+            itemView.background = if (coverAnciently) {
+                val layerDrawable = LayerDrawable(arrayOf(artDrawable, foreground))
+                layerDrawable
+            } else {
+                artDrawable
+            }
+
+        }
+
         if (!defaultBackground){
-            val HapticFeedback = XposedHelpers.findClass("miui.systemui.util.HapticFeedback",classLoader)
-            XposedHelpers.findAndHookConstructor(MediaPlayerViewHolder,View::class.java,HapticFeedback,object : XC_MethodHook(){
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    super.afterHookedMethod(param)
-                    val thisObj = param?.thisObject
-                    val itemView : View = XposedHelpers.getObjectField(thisObj,"itemView") as View
-                    val _cornerRadius : Float = XposedHelpers.getFloatField(thisObj,"_cornerRadius")
+            val HapticFeedback = findClass("miui.systemui.util.HapticFeedback",classLoader)
+
+            MediaPlayerViewHolder.apply {
+                afterHookConstructor(View::class.java,HapticFeedback!!){
+                    val itemView = this.getObjectFieldAs<View>("itemView")
+                    val _cornerRadius = this.getFloatField("_cornerRadius")
                     itemView.outlineProvider = object : ViewOutlineProvider(){
                         override fun getOutline(view: View?, outline: Outline?) {
                             if (view == null) return
@@ -167,38 +149,29 @@ class QSMediaCoverBackground: Hooker() {
                     itemView.clipToOutline = true
 
                 }
-            })
-            XposedHelpers.findAndHookMethod(MediaPlayerViewHolder,"updateResources",object : XC_MethodReplacement(){
-                override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-
-                    return null
-                }
-
-            })
-
-            val MediaPanelContentController = findClass("miui.systemui.controlcenter.panel.main.media.MediaPanelController",classLoader)
-
-
-            val MediaPanelParams = findClass("MediaPanelController\$MediaPanelParams",classLoader)
-
-            XposedBridge.hookAllMethods(MediaPanelContentController,"updateFromViewSize",object :XC_MethodHook(){
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    super.afterHookedMethod(param)
-                    val mediaFromView = param?.args?.get(0)
-                    val view = XposedHelpers.callMethod(mediaFromView,"getViewHolder")
+                replaceHookMethod("updateResources"){
+                    return@replaceHookMethod null
 
                 }
-            })
+            }
 
-            XposedBridge.hookAllConstructors(MediaPanelParams,object :XC_MethodHook(){
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    super.afterHookedMethod(param)
-                    val thisObj = param?.thisObject
-                    val fromView  = XposedHelpers.getObjectField(thisObj,"fromView")
-                    val fromView2  = XposedHelpers.getObjectField(thisObj,"fromView2")
+            val MediaPanelContentController = findClass("miui.systemui.controlcenter.panel.main.media.MediaPanelContentController",classLoader)
+            val MediaPanelParams = findClass("miui.systemui.controlcenter.panel.main.media.MediaPanelController\$MediaPanelParams",classLoader)
 
-                }
-            })
+            MediaPanelContentController.afterHookMethod(
+                "updateFromViewSize",
+                "miui.systemui.controlcenter.panel.main.media.MediaFromView"
+            ){
+                val mediaFromView = it.args[0]
+                val view = mediaFromView.callMethod("getViewHolder")
+            }
+
+            MediaPanelParams.afterHookAllConstructors {
+                val fromView  = this.getObjectField("fromView")
+                val fromView2  = this.getObjectField("fromView2")
+
+            }
+
 
 
         }

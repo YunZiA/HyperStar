@@ -1,19 +1,16 @@
 package com.yunzia.hyperstar.hook.app.plugin.os2
 
-import android.graphics.Color
+import android.graphics.RenderEffect
+import android.graphics.Shader
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.marginTop
-import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.util.startMarqueeOfFading
-import com.yunzia.hyperstar.hook.util.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
-import de.robv.android.xposed.XposedHelpers
 
 
 class QSMediaView : Hooker() {
@@ -32,23 +29,24 @@ class QSMediaView : Hooker() {
     private fun startMethodsHook() {
         val ReflectionHelper = findClass("miuix.reflect.ReflectionHelper",classLoader)
         val fadingEdgeLength = 40
+        val MediaPlayerViewHolder  = findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",classLoader)
+        MediaPlayerViewHolder.apply {
+            beforeHookMethod(
+                "updateSize"
+            ){
+                val itemView = this.getObjectFieldAs<View>("itemView")
 
-        val MediaPlayerViewHolder  = XposedHelpers.findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",classLoader)
-        XposedHelpers.findAndHookMethod(MediaPlayerViewHolder, "updateSize", object : XC_MethodHook() {
-            override fun beforeHookedMethod(param: MethodHookParam?) {
-                //starLog.log("updateSize is hook")
-                val thisObj = param?.thisObject
-                val itemView : View = XposedHelpers.getObjectField(thisObj,"itemView") as View
-
-                val title = itemView.findViewByIdName("title") as TextView
-                val artist = itemView.findViewByIdName("artist") as TextView
-                val emptyState = itemView.findViewByIdName("empty_state") as TextView
+                val title = itemView.findViewByIdNameAs<TextView>("title")
+                val artist = itemView.findViewByIdNameAs<TextView>("artist")
+                val emptyState = itemView.findViewByIdNameAs<TextView>("empty_state")
 //                emptyState.marginTop -
                 if (isHideCover && isTitleCenter){
-                    title.gravity = Gravity.CENTER
-                    artist.gravity = Gravity.CENTER
                     val top = title.marginTop*3
-                    title.setPadding(0, top, 0, 0)
+                    title.apply {
+                        gravity = Gravity.CENTER
+                        setPadding(0, top, 0, 0)
+                    }
+                    artist.gravity = Gravity.CENTER
                 }
                 if (isTitleMarquee){
                     title.startMarqueeOfFading(fadingEdgeLength)
@@ -64,24 +62,18 @@ class QSMediaView : Hooker() {
                 }
 
             }
-        })
-
-        val HapticFeedback = XposedHelpers.findClass("miui.systemui.util.HapticFeedback",classLoader)
-        val MiShadowUtils = findClass("miuix.core.util.MiShadowUtils",classLoader)
-
-        XposedBridge.hookAllConstructors(MediaPlayerViewHolder, object : XC_MethodHook() {
-
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val itemView = param?.args?.get(0) as View
-                val title = itemView.findViewByIdName("title") as TextView
-                val artist = itemView.findViewByIdName("artist") as TextView
-                val emptyState = itemView.findViewByIdName("empty_state") as TextView
+            afterHookAllConstructors {
+                val itemView = it.args[0] as View
+                val title = itemView.findViewByIdNameAs<TextView>("title")
+                val artist = itemView.findViewByIdNameAs<TextView>("artist")
+                val emptyState = itemView.findViewByIdNameAs<TextView>("empty_state")
                 if (isHideCover && isTitleCenter){
-                    title.gravity = Gravity.CENTER
-                    artist.gravity = Gravity.CENTER
                     val top = title.marginTop*3
-                    title.setPadding(0, top, 0, 0)
+                    title.apply {
+                        gravity = Gravity.CENTER
+                        setPadding(0, top, 0, 0)
+                    }
+                    artist.gravity = Gravity.CENTER
                 }
                 if (isTitleMarquee){
                     //setDeclaredBooleanField(title::class.java,"mHasOverlappingRendering",false)
@@ -120,54 +112,27 @@ class QSMediaView : Hooker() {
                     }
 
                 }
+
             }
-//            override fun beforeHookedMethod(param: MethodHookParam?) {
-//                super.beforeHookedMethod(param)
-//                //starLog.log("MediaPlayerViewHolder is hook")
-//
-//
-//
-//
-//
-//            }
+            beforeHookMethod(
+                "updateIconsInfo",
+                "miui.systemui.controlcenter.media.MediaPlayerIconsInfo",
+                Boolean::class.java
+            ){
+                val itemView : View = this.getObjectFieldAs<View>("itemView")
 
-        })
+                val deviceIcon = itemView.findViewByIdNameAs<ImageView>("device_icon")
 
-//        XposedHelpers.findAndHookMethod(MediaPlayerViewHolder, "updateIconsInfo",Class.forName("miui.systemui.controlcenter.media.MediaPlayerIconsInfo"), object : XC_MethodHook() {
-//            override fun beforeHookedMethod(param: MethodHookParam?) {
-//                starLog.log("updateSize is hook")
-//                val thisObj = param?.thisObject
-//                val itemView : View = XposedHelpers.getObjectField(thisObj,"itemView") as View
-//
-//                val deviceIcon = itemView.findViewByIdName("device_icon") as ImageView
-//
-//                deviceIcon.setRenderEffect(RenderEffect.createBlurEffect(50f, 50f, Shader.TileMode.CLAMP))
-//            }
-//        })
+                deviceIcon.setRenderEffect(RenderEffect.createBlurEffect(50f, 50f, Shader.TileMode.CLAMP))
+            }
+        }
 
-
+        val HapticFeedback = findClass("miui.systemui.util.HapticFeedback",classLoader)
+        val MiShadowUtils = findClass("miuix.core.util.MiShadowUtils",classLoader)
 
 
     }
 
-    fun addViewShadow(f: Float, f2: Float, i: Int, view: View?) {
-
-        try {
-            val cls = Class.forName("android.view.View")
-            val cls2: Class<*> = Float::class.java
-            cls.getMethod(
-                "setMiShadow",
-                Integer.TYPE, cls2, cls2, cls2, cls2,
-                Boolean::class.java
-            ).invoke(view, Color.argb(i, 0, 0, 0), 0.0f, f, f2, 1.0f, false)
-        } catch (unused: Exception) {
-            starLog.logE("addViewShadow setMiShadow Method not found!")
-        }
-    } //    private void doResHook(XC_InitPackageResources.InitPackageResourcesParam resparam){
-    //
-    //        resparam.res.setReplacement(resparam.packageName,"drawable","qs");
-    //
-    //    }
 
 
 }

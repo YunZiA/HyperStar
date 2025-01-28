@@ -2,7 +2,6 @@ package com.yunzia.hyperstar.hook.app.plugin
 
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
 
 class QSMediaDefaultApp : Hooker() {
 
@@ -12,25 +11,18 @@ class QSMediaDefaultApp : Hooker() {
         super.initHook(classLoader)
         if (apps != ""){
             startMethodsHook()
-
         }
     }
 
     private fun startMethodsHook() {
 
-        hookAllMethods(classLoader, "com.android.systemui.QSControlMiPlayDetailHeader\$Companion\$getLastPlayingAppPackageName\$2",
-            "invokeSuspend",
-            object : MethodHook {
-                override fun before(param: XC_MethodHook.MethodHookParam) {
+        findClass(
+            "com.android.systemui.QSControlMiPlayDetailHeader\$Companion\$getLastPlayingAppPackageName\$2",
+            classLoader
+        ).afterHookAllMethods("invokeSuspend"){
+            it.result = apps
+        }
 
-                }
-
-                override fun after(param: XC_MethodHook.MethodHookParam) {
-
-                    param.result = apps
-
-                }
-            })
     }
 
 

@@ -13,8 +13,8 @@ import com.yunzia.hyperstar.ui.base.SuperStringArrow
 import com.yunzia.hyperstar.ui.base.SwitchContentFolder
 import com.yunzia.hyperstar.ui.base.XMiuixContentDropdown
 import com.yunzia.hyperstar.ui.base.XMiuixSlider
-import com.yunzia.hyperstar.ui.base.XSuperDropdown
 import com.yunzia.hyperstar.ui.base.XMiuixSuperSliderSwitch
+import com.yunzia.hyperstar.ui.base.XSuperDropdown
 import com.yunzia.hyperstar.ui.base.XSuperSwitch
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
@@ -136,24 +136,14 @@ fun ControlCenterPager(
                 unit = "dp",
                 decimalPlaces = 1
             )
-            SwitchContentFolder(
-                switchTitle = stringResource(R.string.qs_brightness_top_value_show_title),
-                switchKey = "qs_brightness_top_value_show"
-            ) {
-                XSuperDropdown(
-                    title = stringResource(R.string.qs_brightness_top_value_title),
-                    key = "qs_brightness_top_value",
-                    option = R.array.seekbar_value_style_entire
-                )
-            }
-            SwitchContentFolder(
-                switchTitle = stringResource(R.string.qs_volume_top_value_show_title),
-                switchKey = "qs_volume_top_value_show"
-            ) {
-                XSuperDropdown(
-                    title = stringResource(R.string.qs_volume_top_value_title),
-                    key = "qs_volume_top_value",
-                    option = R.array.seekbar_value_style_entire
+            XSuperSwitch(
+                title = stringResource(R.string.qs_brightness_top_value_show_title),
+                key = "qs_brightness_top_value_show"
+            )
+            if (!isOS2Settings()){
+                XSuperSwitch(
+                    title = stringResource(R.string.qs_volume_top_value_show_title),
+                    key = "qs_volume_top_value_show"
                 )
             }
         }

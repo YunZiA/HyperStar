@@ -45,6 +45,12 @@ fun VolumePager(
                     key = "is_use_pad_volume"
                 )
             }
+            if (isOS2Settings()){
+                XSuperSwitch(
+                    title = stringResource(R.string.title_volume_top_value_show),
+                    key = "volume_top_value_show"
+                )
+            }
             XMiuixSuperSliderSwitch(
                 switchTitle = stringResource(R.string.is_change_qs_progress_radius_title),
                 switchKey = "is_change_volume_progress_radius",

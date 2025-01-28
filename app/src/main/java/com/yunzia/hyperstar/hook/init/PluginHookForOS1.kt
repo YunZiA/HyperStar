@@ -15,7 +15,7 @@ import com.yunzia.hyperstar.hook.app.plugin.os1.DeviceCenterRow
 import com.yunzia.hyperstar.hook.app.plugin.os1.PadVolume
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSClockAnim
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSControlCenterColor
-import com.yunzia.hyperstar.hook.app.plugin.os1.QSControlCenterList
+import com.yunzia.hyperstar.hook.app.plugin.QSControlCenterList
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSEditButton
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSHeaderMessage
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSHeaderView
@@ -24,7 +24,7 @@ import com.yunzia.hyperstar.hook.app.plugin.os1.QSMediaCoverBackground
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSMediaDeviceName
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSMediaView
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSMiplayAppIconRadius
-import com.yunzia.hyperstar.hook.app.plugin.os1.QSVolumeOrBrightnessValue
+import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeOrQSBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeView
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
@@ -137,7 +137,7 @@ class PluginHookForOS1() : InitHooker() {
         initSecHooker(QSMediaView())
         initSecHooker(qsControlCenterColor)
         initSecHooker(QSListView())
-        initSecHooker(QSVolumeOrBrightnessValue())
+        initSecHooker(VolumeOrQSBrightnessValue())
         initSecHooker(QSCardTileList())
         initSecHooker(QSCardTile())
         initSecHooker(QSToggleSliderRadius())

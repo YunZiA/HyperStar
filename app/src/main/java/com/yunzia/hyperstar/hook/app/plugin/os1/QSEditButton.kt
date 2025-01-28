@@ -2,8 +2,6 @@ package com.yunzia.hyperstar.hook.app.plugin.os1
 
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodReplacement.returnConstant
-import de.robv.android.xposed.XposedHelpers
 
 class QSEditButton : Hooker() {
 
@@ -19,10 +17,25 @@ class QSEditButton : Hooker() {
 
     private fun startMethodsHook() {
 
-        XposedHelpers.findAndHookMethod("miui.systemui.controlcenter.panel.main.qs.EditButtonController", classLoader, "available", Boolean::class.java, returnConstant(false));
-        XposedHelpers.findAndHookMethod("miui.systemui.controlcenter.panel.main.qs.EditButtonController", classLoader, "available", Boolean::class.java, "miui.systemui.controlcenter.panel.main.MainPanelModeController\$MainPanelMode", returnConstant(false));
+        findClass(
+            "miui.systemui.controlcenter.panel.main.qs.EditButtonController",
+            classLoader
+        ).apply {
+            replaceHookMethod(
+                "available",
+                Boolean::class.java
+            ){
+                return@replaceHookMethod false
+            }
+            replaceHookMethod(
+                "available",
+                Boolean::class.java,
+                "miui.systemui.controlcenter.panel.main.MainPanelModeController\$MainPanelMode"
+            ){
+                return@replaceHookMethod false
+            }
 
-
+        }
 
     }
 }

@@ -1,14 +1,9 @@
 package com.yunzia.hyperstar.hook.init;
 
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-
-import android.content.res.XModuleResources;
 
 import com.yunzia.hyperstar.hook.app.systemui.os1.NavigationBarBackground;
 import com.yunzia.hyperstar.hook.base.Init;
 import com.yunzia.hyperstar.hook.base.InitHooker;
-
-import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 
 @Init(packageName = "com.android.systemui")
 public class SystemUIHookForOS1 extends InitHooker {

@@ -2,8 +2,6 @@ package com.yunzia.hyperstar.hook.app.plugin.os2
 
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedHelpers
 
 class QSMediaDeviceName : Hooker() {
 
@@ -19,29 +17,17 @@ class QSMediaDeviceName : Hooker() {
     private fun startMethodsHook() {
 
         val MiPlayExtentionsKt  = findClass("com.android.systemui.MiPlayExtentionsKt",classLoader)
-        hookAllMethods(MiPlayExtentionsKt,
-            "getFullName",
-            object : MethodHook{
-                override fun before(param: XC_MethodHook.MethodHookParam) {
+        MiPlayExtentionsKt.afterHookAllMethods("getFullName"){
+            val p0Vars = it.args[0]
 
+            val isLocalSpeaker = MiPlayExtentionsKt.callStaticMethodAs<Boolean>("isLocalSpeaker",p0Vars)
+            if (isLocalSpeaker){
+                val kk = p0Vars.callMethod("k")
+                it.result = kk.callMethodAs<String>("getName")
 
-                }
+            }
 
-                override fun after(param: XC_MethodHook.MethodHookParam) {
-                    val p0Vars = param.args?.get(0)
-
-                    val isLocalSpeaker : Boolean = XposedHelpers.callStaticMethod(MiPlayExtentionsKt,"isLocalSpeaker",p0Vars) as Boolean
-                    if (isLocalSpeaker){
-                        val kk = XposedHelpers.callMethod(p0Vars,"k")
-                        val roomName = XposedHelpers.callMethod(kk,"getName")  as String
-                        param?.result = roomName
-
-                    }
-
-
-
-                }
-            })
+        }
 
     }
 }

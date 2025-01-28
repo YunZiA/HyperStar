@@ -11,8 +11,6 @@ import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.util.starLog
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
 class AddCatPaw:Hooker() {
@@ -31,33 +29,36 @@ class AddCatPaw:Hooker() {
     override fun initHook(classLoader: ClassLoader?) {
         super.initHook(classLoader)
 
-        val MiuiCollapsedStatusBarFragment  = findClass("com.android.systemui.statusbar.phone.MiuiCollapsedStatusBarFragment",classLoader)
-        XposedHelpers.findAndHookMethod(MiuiCollapsedStatusBarFragment,"onCreateView",LayoutInflater::class.java,ViewGroup::class.java,Bundle::class.java,object :XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam?) {
-                super.afterHookedMethod(param)
-                val view = param?.result as ViewGroup
-                val context = view.context
-                val clock = view.findViewByIdName("clock")
-                val phoneStatusBarLeftContainer = view.findViewByIdName("phone_status_bar_left_container") as LinearLayout
-                for (i in 0 until phoneStatusBarLeftContainer.childCount) {
-                    val child = phoneStatusBarLeftContainer.getChildAt(i)
-                    starLog.log("getChildAt $i is $child")
-                }
-                val paw = context.resources.getDrawable(catPaw)
-                val size = getDimensionPixelOffset(context.resources,"status_bar_clock_size",systemUI).toInt()
-                val icon = View(context).apply {
-                    background = paw
-                }
-                val lp = LinearLayout.LayoutParams(size,size).apply {
-                    gravity = Gravity.CENTER_VERTICAL
+        val miuiCollapsedStatusBarFragment  = findClass("com.android.systemui.statusbar.phone.MiuiCollapsedStatusBarFragment",classLoader)
 
-                }
-                phoneStatusBarLeftContainer.addView(icon,0,lp)
-                starLog.log("$clock")
-                starLog.log("${phoneStatusBarLeftContainer.childCount}")
+        miuiCollapsedStatusBarFragment.afterHookMethod(
+            "onCreateView",
+            LayoutInflater::class.java,
+            ViewGroup::class.java,
+            Bundle::class.java
+        ){
+            val view = it.result as ViewGroup
+            val context = view.context
+            val clock = view.findViewByIdName("clock")
+            val phoneStatusBarLeftContainer = view.findViewByIdName("phone_status_bar_left_container") as LinearLayout
+            for (i in 0 until phoneStatusBarLeftContainer.childCount) {
+                val child = phoneStatusBarLeftContainer.getChildAt(i)
+                starLog.log("getChildAt $i is $child")
+            }
+            val paw = context.resources.getDrawable(catPaw)
+            val size = getDimensionPixelOffset(context.resources,"status_bar_clock_size",systemUI).toInt()
+            val icon = View(context).apply {
+                background = paw
+            }
+            val lp = LinearLayout.LayoutParams(size,size).apply {
+                gravity = Gravity.CENTER_VERTICAL
 
             }
-        })
+            phoneStatusBarLeftContainer.addView(icon,0,lp)
+            starLog.logD("$clock")
+            starLog.logD("${phoneStatusBarLeftContainer.childCount}")
+
+        }
 
     }
 

@@ -19,9 +19,6 @@ import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XC_MethodReplacement
-import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LayoutInflated
 import kotlin.math.roundToInt
@@ -36,76 +33,50 @@ class PadVolume : Hooker() {
             return
         }
 
-        val MiuiVolumeTimerDrawableHelper = XposedHelpers.findClass(
+        findClass(
             "com.android.systemui.miui.volume.MiuiVolumeTimerDrawableHelper",
             classLoader
-        )
+        ).beforeHookMethod(
+            "updateDrawables"
+        ){
+            this.setObjectField( "mIsVerticalSeekBar", false)
+        }
 
-        XposedHelpers.findAndHookMethod(
-            MiuiVolumeTimerDrawableHelper,
-            "updateDrawables",
-            object : XC_MethodHook() {
-                override fun beforeHookedMethod(param: MethodHookParam?) {
-                    super.beforeHookedMethod(param)
-                    val thisObject = param?.thisObject
-                    XposedHelpers.setObjectField(thisObject, "mIsVerticalSeekBar", false)
-                }
-            })
-
-        val MiuiVerticalVolumeTimerSeekBar = XposedHelpers.findClass(
+        findClass(
             "com.android.systemui.miui.volume.MiuiVerticalVolumeTimerSeekBar",
             classLoader
-        )
+        ).apply {
+            afterHookConstructor(
+                Context::class.java,
+                AttributeSet::class.java,
+                Int::class.java,
+            ){
+                this.callMethod( "setLayoutDirection", 0)
+                val mInjector = this.getObjectField( "mInjector")
+                mInjector.callMethod("setVertical", true)
 
+            }
+            replaceHookMethod(
+                "transformTouchEvent",
+                MotionEvent::class.java
+            ){
+                return@replaceHookMethod null
+            }
+            replaceHookMethod(
+                "onDraw",
+                Canvas::class.java
+            ){
+                val canvas = it.args[0] as Canvas
+                val progressDrawable: Drawable = (
+                        this.callMethod( "getProgressDrawable") ?: return@replaceHookMethod null
+                        ) as Drawable
+                canvas.save()
+                progressDrawable.draw(canvas)
+                canvas.restore()
+                return@replaceHookMethod null
+            }
+        }
 
-        XposedHelpers.findAndHookConstructor(
-            MiuiVerticalVolumeTimerSeekBar,
-            Context::class.java,
-            AttributeSet::class.java,
-            Int::class.java,
-            object : XC_MethodHook() {
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    super.afterHookedMethod(param)
-                    val thisObject = param?.thisObject
-                    XposedHelpers.callMethod(thisObject, "setLayoutDirection", 0)
-                    val mInjector = XposedHelpers.getObjectField(thisObject, "mInjector")
-                    XposedHelpers.callMethod(mInjector, "setVertical", true)
-
-
-                }
-            })
-
-        XposedHelpers.findAndHookMethod(
-            MiuiVerticalVolumeTimerSeekBar,
-            "transformTouchEvent",
-            MotionEvent::class.java,
-            object : XC_MethodReplacement() {
-                override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-                    //starLog.log("transformTouchEvent is replace")
-                    return null
-                }
-
-            })
-
-        XposedHelpers.findAndHookMethod(
-            MiuiVerticalVolumeTimerSeekBar,
-            "onDraw",
-            Canvas::class.java,
-            object : XC_MethodReplacement() {
-                override fun replaceHookedMethod(param: MethodHookParam?) {
-                    val thisObject = param?.thisObject
-                    val canvas = param?.args?.get(0) as Canvas
-
-                    val progressDrawable: Drawable =
-                        (XposedHelpers.callMethod(thisObject, "getProgressDrawable") ?: return) as Drawable
-                    canvas.save()
-
-                    progressDrawable.draw(canvas)
-                    canvas.restore()
-                    return
-                }
-
-            })
 
     }
 
@@ -597,13 +568,12 @@ class PadVolume : Hooker() {
 
     }
 
+    private fun dpToPx(resources: Resources, dp: Float): Int {
+        // 获取屏幕的密度
+        val density = resources.displayMetrics.density
+
+        // 转换 dp 到 px
+        return (dp * density).roundToInt()
+    }
 }
 
-
-private fun dpToPx(resources: Resources, dp: Float): Int {
-    // 获取屏幕的密度
-    val density = resources.displayMetrics.density
-
-    // 转换 dp 到 px
-    return (dp * density).roundToInt()
-}

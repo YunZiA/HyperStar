@@ -66,6 +66,7 @@ import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.MediaSettings
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.app.MediaAppSettingsPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.slider.ToggleSliderColorsPager
 import com.yunzia.hyperstar.ui.module.systemui.other.SystemUIOtherPager
+import com.yunzia.hyperstar.ui.module.systemui.other.notification.NotificationAppDetail
 import com.yunzia.hyperstar.ui.module.systemui.other.notification.NotificationOfIm
 import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.PowerMenuStylePager
 import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.SelectFunPager
@@ -218,6 +219,7 @@ fun NavGraphBuilder.pagerContent(
     parentRoute: MutableState<String>
 
 ){
+
     composable(SystemUIList.CONTROL_CENTER) { ControlCenterPager(navController,parentRoute) }
 
     composable(ControlCenterList.COLOR_EDIT) { ControlCenterColorPager(navController,parentRoute) }
@@ -263,9 +265,12 @@ fun NavGraphBuilder.pagerContent(
 
     composable(SystemUIMoreList.POWERMENU){ PowerMenuStylePager(navController,parentRoute) }
 
+
     composable(SystemUIMoreList.NOTIFICATIONOFIM){
         NotificationOfIm(navController,parentRoute)
     }
+
+    composable(SystemUIMoreList.NOTIFICATION_APP_DETAIL) { NotificationAppDetail(navController,parentRoute) }
 
     composable(
         FunList.SELECT_LIST+"?{pagersJson}",

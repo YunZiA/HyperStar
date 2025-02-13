@@ -30,12 +30,12 @@ class VolumeColumnProgressRadius : Hooker() {
             ){
                 this as View
                 val height = it.args[0] as Int
-                val res = this.resources
+                val res = resources
                 val maxRadius = getDimensionPixelOffset(res,"miui_volume_bg_radius",plugin).toFloat()
                 val radius = DensityUtil.dpToPx(res, volumeProgressRadius)
 
-                this.clipToOutline = true
-                this.outlineProvider = object : ViewOutlineProvider(){
+                clipToOutline = true
+                outlineProvider = object : ViewOutlineProvider(){
                     override fun getOutline(view: View?, outline: Outline?) {
                         if (view == null) return
                         if (radius >= maxRadius){
@@ -58,12 +58,12 @@ class VolumeColumnProgressRadius : Hooker() {
                 Int::class.java
             ){ this as View
                 val width = it.args[0] as Int
-                val res = this.resources
+                val res = resources
                 val maxRadius = getDimensionPixelOffset(res,"miui_volume_bg_radius",plugin).toFloat()
                 val radius = DensityUtil.dpToPx(res, volumeProgressRadius)
 
-                this.clipToOutline = true
-                this.outlineProvider = object : ViewOutlineProvider(){
+                clipToOutline = true
+                outlineProvider = object : ViewOutlineProvider(){
                     override fun getOutline(view: View?, outline: Outline?) {
                         if (view == null) return
                         if (radius >= maxRadius){
@@ -84,12 +84,12 @@ class VolumeColumnProgressRadius : Hooker() {
                 Int::class.java
             ){ this as View
                 val height = it.args[0] as Int
-                val res = this.resources
+                val res = resources
                 val maxRadius = getDimensionPixelOffset(res,"miui_volume_bg_radius",plugin).toFloat()
                 val radius = DensityUtil.dpToPx(res, volumeProgressRadius)
 
-                this.clipToOutline = true
-                this.outlineProvider = object : ViewOutlineProvider(){
+                clipToOutline = true
+                outlineProvider = object : ViewOutlineProvider(){
                     override fun getOutline(view: View?, outline: Outline?) {
                         if (view == null) return
                         if (radius >= maxRadius){

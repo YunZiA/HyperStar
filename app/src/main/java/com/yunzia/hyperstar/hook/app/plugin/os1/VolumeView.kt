@@ -163,7 +163,6 @@ class VolumeView: Hooker() {
                 val mContext = this.getObjectField("mContext") as Context
                 val res = mContext.theme.resources
                 var miuiVolumeOffsetTopCollapsed = getDimensionPixelSize(res,"miui_volume_offset_top_collapsed",plugin)
-
                 if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
                     if (VolumeOffsetTopCollapsedP != -1f) {
                         miuiVolumeOffsetTopCollapsed = dpToPx(res,VolumeOffsetTopCollapsedP).toInt()
@@ -173,6 +172,7 @@ class VolumeView: Hooker() {
                         miuiVolumeOffsetTopCollapsed = dpToPx(res,VolumeOffsetTopCollapsedL).toInt()
                     }
                 }
+
                 val miuiVolumeFooterMarginTop = getDimensionPixelSize(res,"miui_volume_footer_margin_top",plugin)
                 val miuiVolumeSilenceButtonHeight = getDimensionPixelSize(res,"miui_volume_silence_button_height",plugin)
                 var miuiVolumeColumnHeight = getDimensionPixelSize(res,"miui_volume_column_height",plugin)
@@ -244,8 +244,7 @@ class VolumeView: Hooker() {
                     height = dpToPx(res, VolumeHeightCollapsedL).toInt()
                 }
                 if (height % 2 == 1) {
-                    height++
-                    marginLayoutParams.height = height
+                    marginLayoutParams.height = ++height
                 } else {
                     marginLayoutParams.height = height
 

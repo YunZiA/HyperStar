@@ -41,6 +41,8 @@ object SystemUIMoreList {
     const val POWERMENU = "${SystemUIList.MORE}/powermenu"
 
     const val NOTIFICATIONOFIM = "${SystemUIList.MORE}/notificationofim"
+
+    const val NOTIFICATION_APP_DETAIL = "$NOTIFICATIONOFIM/notificationoappdetail"
 }
 
 

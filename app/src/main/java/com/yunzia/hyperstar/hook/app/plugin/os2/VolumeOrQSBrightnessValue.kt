@@ -32,6 +32,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
 
     override fun initHook(classLoader: ClassLoader?) {
         super.initHook(classLoader)
+        if (!brightnessShow && !volumeShow) return
         startMethodsHook()
 
     }
@@ -267,11 +268,6 @@ class VolumeOrQSBrightnessValue : Hooker() {
 
         }
 
-        if (!brightnessShow && !volumeShow){
-            return
-        }
-
-
         var colorArray : IntArray? = null
 
         findClass(
@@ -287,11 +283,9 @@ class VolumeOrQSBrightnessValue : Hooker() {
 
             if (!controlCenterUtils.getBackgroundBlurOpenedInDefaultTheme(context)){
                 val color = item.resources.getColorBy("toggle_slider_top_text_color",plugin)
-
                 topValue.setTextColor(color)
                 miBlurCompat.setMiViewBlurModeCompat(topValue,0)
                 miBlurCompat.clearMiBackgroundBlendColorCompat(topValue)
-
                 return@afterHookMethod
             }
             //Color.WHITE Color.parseColor("#959595")
@@ -301,8 +295,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
                 colorArray = item.resources.getIntArrayBy("toggle_slider_icon_blend_colors",plugin)
             }
 
-
-            val iconColorArray : IntArray = colorArray as IntArray
+            val iconColorArray = colorArray as IntArray
             if (mainIconBlendColor != "null"){
                 iconColorArray[0] = Color.parseColor(mainIconBlendColor)
             }
@@ -311,7 +304,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
             }
 
             miBlurCompat.setMiBackgroundBlendColors(icon,iconColorArray,1f)
-            val valueColorArray : IntArray = colorArray as IntArray
+            val valueColorArray = colorArray as IntArray
             if (mainValueBlendColor != "null"){
                 valueColorArray[0] = Color.parseColor(mainValueBlendColor)
             }

@@ -26,5 +26,23 @@
 #保持反射不被混淆
 -keepattributes EnclosingMethod
 
+
+#-keep class * extends com.yunzia.hyperstar.hook.base.HookerHelper
+#
+#-keep class com.yunzia.hyperstar.hook.util.**{*;}
+#-keep class com.yunzia.hyperstar.utils.Helper
+#-keep class com.yunzia.hyperstar.InitHook
+#-keep class com.yunzia.hyperstar.ui.**{*;}
+#
+#
+## 这指定了继承Serizalizable的类的如下成员不被移除混淆
+#-keepclassmembers class * implements java.io.Serializable {
+#    static final long serialVersionUID;
+#    private static final java.io.ObjectStreamField[] serialPersistentFields;
+#    private void writeObject(java.io.ObjectOutputStream);
+#    private void readObject(java.io.ObjectInputStream);
+#    java.lang.Object writeReplace();
+#    java.lang.Object readResolve();
+#}
 -keep class com.yunzia.hyperstar.** { *; }
 

@@ -34,11 +34,12 @@ abstract class HookerHelper {
         return this.getIntArray(id)
     }
 
-    fun XC_MethodHook.MethodHookParam.callSuperMethod(): Any? {
+    fun MethodHookParam.callSuperMethod(): Any? {
         val thisObj = this.thisObject
         val parameterTypes = this.args.map { it?.javaClass }.toTypedArray()
         val superClass = this.thisObject.javaClass.superclass
         val superMethod: Method = XposedHelpers.findMethodBestMatch(superClass,this.method.name,*parameterTypes)
+        //MethodHandles.privateLookupIn(superClass,MethodHandles.lookup()).findSpecial(superClass,this.method.name,*parameterTypes,this.javaClass)
         val methodHandle = MethodHandles.lookup().unreflectSpecial(superMethod, thisObj.javaClass)
         return methodHandle.invokeWithArguments(thisObj, *this.args)
     }
@@ -66,7 +67,7 @@ abstract class HookerHelper {
         return XposedHelpers.callMethod(this, methodName,*args)
     }
 
-    fun <T> Any?.callMethodAs(methodName: String, vararg args: Any?): T? {
+    fun <T> Any?.callMethodAs(methodName: String, vararg args: Any?): T {
         return this.callMethod( methodName, *args) as T
     }
 
@@ -94,17 +95,45 @@ abstract class HookerHelper {
         return XposedHelpers.findMethodExactIfExists(this,methodName,*parameterTypes)
     }
 
+    fun Class<*>?.method(
+        methodName: String,
+        vararg parameterTypes: Any?
+    ){
+        require(
+            !(parameterTypes.isEmpty() || parameterTypes[parameterTypes.size - 1] !is XC_MethodHook)
+        ) { "no callback defined" }
+
+        val callback = parameterTypes[parameterTypes.size - 1] as XC_MethodHook
+        val m = XposedHelpers.findMethodExact(
+            this,
+            methodName,
+            XposedHelpers.getParameterTypes(this?.getClassLoader(), *parameterTypes)
+        )
+
+
+    }
+
     fun Class<*>?.afterHookMethod(
         methodName: String,
         vararg parameterTypes: Any?,
-        methodHook: Any.(param:MethodHookParam) -> Unit,
+        methodHook: Any?.(param:MethodHookParam) -> Unit,
     ){
         XposedHelpers.findAndHookMethod(this,methodName, *parameterTypes, object :XC_MethodHook(){
             override fun afterHookedMethod(param: MethodHookParam) {
-                param.thisObject.methodHook(param)
+                param.thisObject?.methodHook(param)
             }
         })
 
+    }
+
+    fun Method.replaceHookMethod(
+        methodHook: Any?.(param:MethodHookParam) -> Any?,
+    ){
+        XposedBridge.hookMethod(this, object : XC_MethodReplacement() {
+            override fun replaceHookedMethod(param: MethodHookParam): Any? {
+                return param.thisObject.methodHook(param)
+            }
+        })
     }
 
 
@@ -301,6 +330,16 @@ abstract class HookerHelper {
             }
         })
     }
+
+//    private fun getParameterClasses(
+//        classLoader: ClassLoader,
+//        parameterTypesAndCallback: Array<Any>
+//    ): Array<Class<*>> {
+//        var parameterClasses: Array<Class<*>>? = null
+//        val parameterTypes = parameterTypesAndCallback.map { it.javaClass }.toTypedArray()
+//
+//        return parameterTypes
+//    }
 
 
     interface MethodHook {

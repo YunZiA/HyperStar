@@ -1,11 +1,8 @@
 package com.yunzia.hyperstar.hook.app.plugin.os2
 
-import android.graphics.RenderEffect
-import android.graphics.Shader
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.marginTop
 import com.yunzia.hyperstar.hook.base.Hooker
@@ -114,17 +111,17 @@ class QSMediaView : Hooker() {
                 }
 
             }
-            beforeHookMethod(
-                "updateIconsInfo",
-                "miui.systemui.controlcenter.media.MediaPlayerIconsInfo",
-                Boolean::class.java
-            ){
-                val itemView : View = this.getObjectFieldAs<View>("itemView")
-
-                val deviceIcon = itemView.findViewByIdNameAs<ImageView>("device_icon")
-
-                deviceIcon.setRenderEffect(RenderEffect.createBlurEffect(50f, 50f, Shader.TileMode.CLAMP))
-            }
+//            beforeHookMethod(
+//                "updateIconsInfo",
+//                "miui.systemui.controlcenter.media.MediaPlayerIconsInfo",
+//                Boolean::class.java
+//            ){
+//                val itemView : View = this.getObjectFieldAs<View>("itemView")
+//
+//                val deviceIcon = itemView.findViewByIdNameAs<ImageView>("device_icon")
+//
+//                deviceIcon.setRenderEffect(RenderEffect.createBlurEffect(50f, 50f, Shader.TileMode.CLAMP))
+//            }
         }
 
         val HapticFeedback = findClass("miui.systemui.util.HapticFeedback",classLoader)

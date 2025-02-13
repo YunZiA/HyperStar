@@ -47,15 +47,15 @@ import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.FractionalThreshold
 import androidx.wear.compose.material.rememberSwipeableState
 import androidx.wear.compose.material.swipeable
-import yunzia.colorpicker.ColorPickerDialog
-import yunzia.colorpicker.colorFromHex
-import yunzia.colorpicker.toHex
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
 import com.yunzia.hyperstar.utils.SPUtils
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
+import yunzia.colorpicker.ColorPickerDialog
+import yunzia.colorpicker.colorFromHex
+import yunzia.colorpicker.toHex
 import kotlin.math.roundToInt
 
 fun getDefaultColor(
@@ -197,7 +197,7 @@ fun ColorPickerTool(
                         swappableState.animateTo(Status.CLOSE)
                     }
                     color.value = dfColor
-                    SPUtils.setString(key,"nul l")
+                    SPUtils.setString(key,"null")
                 }
             )
             Spacer(modifier = Modifier.width(6.dp))

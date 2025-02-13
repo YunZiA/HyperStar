@@ -15,14 +15,10 @@ class QSMiplayAppIconRadius: Hooker() {
         resparam: XC_InitPackageResources.InitPackageResourcesParam?,
         modRes: XModuleResources?
     ) {
-
         if (disableAppIconRadius) {
-
             resparam?.res?.setReplacement(plugin,"dimen","miplay_detail_header_app_icon_radius",modRes?.fwd(R.dimen.no))
         }
-
         if (qsDetailProgressBgRadius){
-
             resparam?.res?.setReplacement(plugin,"dimen","miplay_seekbar_progress_bg_corner_radiu", modRes?.fwd(R.dimen.miplay_seekbar_progress_bg_corner_radiu))
         }
     }

@@ -415,6 +415,7 @@ class QSControlCenterColor : Hooker() {
                 if (deviceIconColor != "null"){
                     val deviceIcon = itemView.findViewByIdNameAs<ImageView>("device_icon")
                     deviceIcon.alpha = 1f
+                    starLog.logE("$deviceIconColor")
                     deviceIcon.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceIconColor), PorterDuff.Mode.SRC_IN)
 
                 }
@@ -432,7 +433,6 @@ class QSControlCenterColor : Hooker() {
                 }
 
                 if (emptyStateColor != "null"){
-
                     val emptyState = itemView.findViewByIdNameAs<TextView>("empty_state")
                     emptyState.setTextColor(Color.parseColor(emptyStateColor))
                 }
@@ -455,7 +455,7 @@ class QSControlCenterColor : Hooker() {
 
                     }
 
-                    if (enabledIconColor != "null"){
+                    if (emptyStateColor != "null"){
 
                         val emptyState = itemView.findViewByIdNameAs<TextView>("empty_state")
                         emptyState.setTextColor(Color.parseColor(emptyStateColor))

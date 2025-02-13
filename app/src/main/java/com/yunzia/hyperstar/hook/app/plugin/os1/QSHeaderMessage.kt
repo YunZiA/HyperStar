@@ -34,11 +34,11 @@ class QSHeaderMessage : Hooker() {
                     CharSequence::class.java
                 ){
                     val message = it.args[0]
-                    val headerMsgController = this.getObjectField("headerMsgController")
+                    val headerMsgController = getObjectField("headerMsgController")
                     headerMsgController.callMethod("changeMsg",message)
-                    this.callMethod("changeTarget",headerMsgController,true)
-                    val uiHandler = this.getObjectField("uiHandler") as Handler
-                    val hideMsgCallback = this.getObjectField("hideMsgCallback") as Runnable
+                    callMethod("changeTarget",headerMsgController,true)
+                    val uiHandler = getObjectField("uiHandler") as Handler
+                    val hideMsgCallback = getObjectField("hideMsgCallback") as Runnable
                     uiHandler.postDelayed(hideMsgCallback,showMessageMillis.toLong())
 
                     return@replaceHookMethod null

@@ -20,6 +20,7 @@ import com.yunzia.hyperstar.ui.base.modifier.showBlur
 import com.yunzia.hyperstar.ui.base.nav.backParentPager
 import dev.chrisbanes.haze.HazeState
 import top.yukonga.miuix.kmp.basic.LazyColumn
+import top.yukonga.miuix.kmp.basic.MiuixFabPosition
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
@@ -129,6 +130,9 @@ fun ModuleNavPager(
     activityTitle: String,
     navController: NavController,
     parentRoute: MutableState<String>,
+    floatingActionButton: @Composable () -> Unit = {},
+    floatingPagerButton: @Composable () -> Unit = {},
+    floatingActionButtonPosition: MiuixFabPosition = MiuixFabPosition.End,
     startClick: () -> Unit = {
         navController.backParentPager(parentRoute.value)
     },
@@ -144,6 +148,9 @@ fun ModuleNavPager(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black),
+        floatingActionButton = floatingActionButton,
+        floatingActionButtonPosition = floatingActionButtonPosition,
+        floatingPagerButton = floatingPagerButton,
         popupHost = { },
         topBar = {
             ModuleNavTopAppBar(

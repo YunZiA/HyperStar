@@ -1,8 +1,10 @@
 package com.yunzia.hyperstar.hook.init
 
+import android.content.Context
 import android.content.ContextWrapper
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTile
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTileList
+import com.yunzia.hyperstar.hook.app.plugin.QSControlCenterList
 import com.yunzia.hyperstar.hook.app.plugin.QSEditText
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaDefaultApp
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaNoPlayTitle
@@ -10,7 +12,6 @@ import com.yunzia.hyperstar.hook.app.plugin.QSMiplayDetailVolumeBar
 import com.yunzia.hyperstar.hook.app.plugin.QSToggleSliderRadius
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurWidgetManager
-import com.yunzia.hyperstar.hook.app.plugin.QSControlCenterList
 import com.yunzia.hyperstar.hook.app.plugin.os2.DeviceCenterRow
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSControlCenterColor
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSEditButton
@@ -21,8 +22,8 @@ import com.yunzia.hyperstar.hook.app.plugin.os2.QSMediaCoverBackground
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMediaDeviceName
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMediaView
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMiplayAppIconRadius
-import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeOrQSBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeColumnProgressRadius
+import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeOrQSBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeView
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
 import com.yunzia.hyperstar.hook.base.InitHooker
@@ -37,32 +38,8 @@ class PluginHookForOS2 : InitHooker() {
     private val deviceCenterRow = DeviceCenterRow()
 
     override fun initHook() {
-        startSystemUIPluginHook()
-    }
 
-
-    override fun initResources() {
-
-        if (resparam!!.packageName != plugin) return
-
-        initResource(qsControlCenterColor)
-        initResource(powerMenu)
-        initResource(QSMiplayAppIconRadius())
-        initResource(qsMediaCoverBackground)
-        initResource(deviceCenterRow)
-        initResource(QSMediaNoPlayTitle())
-        initResource(QSEditText())
-        initResource(VolumeOrQSBrightnessValue())
-
-
-
-    }
-
-
-    var isHooked : Boolean = false;
-
-    private fun startSystemUIPluginHook(){
-
+        var isHooked = false
         val pluginInstancePluginFactory = findClass("com.android.systemui.shared.plugins.PluginInstance\$PluginFactory",classLoader)
 
         pluginInstancePluginFactory.afterHookMethod("createPluginContext"){
@@ -84,8 +61,26 @@ class PluginHookForOS2 : InitHooker() {
             }
 
         }
+    }
+
+
+    override fun initResources() {
+
+        if (resparam.packageName != plugin) return
+
+        initResource(qsControlCenterColor)
+        initResource(powerMenu)
+        initResource(QSMiplayAppIconRadius())
+        initResource(qsMediaCoverBackground)
+        initResource(deviceCenterRow)
+        initResource(QSMediaNoPlayTitle())
+        initResource(QSEditText())
+        initResource(VolumeOrQSBrightnessValue())
+
+
 
     }
+
 
 
     override fun initSecHook(secClassLoader: ClassLoader?) {
@@ -111,6 +106,39 @@ class PluginHookForOS2 : InitHooker() {
         initSecHooker(VolumeView())
         initSecHooker(deviceCenterRow)
         initSecHooker(QSMiplayDetailVolumeBar())
+
+
+    }
+
+    fun flipCard(){
+        findClass(
+            "miui.systemui.util.CommonUtils",
+            secClassLoader
+        ).apply {
+            replaceHookMethod(
+                "isFlipDevice"
+            ){
+                return@replaceHookMethod true
+            }
+            replaceHookMethod(
+                "isTinyScreen",
+                Context::class.java
+            ){
+                return@replaceHookMethod true
+            }
+        }
+
+        //折叠屏卡片
+        findClass(
+            "miui.systemui.controlcenter.panel.main.qs.CompactQSCardController",
+            secClassLoader
+        ).apply {
+            replaceHookMethod(
+                "onCreate",
+            ) {
+                return@replaceHookMethod null
+            }
+        }
     }
 
 

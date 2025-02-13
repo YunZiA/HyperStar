@@ -5,9 +5,7 @@ import com.yunzia.hyperstar.utils.XSPUtils
 
 class RemoveNoBlurDevice : Hooker() {
 
-
     val isUnlock = XSPUtils.getBoolean("is_unlock_home_blur",false)
-
 
     override fun initHook(classLoader: ClassLoader?) {
         super.initHook(classLoader)

@@ -255,3 +255,110 @@ fun MTextField(
         }
     )
 }
+
+@Composable
+fun MTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    insideMargin: DpSize = DpSize(18.5.dp, 18.5.dp),
+    backgroundColor: Color = colorScheme.secondaryContainer,
+    cornerRadius: Dp = 8.dp,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    label: String = "",
+    labelColor: Color = colorScheme.onSecondaryContainer,
+    textStyle: TextStyle = MiuixTheme.textStyles.main,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    singleLine: Boolean = false,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+    minLines: Int = 1,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    onTextLayout: (TextLayoutResult) -> Unit = {},
+    interactionSource: MutableInteractionSource? = null
+) {
+    @Suppress("NAME_SHADOWING")
+    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
+    val paddingModifier = remember(insideMargin, leadingIcon, trailingIcon) {
+        if (leadingIcon == null && trailingIcon == null) Modifier.padding(insideMargin.width, vertical = insideMargin.height)
+        else if (leadingIcon == null) Modifier.padding(start = insideMargin.width).padding(vertical = insideMargin.height)
+        else if (trailingIcon == null) Modifier.padding(end = insideMargin.width).padding(vertical = insideMargin.height)
+        else Modifier.padding(vertical = insideMargin.height)
+    }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+    val borderWidth by animateDpAsState(if (isFocused) 3.dp else 0.dp)
+    val bgColor by animateColorAsState(if (isFocused) colorScheme.secondaryContainer else backgroundColor)
+    val border = Modifier.border(borderWidth, backgroundColor, SmoothRoundedCornerShape(cornerRadius,0.8f))
+
+    val labelOffsetY by animateDpAsState(if (value.isNotEmpty()) -(insideMargin.height / 2) else 0.dp)
+    val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
+    val labelFontSize by animateDpAsState(if (value.isNotEmpty()) 10.dp else 16.dp)
+
+    val labelOffset = if (label != "") Modifier.offset(y = labelOffsetY) else Modifier
+    val innerTextOffset = if (label != "") Modifier.offset(y = innerTextOffsetY) else Modifier
+
+    BasicTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        enabled = enabled,
+        readOnly = readOnly,
+        textStyle = textStyle,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+        singleLine = singleLine,
+        maxLines = maxLines,
+        minLines = minLines,
+        visualTransformation = visualTransformation,
+        onTextLayout = onTextLayout,
+        interactionSource = interactionSource,
+        cursorBrush = SolidColor(colorScheme.primary),
+        decorationBox = { innerTextField ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = bgColor,
+                        shape = SmoothRoundedCornerShape(cornerRadius,0.8f)
+                        //SquircleShape(cornerRadius, cornerSmoothing = CornerSmoothing.High)
+                    )
+                    .then(border)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (leadingIcon != null) {
+                        leadingIcon()
+                    }
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .then(paddingModifier)
+                    ) {
+                        Text(
+                            text = label,
+                            textAlign = TextAlign.Start,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = labelFontSize.value.sp,
+                            modifier = Modifier.then(labelOffset),
+                            color = labelColor
+                        )
+                        Box(
+                            modifier = Modifier.then(innerTextOffset),
+                            contentAlignment = Alignment.BottomStart
+                        ) {
+                            innerTextField()
+                        }
+                    }
+                    if (trailingIcon != null) {
+                        trailingIcon()
+                    }
+                }
+            }
+        }
+    )
+}

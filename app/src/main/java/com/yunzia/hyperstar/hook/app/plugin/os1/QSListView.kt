@@ -356,7 +356,7 @@ class QSListView : Hooker() {
             if (isQSListTileRadius){
 
                 replaceHookMethod("getCornerRadius"){
-                    val pluginContext = this.getObjectFieldAs<Context>( "pluginContext")
+                    val pluginContext = getObjectFieldAs<Context>( "pluginContext")
                     return@replaceHookMethod dpToPx(pluginContext.resources,qsListTileRadius)
 
                 }

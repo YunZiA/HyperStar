@@ -65,6 +65,7 @@
     <dimen name="focus_logo_width">199dp</dimen>
     <dimen name="focus_logo_height">30dp</dimen>
     <dimen name="focus_height">90dp</dimen>
+    <dimen name="notification_title_text_size">20.dp</dimen>
 
 
 </resources>

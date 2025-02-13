@@ -8,6 +8,7 @@ import com.yunzia.hyperstar.hook.app.systemui.os2.AddCatPaw;
 import com.yunzia.hyperstar.hook.app.systemui.os2.NavigationBarBackground;
 import com.yunzia.hyperstar.hook.app.systemui.os2.NotificationForLm;
 import com.yunzia.hyperstar.hook.app.systemui.os2.QSHeaderView;
+import com.yunzia.hyperstar.hook.app.systemui.os2.Test;
 import com.yunzia.hyperstar.hook.base.Init;
 import com.yunzia.hyperstar.hook.base.InitHooker;
 
@@ -17,6 +18,7 @@ public class SystemUIHookForOS2 extends InitHooker {
     private final PluginHookForOS2 pluginHookForOS2 = new PluginHookForOS2();
     private final QSHeaderView qsHeaderView = new QSHeaderView();
     private final AddCatPaw addCatPaw = new AddCatPaw();
+    private final Test test = new Test();
 
     @Override
     public void initResources() {
@@ -25,6 +27,7 @@ public class SystemUIHookForOS2 extends InitHooker {
             return;
         }
         initResource(qsHeaderView);
+        initResource(test);
         //initResource(addCatPaw);
 
     }
@@ -35,14 +38,18 @@ public class SystemUIHookForOS2 extends InitHooker {
         initHooker(new NotificationForLm());
         initHooker(qsHeaderView);
         initHooker(pluginHookForOS2);
+        initHooker(test);
 
         //initHooker(addCatPaw);
-
-        //doTestHook();
+//
+//        doTestHook();
     }
 
 
     private void doTestHook() {
+
+//    "isFlipDevice"
+
 
 
     }

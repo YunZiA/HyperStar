@@ -68,7 +68,7 @@ class PadVolume : Hooker() {
             ){
                 val canvas = it.args[0] as Canvas
                 val progressDrawable: Drawable = (
-                        this.callMethod( "getProgressDrawable") ?: return@replaceHookMethod null
+                        callMethod( "getProgressDrawable") ?: return@replaceHookMethod null
                         ) as Drawable
                 canvas.save()
                 progressDrawable.draw(canvas)
@@ -136,9 +136,6 @@ class PadVolume : Hooker() {
             "miui_volume_ringer_layout_orientation_expand",
             modRes.fwd(R.integer.miui_volume_ringer_layout_orientation_expand)
         )
-
-
-
         resparam.res.setReplacement(
             plugin,
             "dimen",

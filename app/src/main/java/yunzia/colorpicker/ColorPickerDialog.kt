@@ -161,8 +161,6 @@ fun ColorPickerDialog(
                 )
             }
 
-
-
             Spacer(modifier = Modifier.height(20.dp))
 
             ClassicColorPicker(
@@ -203,21 +201,6 @@ fun ColorPickerDialog(
 
 
 
-}
-
-
-
-fun trueTextFieldValue(
-    value: TextFieldValue,
-):Boolean{
-
-    val local = value.text
-
-    return if ((local.length != 7) && (local.length != 9)) {
-        false
-    }else{
-        true
-    }
 }
 
 

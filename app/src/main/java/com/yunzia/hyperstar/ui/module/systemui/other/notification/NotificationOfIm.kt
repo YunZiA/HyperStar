@@ -42,13 +42,20 @@ import androidx.wear.compose.material.Icon
 import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.SystemUIMoreList
+import com.yunzia.hyperstar.ui.base.FloatingPagerButton
 import com.yunzia.hyperstar.ui.base.ModuleNavPager
+import com.yunzia.hyperstar.ui.base.TopButton
 import com.yunzia.hyperstar.ui.base.XMiuixTextField
+import com.yunzia.hyperstar.ui.base.XScaffold
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
+import com.yunzia.hyperstar.ui.base.modifier.showBlur
+import com.yunzia.hyperstar.ui.base.nav.nav
 import com.yunzia.hyperstar.ui.pagers.titleColor
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.SPUtils
+import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -56,8 +63,151 @@ import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.LazyColumn
+import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
+import top.yukonga.miuix.kmp.basic.TopAppBar
+import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+
+
+@Composable
+fun FloatingPagerButtonContent(
+    expand : MutableState<Boolean>
+){
+    val hazeState = remember { HazeState() }
+    val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
+    var text by remember { mutableStateOf("") }
+    val isLoading = remember { mutableStateOf(true) }
+    var isSearch by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+    XScaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
+        popupHost = { },
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.showBlur(hazeState),
+                color = Color.Transparent,
+                title = "应用选择",
+                scrollBehavior = topAppBarScrollBehavior,
+                navigationIcon = {
+                    TopButton(
+                        modifier = Modifier.padding(start = 18.dp),
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_close),
+                        contentDescription = "close",
+                        onClick = { expand.value = false }
+
+                    )
+
+
+                },
+                actions = {
+                    TopButton(
+                        modifier = Modifier.padding(end = 18.dp),
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_done),
+                        contentDescription = "done",
+                        onClick = { expand.value = false }
+                    )
+                }
+            )
+
+        }
+    ){ padding->
+
+        Column(
+            modifier = Modifier
+                .padding(top = padding.calculateTopPadding() + 14.dp)
+                .fillMaxSize()
+        ){
+
+            Box(
+                Modifier.background(colorScheme.background)
+            ) {
+                Card(
+                    modifier = Modifier
+                        .padding(bottom = 10.dp)
+                        .padding(horizontal = 24.dp),
+                    insideMargin = PaddingValues(5.dp,5.dp),
+                    cornerRadius = 18.dp
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        XMiuixTextField(
+                            value = text,
+                            cornerRadius = 13.dp,
+                            onValueChange = { text = it },
+                            label = stringResource(R.string.app_name_type),
+                            modifier = Modifier
+                                .padding(end = 5.dp)
+                                .weight(1f),
+                            keyboardActions = KeyboardActions(onDone = {
+                                isSearch = true
+                                focusManager.clearFocus()
+                            }),
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                            singleLine = true
+                        )
+
+                        Button(
+                            modifier = Modifier.padding(end = 2.dp),
+                            onClick = {
+                                //Toast.makeText(activity,text,Toast.LENGTH_SHORT).show()
+                                isSearch = true
+                                focusManager.clearFocus()
+                            },
+                            contentPadding = PaddingValues(10.dp,16.dp),
+                            shape = RoundedCornerShape(13.dp),
+                            colors = ButtonColors(
+                                Color.Transparent,
+                                Color.Transparent,
+                                Color.Transparent,
+                                Color.Transparent
+                            )
+                        ) {
+                            Icon(
+                                ImageVector.vectorResource(R.drawable.ic_search_icon),
+                                contentDescription = "back",
+                                Modifier.size(25.dp),
+                                tint = colorScheme.onSurface
+
+                            )
+
+                        }
+
+
+                    }
+                }
+            }
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(
+                    top = 0.dp,
+                    bottom = padding.calculateBottomPadding() + 28.dp
+                ),
+                topAppBarScrollBehavior = topAppBarScrollBehavior
+            ) {
+
+//                notifPlusList.forEach {
+//                    item {
+//                        AppNotifItem(it,navController)
+//                    }
+//                }
+
+            }
+
+
+        }
+
+
+
+
+    }
+
+
+}
 
 @Composable
 fun NotificationOfIm(
@@ -79,8 +229,6 @@ fun NotificationOfIm(
 
 
     val notifPlusList = remember { mutableStateListOf(weChat) }
-
-
 
     val appNotifPkgiList = remember { mutableStateOf<List<String>>(emptyList()) }
     val isLoading = remember { mutableStateOf(true) }
@@ -140,6 +288,22 @@ fun NotificationOfIm(
         endClick = {
             Helper.rootShell("killall com.android.systemui")
         },
+        floatingPagerButton = {
+            FloatingPagerButton(
+                modifier = Modifier,
+                containerColor = colorScheme.surface,
+                insideMargin = PaddingValues(end = 40.dp, bottom = 80.dp),
+                buttonContent = {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_add),
+                        tint = colorScheme.onTertiaryContainer,
+                        contentDescription = "add"
+                    )
+                },
+                content = { FloatingPagerButtonContent(it) }
+
+            )
+        },
     ) { topAppBarScrollBehavior,padding->
 
         Column(
@@ -188,15 +352,18 @@ fun NotificationOfIm(
                             contentPadding = PaddingValues(10.dp,16.dp),
                             shape = RoundedCornerShape(13.dp),
                             colors = ButtonColors(
-                                Color.Transparent, Color.Transparent,
                                 Color.Transparent,
-                                Color.Transparent)
+                                Color.Transparent,
+                                Color.Transparent,
+                                Color.Transparent
+                            )
                         ) {
                             Icon(
                                 ImageVector.vectorResource(R.drawable.ic_search_icon),
                                 contentDescription = "back",
                                 Modifier.size(25.dp),
                                 tint = colorScheme.onSurface
+
                             )
 
                         }
@@ -216,8 +383,7 @@ fun NotificationOfIm(
 
                 notifPlusList.forEach {
                     item {
-                        AppNotifItem(it)
-
+                        AppNotifItem(it,navController)
                     }
                 }
 
@@ -236,11 +402,11 @@ fun NotificationOfIm(
 
 @Composable
 fun AppNotifItem(
-    notificationInfo: NotificationInfo
+    notificationInfo: NotificationInfo,
+    navController: NavHostController
 ){
     val label = notificationInfo.appName
     val packageName = notificationInfo.packageName
-
 
 
     BasicComponent(
@@ -281,13 +447,8 @@ fun AppNotifItem(
 
         },
         onClick = {
-
+            navController.nav(SystemUIMoreList.NOTIFICATION_APP_DETAIL)
         }
     )
-
-    //SuperDialogs() { }
-
-
-
 
 }

@@ -120,7 +120,7 @@ abstract class HookerHelper {
     ){
         XposedHelpers.findAndHookMethod(this,methodName, *parameterTypes, object :XC_MethodHook(){
             override fun afterHookedMethod(param: MethodHookParam) {
-                param.thisObject?.methodHook(param)
+                param.thisObject.methodHook(param)
             }
         })
 

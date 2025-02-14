@@ -3,12 +3,16 @@ package com.yunzia.hyperstar.ui.base
 import android.view.RoundedCorner
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -33,6 +37,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.Role
@@ -77,7 +82,8 @@ fun FloatingPagerButton(
     val expand = remember { mutableStateOf(false) }
 
     val durationMillis = 350
-    val easing = LinearOutSlowInEasing
+    val easing = CubicBezierEasing(0.38F, 0.0F, 0.55F, 0.99F)
+        //LinearOutSlowInEasing
 
     val roundedCorner by rememberUpdatedState(getSystemCornerRadius())
 
@@ -115,7 +121,7 @@ fun FloatingPagerButton(
 
     val radius = animateDpAsState(
         if (expand.value){
-            roundedCorner*12/10
+            roundedCorner*13/10
         }else{
             buttonRadius
         },
@@ -158,7 +164,20 @@ fun FloatingPagerButton(
             ) {
 
                 AnimatedVisibility(
-                    !expand.value
+                    !expand.value,
+                    enter = fadeIn(
+                        animationSpec = tween(
+                            durationMillis/2,
+                            easing = easing,
+                            delayMillis  = durationMillis/2
+                        )
+                    ),
+                    exit = fadeOut(
+                        animationSpec = tween(
+                            durationMillis/2,
+                            easing = easing,
+                        )
+                    )
                 ){
                     Box(
                         modifier = Modifier
@@ -174,19 +193,36 @@ fun FloatingPagerButton(
                 }
                 AnimatedVisibility(
                     expand.value,
-                    enter = fadeIn(
+                    enter = expandIn(
+                        animationSpec = tween(durationMillis, easing = easing)
+                    ) + fadeIn(
                         animationSpec = tween(
-                            durationMillis/4*3,
-                            easing = easing,
+                            durationMillis/2,
+                            easing = LinearEasing,
                             delayMillis  = durationMillis/2
                         )
-                    ) + expandIn(
-                        animationSpec = tween(durationMillis, easing = easing)
-                    ),
+                    ) + scaleIn(
+                        animationSpec = tween(
+                            durationMillis/2,
+                            easing = LinearEasing
+                        ),
+                        initialScale = 0.6f,
+                        transformOrigin = TransformOrigin(1f, 1f)
+                    ) ,
                     exit = shrinkOut(
                         animationSpec = tween(durationMillis, easing = easing)
                     ) + fadeOut(
-                        animationSpec = tween(durationMillis, easing = easing)
+                        animationSpec = tween(
+                            durationMillis/2,
+                            easing = LinearEasing
+                        )
+                    ) + scaleOut(
+                        animationSpec = tween(
+                            durationMillis/2,
+                            easing = FastOutSlowInEasing
+                        ),
+                        targetScale = 0.6f,
+                        transformOrigin = TransformOrigin(1f, 1f)
                     )
                 ) {
                     BackHandler(expand.value) {

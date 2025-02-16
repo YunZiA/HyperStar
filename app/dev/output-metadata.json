@@ -1,0 +1,37 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.yunzia.hyperstar",
+  "variantName": "dev",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 225021706,
+      "versionName": "2.0.0_202502170120",
+      "outputFile": "HyperStar_v2.0.0_202502170120_dev.apk"
+    }
+  ],
+  "elementType": "File",
+  "baselineProfiles": [
+    {
+      "minApi": 28,
+      "maxApi": 30,
+      "baselineProfiles": [
+        "baselineProfiles/1/HyperStar_v2.0.0_202502170120_dev.dm"
+      ]
+    },
+    {
+      "minApi": 31,
+      "maxApi": 2147483647,
+      "baselineProfiles": [
+        "baselineProfiles/0/HyperStar_v2.0.0_202502170120_dev.dm"
+      ]
+    }
+  ],
+  "minSdkVersionForDexing": 33
+}

@@ -31,7 +31,7 @@ android {
             val baseVersionCode = "$versionName$createTime"
             var versionCode = "${baseVersionCode}00".toInt()
             val runTasks = gradle.startParameter.taskNames
-            if (":app:assembleRelease" in runTasks){
+            if (":app:assembleDebug" !in runTasks){
                 val lastVersionCode = properties["VERSION_CODE"].toString()
                 if (lastVersionCode.take(7) == baseVersionCode){
                     versionCode = lastVersionCode.toInt()+1
@@ -84,13 +84,11 @@ android {
                 val config = project.android.defaultConfig
                 val appName = "HyperStar"
                 val versionName = "v"+config.versionName
+                val buildType = this.name
 
-                this.outputFileName = "${appName}_${versionName}_dev.apk"
+                this.outputFileName = "${appName}_${versionName}_${buildType}.apk"
             }
         }
-
-
-
     }
 
     buildTypes {
@@ -109,6 +107,14 @@ android {
             isMinifyEnabled = false
             isShrinkResources = false
 
+        }
+        create("dev") {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     //outputFileName = "${defaultConfig.applicationId}${buildType.applicationIdSuffix}-${defaultConfig.versionName}${buildType.versionNameSuffix}.apk"

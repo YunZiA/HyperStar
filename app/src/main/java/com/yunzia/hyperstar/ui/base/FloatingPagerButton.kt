@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.ui.base
 
-import android.view.RoundedCorner
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.CubicBezierEasing
@@ -38,32 +37,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.yunzia.hyperstar.ui.base.helper.getSystemSmoothCornerRadius
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
-import top.yukonga.miuix.kmp.utils.getCornerRadiusBottom
 
-@Composable
-private fun getSystemCornerRadius(): Dp {
-    val insets = LocalView.current.rootWindowInsets
-    val density = LocalDensity.current.density
-    val roundedCornerRadius =
-        insets?.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_LEFT)?.radius ?: getCornerRadiusBottom()
-    val cornerDp = (roundedCornerRadius / density).dp
-    //if (cornerDp <= 32.dp) return 0.dp
-    return cornerDp
-}
 
 @Composable
 fun FloatingPagerButton(
@@ -83,9 +70,9 @@ fun FloatingPagerButton(
 
     val durationMillis = 350
     val easing = CubicBezierEasing(0.38F, 0.0F, 0.55F, 0.99F)
-        //LinearOutSlowInEasing
+    //LinearOutSlowInEasing
 
-    val roundedCorner by rememberUpdatedState(getSystemCornerRadius())
+    val roundedCorner by rememberUpdatedState(getSystemSmoothCornerRadius())
 
     val dim = animateColorAsState(
         if (expand.value){
@@ -121,7 +108,7 @@ fun FloatingPagerButton(
 
     val radius = animateDpAsState(
         if (expand.value){
-            roundedCorner*13/10
+            roundedCorner
         }else{
             buttonRadius
         },

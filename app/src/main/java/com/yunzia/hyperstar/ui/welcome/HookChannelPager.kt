@@ -2,6 +2,7 @@ package com.yunzia.hyperstar.ui.welcome
 
 import android.util.Log
 import android.view.HapticFeedbackConstants
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,7 +58,7 @@ fun HookChannelPager(
     val view = LocalView.current
     val coroutineScope = rememberCoroutineScope()
     val hookChannel = remember { mutableIntStateOf(if (isOS2()) 1 else 0) }
-    val activity = LocalContext.current as MainActivity
+    val activity = LocalActivity.current as MainActivity
 
     val languageList = stringArrayResource(R.array.hook_channel_items).toList()
     Column (
@@ -155,7 +156,7 @@ private fun LazyListScope.channelItem(
                         PreferencesUtil.putInt("is_Hook_Channel", selectedItem.intValue)
                     }
                 }
-                .clip(SmoothRoundedCornerShape(CardDefaults.ConorRadius))
+                .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
                 .background(if (isSelected) colorScheme.tertiaryContainer else colorScheme.surfaceVariant),
             checkboxLocation = CheckboxLocation.Right,
             insideMargin = PaddingValues(20.dp),

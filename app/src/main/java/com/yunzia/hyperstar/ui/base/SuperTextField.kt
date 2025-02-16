@@ -2,6 +2,9 @@ package com.yunzia.hyperstar.ui.base
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -15,6 +18,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,6 +49,7 @@ fun SuperTextField(
     cornerRadius: Dp = 15.dp,
     label: String = "",
     labelColor: Color = MiuixTheme.colorScheme.onSecondaryContainer,
+    useLabelAsPlaceholder: Boolean = false,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     textStyle: TextStyle = MiuixTheme.textStyles.main,
@@ -68,14 +73,14 @@ fun SuperTextField(
         else Modifier.padding(vertical = insideMargin.height)
     }
     val isFocused by interactionSource.collectIsFocusedAsState()
-    val borderWidth by animateDpAsState(if (isFocused) 1.6.dp else 0.dp)
+    val borderWidth by animateDpAsState(if (isFocused) 2.dp else 0.dp)
     val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.primary else backgroundColor)
-    val labelOffsetY by animateDpAsState(if (value.text.isNotEmpty()) -(insideMargin.height / 2) else 0.dp)
-    val innerTextOffsetY by animateDpAsState(if (value.text.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
-    val labelFontSize by animateDpAsState(if (value.text.isNotEmpty()) 10.dp else 16.dp)
+    val labelOffsetY by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) -(insideMargin.height / 2) else 0.dp)
+    val innerTextOffsetY by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) (insideMargin.height / 2) else 0.dp)
+    val labelFontSize by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) 10.dp else 16.dp)
     val border = Modifier.border(borderWidth, borderColor, SmoothRoundedCornerShape(cornerRadius,0.5f))
-    val labelOffset = if (label != "") Modifier.offset(y = labelOffsetY) else Modifier
-    val innerTextOffset = if (label != "") Modifier.offset(y = innerTextOffsetY) else Modifier
+    val labelOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = labelOffsetY) else Modifier
+    val innerTextOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = innerTextOffsetY) else Modifier
 
     BasicTextField(
         value = value,
@@ -94,12 +99,13 @@ fun SuperTextField(
         interactionSource = interactionSource,
         cursorBrush = SolidColor(MiuixTheme.colorScheme.primary),
         decorationBox = { innerTextField ->
+            val shape = remember { derivedStateOf { SmoothRoundedCornerShape(cornerRadius,0.5f) } }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
                         color = backgroundColor,
-                        shape = SmoothRoundedCornerShape(cornerRadius,0.5f)
+                        shape = shape.value
                     )
                     .then(border)
             ) {
@@ -115,14 +121,24 @@ fun SuperTextField(
                             .weight(1f)
                             .then(paddingModifier)
                     ) {
-                        Text(
-                            text = label,
-                            textAlign = TextAlign.Start,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = labelFontSize.value.sp,
-                            modifier = Modifier.then(labelOffset),
-                            color = labelColor
-                        )
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = if (useLabelAsPlaceholder) value.text.isEmpty() else true,
+                            enter = fadeIn(
+                                spring(stiffness = 2500f)
+                            ),
+                            exit = fadeOut(
+                                spring(stiffness = 5000f)
+                            )
+                        ) {
+                            Text(
+                                text = label,
+                                textAlign = TextAlign.Start,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = labelFontSize.value.sp,
+                                modifier = Modifier.then(labelOffset),
+                                color = labelColor
+                            )
+                        }
                         Box(
                             modifier = Modifier.then(innerTextOffset),
                             contentAlignment = Alignment.BottomStart

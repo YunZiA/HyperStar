@@ -27,19 +27,13 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.dialog.SuperDialogs
 import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
-import com.yunzia.hyperstar.ui.base.tool.FilterFloat
 import com.yunzia.hyperstar.utils.SPUtils
-import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.basic.TextField
 import top.yukonga.miuix.kmp.extra.SuperArrow
-import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 @Composable
 fun SuperStringArrow(
@@ -118,8 +112,9 @@ private fun StringDialog(
                     hasFocus = it.hasFocus
                 },
             //backgroundColor = colorScheme.surfaceVariant,
-            label = if (!isChange.value && values.value == "null") stringResource(R.string.default_value) else "",
+            label = stringResource(R.string.default_value),
             value = text.value,
+            useLabelAsPlaceholder = true,
             keyboardOptions =  KeyboardOptions(imeAction = ImeAction.Done,keyboardType = KeyboardType.Text),
             keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
             onValueChange = {
@@ -165,7 +160,15 @@ private fun StringDialog(
                 submit = true,
                 onClick = {
                     focusManager.clearFocus()
-                    values.value = text.value.text
+                    if (text.value.text == ""){
+                        values.value = "null"
+                        isChange.value = false
+                        text.value = TextFieldValue(text = "", selection = TextRange(0))
+
+                    }else{
+                        values.value = text.value.text
+
+                    }
                     SPUtils.setString(key, values.value)
                     dismissXDialog(showDialog)
 

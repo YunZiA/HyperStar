@@ -2,8 +2,6 @@ package com.yunzia.hyperstar.ui.base
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalIndication
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -59,9 +57,7 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.dialog.SuperDialogs
 import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.ui.base.enums.EventState
-import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
 import com.yunzia.hyperstar.ui.base.modifier.bounceClick
-import com.yunzia.hyperstar.ui.base.modifier.bounceCorner
 import com.yunzia.hyperstar.ui.base.modifier.bounceScale
 import com.yunzia.hyperstar.ui.base.tool.FilterFloat
 import com.yunzia.hyperstar.utils.PreferencesUtil
@@ -468,8 +464,7 @@ fun ValueDialog(
     val firstIsDf = remember(values.floatValue) { mutableStateOf(values.floatValue == defValue) }
     ShowDef(firstIsDf,showDialog,values.floatValue,defValue,decimalPlaces,filter)
 
-    val newString = StringBuffer()
-    val defValues = TextFieldValue(newString.toString(), TextRange(0))
+    val defValues = TextFieldValue("", TextRange(0))
 
     SuperDialogs(
         title = title,
@@ -511,8 +506,9 @@ fun ValueDialog(
                     hasFocus = it.hasFocus
                 },
             //backgroundColor = colorScheme.surfaceVariant,
-            label = if (firstIsDf.value) stringResource(R.string.default_value) else "",
+            label = stringResource(R.string.default_value),
             value = if (firstIsDf.value) defValues else filter.getInputValue(),
+            useLabelAsPlaceholder = true,
             maxLines = 1,
             keyboardOptions =  KeyboardOptions(imeAction = ImeAction.Done,keyboardType = KeyboardType.Number),
             keyboardActions = KeyboardActions(
@@ -534,8 +530,11 @@ fun ValueDialog(
                 onClick = {
                     focusManager.clearFocus()
                     dismissXDialog(showDialog)
-                    filter.setInputValue(String.format("%.${decimalPlaces}f", values.floatValue))
-                    //showDialog.value = false
+                    if (filter.getInputValue().text == ""){
+                        filter.setInputValue(String.format("%.${decimalPlaces}f", defValue))
+                    }else{
+                        filter.setInputValue(String.format("%.${decimalPlaces}f", values.floatValue))
+                    }
 
                 }
 
@@ -562,8 +561,15 @@ fun ValueDialog(
                 submit = true,
                 onClick = {
                     focusManager.clearFocus()
-                    values.floatValue = filter.getInputValue().text.toFloat()
-                    SPUtils.setFloat(key, values.floatValue)
+                    if (filter.getInputValue().text == ""){
+                        filter.setInputValue(String.format("%.${decimalPlaces}f", defValue))
+                        values.floatValue = defValue
+                        SPUtils.setFloat(key, defValue)
+                    }else{
+                        values.floatValue = filter.getInputValue().text.toFloat()
+                        SPUtils.setFloat(key, values.floatValue)
+
+                    }
                     dismissXDialog(showDialog)
                     //showDialog.value = false
 

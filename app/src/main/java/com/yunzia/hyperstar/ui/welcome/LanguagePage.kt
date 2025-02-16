@@ -2,6 +2,7 @@ package com.yunzia.hyperstar.ui.welcome
 
 import android.util.Log
 import android.view.HapticFeedbackConstants
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -54,7 +54,7 @@ fun LanguagePage(pagerState: PagerState) {
     val view = LocalView.current
     val coroutineScope = rememberCoroutineScope()
     val selectedItem = remember { mutableIntStateOf(PreferencesUtil.getInt("app_language",0)) }
-    val activity = LocalContext.current as MainActivity
+    val activity = LocalActivity.current as MainActivity
 
     val languageList = stringArrayResource(R.array.language_list).toList()
     Column (
@@ -150,7 +150,7 @@ private fun LazyListScope.languageItem(
                         activity.recreate()
                     }
                 }
-                .clip(SmoothRoundedCornerShape(CardDefaults.ConorRadius))
+                .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
                 .background(if (isSelected) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
             ,
             checkboxLocation = CheckboxLocation.Right,

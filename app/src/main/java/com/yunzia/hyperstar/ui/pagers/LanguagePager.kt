@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.ui.pagers
 
 import android.util.Log
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +14,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -36,8 +36,7 @@ fun LanguagePager(
     currentStartDestination: MutableState<String>
 
 ) {
-    val context = LocalContext.current
-    val activity = context as MainActivity
+    val activity = LocalActivity.current as MainActivity
     val selectedItem = remember { mutableIntStateOf(PreferencesUtil.getInt("app_language",0)) }
 
     val languageList = stringArrayResource(R.array.language_list).toList()
@@ -88,7 +87,7 @@ private fun LazyListScope.languageItem(
                         activity.recreate()
                     }
                 }
-                .clip(SmoothRoundedCornerShape(CardDefaults.ConorRadius))
+                .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
                 .background(if (isSelected) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
             ,
             checkboxLocation = CheckboxLocation.Right,

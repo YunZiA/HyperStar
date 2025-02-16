@@ -27,7 +27,7 @@ public class SystemUIHookForOS2 extends InitHooker {
             return;
         }
         initResource(qsHeaderView);
-        initResource(test);
+        //initResource(test);
         //initResource(addCatPaw);
 
     }
@@ -38,7 +38,7 @@ public class SystemUIHookForOS2 extends InitHooker {
         initHooker(new NotificationForLm());
         initHooker(qsHeaderView);
         initHooker(pluginHookForOS2);
-        initHooker(test);
+        //initHooker(test);
 
         //initHooker(addCatPaw);
 //

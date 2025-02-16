@@ -2,6 +2,9 @@ package com.yunzia.hyperstar.ui.base
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -35,7 +38,6 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 @Composable
 fun XMiuixTextField(
@@ -47,6 +49,7 @@ fun XMiuixTextField(
     cornerRadius: Dp = 18.dp,
     label: String = "",
     labelColor: Color = MiuixTheme.colorScheme.onSurfaceContainerHigh,
+    useLabelAsPlaceholder: Boolean = false,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     textStyle: TextStyle = MiuixTheme.textStyles.main,
@@ -77,9 +80,14 @@ fun XMiuixTextField(
     val backgroundColors by animateColorAsState(if (isFocused) backgroundColor else MiuixTheme.colorScheme.background)
     val borderWidth by animateDpAsState(if (isFocused) 4.dp else 0.dp)
     val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.background else MiuixTheme.colorScheme.background)
-    val labelOffsetY by animateDpAsState(if (value.isNotEmpty()) -(insideMargin.height /2) else 0.dp)
-    val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty()) (insideMargin.height *10/25) else 0.dp)
-    val labelFontSize by animateDpAsState(if (value.isNotEmpty()) 10.dp else 16.dp)
+
+
+    val labelOffsetY by animateDpAsState(if (value.isNotEmpty() && !useLabelAsPlaceholder) -(insideMargin.height / 2) else 0.dp)
+    val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty() && !useLabelAsPlaceholder) (insideMargin.height / 2) else 0.dp)
+    val labelFontSize by animateDpAsState(if (value.isNotEmpty() && !useLabelAsPlaceholder) 10.dp else 16.dp)
+    val border = Modifier.border(borderWidth, borderColor, SmoothRoundedCornerShape(cornerRadius,0.5f))
+    val labelOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = labelOffsetY) else Modifier
+    val innerTextOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = innerTextOffsetY) else Modifier
 
     BasicTextField(
         value = value,
@@ -103,13 +111,9 @@ fun XMiuixTextField(
                     .fillMaxWidth()
                     .background(
                         color = backgroundColors,
-                        shape = SquircleShape(cornerRadius)
+                        shape = SmoothRoundedCornerShape(cornerRadius,0.5f)
                     )
-                    .border(
-                        width = borderWidth,
-                        color = borderColor,
-                        shape = SquircleShape(cornerRadius)
-                    )
+                    .then(border)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -123,17 +127,26 @@ fun XMiuixTextField(
                             .weight(1f)
                             .then(paddingModifier)
                     ) {
-                        Text(
-                            text = label,
-                            textAlign = TextAlign.Start,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = labelFontSize.value.sp,
-                            modifier = Modifier.offset(y = labelOffsetY),
-                            color = labelColor
-                        )
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = if (useLabelAsPlaceholder) value.isEmpty() else true,
+                            enter = fadeIn(
+                                spring(stiffness = 2500f)
+                            ),
+                            exit = fadeOut(
+                                spring(stiffness = 5000f)
+                            )
+                        ) {
+                            Text(
+                                text = label,
+                                textAlign = TextAlign.Start,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = labelFontSize.value.sp,
+                                modifier = Modifier.then(labelOffset),
+                                color = labelColor
+                            )
+                        }
                         Box(
-                            modifier = Modifier
-                                .offset(y = innerTextOffsetY),
+                            modifier = Modifier.then(innerTextOffset),
                             contentAlignment = Alignment.BottomStart
                         ) {
                             innerTextField()

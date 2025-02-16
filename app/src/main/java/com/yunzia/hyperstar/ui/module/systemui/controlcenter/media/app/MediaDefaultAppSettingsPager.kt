@@ -62,16 +62,15 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.wear.compose.material.Icon
+import com.google.accompanist.drawablepainter.DrawablePainter
+import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.ModuleNavPager
 import com.yunzia.hyperstar.ui.base.XMiuixTextField
-
-import com.yunzia.hyperstar.utils.SPUtils
-import com.yunzia.hyperstar.utils.Helper
-import com.google.accompanist.drawablepainter.DrawablePainter
-import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.pagers.titleColor
+import com.yunzia.hyperstar.utils.Helper
+import com.yunzia.hyperstar.utils.SPUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -185,7 +184,7 @@ private fun processAppInfo(
 
 
 sealed class LoadingState<out R> {
-    object Loading : LoadingState<Nothing>()
+    data object Loading : LoadingState<Nothing>()
     data class Failure(val error : Throwable) : LoadingState<Nothing>()
     data class Success<T>(val data : T) : LoadingState<T>()
 
@@ -207,7 +206,10 @@ fun <T> LoadingContent(
     var key by remember {
         mutableStateOf(false)
     }
-    val state : LoadingState<T> by produceState<LoadingState<T>>(initialValue = LoadingState.Loading, key){
+    val state by produceState<LoadingState<T>>(
+        initialValue = LoadingState.Loading,
+        key
+    ){
         value = try {
             Log.d("ggc", "LoadingContent: loading...")
             LoadingState.Success(loader())
@@ -298,8 +300,7 @@ fun MediaAppSettingsPager(
                 .padding(top = padding.calculateTopPadding() + 14.dp)
                 .fillMaxSize()
         ) {
-            val (load,list,search)=createRefs()
-
+            val (load,list,search) = createRefs()
 
             AnimatedVisibility (
                 !isLoading.value,
@@ -387,6 +388,7 @@ fun MediaAppSettingsPager(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
+
                         XMiuixTextField(
                             value = text,
                             cornerRadius = 13.dp,
@@ -427,14 +429,6 @@ fun MediaAppSettingsPager(
                     }
                 }
             }
-
-
-
-
-
-
-
-
 
         }
     }
@@ -491,7 +485,7 @@ private fun AppItem(
             .padding(horizontal = 28.dp)
             .padding(top = 10.dp)
             .bounceAnimN()
-            .clip(SmoothRoundedCornerShape(CardDefaults.ConorRadius))
+            .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
             .background(if (isSelect) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
         ,
         insideMargin =  PaddingValues(16.dp),

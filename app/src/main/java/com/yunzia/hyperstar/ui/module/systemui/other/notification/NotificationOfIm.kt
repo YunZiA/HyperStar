@@ -415,7 +415,7 @@ fun AppNotifItem(
             .padding(horizontal = 26.dp)
             .padding(top = 10.dp)
             .bounceAnimN()
-            .clip(SmoothRoundedCornerShape(CardDefaults.ConorRadius))
+            .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
             .background(colorScheme.surfaceVariant)
         ,
         insideMargin =  PaddingValues(16.dp),

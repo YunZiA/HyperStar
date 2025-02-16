@@ -19,7 +19,7 @@ lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.0"
 composeBom = "2025.02.00"
 composeMaterial = "1.4.1"
-miuix = "0.3.4"
+miuix = "0.3.5"
 paletteKtx = "1.0.0"
 profileinstaller = "1.4.1"
 recycler = "1.4.0"
@@ -33,6 +33,7 @@ accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-dra
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutComposeVersion" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
+androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "foundation" }
 androidx-palette-ktx = { module = "androidx.palette:palette-ktx", version.ref = "paletteKtx" }
 androidx-profileinstaller = { module = "androidx.profileinstaller:profileinstaller", version.ref = "profileinstaller" }
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview" ,version.ref = "recycler"}

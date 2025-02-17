@@ -29,7 +29,7 @@ import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeView
 import com.yunzia.hyperstar.hook.app.plugin.os1.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
 import com.yunzia.hyperstar.hook.base.InitHooker
-import com.yunzia.hyperstar.hook.util.starLog
+import com.yunzia.hyperstar.hook.tool.starLog
 import de.robv.android.xposed.XC_MethodHook
 
 

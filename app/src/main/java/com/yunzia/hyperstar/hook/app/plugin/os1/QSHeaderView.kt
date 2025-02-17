@@ -11,7 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.util.starLog
+import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 
 

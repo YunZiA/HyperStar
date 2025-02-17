@@ -1,6 +1,6 @@
 package com.yunzia.hyperstar.hook.util.systemui
 
-import com.yunzia.hyperstar.hook.util.starLog
+import com.yunzia.hyperstar.hook.tool.starLog
 import de.robv.android.xposed.XposedHelpers
 
 class Dependency(private val classloader: ClassLoader?) {

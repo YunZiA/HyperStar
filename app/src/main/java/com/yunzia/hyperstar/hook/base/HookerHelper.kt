@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.SeekBar
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
-import com.yunzia.hyperstar.hook.util.starLog
+import com.yunzia.hyperstar.hook.tool.starLog
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodHook.MethodHookParam
 import de.robv.android.xposed.XC_MethodReplacement

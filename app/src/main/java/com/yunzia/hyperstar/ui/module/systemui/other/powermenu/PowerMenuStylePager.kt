@@ -2,6 +2,7 @@ package com.yunzia.hyperstar.ui.module.systemui.other.powermenu
 
 //import com.chaos.hyperstar.R
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateDpAsState
@@ -31,8 +32,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +50,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -107,7 +109,14 @@ fun PowerMenuStylePager(
         item {
 
             val configuration = LocalConfiguration.current
-            val screenHeight by remember { mutableFloatStateOf(configuration.screenHeightDp*0.52f) }
+            val screenHeight = animateDpAsState(
+                configuration.screenHeightDp.dp*0.52f,
+                animationSpec = TweenSpec(100,0,FastOutSlowInEasing)
+            )
+            val screenWidth = animateDpAsState(
+                configuration.screenWidthDp.dp*0.52f,
+                animationSpec = TweenSpec(100,0,FastOutSlowInEasing)
+            )
             val titleSize = remember { mutableStateOf(16.sp) }
 
             Spacer(Modifier.height(20.dp))
@@ -115,7 +124,7 @@ fun PowerMenuStylePager(
             HorizontalPager(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(screenHeight.dp),
+                    .height(screenHeight.value),
                 state = pagerState,
                 contentPadding = PaddingValues(horizontal = 100.dp),
                 pageSpacing = 0.dp,
@@ -127,6 +136,7 @@ fun PowerMenuStylePager(
                         AnimPager(
                             0,
                             pagerState.currentPage,
+                            screenWidth
                         ) {
                             PowerMenuStyleDefault(titleSize)
                         }
@@ -135,7 +145,8 @@ fun PowerMenuStylePager(
                     1 -> {
                         AnimPager(
                             1,
-                            pagerState.currentPage
+                            pagerState.currentPage,
+                            screenWidth
                         ) {
                             PowerMenuStyleA(titleSize)
                         }
@@ -144,7 +155,8 @@ fun PowerMenuStylePager(
                     2 -> {
                         AnimPager(
                             2,
-                            pagerState.currentPage
+                            pagerState.currentPage,
+                            screenWidth
                         ){
                             PowerMenuStyleB(titleSize)
                         }
@@ -301,12 +313,11 @@ private fun getFunTitle(
 fun AnimPager(
     page:Int,
     currentPage:Int,
+    width: State<Dp>,
     content: @Composable() BoxWithConstraintsScope.() -> Unit
 ){
 
     val roundedCorner by rememberUpdatedState(getSystemCornerRadius())
-    val configuration = LocalConfiguration.current
-    val screenWidth by remember { mutableFloatStateOf(configuration.screenWidthDp*0.52f)}
 
     val imgScale by animateFloatAsState(
         targetValue = if (currentPage == page) 1f else 0.8f,
@@ -333,7 +344,7 @@ fun AnimPager(
                 Color(0xff3988FF ).copy(alpha = selectAlpha),
                 SmoothRoundedCornerShape(roundedCorner, 0.8F)
             )
-            .width(screenWidth.dp),
+            .width(width.value),
         contentAlignment = Alignment.Center,
     ) {
         BoxWithConstraints(

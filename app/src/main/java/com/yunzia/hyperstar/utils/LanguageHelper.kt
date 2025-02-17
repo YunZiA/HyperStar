@@ -125,6 +125,11 @@ class LanguageHelper {
 
                 }
 
+                5-> {
+                    return getLanguage("es","ES")
+
+                }
+
 
             }
             return getSystemLanguage()

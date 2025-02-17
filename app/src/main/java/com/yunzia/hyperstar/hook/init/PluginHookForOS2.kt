@@ -27,7 +27,7 @@ import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeOrQSBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeView
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
 import com.yunzia.hyperstar.hook.base.InitHooker
-import com.yunzia.hyperstar.hook.util.starLog
+import com.yunzia.hyperstar.hook.tool.starLog
 
 
 class PluginHookForOS2 : InitHooker() {

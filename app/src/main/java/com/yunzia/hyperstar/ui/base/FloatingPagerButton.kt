@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.base
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.CubicBezierEasing
@@ -37,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -65,6 +67,10 @@ fun FloatingPagerButton(
     buttonContent: @Composable () -> Unit,
     content: @Composable (MutableState<Boolean>) -> Unit,
 ) {
+
+    val mul = LocalConfiguration.current
+    val activity = LocalActivity.current
+
 
     val expand = remember { mutableStateOf(false) }
 
@@ -108,7 +114,11 @@ fun FloatingPagerButton(
 
     val radius = animateDpAsState(
         if (expand.value){
-            roundedCorner
+            if (activity?.isInMultiWindowMode == true){
+                16.dp
+            }else{
+                roundedCorner
+            }
         }else{
             buttonRadius
         },

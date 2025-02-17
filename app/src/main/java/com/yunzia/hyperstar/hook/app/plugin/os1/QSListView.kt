@@ -17,7 +17,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.util.plugin.CommonUtils
-import com.yunzia.hyperstar.hook.util.starLog
+import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.hook.util.startMarqueeOfFading
 import com.yunzia.hyperstar.utils.XSPUtils
 import yunzia.utils.DensityUtil.Companion.dpToPx

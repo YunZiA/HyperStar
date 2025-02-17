@@ -5,7 +5,7 @@ import android.content.pm.ApplicationInfo
 import android.os.Parcelable
 import android.text.TextUtils
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.util.starLog
+import com.yunzia.hyperstar.hook.tool.starLog
 
 
 class NotificationForLm:Hooker() {

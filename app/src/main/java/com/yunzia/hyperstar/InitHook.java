@@ -8,7 +8,7 @@ import android.content.res.XModuleResources;
 import com.yunzia.hyperstar.hook.init.InitMiuiHomeHook;
 import com.yunzia.hyperstar.hook.init.SystemUIHookForOS1;
 import com.yunzia.hyperstar.hook.init.SystemUIHookForOS2;
-import com.yunzia.hyperstar.hook.util.starLog;
+import com.yunzia.hyperstar.hook.tool.starLog;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;

@@ -116,6 +116,8 @@ android {
                 "proguard-rules.pro"
             )
         }
+        create("cc") {
+        }
     }
     //outputFileName = "${defaultConfig.applicationId}${buildType.applicationIdSuffix}-${defaultConfig.versionName}${buildType.versionNameSuffix}.apk"
     compileOptions {

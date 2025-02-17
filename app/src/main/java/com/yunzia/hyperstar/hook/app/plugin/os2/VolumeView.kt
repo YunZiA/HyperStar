@@ -14,7 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.util.plugin.Util
-import com.yunzia.hyperstar.hook.util.starLog
+import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import yunzia.utils.DensityUtil.Companion.dpToPx
 

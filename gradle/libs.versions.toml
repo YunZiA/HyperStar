@@ -24,11 +24,15 @@ paletteKtx = "1.0.0"
 profileinstaller = "1.4.1"
 recycler = "1.4.0"
 constraintlayout = "2.2.0"
+xposed-api = "100"
+xposed-service = "100-1.0.0"
 androidx-navigation-compose = "2.8.7"
 cardview = "1.0.0"
 kotlinx-serialization-json = "1.8.0"
 
 [libraries]
+libxposed-api = { group = "io.github.libxposed", name = "api", version.ref = "xposed-api" }
+libxposed-service = { group = "io.github.libxposed", name = "service", version.ref = "xposed-service" }
 accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanistDrawablepainter" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutComposeVersion" }
@@ -37,7 +41,7 @@ androidx-compose-material-icons-extended = { group = "androidx.compose.material"
 androidx-palette-ktx = { module = "androidx.palette:palette-ktx", version.ref = "paletteKtx" }
 androidx-profileinstaller = { module = "androidx.profileinstaller:profileinstaller", version.ref = "profileinstaller" }
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview" ,version.ref = "recycler"}
-android-xposed = { module = "de.robv.android.xposed:api", version.ref = "api" }
+#android-xposed = { module = "de.robv.android.xposed:api", version.ref = "api" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation-compose" }

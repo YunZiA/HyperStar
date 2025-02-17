@@ -142,6 +142,8 @@ android {
 
 }
 dependencies {
+//    compileOnly(libs.libxposed.api)
+//    implementation(libs.libxposed.service)
     // 系统UI控制库，实现沉浸式状态栏
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.compose.material.icons.extended)
@@ -166,7 +168,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.cardview)
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    compileOnly (libs.android.xposed)
+    //compileOnly (libs.android.xposed)
     implementation(libs.kyuubiran.ezxhelper)
     implementation(libs.androidx.foundation)
     implementation (libs.miuix)

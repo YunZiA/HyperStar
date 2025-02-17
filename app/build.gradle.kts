@@ -31,7 +31,8 @@ android {
             val baseVersionCode = "$versionName$createTime"
             var versionCode = "${baseVersionCode}00".toInt()
             val runTasks = gradle.startParameter.taskNames
-            if (":app:assembleDebug" !in runTasks){
+            System.out.println("> Configure project :runTasks = $runTasks")
+            if (":app:assembleDebug" !in runTasks && "" !in runTasks){
                 val lastVersionCode = properties["VERSION_CODE"].toString()
                 if (lastVersionCode.take(7) == baseVersionCode){
                     versionCode = lastVersionCode.toInt()+1

@@ -86,18 +86,18 @@ fun FloatingPagerButton(
         }else{
             Color.Transparent
         },
-        animationSpec = tween(200, easing = easing)
-
+        animationSpec = tween(200, easing = easing),
     )
 
     val layoutDirection = LayoutDirection.Rtl
+
+    val complete = remember { mutableStateOf(false) }
 
     val end = animateDpAsState(
         if (expand.value){
             0.dp
         }else{
             insideMargin.calculateEndPadding(layoutDirection)
-            //0.dp
         },
         animationSpec = tween(durationMillis, easing = easing)
     )
@@ -122,8 +122,17 @@ fun FloatingPagerButton(
         }else{
             buttonRadius
         },
-        animationSpec = tween(durationMillis, easing = easing)
+        animationSpec = tween(durationMillis, easing = easing),
+        finishedListener = {
+            complete.value = it == 16.dp || it == roundedCorner
+        }
+
     )
+//    if (radius.value == roundedCorner) radius.value = 0.dp
+//    LaunchedEffect(radius.value) {
+//
+//
+//    }
 
     Box(
         Modifier
@@ -151,7 +160,7 @@ fun FloatingPagerButton(
 
             Surface(
                 modifier = Modifier.semantics { role = Role.Button },
-                shape = SmoothRoundedCornerShape(radius.value,0.8f),
+                shape = SmoothRoundedCornerShape(if (complete.value && expand.value) 0.dp else radius.value,0.8f),
                 color = containerColor,
                 shadowElevation = if (expand.value) 0.dp else shadowElevation,
                 enabled = !expand.value,

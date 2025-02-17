@@ -144,6 +144,8 @@ android {
 dependencies {
 //    compileOnly(libs.libxposed.api)
 //    implementation(libs.libxposed.service)
+    compileOnly(project(":lsp:service"))
+    compileOnly(project(":lsp:api"))
     // 系统UI控制库，实现沉浸式状态栏
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.compose.material.icons.extended)

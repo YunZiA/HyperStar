@@ -1,0 +1,6 @@
+[submodule "lsp/api/api"]
+	path = lsp/api/api
+	url = https://github.com/libxposed/api.git
+[submodule "lsp/service/service"]
+	path = lsp/service/service
+	url = https://github.com/libxposed/service.git

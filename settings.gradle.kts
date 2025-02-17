@@ -23,4 +23,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "HyperStar"
 include(":app")
+include(":lsp:api:api")
+include(":lsp:service:service")
  

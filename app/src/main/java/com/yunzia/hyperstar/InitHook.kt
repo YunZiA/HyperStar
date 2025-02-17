@@ -16,7 +16,7 @@ import java.io.FileNotFoundException
 import java.io.FileReader
 import kotlin.random.Random
 
-private lateinit var module: ModuleMain
+private lateinit var module: InitHook
 
 class InitHook(base: XposedInterface, param: ModuleLoadedParam) : XposedModule(base, param) {
 

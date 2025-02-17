@@ -3,6 +3,7 @@ accompanistDrawablepainter = "0.37.0"
 accompanistSystemuicontroller = "0.36.0"
 api = "82"
 agp = "8.6.1"
+agps = "8.7.2"
 colormathExtJetpackComposeVersion = "3.6.1"
 compilerVersion = "1.5.15"
 constraintlayoutComposeVersion = "1.1.0"
@@ -31,6 +32,7 @@ cardview = "1.0.0"
 kotlinx-serialization-json = "1.8.0"
 
 [libraries]
+androidx-annotation = { module = "androidx.annotation:annotation", version = "1.9.1" }
 libxposed-api = { group = "io.github.libxposed", name = "api", version.ref = "xposed-api" }
 libxposed-service = { group = "io.github.libxposed", name = "service", version.ref = "xposed-service" }
 accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanistDrawablepainter" }
@@ -73,4 +75,5 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 

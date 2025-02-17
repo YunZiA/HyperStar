@@ -34,6 +34,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -87,6 +88,8 @@ import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.isFold
 import com.yunzia.hyperstar.utils.isPad
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -97,34 +100,43 @@ import top.yukonga.miuix.kmp.utils.getWindowSize
 @Composable
 fun App(){
 
-    val configuration = LocalConfiguration.current
-    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    val context = LocalContext.current as MainActivity
-    val parentRoute = remember { mutableStateOf(PagerList.MAIN) }
-    val pagerState = rememberPagerState(initialPage = 0 ,pageCount = { 3 })
-
-    val welcome = remember { mutableStateOf(PreferencesUtil.getBoolean("is_first_use",true)) }
-    //val welcome = remember { mutableStateOf(true )}
-    val easing  = CubicBezierEasing(.42f,0f,0.26f,.85f)
-
-    val navController = rememberNavController()
-
-    val layoutType = remember { mutableIntStateOf(1) }
-
-    LaunchedEffect(navController) {
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            parentRoute.value = destination.route!!.substringBeforeLast("/")
-        }
-    }
-    val welcomeState = rememberPagerState(initialPage = 0 ,pageCount = { 7 })
 
     XScaffold {
+        val context = LocalContext.current as MainActivity
         if (!isModuleActive()){
             if (!isFold() && !isPad()){
                 context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             }
             ActivePage()
             return@XScaffold
+        }
+        val welcomeState = rememberPagerState(initialPage = 0 ,pageCount = { 7 })
+        val configuration = LocalConfiguration.current
+        val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val parentRoute = remember { mutableStateOf(PagerList.MAIN) }
+        val pagerState = rememberPagerState(initialPage = 0 ,pageCount = { 3 })
+
+        val welcome = remember { mutableStateOf(PreferencesUtil.getBoolean("is_first_use",true)) }
+        //val welcome = remember { mutableStateOf(true )}
+        val easing  = CubicBezierEasing(.42f,0f,0.26f,.85f)
+        val navController = rememberNavController()
+        val layoutType = remember { mutableIntStateOf(1) }
+        val coroutineScope = rememberCoroutineScope()
+
+        LaunchedEffect(navController) {
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                parentRoute.value = destination.route!!.substringBeforeLast("/")
+            }
+        }
+
+        LaunchedEffect(welcome.value) {
+            if (!welcome.value){
+                delay(300)
+                coroutineScope.launch {
+                    welcomeState.scrollToPage(0)
+                }
+            }
+
         }
 
         AnimatedVisibility(

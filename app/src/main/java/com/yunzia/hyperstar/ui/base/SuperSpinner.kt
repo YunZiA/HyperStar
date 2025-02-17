@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.base
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
@@ -36,7 +37,6 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.dialog.SuperXDialog
 import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.utils.SPUtils
-import com.yunzia.hyperstar.utils.isOS2
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
@@ -93,6 +93,8 @@ fun SuperSpinner(
         //onSelectedIndexChange = onSelectedIndexChange
     ){
         selected.intValue = it
+
+        Log.d("ggc", "$key: ${selected.intValue}")
         SPUtils.setInt(key,selected.intValue)
         onSelectedIndexChange?.invoke(it)
 
@@ -236,7 +238,9 @@ fun SuperSpinner(
                         }
                     }
                     TextButton(
-                        modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp).fillMaxWidth(),
+                        modifier = Modifier
+                            .padding(start = 24.dp, top = 12.dp, end = 24.dp)
+                            .fillMaxWidth(),
                         text = dialogButtonString,
                         minHeight = 50.dp,
                         onClick = {

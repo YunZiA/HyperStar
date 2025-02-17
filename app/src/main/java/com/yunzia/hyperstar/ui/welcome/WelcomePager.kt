@@ -45,7 +45,6 @@ fun WelcomePager(
     pagerState: PagerState
 ) {
     val view = LocalView.current
-
     val coroutineScope = rememberCoroutineScope()
     Log.d("ggc", "WelcomePager: ${pagerState.currentPage}")
     Column(

@@ -26,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -40,7 +39,7 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.Button
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.pagers.titleColor
-import com.yunzia.hyperstar.utils.PreferencesUtil
+import com.yunzia.hyperstar.utils.SPUtils
 import com.yunzia.hyperstar.utils.isOS2
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.CardDefaults
@@ -138,9 +137,7 @@ private fun LazyListScope.channelItem(
 
     val isSelected = index == selectedItem.intValue
 
-
     item(channel) {
-
         SuperCheckbox(
             title = "Xiaomi HyperOS ${index+1}.0",
             titleColor = titleColor(isSelected),
@@ -150,10 +147,10 @@ private fun LazyListScope.channelItem(
                 .padding(horizontal = 28.dp)
                 .padding(vertical = 5.dp)
                 .bounceAnimN {
-                    Log.d("ggc", "languageItem: $isSelected")
+                    Log.d("ggc", "channelItem: $isSelected")
                     if (isSelected) {
-                        Log.d("ggc", "languageItem: isSelected $isSelected")
-                        PreferencesUtil.putInt("is_Hook_Channel", selectedItem.intValue)
+                        Log.d("ggc", "channelItem: isSelected $isSelected")
+                        SPUtils.setInt("is_Hook_Channel", selectedItem.intValue)
                     }
                 }
                 .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))

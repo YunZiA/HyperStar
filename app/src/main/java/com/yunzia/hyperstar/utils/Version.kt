@@ -18,9 +18,33 @@ fun getOSVersion()= SystemProperties.getInt("ro.mi.os.version.code", 1)
 
 fun isBetaOS() = ReflectUtils.getStaticFieldValue(Build::class.java, "IS_DEV_VERSION", Boolean::class.java,false)
 
-fun isFold()= SystemProperties.getInt("persist.sys.muiltdisplay_type", 0) == 2
+fun isFold():Boolean {
+    val local = PreferencesUtil.getInt("isFold", 0)
+    return when (local) {
+        0 -> {
+            val systemValue = SystemProperties.getInt("persist.sys.muiltdisplay_type", 0)
+            val isFoldNow = systemValue == 2
+            PreferencesUtil.putInt("isFold", if (isFoldNow) 2 else 1)
+            isFoldNow
+        }
+        2 -> true
+        else -> false
+    }
+}
 
-fun isPad()= SystemProperties.get("ro.build.characteristics").contains("tablet")
+fun isPad() :Boolean {
+
+    val local = PreferencesUtil.getInt("isPad", 0)
+    return when (local) {
+        0 -> {
+            val isPadNow = SystemProperties.get("ro.build.characteristics").contains("tablet")
+            PreferencesUtil.putInt("isFold", if (isPadNow) 2 else 1)
+            isPadNow
+        }
+        2 -> true
+        else -> false
+    }
+}
 
 fun isOS2():Boolean{
     if (isBetaOS()) return false

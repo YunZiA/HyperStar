@@ -4,15 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
-
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 
@@ -155,25 +149,32 @@ public class PreferencesUtil {
 
         String type  = "PreferencesUtil";
 
-        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            Log.d("SharedPref", "Key: " + key + ", Value: " + value.toString());
+        allEntries.entrySet().stream()
+                .filter(entry -> !"is_first_use".equals(entry.getKey()))
+                .filter(entry -> !"isFold".equals(entry.getKey()))
+                .filter(entry -> !"isPad".equals(entry.getKey()))
+                .forEach(entry -> {
+                    String key = entry.getKey();
+                    Object value = entry.getValue();
+                    Log.d(type, "Key: " + key + ", Value: " + value.toString());
 
-            if (value instanceof String) {
-                preferencesUtil.add(new SP(type,key,SP.type_string,value));
-            } else if (value instanceof Integer) {
-                preferencesUtil.add(new SP(type,key,SP.type_int,value));
-            } else if (value instanceof Boolean) {
-                preferencesUtil.add(new SP(type,key,SP.type_boolean,value));
-            } else if (value instanceof Float) {
-                preferencesUtil.add(new SP(type,key,SP.type_float,value));
-            } else if (value instanceof Long) {
-                preferencesUtil.add(new SP(type,key,SP.type_long,value));
-            } else {
-                preferencesUtil.add(new SP(type,key,SP.type_string,value));
-            }
-        }
+                    if (value instanceof String) {
+                        preferencesUtil.add(new SP(type,key,SP.type_string,value));
+                    } else if (value instanceof Integer) {
+                        preferencesUtil.add(new SP(type,key,SP.type_int,value));
+                    } else if (value instanceof Boolean) {
+                        preferencesUtil.add(new SP(type,key,SP.type_boolean,value));
+                    } else if (value instanceof Float) {
+                        preferencesUtil.add(new SP(type,key,SP.type_float,value));
+                    } else if (value instanceof Long) {
+                        preferencesUtil.add(new SP(type,key,SP.type_long,value));
+                    } else {
+                        preferencesUtil.add(new SP(type,key,SP.type_string,value));
+                    }
+
+                });
+
+
         //return gson.toJsonTree(preferencesUtil,new TypeToken<ArrayList<SP>>() {}.getType());
     }
 }

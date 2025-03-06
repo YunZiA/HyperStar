@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="log_level">
+        <item>Info</item>
+        <item>Debug</item>
+    </string-array>
+
+    <string-array name="status">
+        <item>Desligado</item>
+        <item>Ligado</item>
+    </string-array>
+
+    <string-array name="power_menu_style">
+        <item>Padrão</item>
+        <item>Estilo 1</item>
+        <item>Estilo 2</item>
+    </string-array>
+
+    <string-array name="hook_channel_items">
+        <item>OS1</item>
+        <item>OS2</item>
+    </string-array>
+
+    <string-array name="media_background_style_entire">
+        <item>Padrão</item>
+        <item>Cor da Capa</item>
+        <item>Capa</item>
+    </string-array>
+
+    <string-array name="power_fun_titles">
+        <item>Vazio</item>
+        <item>Posição Preenchida</item>
+        <item>Recuperação</item>
+        <item>Bootloader</item>
+        <item>Xiao Ai</item>
+        <item>Screenshot</item>
+        <item>Silencioso</item>
+        <item>Modo Avião</item>
+        <item>Wechat scan</item>
+        <item>Wechat money</item>
+        <item>Alipay scan</item>
+        <item>Alipay money</item>
+    </string-array>
+
+    <array name="control_center_item_list_name">
+        <item>Cartões</item>
+        <item>Player de mídia</item>
+        <item>Barra de brilho</item>
+        <item>Barra de volume</item>
+        <item>Mi Home</item>
+        <item>Xiaomi Smart Hub</item>
+        <item>Cartão padrão</item>
+        <item>Editar</item>
+    </array>
+
+    <array name="card_tile_name">
+        <item>WLAN</item>
+        <item>Dados</item>
+        <item>Bluetooth</item>
+        <item>Configurações</item>
+        <item>Modo Avião</item>
+        <item>Brilho Automático</item>
+        <item>Ponto de Acesso</item>
+        <item>NFC</item>
+        <item>Localização</item>
+        <item>Silencioso</item>
+        <item>Vibrar</item>
+        <item>Printscreen</item>
+        <item>Lanterna</item>
+        <item>Orientação</item>
+        <item>Bloquear</item>
+        <item>Scanner</item>
+        <item>Modo Leitura</item>
+        <item>Modo Escuro</item>
+        <item>Não Perturbe</item>
+        <item>Modo de Economia</item>
+        <item>Tradutor MI</item>
+        <item>Legendas AI</item>
+        <item>Carregamento Reverso</item>
+        <item>Dolby Atmos</item>
+        <item>Cast</item>
+        <item>Mi Share</item>
+        <item>Ultra Economia</item>
+        <item>Dual SIM</item>
+    </array>
+
+    <string-array name="color_mode_items">
+        <item>Sistema</item>
+        <item>Claro</item>
+        <item>Escuro</item>
+    </string-array>
+
+    <string-array name="reboot_menus_style">
+        <item>dialog</item>
+        <item>popup</item>
+    </string-array>
+
+    <string-array name="is_local_speaker_entire">
+        <item>Padrão</item>
+        <item>Nome do Dispositivo</item>
+    </string-array>
+
+    <string-array name="is_super_blur_entire">
+        <item>Padrão</item>
+        <item>Forçar desligado</item>
+        <item>Forçar ligado</item>
+    </string-array>
+
+    <string-array name="is_wordless_mode_entire">
+        <item>Padrão</item>
+        <item>Forçar desligado</item>
+        <item>Forçar ligado</item>
+    </string-array>
+    <string-array name="is_list_label_mode_entire">
+        <item>Padrão</item>
+        <item>Dentro</item>
+        <item>Customizado</item>
+    </string-array>
+
+    <string-array name="edit_background_mode_entire">
+        <item>Separado</item>
+        <item>Global</item>
+    </string-array>
+
+    <string-array name="is_device_center_mode_entire">
+        <item>Padrão</item>
+        <item>Forçar desligado</item>
+        <item>Limitado à uma linha</item>
+    </string-array>
+
+    <string-array name="seekbar_value_style_entire">
+        <item>Porcentagem</item>
+        <item>Valor Atual</item>
+    </string-array>
+
+    <string-array name="qs_list_tile_color_for_state_entire">
+        <item>Padrão</item>
+        <item>Siga o Ícone</item>
+        <item>Customizado</item>
+    </string-array>
+
+    <string-array name="land_rightOrLeft_entire">
+        <item>À Esquerda do Painel</item>
+        <item>À Direita do Painel</item>
+    </string-array>
+
+</resources>

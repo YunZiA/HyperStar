@@ -126,7 +126,13 @@ class LanguageHelper {
                 }
 
                 5-> {
-                    return getLanguage("es","ES")
+                    return getLanguage("es","MX")
+
+                }
+
+
+                6-> {
+                    return getLanguage("pt","BR")
 
                 }
 

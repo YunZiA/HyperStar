@@ -56,5 +56,26 @@ fun TranslatorPager(
                 url = "https://t.me/Minggg07"
             )
         }
+        classes(
+            title = "Español (México)"
+        ) {
+            SuperIntentArrow(
+                title = "Julio César",
+                summary = "Telegram@jj24_0",
+                navController = navController,
+                url = "https://t.me/jj24_0"
+            )
+        }
+        classes(
+            title = "Português (Brasil)"
+        ) {
+            SuperIntentArrow(
+                title = "Adaias Junior",
+                summary = "Telegram@Miel11s",
+                navController = navController,
+                url = "https://t.me/Miel11s"
+            )
+
+        }
     }
 }

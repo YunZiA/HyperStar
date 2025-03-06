@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +48,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.ui.base.helper.getSystemSmoothCornerRadius
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
+import kotlinx.coroutines.delay
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -124,15 +126,28 @@ fun FloatingPagerButton(
         },
         animationSpec = tween(durationMillis, easing = easing),
         finishedListener = {
-            complete.value = it == 16.dp || it == roundedCorner
         }
 
     )
 //    if (radius.value == roundedCorner) radius.value = 0.dp
-//    LaunchedEffect(radius.value) {
-//
-//
-//    }
+    LaunchedEffect(radius.value) {
+        if (!expand.value){
+            complete.value = false
+            return@LaunchedEffect
+        }
+        if (radius.value == if (activity?.isInMultiWindowMode == true){
+                16.dp
+            }else{
+                roundedCorner
+            }){
+            delay(200L)
+            complete.value = true
+        }else{
+            complete.value = false
+        }
+
+
+    }
 
     Box(
         Modifier
@@ -160,7 +175,7 @@ fun FloatingPagerButton(
 
             Surface(
                 modifier = Modifier.semantics { role = Role.Button },
-                shape = SmoothRoundedCornerShape(if (complete.value && expand.value) 0.dp else radius.value,0.8f),
+                shape = SmoothRoundedCornerShape(if (complete.value) 0.dp else radius.value,0.8f),
                 color = containerColor,
                 shadowElevation = if (expand.value) 0.dp else shadowElevation,
                 enabled = !expand.value,

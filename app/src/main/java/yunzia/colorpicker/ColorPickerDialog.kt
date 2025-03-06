@@ -65,10 +65,11 @@ fun ColorPickerDialog(
     val focusManager = LocalFocusManager.current
     var hasFocus by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val color = rememberSaveable(fColor,stateSaver = HsvColor.Saver) {
-
+    val color = rememberSaveable(
+        fColor,
+        stateSaver = HsvColor.Saver
+    ) {
         mutableStateOf(HsvColor.from(fColor))
-
     }
     val filter = remember(key1 = color.value) { FilterColorHex(color.value.toHex()) }
 

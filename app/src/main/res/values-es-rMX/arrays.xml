@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="log_level">
+        <item>Info</item>
+        <item>Debug</item>
+    </string-array>
+
+    <string-array name="status">
+        <item>Apagado</item>
+        <item>Encendido</item>
+    </string-array>
+
+    <string-array name="power_menu_style">
+        <item>Predeterminado</item>
+        <item>Estilo 1</item>
+        <item>Estilo 2</item>
+    </string-array>
+
+    <string-array name="hook_channel_items">
+        <item>OS1</item>
+        <item>OS2</item>
+    </string-array>
+
+    <string-array name="media_background_style_entire">
+        <item>Predeterminado</item>
+        <item>Cover color</item>
+        <item>Cover</item>
+    </string-array>
+
+    <string-array name="power_fun_titles">
+        <item>Vacío</item>
+        <item>Fill in a Position</item>
+        <item>Recovery</item>
+        <item>Bootloader</item>
+        <item>Xiao Ai</item>
+        <item>Captura de pantalla</item>
+        <item>Modo silencioso</item>
+        <item>Modo avión</item>
+        <item>Wechat scan</item>
+        <item>Wechat money</item>
+        <item>Alipay scan</item>
+        <item>Alipay money</item>
+    </string-array>
+
+    <array name="control_center_item_list_name">
+        <item>Card Tile</item>
+        <item>Reproductor multimedia</item>
+        <item>Barra de brillo</item>
+        <item>Barra de volumen</item>
+        <item>Mi Home</item>
+        <item>Xiaomi Smart Hub</item>
+        <item>Standard Tile</item>
+        <item>Editar</item>
+    </array>
+
+    <array name="card_tile_name">
+        <item>WiFi</item>
+        <item>Redes móviles</item>
+        <item>Bluetooth</item>
+        <item>Ajustes</item>
+        <item>Modo avión</item>
+        <item>Brillo automático</item>
+        <item>Punto de acceso</item>
+        <item>NFC</item>
+        <item>Ubicación</item>
+        <item>Silenciar</item>
+        <item>Vibrar</item>
+        <item>Captura de pantalla</item>
+        <item>Linterna</item>
+        <item>Bloquear orientación</item>
+        <item>Bloquear pantalla</item>
+        <item>Escanear</item>
+        <item>Modo lectura</item>
+        <item>Modo oscuro</item>
+        <item>DND</item>
+        <item>Ahorro de batería</item>
+        <item>Mi AI Translate</item>
+        <item>AI subtitles</item>
+        <item>Carga inalámbrica inversa</item>
+        <item>Dolby Atmos</item>
+        <item>Cast</item>
+        <item>Mi Share</item>
+        <item>Ultra ahorro de batería</item>
+        <item>Dual phone</item>
+    </array>
+
+    <string-array name="color_mode_items">
+        <item>Sistema</item>
+        <item>Claro</item>
+        <item>Oscuro</item>
+    </string-array>
+
+    <string-array name="reboot_menus_style">
+        <item>dialog</item>
+        <item>popup</item>
+    </string-array>
+
+    <string-array name="is_local_speaker_entire">
+        <item>Predeterminado</item>
+        <item>Nombre del dispositivo</item>
+    </string-array>
+
+    <string-array name="is_super_blur_entire">
+        <item>Predeterminado</item>
+        <item>Forzar apagado</item>
+        <item>Forzar encendido</item>
+    </string-array>
+
+    <string-array name="is_wordless_mode_entire">
+        <item>Predeterminado</item>
+        <item>Forzar apagado</item>
+        <item>Forzar encendido</item>
+    </string-array>
+    <string-array name="is_list_label_mode_entire">
+        <item>Predeterminado</item>
+        <item>Adentro</item>
+        <item>Personalizado</item>
+    </string-array>
+
+    <string-array name="edit_background_mode_entire">
+        <item>Separado</item>
+        <item>Global</item>
+    </string-array>
+
+    <string-array name="is_device_center_mode_entire">
+        <item>Predeterminado</item>
+        <item>Forzar apagado</item>
+        <item>Limitar a una sola línea</item>
+    </string-array>
+
+    <string-array name="seekbar_value_style_entire">
+        <item>Porcentaje</item>
+        <item>Valor actual</item>
+    </string-array>
+
+    <string-array name="qs_list_tile_color_for_state_entire">
+        <item>Predeterminado</item>
+        <item>Follow the icon</item>
+        <item>Personalizado</item>
+    </string-array>
+
+    <string-array name="land_rightOrLeft_entire">
+        <item>Panel izquierdo</item>
+        <item>Panel derecho</item>
+    </string-array>
+
+</resources>

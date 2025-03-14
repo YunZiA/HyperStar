@@ -8,6 +8,10 @@ object PagerList {
 
     const val HOME = "${MAIN}/home"
 
+    const val BARRAGE = "${MAIN}/barrage"
+
+    const val THEMEMANAGER = "${MAIN}/thememanager"
+
     const val LANGUAGE = "${MAIN}/language"
 
     const val GO_ROOT = "${MAIN}/go_root"

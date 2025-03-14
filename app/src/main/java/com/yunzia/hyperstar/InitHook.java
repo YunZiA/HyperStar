@@ -5,7 +5,9 @@ import static com.yunzia.hyperstar.utils.VersionKt.isHookChannel;
 
 import android.content.res.XModuleResources;
 
+import com.yunzia.hyperstar.hook.init.InitBarrageHook;
 import com.yunzia.hyperstar.hook.init.InitMiuiHomeHook;
+import com.yunzia.hyperstar.hook.init.InitThemeManagerHook;
 import com.yunzia.hyperstar.hook.init.SystemUIHookForOS1;
 import com.yunzia.hyperstar.hook.init.SystemUIHookForOS2;
 import com.yunzia.hyperstar.hook.tool.starLog;
@@ -72,6 +74,8 @@ public class InitHook implements IXposedHookLoadPackage, IXposedHookInitPackageR
                 starLog.logE("Hook initialization failed! Because the HookChannel is OS"+isHookChannel);
 
         }
+        new InitBarrageHook().initHook(lpparam);
+        new InitThemeManagerHook().initHook(lpparam);
 
 
     }

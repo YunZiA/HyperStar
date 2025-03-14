@@ -286,4 +286,8 @@ o(╥﹏╥)o</string>
     <string name="setup_successful">Setup successful!</string>
     <string name="enter_module">Enter Module</string>
     <string name="title_volume_top_value_show">Display percentage progress</string>
+    <string name="barrage">Bullet screen notification</string>
+    <string name="thememanager">Themes</string>
+    <string name="unlock_ai_wallpaper">Unlock the entrance to AI wallpapers</string>
+    <string name="disable_click_events">Disable click events</string>
 </resources>

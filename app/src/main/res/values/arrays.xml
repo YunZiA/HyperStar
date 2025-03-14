@@ -3,6 +3,8 @@
     <string-array name="module_scope">
         <item>com.android.systemui</item>
         <item>com.miui.home</item>
+        <item>com.android.thememanager</item>
+        <item>com.xiaomi.barrage</item>
     </string-array>
 
     <string-array name="language_list">

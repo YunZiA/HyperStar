@@ -54,6 +54,7 @@ import com.yunzia.hyperstar.ui.base.nav.PagersModel
 import com.yunzia.hyperstar.ui.base.nav.pagersJson
 import com.yunzia.hyperstar.ui.base.showFPSMonitor
 import com.yunzia.hyperstar.ui.module.NotDeveloperPager
+import com.yunzia.hyperstar.ui.module.barrage.BarragePage
 import com.yunzia.hyperstar.ui.module.home.HomePage
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterColorPager
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterListPager
@@ -72,6 +73,7 @@ import com.yunzia.hyperstar.ui.module.systemui.other.notification.NotificationOf
 import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.PowerMenuStylePager
 import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.SelectFunPager
 import com.yunzia.hyperstar.ui.module.systemui.volume.VolumePager
+import com.yunzia.hyperstar.ui.module.thememanager.ThemeManagerPage
 import com.yunzia.hyperstar.ui.pagers.DonationPage
 import com.yunzia.hyperstar.ui.pagers.FPSMonitor
 import com.yunzia.hyperstar.ui.pagers.GoRootPager
@@ -270,6 +272,10 @@ fun NavGraphBuilder.pagerContent(
     composable(PagerList.REFERENCES) { ReferencesPager(navController,parentRoute)  }
 
     composable(PagerList.HOME) { HomePage(navController,parentRoute) }
+
+    composable(PagerList.BARRAGE) { BarragePage(navController,parentRoute) }
+
+    composable(PagerList.THEMEMANAGER) { ThemeManagerPage(navController,parentRoute) }
 
     composable(SystemUIList.VOLUME_DIALOG) { VolumePager(navController,parentRoute) }
 

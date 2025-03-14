@@ -249,4 +249,8 @@
     <string name="page_user_scroll_title">Habilitar desplazamiento de página del usuario</string>
     <string name="over_scroll_title">Habilitar desplazamiento lateral</string>
     <string name="model_pager_setting">Ajustes adicionales</string>
+    <string name="barrage">Bullet screen notification</string>
+    <string name="thememanager">Themes</string>
+    <string name="unlock_ai_wallpaper">Unlock the entrance to AI wallpapers</string>
+    <string name="disable_click_events">Disable click events</string>
 </resources>

@@ -10,15 +10,17 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.profileinstaller.ProfileInstaller
 import com.yunzia.hyperstar.ui.base.BaseActivity
+import com.yunzia.hyperstar.utils.AppInfo
+import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.SPUtils
-import com.yunzia.hyperstar.utils.Helper.isModuleActive
 
 
 class MainActivity : BaseActivity() {
@@ -29,6 +31,9 @@ class MainActivity : BaseActivity() {
     var isRecreate:Boolean = false
 
     var isGranted = mutableStateOf(false)
+
+    val themeManager: MutableState<AppInfo?> = mutableStateOf(null)
+    val barrageManger: MutableState<AppInfo?> = mutableStateOf(null)
 
 
     @Composable
@@ -78,7 +83,27 @@ class MainActivity : BaseActivity() {
 
 
     @SuppressLint("MissingPermission", "RemoteViewLayout")
-    override fun initData(savedInstanceState: Bundle?) {
+    @Composable
+    override fun InitData(savedInstanceState: Bundle?) {
+
+        val pm = this@MainActivity.packageManager
+        try {
+
+            val theme = pm.getPackageInfo("com.android.thememanager", PackageManager.GET_META_DATA)
+            themeManager.value = AppInfo(
+                theme.applicationInfo?.loadIcon(pm),
+                theme.versionName,
+                theme.longVersionCode
+            )
+            val barrage = pm.getPackageInfo("com.xiaomi.barrage", PackageManager.GET_META_DATA)
+            barrageManger.value = AppInfo(
+                barrage.applicationInfo?.loadIcon(pm),
+                barrage.versionName,
+                barrage.longVersionCode
+            )
+        } catch (e: PackageManager.NameNotFoundException) {
+            // Handle the case where the package is not found
+        }
 
         val isRecreate = savedInstanceState?.getBoolean("isRecreate",true)
         if (isRecreate != null && isRecreate){

@@ -2,6 +2,7 @@ package com.yunzia.hyperstar.ui.pagers
 
 import android.content.Intent
 import android.widget.Toast
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
@@ -35,12 +37,13 @@ import com.yunzia.hyperstar.ui.pagers.dialog.checkApplication
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.Helper.isRoot
+import com.yunzia.hyperstar.utils.appIcon
 import com.yunzia.hyperstar.utils.isOS2Settings
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.ArrowRight
+import top.yukonga.miuix.kmp.icon.icons.base.ArrowRight
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
@@ -51,7 +54,7 @@ fun Home(
     padding: PaddingValues
 ) {
     val context = LocalContext.current
-    val activity = context as MainActivity
+    val activity = LocalActivity.current as MainActivity
 
     val isModuleActive = isModuleActive()
 
@@ -72,22 +75,28 @@ fun Home(
                     modifier = Modifier.bounceAnimN()
                 ){
                     Row(
-                        modifier = Modifier.fillMaxWidth().clickable {
-                            if (go){
-                                activity.startActivity(intent)
-                            }else{
-                                val result = Helper.rootShell("am start -c 'org.lsposed.manager.LAUNCH_MANAGER' 'com.android.shell/.BugreportWarningActivity'")
-                                if (result != "0"){
-                                    Toast.makeText(activity,result,Toast.LENGTH_SHORT).show()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                if (go) {
+                                    activity.startActivity(intent)
+                                } else {
+                                    val result =
+                                        Helper.rootShell("am start -c 'org.lsposed.manager.LAUNCH_MANAGER' 'com.android.shell/.BugreportWarningActivity'")
+                                    if (result != "0") {
+                                        Toast.makeText(activity, result, Toast.LENGTH_SHORT).show()
+                                    }
                                 }
-                            }
-                        },
+                            },
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
 
                         Text(
                             text = stringResource(R.string.not_activated_toast_description),
-                            modifier = Modifier.weight(1f).padding( vertical = 16.dp).padding(start = 24.dp, end = 8.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(vertical = 16.dp)
+                                .padding(start = 24.dp, end = 8.dp),
                             color = Color.Red,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 15.sp
@@ -97,8 +106,8 @@ fun Home(
                         Image(
                             modifier = Modifier
                                 .padding(end = 24.dp)
-                                .size(10.dp,14.dp),
-                            imageVector = MiuixIcons.ArrowRight,
+                                .size(10.dp, 14.dp),
+                            imageVector = MiuixIcons.Base.ArrowRight,
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(colorScheme.onSurfaceVariantActions),
                         )
@@ -114,14 +123,20 @@ fun Home(
                     modifier = Modifier.bounceAnimN()
                 ){
                     Row(
-                        modifier = Modifier.fillMaxWidth().clickable {
-                            navController.navigate(PagerList.GO_ROOT) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                navController.navigate(PagerList.GO_ROOT)
+                            },
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
 
                         Text(
                             text = stringResource(R.string.no_root_description),
-                            modifier = Modifier.weight(1f).padding( vertical = 16.dp).padding(start = 24.dp, end = 8.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(vertical = 16.dp)
+                                .padding(start = 24.dp, end = 8.dp),
                             color = Color.Red,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 15.sp
@@ -131,8 +146,8 @@ fun Home(
                         Image(
                             modifier = Modifier
                                 .padding(end = 24.dp)
-                                .size(10.dp,14.dp),
-                            imageVector = MiuixIcons.ArrowRight,
+                                .size(10.dp, 14.dp),
+                            imageVector = MiuixIcons.Base.ArrowRight,
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(colorScheme.onSurfaceVariantActions),
                         )
@@ -177,12 +192,38 @@ fun Home(
         ){
             if (isOS2Settings()){
                 SuperNavHostArrow(
-                    leftIcon = R.drawable.ic_miui_home_settings,
+                    leftIcon = rememberDrawablePainter(appIcon("com.miui.home").value),
                     title = stringResource(R.string.hyper_home),
                     navController = navController,
                     route = PagerList.HOME
 
                 )
+
+            }
+
+
+            activity.themeManager.value?.let {
+                if(it.versionCode >= 7180){
+                    SuperNavHostArrow(
+                        leftIcon = rememberDrawablePainter(it.appIcon),
+                        title = stringResource(R.string.thememanager),
+                        navController = navController,
+                        route = PagerList.THEMEMANAGER
+
+                    )
+                }
+
+            }
+            activity.barrageManger.value?.let {
+                if (it.versionName!!.startsWith("3")){
+                    SuperNavHostArrow(
+                        leftIcon = rememberDrawablePainter(it.appIcon),
+                        title = stringResource(R.string.barrage),
+                        navController = navController,
+                        route = PagerList.BARRAGE
+
+                    )
+                }
 
             }
             SuperNavHostArrow(

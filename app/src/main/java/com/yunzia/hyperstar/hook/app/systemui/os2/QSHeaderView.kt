@@ -93,6 +93,7 @@ class QSHeaderView() : Hooker() {
 
         val ControlCenterHeaderExpandController = findClass("com.android.systemui.controlcenter.shade.ControlCenterHeaderExpandController",classLoader)
         val Folme = findClass("miuix.animation.Folme",classLoader)
+        val IFolme = findClass("miuix.animation.IFolme",classLoader)
 
         findClass(
             "com.android.systemui.controlcenter.shade.ControlCenterHeaderExpandController\$controlCenterCallback\$1",
@@ -118,11 +119,43 @@ class QSHeaderView() : Hooker() {
                 val isVerticalMode =
                     MiuiConfigs.callStaticMethodAs<Boolean>("isVerticalMode", context)
                 if (isVerticalMode) {
-                    if (!z) {
-                        ControlCenterHeaderExpandController.callStaticMethod(
+                    val headers:View? = header
+                    val alpha = arrayOf(
+                        ControlCenterHeaderExpandController.findMethodBestMatchIfExist(
+                            "startFolmeAnimationAlpha",
+                            View::class.java,
+                            IFolme!!,
+                            Float::class.java,
+                            Boolean::class.java
+                        ),
+                        ControlCenterHeaderExpandController.findMethodBestMatchIfExist(
                             "access\$startFolmeAnimationAlpha",
-                            controlCenterHeaderExpandController,
-                            header,
+                            ControlCenterHeaderExpandController,
+                            View::class.java,
+                            IFolme!!,
+                            Float::class.java,
+                            Boolean::class.java
+                        )
+                    )
+
+                    if (!z) {
+//                        ControlCenterHeaderExpandController.callStaticMethods(
+//                            "access\$startFolmeAnimationAlpha",
+//                            arrayOf(
+//                                ControlCenterHeaderExpandController!!,
+//                                View::class.java,
+//                                Folme!!,
+//                                Float::class.java,
+//                                Boolean::class.java
+//                            ),
+//                            controlCenterHeaderExpandController,
+//                            headers,
+//                            controlCenterCarrierViewFolme,
+//                            0f, z2
+//                        )
+                        alpha.onlyInvoke(
+                            null,
+                            headers,
                             controlCenterCarrierViewFolme,
                             0f, z2
                         )
@@ -140,10 +173,23 @@ class QSHeaderView() : Hooker() {
 
                     } else {
 
-                        ControlCenterHeaderExpandController.callStaticMethod(
-                            "access\$startFolmeAnimationAlpha",
-                            controlCenterHeaderExpandController,
-                            header,
+//                        ControlCenterHeaderExpandController.callStaticMethods(
+//                            "access\$startFolmeAnimationAlpha",
+//                            arrayOf(
+//                                ControlCenterHeaderExpandController!!,
+//                                View::class.java,
+//                                Folme!!,
+//                                Float::class.java,
+//                                Boolean::class.java
+//                            ),
+//                            controlCenterHeaderExpandController,
+//                            headers,
+//                            controlCenterCarrierViewFolme,
+//                            1f, z2
+//                        )
+                        alpha.onlyInvoke(
+                            null,
+                            headers,
                             controlCenterCarrierViewFolme,
                             1f, z2
                         )
@@ -325,7 +371,7 @@ class QSHeaderView() : Hooker() {
 
         val size = (getDimensionPixelOffset(res,"shade_header_control_center_carrier_text_size",systemUI)/2*3).toInt()
         val bottom = (getDimensionPixelOffset(res,"shade_header_bottom_padding",systemUI)*2.85).toInt()
-            //dpToPx(res,21.4f).toInt()
+        //dpToPx(res,21.4f).toInt()
         val lp = ViewGroup.MarginLayoutParams(size, size).apply {
             bottomMargin = bottom
             //topMargin = 100

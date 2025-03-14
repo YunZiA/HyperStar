@@ -13,6 +13,7 @@ import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import java.lang.invoke.MethodHandles
+import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 
 abstract class HookerHelper {
@@ -63,6 +64,108 @@ abstract class HookerHelper {
 
     fun Class<*>?.getStaticObjectField(fieldName: String): Any? =  XposedHelpers.getStaticObjectField(this, fieldName)
 
+    fun  Array<Method?>.onlyInvoke(
+        o: Any?,
+        vararg objects: Any?
+    ): Any?{
+        for (method in this){
+            if (method != null){
+                return method.invoke(o,*objects)
+            }
+        }
+        starLog.logE("$this can't invoke")
+        return null
+
+    }
+
+    @Throws(
+        IllegalAccessException::class,
+        java.lang.IllegalArgumentException::class,
+        InvocationTargetException::class
+    )
+    external fun invoke(o: Any?, vararg objects: Any?): Any?
+
+
+    fun Class<*>?.findMethodBestMatch(
+        methodNames: Array<String?>,
+        parameterTypes: Array<Class<*>?>,
+        vararg args: Any?
+    ):Method?{
+        try {
+            for (methodName in methodNames){
+                return XposedHelpers.findMethodBestMatch(this,methodName,*parameterTypes,*args)
+            }
+        }catch (e: IllegalAccessException) {
+            // should not happen
+            starLog.logE(e.toString())
+            throw IllegalAccessError(e.message)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        } catch (e: InvocationTargetException) {
+            throw InvocationTargetError(e.cause)
+        }
+        return null
+    }
+
+
+    fun Class<*>?.findMethodsBestMatch(
+        methodsName: Array<String?>,
+        vararg args: Class<*>?
+    ):Method?{
+        try {
+            for (methodName in methodsName){
+                return XposedHelpers.findMethodBestMatch(this,methodName,*args)
+            }
+        }catch (e: IllegalAccessException) {
+            // should not happen
+            starLog.logE(e.toString())
+            throw IllegalAccessError(e.message)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        } catch (e: InvocationTargetException) {
+            throw InvocationTargetError(e.cause)
+        }
+        return null
+    }
+
+    fun Class<*>?.findMethodBestMatchIfExist(
+        methodName: String?,
+        vararg args: Class<*>?
+    ):Method?{
+        try {
+            val method: Method =  XposedHelpers.findMethodBestMatch(this,methodName,*args)
+            return method
+        } catch (e: NoSuchMethodError) {
+            return null
+        } catch (e: java.lang.Exception) {
+            return null
+        }
+
+    }
+
+    fun Class<*>?.findMethodBestMatch(
+        methodName: String?,
+        vararg args: Class<*>?
+    ):Method?{
+        try {
+            val method: Method =  XposedHelpers.findMethodBestMatch(this,methodName,*args)
+            return method
+        } catch (e: NoSuchMethodError) {
+            starLog.logE(e.toString())
+            return null
+        } catch (e: java.lang.Exception) {
+            starLog.logE(e.toString())
+            return null
+        }
+    }
+
+    class InvocationTargetError(cause: Throwable?) : Error(cause) {
+        companion object {
+            private const val serialVersionUID = -1070936889459514628L
+        }
+    }
+
+
     fun  Any?.callMethod(methodName: String, vararg args: Any?):Any? {
         return XposedHelpers.callMethod(this, methodName,*args)
     }
@@ -71,7 +174,12 @@ abstract class HookerHelper {
         return this.callMethod( methodName, *args) as T
     }
 
-    fun  Class<*>?.callStaticMethod(methodName: String, vararg args: Any?):Any? {
+
+    fun Class<*>?.callStaticMethods(methodName: String, parameterTypes: Array<Class<*>>, vararg args: Any?):Any? {
+        return XposedHelpers.callStaticMethod(this, methodName,parameterTypes,*args)
+    }
+
+    fun Class<*>?.callStaticMethod(methodName: String, vararg args: Any?):Any? {
         return XposedHelpers.callStaticMethod(this, methodName, *args)
     }
 
@@ -134,6 +242,33 @@ abstract class HookerHelper {
                 return param.thisObject.methodHook(param)
             }
         })
+    }
+
+    fun Class<*>.allMethod(
+        methodName: String,
+    ): MutableSet<Method> {
+        val unhooks: MutableSet<Method> = HashSet()
+        for (method in this.getDeclaredMethods()){
+            if (method.name == methodName) {
+                unhooks.add(method)
+            }
+        }
+        return unhooks
+    }
+
+    fun MutableSet<Method>.after(
+        methodHook: Any?.(param:MethodHookParam) -> Unit
+    ){
+        val unhooks: MutableSet<XC_MethodHook.Unhook> = HashSet()
+        for (method in this){
+            unhooks.add(
+                XposedBridge.hookMethod(method, object :XC_MethodHook(){
+                    override fun afterHookedMethod(param: MethodHookParam) {
+                        param.thisObject.methodHook(param)
+                    }
+                })
+            )
+        }
     }
 
 

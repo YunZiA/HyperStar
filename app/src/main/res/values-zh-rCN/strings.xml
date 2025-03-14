@@ -278,5 +278,9 @@
     <string name="setup_successful">设置成功！</string>
     <string name="enter_module">进入模块</string>
     <string name="title_volume_top_value_show">百分比进度值显示</string>
+    <string name="barrage">弹幕通知</string>
+    <string name="thememanager">主题壁纸</string>
+    <string name="unlock_ai_wallpaper">解锁AI壁纸入口</string>
+    <string name="disable_click_events">禁用弹幕通知点击事件</string>
 
 </resources>

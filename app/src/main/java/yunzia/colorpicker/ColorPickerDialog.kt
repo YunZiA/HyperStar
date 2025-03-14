@@ -50,7 +50,7 @@ import com.yunzia.hyperstar.ui.base.MTextField
 import com.yunzia.hyperstar.ui.base.dialog.SuperDialog
 import com.yunzia.hyperstar.ui.base.tool.FilterColorHex
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 

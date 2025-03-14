@@ -1,0 +1,62 @@
+package com.yunzia.hyperstar.utils
+
+import android.content.Context
+import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+
+
+@Composable
+fun appIcon(packageName: String, content: Context = LocalContext.current): MutableState<Drawable?> {
+    var appIcon: MutableState<Drawable?> = remember { mutableStateOf(null) }
+
+    LaunchedEffect(packageName) {
+        val pm = content.packageManager
+        try {
+            val info = pm.getPackageInfo(packageName, PackageManager.GET_META_DATA)
+            appIcon.value =  info.applicationInfo?.loadIcon(pm)
+
+        } catch (e: PackageManager.NameNotFoundException) {
+            // Handle the case where the package is not found
+        }
+    }
+
+    return appIcon
+}
+
+@Composable
+fun loadAppInfo(packageName: String, content: Context = LocalContext.current): MutableState<AppInfo?> {
+    val appInfo: MutableState<AppInfo?> = remember { mutableStateOf(null) }
+
+    LaunchedEffect(packageName) {
+        val pm = content.packageManager
+        try {
+
+            val info = pm.getPackageInfo(packageName, PackageManager.GET_META_DATA)
+            appInfo.value = AppInfo(
+                info.applicationInfo?.loadIcon(pm),
+                info.versionName,
+                info.longVersionCode
+            )
+
+        } catch (e: PackageManager.NameNotFoundException) {
+            // Handle the case where the package is not found
+        }
+    }
+
+    return appInfo
+}
+
+data class AppInfo(
+    val appIcon:Drawable?,
+    val versionName:String?,
+    val versionCode:Long
+)
+
+
+

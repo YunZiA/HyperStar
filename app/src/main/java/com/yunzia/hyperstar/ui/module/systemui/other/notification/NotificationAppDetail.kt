@@ -45,6 +45,7 @@ fun NotificationAppDetail(
     val hazeState = remember { HazeState() }
     XScaffold(
         topBar = {
+
             TopAppBar(
                 modifier = Modifier.showBlur(hazeState),
                 color = Color.Transparent,
@@ -70,6 +71,7 @@ fun NotificationAppDetail(
                     )
                 }
             )
+
         },
         floatingActionButton = {
 

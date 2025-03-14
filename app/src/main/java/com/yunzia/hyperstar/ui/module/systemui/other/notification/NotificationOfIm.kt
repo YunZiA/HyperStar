@@ -1,6 +1,9 @@
 package com.yunzia.hyperstar.ui.module.systemui.other.notification
 
 import android.content.pm.PackageManager
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -67,6 +71,7 @@ import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
+import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 
@@ -86,38 +91,49 @@ fun FloatingPagerButtonContent(
             .background(Color.Black),
         popupHost = { },
         topBar = {
-            TopAppBar(
-                modifier = Modifier.showBlur(hazeState),
-                color = Color.Transparent,
-                title = "应用选择",
-                scrollBehavior = topAppBarScrollBehavior,
-                navigationIcon = {
-                    TopButton(
-                        modifier = Modifier.padding(start = 18.dp),
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_close),
-                        contentDescription = "close",
-                        onClick = { expand.value = false }
+            AnimatedVisibility(
+                !isSearch,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                TopAppBar(
+                    modifier = Modifier.showBlur(hazeState),
+                    color = Color.Transparent,
+                    title = "应用选择",
+                    scrollBehavior = topAppBarScrollBehavior,
+                    navigationIcon = {
+                        TopButton(
+                            modifier = Modifier.padding(start = 18.dp),
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_close),
+                            contentDescription = "close",
+                            onClick = { expand.value = false }
 
-                    )
+                        )
 
 
-                },
-                actions = {
-                    TopButton(
-                        modifier = Modifier.padding(end = 18.dp),
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_done),
-                        contentDescription = "done",
-                        onClick = { expand.value = false }
-                    )
-                }
-            )
+                    },
+                    actions = {
+                        TopButton(
+                            modifier = Modifier.padding(end = 18.dp),
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_done),
+                            contentDescription = "done",
+                            onClick = { expand.value = false }
+                        )
+                    }
+                )
 
+            }
         }
     ){ padding->
 
+        BackHandler(isSearch) {
+            isSearch = false
+            focusManager.clearFocus()
+        }
+
         Column(
             modifier = Modifier
-                .padding(top = padding.calculateTopPadding() + 14.dp)
+                .padding(top = if (isSearch) 0.dp else padding.calculateTopPadding() + 14.dp)
                 .fillMaxSize()
         ){
 
@@ -142,9 +158,14 @@ fun FloatingPagerButtonContent(
                             label = stringResource(R.string.app_name_type),
                             modifier = Modifier
                                 .padding(end = 5.dp)
+                                .onFocusChanged {
+                                    if (it.isFocused){
+                                        isSearch = true
+                                    }
+                                }
                                 .weight(1f),
                             keyboardActions = KeyboardActions(onDone = {
-                                isSearch = true
+                                //isSearch = true
                                 focusManager.clearFocus()
                             }),
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),

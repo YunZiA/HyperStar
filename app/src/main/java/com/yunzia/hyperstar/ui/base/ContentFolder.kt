@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.ArrowRight
+import top.yukonga.miuix.kmp.icon.icons.base.ArrowRight
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 @Composable
@@ -72,7 +72,7 @@ fun ContentFolder(
                 modifier = Modifier
                     .size(15.dp)
                     .rotate(rotating.value),
-                imageVector = MiuixIcons.ArrowRight,
+                imageVector = MiuixIcons.Base.ArrowRight,
                 contentDescription = null,
                 colorFilter = BlendModeColorFilter(colorScheme.onSurfaceVariantActions, BlendMode.SrcIn),
             )

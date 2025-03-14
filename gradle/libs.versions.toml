@@ -5,7 +5,8 @@ api = "82"
 agp = "8.6.1"
 colormathExtJetpackComposeVersion = "3.6.1"
 compilerVersion = "1.5.15"
-constraintlayoutComposeVersion = "1.1.0"
+constraintlayoutComposeVersion = "1.1.1"
+dexkit = "2.0.3"
 ezxhelper = "2.2.0"
 foundation = "1.7.8"
 gson = "2.11.0"
@@ -16,15 +17,15 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
-activityCompose = "1.10.0"
-composeBom = "2025.02.00"
+activityCompose = "1.10.1"
+composeBom = "2025.03.00"
 composeMaterial = "1.4.1"
-miuix = "0.3.5"
+miuix = "0.3.6"
 paletteKtx = "1.0.0"
 profileinstaller = "1.4.1"
 recycler = "1.4.0"
-constraintlayout = "2.2.0"
-androidx-navigation-compose = "2.8.7"
+constraintlayout = "2.2.1"
+androidx-navigation-compose = "2.8.9"
 cardview = "1.0.0"
 kotlinx-serialization-json = "1.8.0"
 
@@ -41,6 +42,7 @@ android-xposed = { module = "de.robv.android.xposed:api", version.ref = "api" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation-compose" }
+dexkit = { module = "org.luckypray:dexkit", version.ref = "dexkit" }
 github-colormath-ext-jetpack-compose = { module = "com.github.ajalt.colormath:colormath-ext-jetpack-compose", version.ref = "colormathExtJetpackComposeVersion" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }

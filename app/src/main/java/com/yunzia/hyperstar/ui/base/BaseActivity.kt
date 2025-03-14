@@ -4,17 +4,12 @@ import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -22,8 +17,6 @@ import com.yunzia.hyperstar.ui.base.theme.HyperStarTheme
 import com.yunzia.hyperstar.utils.LanguageHelper
 import com.yunzia.hyperstar.utils.LanguageHelper.Companion.getIndexLanguage
 import com.yunzia.hyperstar.utils.PreferencesUtil
-import yunzia.utils.SystemProperties
-import java.util.Locale
 
 val colorMode = mutableIntStateOf(0)
 val showFPSMonitor =  mutableStateOf(false)
@@ -33,15 +26,15 @@ abstract class BaseActivity : ComponentActivity() {
 
     @Composable abstract fun InitView()
 
-    abstract fun initData(savedInstanceState: Bundle?)
+    @Composable abstract fun InitData(savedInstanceState: Bundle?)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initData(savedInstanceState)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
+            InitData(savedInstanceState)
             colorMode.intValue = PreferencesUtil.getInt("color_mode",0)
             showFPSMonitor.value = PreferencesUtil.getBoolean("show_FPS_Monitor",false)
 //

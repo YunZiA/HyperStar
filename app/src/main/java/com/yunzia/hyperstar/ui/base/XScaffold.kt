@@ -13,7 +13,7 @@ import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.SuperXPopup
 import top.yukonga.miuix.kmp.basic.MiuixFabPosition
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.MiuixPopupHost
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.MiuixPopupHost
 
 @Composable
 fun XScaffold(

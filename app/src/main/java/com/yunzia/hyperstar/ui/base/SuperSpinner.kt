@@ -46,10 +46,10 @@ import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.extra.SpinnerEntry
 import top.yukonga.miuix.kmp.extra.SpinnerItemImpl
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.ArrowUpDownIntegrated
+import top.yukonga.miuix.kmp.icon.icons.base.ArrowUpDownIntegrated
 import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
 
 @Composable
 fun SuperSpinner(
@@ -121,7 +121,7 @@ fun SuperSpinner(
     val interactionSource = remember { MutableInteractionSource() }
     val isDropdownExpanded = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
-    val held = remember { mutableStateOf<HoldDownInteraction.Hold?>(null) }
+    val held = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
     val hapticFeedback = LocalHapticFeedback.current
     val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     var alignLeft by rememberSaveable { mutableStateOf(true) }
@@ -191,7 +191,7 @@ fun SuperSpinner(
                     .padding(start = 8.dp)
                     .size(10.dp, 16.dp)
                     .align(Alignment.CenterVertically),
-                imageVector = MiuixIcons.ArrowUpDownIntegrated,
+                imageVector = MiuixIcons.Base.ArrowUpDownIntegrated,
                 colorFilter = ColorFilter.tint(actionColor),
                 contentDescription = null
             )
@@ -201,7 +201,7 @@ fun SuperSpinner(
                 isDropdownExpanded.value = true
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                 coroutineScope.launch {
-                    interactionSource.emit(HoldDownInteraction.Hold().also {
+                    interactionSource.emit(HoldDownInteraction.HoldDown().also {
                         held.value = it
                     })
                 }

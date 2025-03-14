@@ -64,12 +64,12 @@ android {
 
     }
     namespace = "com.yunzia.hyperstar"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.yunzia.hyperstar"
         minSdk = 33
-        targetSdk = 35
+        targetSdk = 36
         versionCode = getVersionCode()
         versionName = getVersionName()
 
@@ -145,7 +145,7 @@ dependencies {
     // 系统UI控制库，实现沉浸式状态栏
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.compose.material.icons.extended)
-
+    implementation(libs.dexkit)
     implementation(libs.gson)
     implementation(libs.androidx.navigation.compose)
     implementation("com.github.skydoves:cloudy:0.2.4")

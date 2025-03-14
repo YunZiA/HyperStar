@@ -17,7 +17,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.ui.base.dialog.MSuperDialog
-import yunzia.ui.Card
 import com.yunzia.hyperstar.ui.base.modifier.elevation
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemDropdown
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemSlider
@@ -25,9 +24,10 @@ import com.yunzia.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtils
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
+import yunzia.ui.Card
 
 @Composable
 fun DeviceControlItem(
@@ -58,7 +58,7 @@ fun DeviceControlItem(
     }
     if (showDialog.value){
 
-        MiuixPopupUtil.showDialog() {
+        MiuixPopupUtils.showDialog() {
             MSuperDialog(
                 title = item.name,
                 show = showDialog,

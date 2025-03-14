@@ -3,7 +3,6 @@ package com.yunzia.hyperstar.ui.base
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -33,7 +33,7 @@ import com.yunzia.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.SuperArrow
 import top.yukonga.miuix.kmp.extra.SuperDialogDefaults
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtils
 
 
 @Composable
@@ -43,7 +43,6 @@ fun BaseArrow(
     summary : String ? = null,
     onClick: (() -> Unit)? = null
 ) {
-
 
     val click = remember { mutableStateOf(false) }
     SuperArrow(
@@ -116,6 +115,7 @@ fun SuperNavHostArrow(
     summary : String ? = null,
     rightText: String? = null,
     navController : NavHostController,
+    insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp),
     route: String,
 ) {
 
@@ -138,6 +138,46 @@ fun SuperNavHostArrow(
                 Spacer(Modifier.width(16.dp))
             }
         } }else{ null },
+        title = title,
+        insideMargin = insideMargin,
+        summary = summary,
+        rightText = rightText,
+        onClick = {
+            click.value = true
+        }
+    )
+}
+
+
+@Composable
+fun SuperNavHostArrow(
+    leftIcon:Painter,
+    title : String,
+    summary : String ? = null,
+    rightText: String? = null,
+    navController : NavHostController,
+    route: String,
+) {
+
+
+    val click = remember { mutableStateOf(false) }
+    SuperArrow(
+        modifier = Modifier.bounceAnim{
+            if (click.value){
+                navController.nav(route)
+            }
+            click.value = false
+        },
+        leftAction = {
+            Row {
+                Image(
+                    painter = leftIcon,
+                    contentDescription = title,
+                    modifier = Modifier.size(35.dp)
+                )
+                Spacer(Modifier.width(16.dp))
+            }
+        },
         title = title,
         insideMargin = PaddingValues(24.dp, 16.dp),
         summary = summary,
@@ -276,7 +316,7 @@ fun SuperWarnDialogArrow(
         show = show,
         onDismissRequest = {
 
-            MiuixPopupUtil.dismissDialog(show)
+            MiuixPopupUtils.dismissDialog(show)
 
         }
     ) {
@@ -298,7 +338,7 @@ fun SuperWarnDialogArrow(
                 text = stringResource(R.string.cancel),
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    MiuixPopupUtil.dismissDialog(show)
+                    MiuixPopupUtils.dismissDialog(show)
                 }
 
             )
@@ -309,7 +349,7 @@ fun SuperWarnDialogArrow(
                 modifier = Modifier.weight(1f),
                 submit = true,
                 onClick = {
-                    MiuixPopupUtil.dismissDialog(show)
+                    MiuixPopupUtils.dismissDialog(show)
                     onSure()
 
                 }

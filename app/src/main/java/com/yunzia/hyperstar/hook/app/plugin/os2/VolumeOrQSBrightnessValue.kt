@@ -11,10 +11,10 @@ import android.widget.SeekBar
 import android.widget.TextView
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.hook.util.plugin.ControlCenterUtils
 import com.yunzia.hyperstar.hook.util.plugin.MiBlurCompat
 import com.yunzia.hyperstar.hook.util.plugin.Util
-import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import yunzia.utils.DensityUtil.Companion.dpToPx
 
@@ -188,7 +188,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
                     val topText = brightnessPanel.findViewByIdName("top_text") as TextView
                     topText.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
                     val mLayoutParams = (topText.layoutParams as FrameLayout.LayoutParams).apply {
-                        width = dpToPx(brightnessPanel.resources,40f).toInt()
+                        width = dpToPx(brightnessPanel.resources,50f).toInt()
                     }
                     topText.layoutParams = mLayoutParams
                     starLog.log("toggle_slider_item_view ${topText.layoutParams}")
@@ -258,7 +258,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
                 val sizeBgX = this.getObjectFieldAs<Float>("sizeBgX") ?:return@afterHookMethod
                 starLog.log("${topValue.left} || ${topValue.right} **$sizeSliderX")
 
-                val left = (dpToPx(topValue.resources,40f).toInt() - icon.layoutParams.width)/2
+                val left = (dpToPx(topValue.resources,50f).toInt() - icon.layoutParams.width)/2
 
                 topValue.left = icon.left-left
                 topValue.right = icon.right+left

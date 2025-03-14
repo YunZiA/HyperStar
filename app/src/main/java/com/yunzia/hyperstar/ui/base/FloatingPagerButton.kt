@@ -135,7 +135,8 @@ fun FloatingPagerButton(
             complete.value = false
             return@LaunchedEffect
         }
-        if (radius.value == if (activity?.isInMultiWindowMode == true){
+        if (
+            radius.value == if (activity?.isInMultiWindowMode == true){
                 16.dp
             }else{
                 roundedCorner

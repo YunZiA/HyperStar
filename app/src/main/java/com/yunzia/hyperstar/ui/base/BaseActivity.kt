@@ -1,18 +1,17 @@
 package com.yunzia.hyperstar.ui.base
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yunzia.hyperstar.ui.base.theme.HyperStarTheme
 import com.yunzia.hyperstar.utils.LanguageHelper
 import com.yunzia.hyperstar.utils.LanguageHelper.Companion.getIndexLanguage
@@ -31,8 +30,9 @@ abstract class BaseActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            enableEdgeToEdge()
+        }
         setContent {
             InitData(savedInstanceState)
             colorMode.intValue = PreferencesUtil.getInt("color_mode",0)
@@ -40,16 +40,10 @@ abstract class BaseActivity : ComponentActivity() {
 //
             val darkMode = colorMode.intValue == 2 || (isSystemInDarkTheme() && colorMode.intValue == 0)
 
-            val systemUiController = rememberSystemUiController()
+            val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+            window.isNavigationBarContrastEnforced = false
+            windowInsetsController.isAppearanceLightStatusBars = !darkMode
 
-            SideEffect {
-                systemUiController.setSystemBarsColor(
-                    color = Color.Transparent,
-                    darkIcons = !darkMode,
-                    isNavigationBarContrastEnforced = false
-                )
-
-            }
 
             HyperStarTheme(colorMode.intValue) {
                 InitView()
@@ -82,6 +76,8 @@ abstract class BaseActivity : ComponentActivity() {
         res.updateConfiguration(configuration,metrics)
 
     }
+
+
 
 
 }

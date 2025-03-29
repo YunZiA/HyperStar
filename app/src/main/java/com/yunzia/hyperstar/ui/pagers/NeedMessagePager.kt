@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.NavPager
+import com.yunzia.hyperstar.ui.base.pager.NavPager
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.getAndroidVersion
 import com.yunzia.hyperstar.utils.getDeviceName

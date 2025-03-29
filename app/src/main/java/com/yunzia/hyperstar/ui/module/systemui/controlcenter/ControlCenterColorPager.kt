@@ -8,7 +8,7 @@ import com.yunzia.hyperstar.CenterColorList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.ColorPickerTool
 import com.yunzia.hyperstar.ui.base.ContentFolder
-import com.yunzia.hyperstar.ui.base.ModuleNavPagers
+import com.yunzia.hyperstar.ui.base.pager.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.base.XMiuixContentDropdown
 import com.yunzia.hyperstar.ui.base.classes

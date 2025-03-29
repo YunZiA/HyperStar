@@ -6,7 +6,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.ContentFolder
-import com.yunzia.hyperstar.ui.base.ModuleNavPagers
+import com.yunzia.hyperstar.ui.base.pager.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.XMiuixSuperSliderSwitch
 import com.yunzia.hyperstar.ui.base.XSuperDropdown
 import com.yunzia.hyperstar.ui.base.XSuperSliders

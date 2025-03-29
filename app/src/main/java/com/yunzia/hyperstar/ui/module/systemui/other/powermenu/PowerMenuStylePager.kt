@@ -57,7 +57,7 @@ import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.FunList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.Classes
-import com.yunzia.hyperstar.ui.base.ModuleNavPagers
+import com.yunzia.hyperstar.ui.base.pager.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.SuperArgNavHostArrow
 import com.yunzia.hyperstar.ui.base.TopButton
 import com.yunzia.hyperstar.ui.base.helper.getSystemCornerRadius

@@ -22,11 +22,4 @@ fun HyperStarTheme(
         content = content
     )
 
-//    MiuixTheme(
-//        colorScheme = if (isSystemInDarkTheme()) top.yukonga.miuix.kmp.theme.darkColorScheme() else top.yukonga.miuix.kmp.theme.lightColorScheme(),
-//        content = content
-//    )
-
-
-
 }

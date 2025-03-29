@@ -157,22 +157,17 @@ fun MainPager(
 
         },
         bottomBar = {
-            Box(
+            NavigationBar(
                 modifier = Modifier.showBlur(hazeState),
-
-            ) {
-                NavigationBar(
-                    color = Color.Transparent,
-                    items = items,
-                    selected = currentPage,
-                    onClick = { index ->
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
+                color = Color.Transparent,
+                items = items,
+                selected = currentPage,
+                onClick = { index ->
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(index)
                     }
-                )
-
-            }
+                }
+            )
 
         },
     ) { padding ->
@@ -184,8 +179,6 @@ fun MainPager(
             padding = padding,
             showBlurs = showBlurs
         )
-
-
     }
 
     if (rebootStyle.intValue == 0){

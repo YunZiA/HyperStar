@@ -5,7 +5,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.ModuleNavPagers
+import com.yunzia.hyperstar.ui.base.pager.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.XMiuixSlider
 import com.yunzia.hyperstar.ui.base.XSuperDropdown
 import com.yunzia.hyperstar.ui.base.classes

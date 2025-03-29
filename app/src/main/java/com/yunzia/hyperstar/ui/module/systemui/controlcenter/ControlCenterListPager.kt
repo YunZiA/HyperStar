@@ -34,7 +34,7 @@ import androidx.navigation.NavController
 import yunzia.ui.Card
 import yunzia.ui.DraggableGrids
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.ModuleNavPagers
+import com.yunzia.hyperstar.ui.base.pager.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.TopButton
 import com.yunzia.hyperstar.ui.base.XMiuixSlider
 import com.yunzia.hyperstar.ui.base.XSuperDropdown

@@ -65,7 +65,7 @@ import androidx.wear.compose.material.Icon
 import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.ModuleNavPager
+import com.yunzia.hyperstar.ui.base.pager.ModuleNavPager
 import com.yunzia.hyperstar.ui.base.XMiuixTextField
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.pagers.titleColor

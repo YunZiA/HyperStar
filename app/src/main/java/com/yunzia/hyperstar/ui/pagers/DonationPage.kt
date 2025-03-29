@@ -49,7 +49,7 @@ import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.BaseArrow
 import com.yunzia.hyperstar.ui.base.Classes
-import com.yunzia.hyperstar.ui.base.NavPager
+import com.yunzia.hyperstar.ui.base.pager.NavPager
 import com.yunzia.hyperstar.ui.base.classes
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Text

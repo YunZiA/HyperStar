@@ -120,6 +120,23 @@ class QSHeaderView() : Hooker() {
                     MiuiConfigs.callStaticMethodAs<Boolean>("isVerticalMode", context)
                 if (isVerticalMode) {
                     val headers:View? = header
+
+                    val alphaNew  = ControlCenterHeaderExpandController.findMethodBestMatchIfExist(
+                        "startFolmeAnimationAlpha",
+                        View::class.java,
+                        IFolme!!,
+                        Float::class.java,
+                        Boolean::class.java
+                    )
+                    val alphaOld = ControlCenterHeaderExpandController.findMethodBestMatchIfExist(
+                            "access\$startFolmeAnimationAlpha",
+                            ControlCenterHeaderExpandController,
+                            View::class.java,
+                            IFolme!!,
+                            Float::class.java,
+                            Boolean::class.java
+                        )
+
                     val alpha = arrayOf(
                         ControlCenterHeaderExpandController.findMethodBestMatchIfExist(
                             "startFolmeAnimationAlpha",
@@ -153,8 +170,15 @@ class QSHeaderView() : Hooker() {
 //                            controlCenterCarrierViewFolme,
 //                            0f, z2
 //                        )
-                        alpha.onlyInvoke(
+                        alphaNew?.invoke(
                             null,
+                            headers,
+                            controlCenterCarrierViewFolme,
+                            0f, z2
+                        )
+                        alphaOld?.invoke(
+                            null,
+                            ControlCenterHeaderExpandController,
                             headers,
                             controlCenterCarrierViewFolme,
                             0f, z2
@@ -187,8 +211,15 @@ class QSHeaderView() : Hooker() {
 //                            controlCenterCarrierViewFolme,
 //                            1f, z2
 //                        )
-                        alpha.onlyInvoke(
+                        alphaNew?.invoke(
                             null,
+                            headers,
+                            controlCenterCarrierViewFolme,
+                            1f, z2
+                        )
+                        alphaOld?.invoke(
+                            null,
+                            ControlCenterHeaderExpandController,
                             headers,
                             controlCenterCarrierViewFolme,
                             1f, z2

@@ -2,7 +2,7 @@
 accompanistDrawablepainter = "0.37.0"
 accompanistSystemuicontroller = "0.36.0"
 api = "82"
-agp = "8.6.1"
+agp = "8.9.0"
 colormathExtJetpackComposeVersion = "3.6.1"
 compilerVersion = "1.5.15"
 constraintlayoutComposeVersion = "1.1.1"

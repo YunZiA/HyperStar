@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import top.yukonga.miuix.kmp.basic.Text
@@ -24,6 +25,7 @@ fun FPSMonitor(modifier: Modifier = Modifier) {
     Text(
         text = "FPS: $fps",
         modifier = modifier,
+        fontWeight = FontWeight.Bold,
         color = if (fps < 57) Color.Red else Color.Green
     )
 

@@ -48,13 +48,13 @@ import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.SystemUIMoreList
 import com.yunzia.hyperstar.ui.base.FloatingPagerButton
-import com.yunzia.hyperstar.ui.base.ModuleNavPager
 import com.yunzia.hyperstar.ui.base.TopButton
 import com.yunzia.hyperstar.ui.base.XMiuixTextField
 import com.yunzia.hyperstar.ui.base.XScaffold
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.base.modifier.showBlur
 import com.yunzia.hyperstar.ui.base.nav.nav
+import com.yunzia.hyperstar.ui.base.pager.SearchModuleNavPager
 import com.yunzia.hyperstar.ui.pagers.titleColor
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.PreferencesUtil
@@ -302,7 +302,7 @@ fun NotificationOfIm(
 
     }
 
-    ModuleNavPager(
+    SearchModuleNavPager(
         activityTitle = "图标优化白名单",
         navController = navController,
         parentRoute = currentStartDestination,
@@ -327,98 +327,26 @@ fun NotificationOfIm(
         },
     ) { topAppBarScrollBehavior,padding->
 
-        Column(
-            modifier = Modifier
-                .padding(top = padding.calculateTopPadding() + 14.dp)
-                .fillMaxSize()
-        ){
 
-            Box(
-                Modifier.background(colorScheme.background)
-            ) {
-                Card(
-                    modifier = Modifier
-                        .padding(bottom = 10.dp)
-                        .padding(horizontal = 24.dp),
-                    insideMargin = PaddingValues(5.dp,5.dp),
-                    cornerRadius = 18.dp
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        XMiuixTextField(
-                            value = text,
-                            cornerRadius = 13.dp,
-                            onValueChange = { text = it },
-                            label = stringResource(R.string.app_name_type),
-                            modifier = Modifier
-                                .padding(end = 5.dp)
-                                .weight(1f),
-                            keyboardActions = KeyboardActions(onDone = {
-                                isSearch = true
-                                focusManager.clearFocus()
-                            }),
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                            singleLine = true
-                        )
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                top = 0.dp,
+                bottom = padding.calculateBottomPadding() + 28.dp
+            ),
+            topAppBarScrollBehavior = topAppBarScrollBehavior
+        ) {
 
-                        Button(
-                            modifier = Modifier.padding(end = 2.dp),
-                            onClick = {
-                                //Toast.makeText(activity,text,Toast.LENGTH_SHORT).show()
-                                isSearch = true
-                                focusManager.clearFocus()
-                            },
-                            contentPadding = PaddingValues(10.dp,16.dp),
-                            shape = RoundedCornerShape(13.dp),
-                            colors = ButtonColors(
-                                Color.Transparent,
-                                Color.Transparent,
-                                Color.Transparent,
-                                Color.Transparent
-                            )
-                        ) {
-                            Icon(
-                                ImageVector.vectorResource(R.drawable.ic_search_icon),
-                                contentDescription = "back",
-                                Modifier.size(25.dp),
-                                tint = colorScheme.onSurface
-
-                            )
-
-                        }
-
-
-                    }
+            notifPlusList.forEach {
+                item {
+                    AppNotifItem(it,navController)
                 }
             }
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(
-                    top = 0.dp,
-                    bottom = padding.calculateBottomPadding() + 28.dp
-                ),
-                topAppBarScrollBehavior = topAppBarScrollBehavior
-            ) {
-
-                notifPlusList.forEach {
-                    item {
-                        AppNotifItem(it,navController)
-                    }
-                }
-
-            }
-
 
         }
 
 
-
-
     }
-
-
 }
 
 @Composable

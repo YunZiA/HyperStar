@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -87,22 +88,26 @@ class MainActivity : BaseActivity() {
     override fun InitData(savedInstanceState: Bundle?) {
 
         val pm = this@MainActivity.packageManager
-        try {
 
-            val theme = pm.getPackageInfo("com.android.thememanager", PackageManager.GET_META_DATA)
-            themeManager.value = AppInfo(
-                theme.applicationInfo?.loadIcon(pm),
-                theme.versionName,
-                theme.longVersionCode
-            )
-            val barrage = pm.getPackageInfo("com.xiaomi.barrage", PackageManager.GET_META_DATA)
-            barrageManger.value = AppInfo(
-                barrage.applicationInfo?.loadIcon(pm),
-                barrage.versionName,
-                barrage.longVersionCode
-            )
-        } catch (e: PackageManager.NameNotFoundException) {
-            // Handle the case where the package is not found
+        LaunchedEffect(Unit) {
+
+            try {
+
+                val theme = pm.getPackageInfo("com.android.thememanager", PackageManager.GET_META_DATA)
+                themeManager.value = AppInfo(
+                    theme.applicationInfo?.loadIcon(pm),
+                    theme.versionName,
+                    theme.longVersionCode
+                )
+                val barrage = pm.getPackageInfo("com.xiaomi.barrage", PackageManager.GET_META_DATA)
+                barrageManger.value = AppInfo(
+                    barrage.applicationInfo?.loadIcon(pm),
+                    barrage.versionName,
+                    barrage.longVersionCode
+                )
+            } catch (e: PackageManager.NameNotFoundException) {
+                // Handle the case where the package is not found
+            }
         }
 
         val isRecreate = savedInstanceState?.getBoolean("isRecreate",true)

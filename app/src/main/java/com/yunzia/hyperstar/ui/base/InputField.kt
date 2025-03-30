@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.base
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -66,10 +67,10 @@ fun InputField(
         onValueChange = onQueryChange,
         readOnly = !expanded,
         modifier = modifier
-            .focusable(expanded)
             .then(
                 if (expanded){
-                    Modifier.focusRequester(focusRequester)
+
+                    Modifier.focusable(true).focusRequester(focusRequester)
                         .onFocusChanged { if (it.isFocused) onExpandedChange(true) }
                         .semantics {
                             onClick {
@@ -79,6 +80,13 @@ fun InputField(
                         }
                 }else{
                     Modifier
+                        .semantics {
+                            onClick {
+
+                                Log.i("InputField", "onClick")
+                            true
+                        }
+                    }
                 }
             )
             ,
@@ -127,14 +135,13 @@ fun InputField(
             }
     )
 
-    val shouldClearFocus = !expanded && focused
     LaunchedEffect(expanded) {
+        delay(100)
         if (expanded){
             focusRequester.requestFocus()
-        }
-        if (shouldClearFocus) {
-            delay(100)
+        }else if (focused){
             focusManager.clearFocus()
         }
+
     }
 }

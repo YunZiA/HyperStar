@@ -34,9 +34,9 @@ abstract class BaseActivity : ComponentActivity() {
             enableEdgeToEdge()
         }
         setContent {
-            InitData(savedInstanceState)
             colorMode.intValue = PreferencesUtil.getInt("color_mode",0)
             showFPSMonitor.value = PreferencesUtil.getBoolean("show_FPS_Monitor",false)
+            InitData(savedInstanceState)
 //
             val darkMode = colorMode.intValue == 2 || (isSystemInDarkTheme() && colorMode.intValue == 0)
 

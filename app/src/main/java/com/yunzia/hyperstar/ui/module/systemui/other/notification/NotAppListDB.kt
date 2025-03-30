@@ -1,15 +1,16 @@
-package com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.app
+package com.yunzia.hyperstar.ui.module.systemui.other.notification
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.graphics.drawable.Drawable
 import android.util.Log
 
-class AppListDB(context: Context?) : SQLiteOpenHelper(context, "appList.db", null, 1) {
+class NotAppListDB(context: Context?) : SQLiteOpenHelper(context, "notAppList.db", null, 1) {
     override fun onCreate(db: SQLiteDatabase) {
     }
 
@@ -22,7 +23,8 @@ class AppListDB(context: Context?) : SQLiteOpenHelper(context, "appList.db", nul
         // 添加 is_selected 列，默认值为 0（未选中）
         db.execSQL("CREATE TABLE appdata (" +
                 "package_name TEXT NOT NULL UNIQUE," +
-                "app_name TEXT NOT NULL);" )
+                "app_name TEXT NOT NULL," +
+                "is_selected INTEGER NOT NULL DEFAULT 0);") // 新增列
         db.close()
     }
 
@@ -67,4 +69,12 @@ class AppListDB(context: Context?) : SQLiteOpenHelper(context, "appList.db", nul
 
         return appList
     }
+
+    data class AppInfo(
+        var uid: Int = 0,
+        var label: String = "", //应用名称
+        var packageName: String = "", //应用包名
+        var icon: Drawable? = null, //应用icon
+        var launch : Intent? = null
+    )
 }

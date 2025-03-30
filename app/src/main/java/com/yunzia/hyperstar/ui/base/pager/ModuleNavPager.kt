@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.ui.base.pager
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -79,9 +78,7 @@ fun ModuleNavPager(
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
 
     XScaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black),
+        modifier = Modifier.fillMaxSize(),
         floatingActionButton = floatingActionButton,
         floatingActionButtonPosition = floatingActionButtonPosition,
         floatingPagerButton = floatingPagerButton,

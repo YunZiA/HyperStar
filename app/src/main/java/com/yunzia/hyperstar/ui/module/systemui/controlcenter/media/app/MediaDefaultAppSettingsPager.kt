@@ -2,84 +2,56 @@
 package com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.app
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import androidx.wear.compose.material.Icon
 import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.pager.ModuleNavPager
-import com.yunzia.hyperstar.ui.base.XMiuixTextField
+import com.yunzia.hyperstar.ui.base.LoadBox
+import com.yunzia.hyperstar.ui.base.SearchStatus
+import com.yunzia.hyperstar.ui.base.SearchStatus.Status
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
+import com.yunzia.hyperstar.ui.base.pager.SearchModuleNavPager
+import com.yunzia.hyperstar.ui.base.rememberSearchStatus
 import com.yunzia.hyperstar.ui.pagers.titleColor
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.SPUtils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import top.yukonga.miuix.kmp.basic.BasicComponent
-import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.basic.LazyColumn
-import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
@@ -115,15 +87,12 @@ fun getInstalledApps(
 private fun getAllAppInfo(
     context:Context,
     isFilterSystem: Boolean,
-    appListDB: AppListDB?,
-    appIconlist: MutableMap<String, Drawable>
 ): ArrayList<AppInfo> {
 
     val appBeanList: ArrayList<AppInfo> = ArrayList<AppInfo>()
     val packageManager = context.packageManager
     val list = packageManager.getInstalledPackages(0)
 
-    appListDB?.resetTable()
 
     for (p in list) {
         val applicationInfo = p.applicationInfo
@@ -133,9 +102,9 @@ private fun getAllAppInfo(
 
         // 检查是否是特定的应用包名
         if ("com.miui.player" == applicationInfo?.packageName) {
-            processAppInfo(applicationInfo, packageManager, appBeanList,appListDB,appIconlist)
+            processAppInfo(applicationInfo, packageManager, appBeanList)
         } else if (!isSystemApp) {  // 非系统应用
-            processAppInfo(applicationInfo, packageManager, appBeanList, appListDB,appIconlist)
+            processAppInfo(applicationInfo, packageManager, appBeanList)
         }
     }
 
@@ -145,87 +114,21 @@ private fun getAllAppInfo(
 private fun processAppInfo(
     applicationInfo: ApplicationInfo?,
     packageManager: PackageManager?,
-    appBeanList: ArrayList<AppInfo>,
-    appListDB: AppListDB?,
-    appIconlist: MutableMap<String, Drawable>
+    appBeanList: ArrayList<AppInfo>
 ) {
     if (applicationInfo == null || packageManager == null) return
     run {
 
         val appName = packageManager.getApplicationLabel(applicationInfo).toString()
-        val packageName = applicationInfo.packageName
+        val packageName = applicationInfo.packageName.toString()
         val appIcon = packageManager.getApplicationIcon(applicationInfo)
 
-        val bean = AppInfo()
-        bean.label = appName
-        bean.packageName = packageName.toString()
-        bean.icon = appIcon
-
-        val values = ContentValues()
-        values.put("package_name", packageName)
-        values.put("app_name", appName)
-
-        if (packageName != null) {
-            appIconlist[packageName] = appIcon
-            if (appIconlist[packageName] == null){
-                Log.d("ggc","appIconlist[package_name]  == null")
-
-            }
-        }
-
-
+        val bean = AppInfo(
+            icon = appIcon,
+            label = appName,
+            packageName = packageName,
+        )
         appBeanList.add(bean)
-        appListDB?.add(values)
-
-        values.clear()
-    }
-}
-
-
-
-sealed class LoadingState<out R> {
-    data object Loading : LoadingState<Nothing>()
-    data class Failure(val error : Throwable) : LoadingState<Nothing>()
-    data class Success<T>(val data : T) : LoadingState<T>()
-
-    val isLoading
-        get() = this is Loading
-    val isSuccess
-        get() = this is Success<*>
-}
-
-@Composable
-fun <T> LoadingContent(
-    modifier: Modifier = Modifier,
-    loader : suspend ()->T,
-    loading : @Composable ()->Unit = { ShowLoading() },
-    failure : @Composable (error : Throwable, retry : ()->Unit)->Unit = { error, retry->
-        ShowLoading()   },
-    success : @Composable (data : T?)->Unit)
-{
-    var key by remember {
-        mutableStateOf(false)
-    }
-    val state by produceState<LoadingState<T>>(
-        initialValue = LoadingState.Loading,
-        key
-    ){
-        value = try {
-            Log.d("ggc", "LoadingContent: loading...")
-            LoadingState.Success(loader())
-        }catch (e: Exception){
-            LoadingState.Failure(e)
-        }
-    }
-    Box(modifier = modifier){
-        when(state){
-            is LoadingState.Loading -> loading()
-            is LoadingState.Success<T> -> success((state as LoadingState.Success<T>).data)
-            is LoadingState.Failure -> failure((state as LoadingState.Failure).error){
-                key = !key
-                Log.d("ggc", "LoadingContent: newKey:$key")
-            }
-        }
     }
 }
 
@@ -237,238 +140,122 @@ fun MediaAppSettingsPager(
     parentRoute: MutableState<String>
 ) {
     val context = LocalContext.current
-    val activity = context as MainActivity
+    val activity = LocalActivity.current as MainActivity
+    val isLoading = remember { mutableStateOf(true) }
     getInstalledApps(activity)
+    val appLists = remember { mutableStateOf<List<AppInfo>>(emptyList()) }
+    val searchApp = remember {  mutableStateOf<List<AppInfo>>(emptyList()) }
 
-    ModuleNavPager(
+    val searchStatus = rememberSearchStatus(
+        label = stringResource(R.string.app_name_type),
+    )
+    val update = remember { mutableStateOf(false) }
+    val isApp = remember { mutableStateOf(SPUtils.getString("media_default_app_package","")) }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(activity.isGranted.value) {
+
+        if (activity.isGranted.value){
+            update.value = true
+            isLoading.value = true
+        }
+    }
+
+    LaunchedEffect(update.value) {
+
+        coroutineScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                getAllAppInfo(context, true)
+            }
+            appLists.value = result
+            if (appLists.value.isNotEmpty()) {
+                update.value = false
+                isLoading.value = false
+            }
+        }
+    }
+    LaunchedEffect(searchStatus.status) {
+        if (searchStatus.status == Status.COLLAPSED){
+            searchStatus.searchText = ""
+        }
+    }
+
+    LaunchedEffect(searchStatus.searchText) {
+        if (searchStatus.searchText == ""){
+            searchStatus.resultStatus = SearchStatus.ResultStatus.DEFAULT
+            searchApp.value = emptyList()
+            update.value = false
+            return@LaunchedEffect
+
+        }
+        delay(300)
+        coroutineScope.launch(
+            Dispatchers.Default
+        ) {
+            searchStatus.resultStatus = SearchStatus.ResultStatus.LOAD
+            searchApp.value = appLists.value.asFlow()
+                .filter { app -> app.label.contains(searchStatus.searchText, ignoreCase = true) }
+                .toList()
+            searchStatus.resultStatus = if (
+                searchApp.value.isEmpty()
+            ){
+                SearchStatus.ResultStatus.EMPTY
+            }else{
+                SearchStatus.ResultStatus.SHOW
+            }
+            update.value = false
+        }
+
+    }
+    SearchModuleNavPager(
         activityTitle = stringResource(R.string.media_default_app_settings),
+        searchStatus = searchStatus,
         navController = navController,
         parentRoute = parentRoute,
         endClick = {
             Helper.rootShell("killall com.android.systemui")
         },
+        result = {
+
+            searchApp.value.forEachIndexed { index, apps ->
+                item(index) {
+                    AppItem(apps, isApp)
+
+                }
+            }
+
+        },
     ){ topAppBarScrollBehavior,padding->
-        val mContext = navController.context
-        val appListDB = AppListDB(mContext)
-        val appLists = remember { mutableStateOf<ArrayList<AppInfo>?>(null) }
-        val appIconlist = remember { mutableMapOf<String, Drawable>() }
-        val isLoading = remember { mutableStateOf(true) }
-        val isApp = remember { mutableStateOf(SPUtils.getString("media_default_app_package","")) }
-        var isSearch by remember { mutableStateOf(false) }
 
-        val coroutineScope = rememberCoroutineScope()
-
-        val focusManager = LocalFocusManager.current
-        var text by remember { mutableStateOf("") }
-        val update = remember { mutableStateOf(false) }
-
-        LaunchedEffect(activity.isGranted.value) {
-
-            if (activity.isGranted.value){
-                update.value = true
-                isLoading.value = true
-            }
-        }
-
-        LaunchedEffect(update.value) {
-
-            coroutineScope.launch {
-                val result = withContext(Dispatchers.IO) {
-                    getAllAppInfo(mContext,isFilterSystem = true,appListDB,appIconlist)
-                }
-                appLists.value = result
-                update.value = false
-                isLoading.value = false
-            }
-        }
-
-        LaunchedEffect(isSearch) {
-            if (!isSearch) return@LaunchedEffect
-            coroutineScope.launch {
-                withContext(Dispatchers.IO) {
-                    appLists.value = appListDB.searchAPPlist(text,appIconlist)
-                }
-                isSearch = false
-            }
-
-
-        }
-
-
-        ConstraintLayout(
-            modifier = Modifier
-                .padding(top = padding.calculateTopPadding() + 14.dp)
-                .fillMaxSize()
-        ) {
-            val (load,list,search) = createRefs()
-
-            AnimatedVisibility (
-                !isLoading.value,
-                enter = fadeIn(),
-                exit = fadeOut()
+        LoadBox(
+            modifier = Modifier.fillMaxSize(),
+            isLoading = isLoading
+        ){
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentPadding = PaddingValues(
+                    top = 0.dp,
+                    bottom = padding.calculateBottomPadding() + 28.dp
+                ),
+                topAppBarScrollBehavior = topAppBarScrollBehavior
             ) {
-                LazyColumn(
-                    modifier = Modifier
-                        .constrainAs(list) {
-                            top.linkTo(search.bottom)
-                            bottom.linkTo(parent.bottom)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
 
-                        }
-                        .fillMaxSize(),
-                    contentPadding = PaddingValues(
-                        top = 74.dp,
-                        bottom = padding.calculateBottomPadding() + 28.dp
-                    ),
-                    topAppBarScrollBehavior = topAppBarScrollBehavior
-                ) {
+                appLists.value.forEachIndexed { index, apps ->
 
-                    appLists.value?.forEachIndexed { index, apps ->
-
-                        item(index) {
-                            AppItem(apps, isApp)
-                        }
-                    }
-
-                }
-            }
-
-            AnimatedVisibility (
-                isLoading.value,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ){
-                Column(
-                    modifier = Modifier
-                        .padding(bottom = 40.dp)
-                        .constrainAs(load) {
-                            top.linkTo(search.bottom)
-                            bottom.linkTo(parent.bottom)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-
-                        }
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-
-                    ShowLoading()
-                    Text(
-                        color = colorScheme.onSurface,
-                        fontWeight = FontWeight(550),
-                        text = stringResource(R.string.loading),
-                    )
-
-                }
-
-            }
-
-
-            Box(
-
-                Modifier
-                    .background(colorScheme.background)
-                    .constrainAs(search) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-
-                    },
-            ) {
-                Card(
-                    modifier = Modifier
-                        .padding(bottom = 10.dp)
-                        .padding(horizontal = 24.dp),
-                    insideMargin = PaddingValues(5.dp,5.dp),
-                    cornerRadius = 18.dp
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-
-                        XMiuixTextField(
-                            value = text,
-                            cornerRadius = 13.dp,
-                            onValueChange = { text = it },
-                            label = stringResource(R.string.app_name_type),
-                            modifier = Modifier
-                                .padding(end = 5.dp)
-                                .weight(1f),
-                            keyboardActions = KeyboardActions(onDone = {
-                                isSearch = true
-                                focusManager.clearFocus()
-                            }),
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                            singleLine = true
-                        )
-
-                        Button(
-                            modifier = Modifier.padding(end = 2.dp),
-                            onClick = {
-                                //Toast.makeText(activity,text,Toast.LENGTH_SHORT).show()
-                                isSearch = true
-                                focusManager.clearFocus()
-                            },
-                            contentPadding = PaddingValues(10.dp,16.dp),
-                            shape = RoundedCornerShape(13.dp),
-                            colors = ButtonColors(Color.Transparent, Color.Transparent,Color.Transparent,Color.Transparent)
-                        ) {
-                            Icon(
-                                ImageVector.vectorResource(R.drawable.ic_search_icon),
-                                contentDescription = "back",
-                                Modifier.size(25.dp),
-                                tint = colorScheme.onSurface
-                            )
-
-                        }
-
-
+                    item(index) {
+                        AppItem(apps, isApp)
                     }
                 }
+
             }
 
         }
     }
 
 
-}
 
 
-
-
-@Composable
-private fun ShowLoading() {
-    val rotation = remember { Animatable(0f) }
-    // 开启旋转动画
-    val isRotating = true
-    LaunchedEffect(isRotating) {
-        launch {
-            rotation.animateTo(
-                targetValue = 360f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(
-                        durationMillis = 400,
-                        easing = LinearEasing
-                    ),
-                    repeatMode = RepeatMode.Restart
-                )
-            )
-        }
-    }
-
-    // 旋转的图片 - rotate(rotation.value)
-    Image(
-        colorFilter = ColorFilter.tint(colorScheme.onSurface),
-        painter = painterResource(id = R.drawable.loading_progress),
-        contentDescription = null,
-        modifier = Modifier
-            .wrapContentSize()
-            .padding(15.dp)
-            .rotate(rotation.value)
-    )
 }
 
 @Composable

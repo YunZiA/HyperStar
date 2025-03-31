@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.pagers
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.platform.LocalContext
@@ -12,7 +13,6 @@ import com.yunzia.hyperstar.ui.base.PMiuixSuperSwitch
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
 import com.yunzia.hyperstar.ui.base.pager.NavPager
-import com.yunzia.hyperstar.ui.base.showFPSMonitor
 import com.yunzia.hyperstar.utils.PreferencesUtil
 
 @Composable
@@ -22,8 +22,8 @@ fun SettingsShowPage(
 ) {
 
     val context = LocalContext.current
-    val activity = context as MainActivity
-    val showFPSMonitor = showFPSMonitor
+    val activity = LocalActivity.current as MainActivity
+    val showFPSMonitor = activity.showFPSMonitor
     val rebootStyle = activity.rebootStyle
 
     NavPager(

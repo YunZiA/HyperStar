@@ -289,7 +289,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
                 return@afterHookMethod
             }
             //Color.WHITE Color.parseColor("#959595")
-            //topValue.setTextColor(Color.WHITE)
+            topValue.setTextColor(Color.WHITE)
             miBlurCompat.setMiViewBlurModeCompat(topValue,3)
             if (colorArray == null){
                 colorArray = item.resources.getIntArrayBy("toggle_slider_icon_blend_colors",plugin)

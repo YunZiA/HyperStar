@@ -14,11 +14,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -41,9 +43,6 @@ import com.yunzia.hyperstar.ui.base.rememberSearchStatus
 import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.CardDefaults
@@ -58,22 +57,27 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 @Composable
 fun NotificationOfImAddPage(
     expand: MutableState<Boolean>,
-    unSelectApp: MutableState<List<NotificationInfo>>
+    selectApp: SnapshotStateList<NotificationInfo>,
+    unSelectApp: SnapshotStateList<NotificationInfo>
 ){
     val hazeState = remember { HazeState() }
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
-    val selectedAppList = remember { mutableSetOf("") }
+    val selectedAppList = remember { mutableSetOf<NotificationInfo>() }
     val focusManager = LocalFocusManager.current
-    val searchApp = remember {  mutableStateOf<List<NotificationInfo>>(emptyList()) }
-    val coroutineScope = rememberCoroutineScope()
-
     val searchStatus = rememberSearchStatus(
         label = stringResource(R.string.app_name_type)
     )
+    //val searchApp = remember {  mutableStateOf<List<NotificationInfo>>(emptyList()) }
+    val searchApp = remember(unSelectApp, searchStatus.searchText) {
+        derivedStateOf {
+            unSelectApp.filter { it.appName.contains(searchStatus.searchText, ignoreCase = true) }
+        }
+    }
+    val coroutineScope = rememberCoroutineScope()
+
     LaunchedEffect(searchStatus.searchText) {
         if (searchStatus.searchText == ""){
             searchStatus.resultStatus = SearchStatus.ResultStatus.DEFAULT
-            searchApp.value = emptyList()
             return@LaunchedEffect
 
         }
@@ -82,12 +86,8 @@ fun NotificationOfImAddPage(
             Dispatchers.Default
         ) {
             searchStatus.resultStatus = SearchStatus.ResultStatus.LOAD
-            searchApp.value = unSelectApp.value.asFlow()
-                .filter { app -> app.appName.contains(searchStatus.searchText, ignoreCase = true) }
-                .toList()
-            searchStatus.resultStatus = if (
-                searchApp.value.isEmpty()
-            ){
+
+            searchStatus.resultStatus = if (searchApp.value.isEmpty()){
                 SearchStatus.ResultStatus.EMPTY
             }else{
                 SearchStatus.ResultStatus.SHOW
@@ -95,6 +95,7 @@ fun NotificationOfImAddPage(
         }
 
     }
+
 
     XScaffold(
         modifier = Modifier
@@ -128,7 +129,11 @@ fun NotificationOfImAddPage(
                             modifier = Modifier.padding(end = 18.dp),
                             imageVector = ImageVector.vectorResource(R.drawable.ic_done),
                             contentDescription = "done",
-                            onClick = { expand.value = false }
+                            onClick = {
+                                expand.value = false
+                                selectApp.addAll(selectedAppList)
+                                selectedAppList.clear()
+                            }
                         )
                     }
                 )
@@ -153,8 +158,8 @@ fun NotificationOfImAddPage(
                 topAppBarScrollBehavior = topAppBarScrollBehavior
             ) {
 
-                unSelectApp.value.forEach {
-                    item {
+                unSelectApp.forEach {
+                    item(it.packageName) {
                         AppNotifItem(it,selectedAppList)
                     }
                 }
@@ -182,29 +187,28 @@ fun NotificationOfImAddPage(
 @Composable
 private fun AppNotifItem(
     notificationInfo: NotificationInfo,
-    selectedAppList:MutableSet<String>
+    selectedAppList:MutableSet<NotificationInfo>
 ){
     val label = notificationInfo.appName
-    val packageName = notificationInfo.packageName
-    var isSelect by remember { mutableStateOf(false) }
+    var isSelect by remember { mutableStateOf(selectedAppList.contains(notificationInfo)) }
     LaunchedEffect(isSelect) {
         if (isSelect){
-            selectedAppList.add(packageName)
+            selectedAppList.add(notificationInfo)
         }else{
-            selectedAppList.remove(packageName)
+            selectedAppList.remove(notificationInfo)
         }
     }
 
     BasicComponent(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 28.dp)
+            .padding(horizontal = 16.dp)
             .padding(top = 10.dp)
             .bounceAnimN()
             .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
-            .background(colorScheme.surfaceVariant)
+            .background(if (isSelect) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
         ,
-        insideMargin =  PaddingValues(16.dp),
+        insideMargin =  PaddingValues(17.dp),
         title = label,
         leftAction = {
             Box(

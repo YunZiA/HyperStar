@@ -1,13 +1,13 @@
 package com.yunzia.hyperstar.ui.welcome
 
 import android.view.HapticFeedbackConstants
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,13 +35,14 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.colorMode
 import kotlinx.coroutines.launch
 
 @Composable
 fun WelcomeEnterPager(pagerState: PagerState) {
     val view = LocalView.current
+    val activity = LocalActivity.current as MainActivity
     val easing  = CubicBezierEasing(.42f,0f,0.26f,.85f)
     val coroutineScope = rememberCoroutineScope()
     val go = remember { mutableStateOf(false) }
@@ -55,11 +56,10 @@ fun WelcomeEnterPager(pagerState: PagerState) {
         animationSpec = tween(durationMillis = 1150,easing = easing),
         label = "alpha"
     )
-    val darkTheme = isSystemInDarkTheme()
-    val logo = when (colorMode.intValue) {
-        1 -> painterResource(R.drawable.hyperstar2)
-        2 -> painterResource(R.drawable.hyperstar2_dark)
-        else -> if (darkTheme) painterResource(R.drawable.hyperstar2_dark) else painterResource(R.drawable.hyperstar2)
+    val logo = if (activity.isDarkMode){
+        painterResource(R.drawable.hyperstar2_dark)
+    }else{
+        painterResource(R.drawable.hyperstar2)
     }
 
     LaunchedEffect(pagerState.currentPage) {

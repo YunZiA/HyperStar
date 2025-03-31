@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.ui.welcome
 
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
@@ -16,9 +15,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.RecomposeScope
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.Button
+import com.yunzia.hyperstar.ui.base.TextButton
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.pagers.titleColor
 import com.yunzia.hyperstar.utils.PreferencesUtil
@@ -49,18 +48,26 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 @Composable
-fun LanguagePage(pagerState: PagerState) {
+fun LanguagePage(
+    pagerState: PagerState,
+    recompose: RecomposeScope
+) {
 
     val view = LocalView.current
-    val coroutineScope = rememberCoroutineScope()
-    val selectedItem = remember { mutableIntStateOf(PreferencesUtil.getInt("app_language",0)) }
-    val activity = LocalActivity.current as MainActivity
 
+    val activity = LocalActivity.current as MainActivity
     val languageList = stringArrayResource(R.array.language_list).toList()
-    Column (
+
+    Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val coroutineScope = rememberCoroutineScope()
+
+        LaunchedEffect(activity.language.intValue) {
+            activity.setLocale(activity.language.intValue)
+            recompose.invalidate()
+        }
         Spacer(modifier = Modifier.height(20.dp))
 
         Box(
@@ -79,23 +86,26 @@ fun LanguagePage(pagerState: PagerState) {
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold
         )
-        LazyColumn(modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f)
-            .padding(bottom = 10.dp)) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(bottom = 10.dp)
+        ) {
 
-            item{
+            item {
                 Spacer(modifier = Modifier.height(10.dp))
             }
 
             languageList.forEachIndexed { index, language ->
 
-                languageItem(activity,language, index,selectedItem)
+                languageItem(language, index, activity.language,recompose)
 
             }
         }
 
-        Button(
+        TextButton(
+            stringResource(R.string.next),
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
@@ -109,27 +119,19 @@ fun LanguagePage(pagerState: PagerState) {
                 }
 
             }
-        ) {
-            Text(
-                stringResource(R.string.next),
-                modifier = Modifier.padding(horizontal = 12.dp),
-                fontSize = 18.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
+        )
     }
+
 }
 
 private fun LazyListScope.languageItem(
-    activity : MainActivity,
-    language:String,
-    index:Int,
-    selectedItem: MutableIntState
+    language: String,
+    index: Int,
+    selectedItem: MutableIntState,
+    recompose: RecomposeScope
 ){
 
-    val isSelected =  index == selectedItem.intValue
+    val isSelected = index == selectedItem.intValue
 
 
     item(language){
@@ -142,14 +144,7 @@ private fun LazyListScope.languageItem(
                 .fillMaxWidth()
                 .padding(horizontal = 28.dp)
                 .padding(vertical = 5.dp)
-                .bounceAnimN {
-                    Log.d("ggc", "languageItem: $isSelected")
-                    if (isSelected) {
-                        Log.d("ggc", "languageItem: isSelected $isSelected")
-                        PreferencesUtil.putInt("app_language", selectedItem.intValue)
-                        activity.recreate()
-                    }
-                }
+                .bounceAnimN {}
                 .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
                 .background(if (isSelected) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
             ,
@@ -157,7 +152,7 @@ private fun LazyListScope.languageItem(
             insideMargin = PaddingValues(20.dp),
             onCheckedChange = {
                 selectedItem.intValue = index
-
+                PreferencesUtil.putInt("app_language", selectedItem.intValue)
             }
         )
 

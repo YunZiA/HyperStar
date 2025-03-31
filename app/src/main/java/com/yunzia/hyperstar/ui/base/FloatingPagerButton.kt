@@ -6,6 +6,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandIn
@@ -15,6 +16,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -76,7 +78,7 @@ fun FloatingPagerButton(
 
     val expand = remember { mutableStateOf(false) }
 
-    val durationMillis = 350
+    val durationMillis = 300
     val easing = CubicBezierEasing(0.38F, 0.0F, 0.55F, 0.99F)
     //LinearOutSlowInEasing
 
@@ -88,7 +90,7 @@ fun FloatingPagerButton(
         }else{
             Color.Transparent
         },
-        animationSpec = tween(200, easing = easing),
+        animationSpec = tween(200, easing = LinearEasing),
     )
 
     val layoutDirection = LayoutDirection.Rtl
@@ -101,7 +103,7 @@ fun FloatingPagerButton(
         }else{
             insideMargin.calculateEndPadding(layoutDirection)
         },
-        animationSpec = tween(durationMillis, easing = easing)
+        animationSpec = tween(durationMillis, easing = FastOutSlowInEasing)
     )
 
 
@@ -111,7 +113,7 @@ fun FloatingPagerButton(
         }else{
             insideMargin.calculateBottomPadding()
         },
-        animationSpec = tween(durationMillis, easing = easing)
+        animationSpec = tween(durationMillis, easing = FastOutSlowInEasing)
     )
 
     val radius = animateDpAsState(
@@ -124,12 +126,11 @@ fun FloatingPagerButton(
         }else{
             buttonRadius
         },
-        animationSpec = tween(durationMillis, easing = easing),
+        animationSpec = tween(durationMillis, easing = FastOutSlowInEasing),
         finishedListener = {
         }
 
     )
-//    if (radius.value == roundedCorner) radius.value = 0.dp
     LaunchedEffect(radius.value) {
         if (!expand.value){
             complete.value = false
@@ -181,7 +182,6 @@ fun FloatingPagerButton(
                 shadowElevation = if (expand.value) 0.dp else shadowElevation,
                 enabled = !expand.value,
                 onClick = {
-                    expand.value = true
                 },
             ) {
 
@@ -189,20 +189,23 @@ fun FloatingPagerButton(
                     !expand.value,
                     enter = fadeIn(
                         animationSpec = tween(
-                            durationMillis/2,
-                            easing = easing,
+                            durationMillis/3,
+                            easing = LinearEasing,
                             delayMillis  = durationMillis/2
                         )
                     ),
                     exit = fadeOut(
                         animationSpec = tween(
-                            durationMillis/2,
-                            easing = easing,
+                            durationMillis/3,
+                            easing = LinearEasing,
                         )
                     )
                 ){
                     Box(
                         modifier = Modifier
+                            .clickable {
+                                expand.value = true
+                            }
                             .defaultMinSize(
                                 minWidth = minWidth,
                                 minHeight = minHeight,
@@ -216,23 +219,23 @@ fun FloatingPagerButton(
                 AnimatedVisibility(
                     expand.value,
                     enter = expandIn(
-                        animationSpec = tween(durationMillis, easing = easing)
+                        animationSpec = tween(durationMillis, easing = LinearOutSlowInEasing)
                     ) + fadeIn(
                         animationSpec = tween(
                             durationMillis/2,
                             easing = LinearEasing,
-                            delayMillis  = durationMillis/2
                         )
                     ) + scaleIn(
                         animationSpec = tween(
                             durationMillis/2,
                             easing = LinearEasing
                         ),
-                        initialScale = 0.6f,
+                        initialScale = 0.5f,
                         transformOrigin = TransformOrigin(1f, 1f)
-                    ) ,
+                    )
+                    ,
                     exit = shrinkOut(
-                        animationSpec = tween(durationMillis, easing = easing)
+                        animationSpec = tween(durationMillis, easing = LinearEasing)
                     ) + fadeOut(
                         animationSpec = tween(
                             durationMillis/2,
@@ -240,10 +243,10 @@ fun FloatingPagerButton(
                         )
                     ) + scaleOut(
                         animationSpec = tween(
-                            durationMillis/2,
-                            easing = FastOutSlowInEasing
+                            durationMillis,
+                            easing = LinearEasing
                         ),
-                        targetScale = 0.6f,
+                        targetScale = 0f,
                         transformOrigin = TransformOrigin(1f, 1f)
                     )
                 ) {

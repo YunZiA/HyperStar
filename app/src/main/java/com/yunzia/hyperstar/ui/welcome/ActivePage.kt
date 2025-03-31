@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.Button
+import com.yunzia.hyperstar.ui.base.TextButton
 import com.yunzia.hyperstar.ui.pagers.dialog.checkApplication
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.getAndroidVersion
@@ -202,7 +202,9 @@ fun ActivePage(
 
         }
         if (go){
-            Button(
+            TextButton(
+                text = stringResource(R.string.open_lsp_manager),
+                textColor = colorScheme.onSecondaryVariant,
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
@@ -215,21 +217,12 @@ fun ActivePage(
                     mContext.startActivity(intent)
 
                 }
-            ) {
-                Text(
-                    text = stringResource(R.string.open_lsp_manager),
-                    modifier = Modifier.padding(horizontal = 12.dp),
-                    fontSize = 18.sp,
-                    color = colorScheme.onSecondaryVariant,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
+            )
 
         }
 
-
-        Button(
+        TextButton(
+            text = stringResource(R.string.exit),
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
@@ -241,15 +234,7 @@ fun ActivePage(
                 android.os.Process.killProcess(android.os.Process.myPid())
 
             }
-        ) {
-            Text(
-                stringResource(R.string.exit),
-                modifier = Modifier,
-                fontSize = 18.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-        }
+        )
 
     }
 

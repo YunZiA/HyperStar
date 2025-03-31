@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.provider.Settings
 import android.util.Log
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -49,10 +50,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.yunzia.hyperstar.ui.base.BaseActivity
 import com.yunzia.hyperstar.ui.base.XScaffold
 import com.yunzia.hyperstar.ui.base.nav.PagersModel
 import com.yunzia.hyperstar.ui.base.nav.pagersJson
-import com.yunzia.hyperstar.ui.base.showFPSMonitor
 import com.yunzia.hyperstar.ui.module.NotDeveloperPager
 import com.yunzia.hyperstar.ui.module.barrage.BarragePage
 import com.yunzia.hyperstar.ui.module.home.HomePage
@@ -84,6 +85,7 @@ import com.yunzia.hyperstar.ui.pagers.NeedMessagePager
 import com.yunzia.hyperstar.ui.pagers.ReferencesPager
 import com.yunzia.hyperstar.ui.pagers.SettingsShowPage
 import com.yunzia.hyperstar.ui.pagers.TranslatorPager
+import com.yunzia.hyperstar.ui.pagers.updateLanguage
 import com.yunzia.hyperstar.ui.welcome.ActivePage
 import com.yunzia.hyperstar.ui.welcome.WelcomePager
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
@@ -93,21 +95,22 @@ import com.yunzia.hyperstar.utils.isPad
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Icon
-import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
-@SuppressLint("ContextCastToActivity")
+@SuppressLint("SourceLockedOrientationActivity")
 @Composable
 fun App(){
 
-
+    val context = LocalContext.current
+    val activity = LocalActivity.current as BaseActivity
     XScaffold {
-        val context = LocalContext.current as MainActivity
+        val isUpdate = remember { mutableStateOf(false) }
+
         if (!isModuleActive()){
             if (!isFold() && !isPad()){
-                context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             }
             ActivePage()
             return@XScaffold
@@ -140,6 +143,16 @@ fun App(){
             }
 
         }
+
+        LaunchedEffect(
+            activity.updateUI
+        ) {
+            if ( activity.updateUI == 0) return@LaunchedEffect
+            isUpdate.value = true
+            delay(20)
+            isUpdate.value = false
+        }
+        if (isUpdate.value) return@XScaffold
 
         AnimatedVisibility(
             !welcome.value,
@@ -197,7 +210,7 @@ fun App(){
                 }
 
                 AnimatedVisibility(
-                    showFPSMonitor.value
+                    activity.showFPSMonitor.value
                 ) {
                     FPSMonitor(
                         modifier = Modifier
@@ -218,7 +231,7 @@ fun App(){
 
             if (!isFold() && !isPad()){
 
-                context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             }
 
             WelcomePager(welcome,welcomeState)
@@ -361,15 +374,18 @@ fun TwoLayout(
     val windowWidth = getWindowSize().width
     val easing = CubicBezierEasing(0.12f, 0.88f, 0.2f, 1f)
     val dividerLineColor = colorScheme.dividerLine
+    val activity = LocalActivity.current as MainActivity
 
     Row(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 12.dp)
     ) {
+
         Box(
             modifier = Modifier.weight(0.88f)
         ) {
+            if (updateLanguage(activity)) return
             MainPager(navController, pagerState)
         }
         VerticalDivider(
@@ -487,7 +503,7 @@ fun EmptyPage() {
         Icon(
             painter = painterResource(R.drawable.ic_launcher_foreground),
             contentDescription = null,
-            tint = MiuixTheme.colorScheme.secondary,
+            tint = colorScheme.secondary,
             modifier = Modifier.size(256.dp)
         )
     }

@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.ui.base.pager
 
 import android.util.Log
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -8,7 +9,6 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -29,6 +29,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.wear.compose.material.Icon
+import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.InputField
 import com.yunzia.hyperstar.ui.base.ModuleNavTopAppBar
@@ -36,7 +37,6 @@ import com.yunzia.hyperstar.ui.base.SearchBox
 import com.yunzia.hyperstar.ui.base.SearchPager
 import com.yunzia.hyperstar.ui.base.SearchStatus
 import com.yunzia.hyperstar.ui.base.XScaffold
-import com.yunzia.hyperstar.ui.base.colorMode
 import com.yunzia.hyperstar.ui.base.modifier.blur
 import com.yunzia.hyperstar.ui.base.modifier.showBlur
 import com.yunzia.hyperstar.ui.base.nav.backParentPager
@@ -134,6 +134,8 @@ fun SearchBar(
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit
 ){
+
+    val activity = LocalActivity.current as MainActivity
     InputField(
         query = query,
         onQueryChange = { onQueryChange(it) },
@@ -155,7 +157,7 @@ fun SearchBar(
                 exit =  fadeOut() + scaleOut(),
             ) {
                 Icon(
-                    if (colorMode.intValue == 2 || (isSystemInDarkTheme() && colorMode.intValue == 0)){
+                    if (activity.isDarkMode){
                         ImageVector.vectorResource(R.drawable.search_clear_dark)
                     }else{
                         ImageVector.vectorResource(R.drawable.search_clear_light)

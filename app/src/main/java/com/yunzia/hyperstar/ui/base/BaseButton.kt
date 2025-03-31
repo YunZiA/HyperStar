@@ -75,6 +75,7 @@ fun Button(
     insideMargin: PaddingValues = ButtonDefaults.InsideMargin,
     content: @Composable RowScope.() -> Unit
 ) {
+
     Surface(
         onClick = {
             onClick()
@@ -92,6 +93,48 @@ fun Button(
             verticalAlignment = Alignment.CenterVertically,
             content = content
         )
+    }
+}
+
+
+@Composable
+fun TextButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    cornerRadius: Dp = ButtonDefaults.CornerRadius,
+    minWidth: Dp = ButtonDefaults.MinWidth,
+    minHeight: Dp = ButtonDefaults.MinHeight,
+    textColor: Color = Color.White,
+    colors: Color = colorScheme.secondaryVariant,
+    insideMargin: PaddingValues = ButtonDefaults.InsideMargin
+) {
+
+    Surface(
+        onClick = {
+            onClick()
+        },
+        enabled = enabled,
+        modifier = modifier.semantics { role = Role.Button },
+        shape = SmoothRoundedCornerShape(cornerRadius),
+        color = colors
+    ) {
+        Row(
+            Modifier
+                .defaultMinSize(minWidth = minWidth, minHeight = minHeight)
+                .padding(insideMargin),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ){
+            Text(
+                text,
+                modifier = Modifier.padding(horizontal = 12.dp),
+                fontSize = 18.sp,
+                color = textColor,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.ui.pagers
 
 import android.view.HapticFeedbackConstants
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -26,12 +27,15 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.currentRecomposeScope
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,6 +53,7 @@ import androidx.navigation.NavHostController
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.ui.base.BaseActivity
 import com.yunzia.hyperstar.ui.base.BaseButton
 import com.yunzia.hyperstar.ui.base.XScaffold
 import com.yunzia.hyperstar.ui.base.dialog.SuperXDialog
@@ -58,6 +63,7 @@ import com.yunzia.hyperstar.ui.base.modifier.showBlur
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.isOS2Settings
 import dev.chrisbanes.haze.HazeState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.HorizontalPager
 import top.yukonga.miuix.kmp.basic.LazyColumn
@@ -81,11 +87,34 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
+
+@Composable
+fun updateLanguage(
+    activity :BaseActivity = LocalActivity.current as BaseActivity
+): Boolean {
+    val update = remember { mutableStateOf(false) }
+    val recompose = currentRecomposeScope
+    var init by remember { mutableStateOf(false) }
+
+    LaunchedEffect(activity.language.intValue) {
+        if (!init){
+            init = true
+            return@LaunchedEffect
+        }
+        delay(50)
+        update.value = true
+        delay(5)
+        update.value = false
+    }
+    return update.value
+}
+
 @Composable
 fun MainPager(
     navController: NavHostController,
     pagerState: PagerState,
 ) {
+    val activity = LocalActivity.current as MainActivity
     val topAppBarScrollBehavior0 = MiuixScrollBehavior(rememberTopAppBarState())
     val topAppBarScrollBehavior1 = MiuixScrollBehavior(rememberTopAppBarState())
     val topAppBarScrollBehavior2 = MiuixScrollBehavior(rememberTopAppBarState())
@@ -103,9 +132,7 @@ fun MainPager(
         1 -> topAppBarScrollBehaviorList[1]
         else -> topAppBarScrollBehaviorList[2]
     }
-
     val items = listOf(
-
         NavigationItem(stringResource(R.string.main_page_title), ImageVector.vectorResource(id = R.drawable.home)),
         NavigationItem(stringResource(R.string.settings_page_title), ImageVector.vectorResource(id = R.drawable.setting)),
         NavigationItem(stringResource(R.string.about_page_title), ImageVector.vectorResource(id = R.drawable.about)),
@@ -120,9 +147,8 @@ fun MainPager(
     val view = LocalView.current
     val showBlurs = remember { mutableStateOf(true) }
 
-    val context = LocalContext.current
-    val activity = context as MainActivity
     val rebootStyle = activity.rebootStyle
+
     XScaffold(
         modifier = Modifier.fillMaxSize(),
         popupHost = { },
@@ -171,6 +197,7 @@ fun MainPager(
 
         },
     ) { padding ->
+
         AppHorizontalPager(
             modifier = Modifier.blur(hazeState),
             navController = navController,
@@ -235,6 +262,7 @@ fun MainPagerByThree(
 
     Row {
 
+        if (updateLanguage(activity)) return
         NavigationBarForStart(
             modifier = Modifier.weight(0.25f).widthIn(max = 130.dp),
             items = items,
@@ -595,6 +623,8 @@ fun AppHorizontalPager(
                     )
                 }
             }
+
+
         }
     )
 }

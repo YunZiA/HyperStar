@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.ui.pagers
 
-import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,10 +7,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.currentRecomposeScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringArrayResource
@@ -20,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.pager.NavPager
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
+import com.yunzia.hyperstar.ui.base.pager.NavPager
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
 import top.yukonga.miuix.kmp.basic.CardDefaults
@@ -37,9 +36,16 @@ fun LanguagePager(
 
 ) {
     val activity = LocalActivity.current as MainActivity
-    val selectedItem = remember { mutableIntStateOf(PreferencesUtil.getInt("app_language",0)) }
 
     val languageList = stringArrayResource(R.array.language_list).toList()
+
+    val recompose = currentRecomposeScope
+    LaunchedEffect(activity.language.intValue) {
+        activity.setLocale(activity.language.intValue)
+
+        //recompose.invalidate()
+    }
+
 
     NavPager(
         activityTitle = stringResource(R.string.language),
@@ -50,17 +56,17 @@ fun LanguagePager(
 
         languageList.forEachIndexed { index, language ->
 
-            languageItem(activity,language, index,selectedItem)
+            languageItem(language, index,activity.language)
 
         }
 
 
     }
+
 }
 
 
 private fun LazyListScope.languageItem(
-    activity : MainActivity,
     language:String,
     index:Int,
     selectedItem: MutableIntState
@@ -71,6 +77,7 @@ private fun LazyListScope.languageItem(
 
     item(index){
 
+        val activity = LocalActivity.current as MainActivity
         SuperCheckbox(
             title = language,
             titleColor =  titleColor(isSelected),
@@ -79,14 +86,7 @@ private fun LazyListScope.languageItem(
                 .fillMaxWidth()
                 .padding(horizontal = 28.dp)
                 .padding(top = 10.dp)
-                .bounceAnimN {
-                    Log.d("ggc", "languageItem: $isSelected")
-                    if (isSelected) {
-                        Log.d("ggc", "languageItem: isSelected $isSelected")
-                        PreferencesUtil.putInt("app_language", selectedItem.intValue)
-                        activity.recreate()
-                    }
-                }
+                .bounceAnimN {}
                 .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
                 .background(if (isSelected) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
             ,
@@ -94,7 +94,8 @@ private fun LazyListScope.languageItem(
             insideMargin = PaddingValues(20.dp),
             onCheckedChange = {
                 selectedItem.intValue = index
-
+                PreferencesUtil.putInt("app_language", selectedItem.intValue)
+                activity.recreate()
             }
         )
 

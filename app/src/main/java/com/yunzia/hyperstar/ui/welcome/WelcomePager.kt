@@ -2,6 +2,7 @@ package com.yunzia.hyperstar.ui.welcome
 
 import android.util.Log
 import android.view.HapticFeedbackConstants
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -11,7 +12,6 @@ import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +24,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.currentRecomposeScope
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,20 +34,21 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Icon
+import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.HorizontalPager
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun WelcomePager(
     show:MutableState<Boolean>,
     pagerState: PagerState
 ) {
     val view = LocalView.current
+    val activity = LocalActivity.current as MainActivity
     val coroutineScope = rememberCoroutineScope()
-    Log.d("ggc", "WelcomePager: ${pagerState.currentPage}")
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -55,6 +57,8 @@ fun WelcomePager(
             .background(colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val recompose = currentRecomposeScope
+
         Row(
             modifier = Modifier
                 .height(56.dp)
@@ -64,7 +68,7 @@ fun WelcomePager(
         ) {
             AnimatedVisibility(
                 pagerState.targetPage != 0,
-                enter = fadeIn()  + slideIn(
+                enter = fadeIn() + slideIn(
                     animationSpec = tween(
                         durationMillis = 150,
                         delayMillis = 0,
@@ -72,18 +76,18 @@ fun WelcomePager(
                     )
                 ) {
                     IntOffset(it.width, 0)
-                  },
+                },
                 exit = fadeOut() + slideOut(
                     animationSpec = tween(
-                    durationMillis = 150,
-                    delayMillis = 0,
-                    easing = LinearEasing
+                        durationMillis = 150,
+                        delayMillis = 0,
+                        easing = LinearEasing
                     )
                 ) {
                     IntOffset(it.width, 0)
-                  },
+                },
 
-            ) {
+                ) {
                 IconButton(
                     modifier = Modifier,
                     onClick = {
@@ -91,7 +95,7 @@ fun WelcomePager(
                         coroutineScope.launch {
                             val last = pagerState.settledPage - 1
                             Log.d("ggc", "WelcomePager: ${last}")
-                            pagerState.animateScrollToPage( last)
+                            pagerState.animateScrollToPage(last)
                         }
 
                     }
@@ -99,7 +103,8 @@ fun WelcomePager(
                     Icon(
                         ImageVector.vectorResource(R.drawable.bar_back__exit),
                         contentDescription = "back",
-                        tint = colorScheme.onBackground)
+                        tint = colorScheme.onBackground
+                    )
                 }
 
             }
@@ -109,13 +114,14 @@ fun WelcomePager(
                 .widthIn(max = 480.dp)
                 .fillMaxWidth()
                 .padding(bottom = 24.dp),
+            beyondViewportPageCount = 0,
             pagerState = pagerState,
             userScrollEnabled = false,
             pageContent = { page ->
 
                 when (page) {
 
-                    0 ->{
+                    0 -> {
                         WelcomeEnterPager(pagerState)
                     }
 
@@ -124,30 +130,36 @@ fun WelcomePager(
                         RootPage(pagerState)
 
                     }
-                    2->{
 
-                        LanguagePage(pagerState)
+                    2 -> {
+
+                        LanguagePage(pagerState,recompose)
 
                     }
-                    3->{
+
+                    3 -> {
                         ProviderPage(pagerState)
 
                     }
-                    4->{
+
+                    4 -> {
                         BaseSettingPage(pagerState)
 
                     }
-                    5->{
+
+                    5 -> {
                         HookChannelPager(pagerState)
                     }
-                    6->{
-                        EnterPager(show,pagerState)
+
+                    6 -> {
+                        EnterPager(show, pagerState)
                     }
                 }
             }
         )
 
     }
+
 
 
 }

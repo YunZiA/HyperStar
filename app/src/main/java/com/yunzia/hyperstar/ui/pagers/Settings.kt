@@ -1,11 +1,10 @@
 package com.yunzia.hyperstar.ui.pagers
 
 import android.net.Uri
-import android.provider.DocumentsContract
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -18,11 +17,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
@@ -36,6 +33,7 @@ import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.ui.base.BaseActivity
 import com.yunzia.hyperstar.ui.base.BaseArrow
 import com.yunzia.hyperstar.ui.base.BaseButton
 import com.yunzia.hyperstar.ui.base.PMiuixSuperDropdown
@@ -45,7 +43,6 @@ import com.yunzia.hyperstar.ui.base.SuperSpinner
 import com.yunzia.hyperstar.ui.base.SuperWarnDialogArrow
 import com.yunzia.hyperstar.ui.base.XSuperDropdown
 import com.yunzia.hyperstar.ui.base.classes
-import com.yunzia.hyperstar.ui.base.colorMode
 import com.yunzia.hyperstar.ui.base.dialog.SuperCTDialogDefaults
 import com.yunzia.hyperstar.ui.base.dialog.SuperXDialog
 import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.dismissXDialog
@@ -59,7 +56,6 @@ import com.yunzia.hyperstar.utils.isOS2
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.extra.SpinnerEntry
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
@@ -70,9 +66,8 @@ fun Settings(
     padding: PaddingValues
 ) {
 
-
     val context = LocalContext.current
-    val activity = context as MainActivity
+    val activity = LocalActivity.current as MainActivity
 
     //val hookedChannel = remember { mutableIntStateOf(if (isOS2()) 1 else 0) }
     val errorDialog = remember { mutableStateOf(false) }
@@ -82,7 +77,7 @@ fun Settings(
         if (result == null) return@rememberLauncherForActivityResult
         results.value = result
         errorDialog.value = !JBUtil.readGson(context, result)
-        activity.recreate()
+        activity.updateUI()
 
     }
     val launcher2 = rememberLauncherForActivityResult(contract = ActivityResultContracts.CreateDocument("application/json")) { result ->
@@ -116,10 +111,10 @@ fun Settings(
             PMiuixSuperDropdown(
                 title = stringResource(R.string.color_mode_title),
                 option = R.array.color_mode_items,
-                selectedIndex = colorMode.intValue,
+                selectedIndex = activity.colorMode.intValue,
                 onSelectedIndexChange = {
-                    colorMode.intValue = it
-                    PreferencesUtil.putInt("color_mode",colorMode.intValue)
+                    activity.colorMode.intValue = it
+                    PreferencesUtil.putInt("color_mode",activity.colorMode.intValue)
                 }
             )
 
@@ -170,7 +165,7 @@ fun Settings(
                 key = "is_Hook_Channel",
                 defIndex = if (isOS2()) 1 else 0,
             ) {
-                activity.recreate()
+                activity.updateUI()
             }
             XSuperDropdown(
                 title = stringResource(R.string.title_log_level),
@@ -189,8 +184,8 @@ fun Settings(
 
         }
 
-
     }
+
 }
 
 @Composable
@@ -274,7 +269,9 @@ fun ErrorDialog(
 fun getLanguage():String{
     val languageList = stringArrayResource(R.array.language_list).toList()
 
-    return languageList.get(PreferencesUtil.getInt("app_language",0))
+    val activity = LocalActivity.current as BaseActivity
+
+    return languageList[activity.language.intValue]
 }
 
 

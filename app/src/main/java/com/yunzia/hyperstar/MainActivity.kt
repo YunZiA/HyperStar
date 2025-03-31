@@ -116,11 +116,9 @@ class MainActivity : BaseActivity() {
         }
         ProfileInstaller.writeProfile(this)
         if (isModuleActive()){
-
-            SPUtils.getInstance().init(this);
-
+            SPUtils.getInstance().init(this)
+            showLauncherIcon(PreferencesUtil.getBoolean("is_hide_icon",false))
         }
-        showLauncherIcon(PreferencesUtil.getBoolean("is_hide_icon",false))
 
     }
 

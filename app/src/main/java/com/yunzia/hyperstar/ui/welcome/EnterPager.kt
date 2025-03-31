@@ -1,12 +1,12 @@
 package com.yunzia.hyperstar.ui.welcome
 
 import android.view.HapticFeedbackConstants
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,15 +30,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.Button
-import com.yunzia.hyperstar.ui.base.colorMode
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import top.yukonga.miuix.kmp.basic.Text
 
 @Composable
 fun EnterPager(show: MutableState<Boolean>, pagerState: PagerState) {
     val view = LocalView.current
+    val activity = LocalActivity.current as MainActivity
     val easing  = CubicBezierEasing(.42f,0f,0.26f,.85f)
     val go = remember { mutableStateOf(false) }
     val animatedY =  animateDpAsState(
@@ -51,11 +52,10 @@ fun EnterPager(show: MutableState<Boolean>, pagerState: PagerState) {
         animationSpec = tween(durationMillis = 1150,easing = easing),
         label = "alpha"
     )
-    val darkTheme = isSystemInDarkTheme()
-    val logo = when (colorMode.intValue) {
-        1 -> painterResource(R.drawable.hyperstar2)
-        2 -> painterResource(R.drawable.hyperstar2_dark)
-        else -> if (darkTheme) painterResource(R.drawable.hyperstar2_dark) else painterResource(R.drawable.hyperstar2)
+    val logo = if (activity.isDarkMode){
+        painterResource(R.drawable.hyperstar2_dark)
+    }else{
+        painterResource(R.drawable.hyperstar2)
     }
 
     LaunchedEffect(

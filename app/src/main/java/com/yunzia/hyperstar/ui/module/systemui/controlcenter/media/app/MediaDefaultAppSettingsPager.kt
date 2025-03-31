@@ -269,7 +269,7 @@ private fun AppItem(
     BasicComponent(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 28.dp)
+            .padding(horizontal = 16.dp)
             .padding(top = 10.dp)
             .bounceAnimN()
             .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))

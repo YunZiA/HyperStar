@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.graphics.RenderEffect
 import android.graphics.RuntimeShader
 import android.util.Log
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,13 +45,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.graphics.toColorInt
 import androidx.navigation.NavHostController
+import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.LinearImage
 import com.yunzia.hyperstar.ui.base.SuperIntentArrow
 import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.base.classes
-import com.yunzia.hyperstar.ui.base.colorMode
 import com.yunzia.hyperstar.ui.base.firstClasses
 import com.yunzia.hyperstar.ui.base.view.BgEffectView
 import kotlinx.coroutines.flow.onEach
@@ -88,9 +89,10 @@ fun ThirdPage(
 ) {
 
     val context = navController.context
+    val activity = LocalActivity.current as MainActivity
 
     val darkTheme = isSystemInDarkTheme()
-    val colorsMode = when (colorMode.intValue) {
+    val colorsMode = when (activity.colorMode.intValue) {
         1 -> 1
         2 -> 2
         else -> if (darkTheme) 2 else 1

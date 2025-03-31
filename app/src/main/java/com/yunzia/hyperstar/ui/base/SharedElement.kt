@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -78,14 +79,15 @@ fun rememberSearchStatus(
     },
 ): SearchStatus {
 
-    var isInitialized by remember { mutableStateOf(false) }
-    val searchStatus by remember {
-        mutableStateOf(SearchStatus(
-            label = label
-        ).apply {
-            this.collapseBar = { collapseBar(this) }
-            this.expandBar = { expandBar(this) }
-        })
+    var isInitialized by remember  { mutableStateOf(false) }
+    val searchStatus by remember  {
+        mutableStateOf(
+            SearchStatus(label = label)
+        )
+    }
+    searchStatus.apply {
+        this.collapseBar = { collapseBar(this) }
+        this.expandBar = { expandBar(this) }
     }
     LaunchedEffect(searchStatus.status) {
         if (searchStatus.status == Status.COLLAPSED){
@@ -101,6 +103,7 @@ fun rememberSearchStatus(
     return searchStatus
 }
 
+@Stable
 class SearchStatus(
     val label:String,
 ){

@@ -282,4 +282,5 @@
     <string name="thememanager">Themes</string>
     <string name="unlock_ai_wallpaper">Unlock the entrance to AI wallpapers</string>
     <string name="disable_click_events">Disable click events</string>
+    <string name="empty">Empty</string>
 </resources>

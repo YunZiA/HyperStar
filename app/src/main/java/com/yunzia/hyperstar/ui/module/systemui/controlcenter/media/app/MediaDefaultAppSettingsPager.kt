@@ -33,10 +33,12 @@ import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.LoadBox
+import com.yunzia.hyperstar.ui.base.LoadStatus
 import com.yunzia.hyperstar.ui.base.SearchStatus
 import com.yunzia.hyperstar.ui.base.SearchStatus.Status
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.base.pager.SearchModuleNavPager
+import com.yunzia.hyperstar.ui.base.rememberLoadStatus
 import com.yunzia.hyperstar.ui.base.rememberSearchStatus
 import com.yunzia.hyperstar.ui.pagers.titleColor
 import com.yunzia.hyperstar.utils.Helper
@@ -141,7 +143,7 @@ fun MediaAppSettingsPager(
 ) {
     val context = LocalContext.current
     val activity = LocalActivity.current as MainActivity
-    val isLoading = remember { mutableStateOf(true) }
+    val loadStatus = rememberLoadStatus()
     getInstalledApps(activity)
     val appLists = remember { mutableStateOf<List<AppInfo>>(emptyList()) }
     val searchApp = remember {  mutableStateOf<List<AppInfo>>(emptyList()) }
@@ -149,29 +151,23 @@ fun MediaAppSettingsPager(
     val searchStatus = rememberSearchStatus(
         label = stringResource(R.string.app_name_type),
     )
-    val update = remember { mutableStateOf(false) }
     val isApp = remember { mutableStateOf(SPUtils.getString("media_default_app_package","")) }
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(activity.isGranted.value) {
-
         if (activity.isGranted.value){
-            update.value = true
-            isLoading.value = true
+            loadStatus.current = LoadStatus.Status.Loading
         }
     }
 
-    LaunchedEffect(update.value) {
-
+    LaunchedEffect(loadStatus.current) {
+        if (!loadStatus.isLoading()) return@LaunchedEffect
         coroutineScope.launch {
             val result = withContext(Dispatchers.IO) {
                 getAllAppInfo(context, true)
             }
             appLists.value = result
-            if (appLists.value.isNotEmpty()) {
-                update.value = false
-                isLoading.value = false
-            }
+            loadStatus.current = LoadStatus.Status.Complete
         }
     }
     LaunchedEffect(searchStatus.status) {
@@ -184,7 +180,6 @@ fun MediaAppSettingsPager(
         if (searchStatus.searchText == ""){
             searchStatus.resultStatus = SearchStatus.ResultStatus.DEFAULT
             searchApp.value = emptyList()
-            update.value = false
             return@LaunchedEffect
 
         }
@@ -203,7 +198,6 @@ fun MediaAppSettingsPager(
             }else{
                 SearchStatus.ResultStatus.SHOW
             }
-            update.value = false
         }
 
     }
@@ -228,8 +222,8 @@ fun MediaAppSettingsPager(
     ){ topAppBarScrollBehavior,padding->
 
         LoadBox(
-            modifier = Modifier.fillMaxSize(),
-            isLoading = isLoading
+            loadStatus = loadStatus,
+            modifier = Modifier.fillMaxSize()
         ){
             LazyColumn(
                 modifier = Modifier

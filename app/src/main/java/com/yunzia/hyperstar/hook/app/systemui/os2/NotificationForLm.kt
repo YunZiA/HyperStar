@@ -19,6 +19,8 @@ class NotificationForLm:Hooker() {
         val miuiBaseNotifUtil = findClass("com.miui.systemui.notification.MiuiBaseNotifUtil",classLoader)
         val appList = XSPUtils.getString("notification_icon_type_whitelist", "com.tencent.mm") ?: return
 
+        if (appList == "||") return
+
         miuiBaseNotifUtil.replaceHookMethod("getNotificationTypeForIm",Notification::class.java){
             val notification = it.args[0] as Notification
             val notifExtras = notification.extras

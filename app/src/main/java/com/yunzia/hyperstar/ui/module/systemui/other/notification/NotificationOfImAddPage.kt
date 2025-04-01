@@ -20,12 +20,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.snapshots.SnapshotStateSet
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -57,17 +56,15 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 @Composable
 fun NotificationOfImAddPage(
     expand: MutableState<Boolean>,
-    selectApp: SnapshotStateList<NotificationInfo>,
-    unSelectApp: SnapshotStateList<NotificationInfo>
+    selectApp: SnapshotStateSet<NotificationInfo>,
+    unSelectApp: SnapshotStateSet<NotificationInfo>
 ){
     val hazeState = remember { HazeState() }
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
     val selectedAppList = remember { mutableSetOf<NotificationInfo>() }
-    val focusManager = LocalFocusManager.current
     val searchStatus = rememberSearchStatus(
         label = stringResource(R.string.app_name_type)
     )
-    //val searchApp = remember {  mutableStateOf<List<NotificationInfo>>(emptyList()) }
     val searchApp = remember(unSelectApp, searchStatus.searchText) {
         derivedStateOf {
             unSelectApp.filter { it.appName.contains(searchStatus.searchText, ignoreCase = true) }
@@ -131,8 +128,10 @@ fun NotificationOfImAddPage(
                             contentDescription = "done",
                             onClick = {
                                 expand.value = false
-                                selectApp.addAll(selectedAppList)
-                                selectedAppList.clear()
+                                if (selectedAppList.isNotEmpty()){
+                                    selectApp.addAll(selectedAppList)
+                                    selectedAppList.clear()
+                                }
                             }
                         )
                     }

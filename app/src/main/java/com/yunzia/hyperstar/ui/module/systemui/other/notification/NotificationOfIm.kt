@@ -18,11 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.snapshots.SnapshotStateSet
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
@@ -38,9 +38,11 @@ import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.FloatingPagerButton
 import com.yunzia.hyperstar.ui.base.LoadBox
+import com.yunzia.hyperstar.ui.base.LoadStatus
 import com.yunzia.hyperstar.ui.base.SearchStatus
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.base.pager.SearchModuleNavPager
+import com.yunzia.hyperstar.ui.base.rememberLoadStatus
 import com.yunzia.hyperstar.ui.base.rememberSearchStatus
 import com.yunzia.hyperstar.ui.pagers.titleColor
 import com.yunzia.hyperstar.utils.Helper
@@ -70,79 +72,63 @@ fun NotificationOfIm(
 ) {
 
     val activity = navController.context as MainActivity
-    val db = NotAppListDB(activity)
-    val isLoading = remember { mutableStateOf(true) }
-
-    val packageManager = activity.packageManager
-
-    val applicationInfo =  packageManager.getPackageInfo("com.tencent.mm", PackageManager.GET_META_DATA).applicationInfo!!
-
-    val appName = packageManager.getApplicationLabel(applicationInfo).toString()
-    val packageName = applicationInfo.packageName
-    val appIcon = packageManager.getApplicationIcon(applicationInfo)
-
-
+    val loadStatus = rememberLoadStatus()
 
     val searchStatus = rememberSearchStatus(
         label = stringResource(R.string.app_name_type)
     )
 
-    val weChat = NotificationInfo(appIcon,appName,"com.tencent.mm","message_channel_new_id")
+    val allAppList = remember { mutableStateSetOf<NotificationInfo>() }
+    val selectApp = remember { mutableStateSetOf<NotificationInfo>() }
+    val unSelectApp = remember { mutableStateSetOf<NotificationInfo>() }
 
-    val notifPlusList = remember { mutableStateListOf(weChat) }
-
-    val selectApp = remember {  mutableStateListOf<NotificationInfo>() }
-    val unSelectApp = remember { mutableStateListOf<NotificationInfo>() }
     val searchApp = remember(selectApp, searchStatus.searchText) {
         derivedStateOf {
             selectApp.filter { it.appName.contains(searchStatus.searchText, ignoreCase = true) }
         }
     }
-    //val searchApp = remember {  mutableStateListOf<NotificationInfo>() }
-
-    val appNotifPkgiList = remember { mutableStateOf<List<String>>(emptyList()) }
-
     val coroutineScope = rememberCoroutineScope()
 
-    val update = remember { mutableStateOf(true) }
-    //SPUtils.removeKey("notification_icon_type_whitelist")
     LaunchedEffect(activity.isGranted.value) {
-
         if (activity.isGranted.value){
-            update.value = true
-            isLoading.value = true
+            loadStatus.current = LoadStatus.Status.Loading
         }
     }
 
-    LaunchedEffect(selectApp.size) {
-        if (isLoading.value){
+    LaunchedEffect(loadStatus.current,selectApp.size) {
+        if (loadStatus.isLoading()){
+            return@LaunchedEffect
+        }
+        loadStatus.isEmpty = selectApp.isEmpty()
+        if (selectApp.isEmpty()){
+            SPUtils.setString("notification_icon_type_whitelist", "||")
+            unSelectApp.clear()
+            unSelectApp.addAll(allAppList)
             return@LaunchedEffect
         }
         val packageNames = selectApp.map { it.packageName }.toMutableSet()
-        if (!packageNames.contains("com.tencent.mm")) {
-            packageNames.add("com.tencent.mm")
-        }
-        val result = buildString {
-            packageNames.forEach { append("|$it") }
-        }+"|"
-        Log.d("ggc", "NotificationOfIm: ${isLoading.value} $result")
-        SPUtils.setString("notification_icon_type_whitelist", result)
-    }
-    LaunchedEffect(update.value) {
-        if (update.value){
-            coroutineScope.launch {
-                withContext(Dispatchers.IO) {
-                    getAppInfo(
-                        activity,
-                        SPUtils.getString("notification_icon_type_whitelist","|com.tencent.mm|"),
-                        selectApp,
-                        unSelectApp
-                    )
 
-                }
-                if (selectApp.isNotEmpty()) {
-                    update.value = false
-                    isLoading.value = false
+        val result = buildString { packageNames.forEach { append("|$it") } }+"|"
+        SPUtils.setString("notification_icon_type_whitelist", result)
+        unSelectApp.clear()
+        unSelectApp.addAll(
+            allAppList.filter {
+                !result.contains("|${it.packageName}|")
+            }
+        )
+    }
+    LaunchedEffect(loadStatus.current) {
+        if (loadStatus.isLoading()){
+            coroutineScope.launch(Dispatchers.IO) {
+                getAppInfo(
+                    activity,
+                    SPUtils.getString("notification_icon_type_whitelist", "||"),
+                    selectApp,
+                    allAppList
+                )
+                withContext(Dispatchers.Main) {
+                    loadStatus.current = LoadStatus.Status.Complete
+                    loadStatus.isEmpty = selectApp.isEmpty()
                 }
             }
         }
@@ -152,7 +138,6 @@ fun NotificationOfIm(
     LaunchedEffect(searchStatus.searchText) {
         if (searchStatus.searchText == ""){
             searchStatus.resultStatus = SearchStatus.ResultStatus.DEFAULT
-            update.value = false
             return@LaunchedEffect
 
         }
@@ -169,7 +154,6 @@ fun NotificationOfIm(
             }else{
                 SearchStatus.ResultStatus.SHOW
             }
-            update.value = false
         }
 
     }
@@ -217,9 +201,8 @@ fun NotificationOfIm(
     ) { topAppBarScrollBehavior,padding->
 
         LoadBox(
+            loadStatus = loadStatus,
             modifier = Modifier.fillMaxSize(),
-            isLoading = isLoading
-
         ){
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
@@ -248,7 +231,7 @@ fun NotificationOfIm(
 private fun AppNotifItem(
     notificationInfo: NotificationInfo,
     navController: NavHostController,
-    selectApp: SnapshotStateList<NotificationInfo>
+    selectApp: SnapshotStateSet<NotificationInfo>
 ){
     val label = notificationInfo.appName
     val packageName = notificationInfo.packageName
@@ -271,7 +254,7 @@ private fun AppNotifItem(
                     )
                 }
                 .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
-                .background(colorScheme.surfaceVariant)
+                .background( if (shouldDelete.value) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
             ,
             insideMargin =  PaddingValues(17.dp),
             title = label,
@@ -315,13 +298,13 @@ private fun AppNotifItem(
 @Composable
 fun DeletePup(
     shouldDelete: MutableState<Boolean>,
-    selectApp: SnapshotStateList<NotificationInfo>,
+    selectApp: SnapshotStateSet<NotificationInfo>,
     notificationInfo: NotificationInfo
 ) {
     ListPopup(
         show = shouldDelete,
         popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
-        alignment = PopupPositionProvider.Align.BottomRight,
+        alignment = PopupPositionProvider.Align.TopRight,
         onDismissRequest = {
             shouldDelete.value = false
         }
@@ -367,31 +350,31 @@ private fun getAllAppInfo(
 
 private fun getAppInfo(
     context: Context,
-    selected:String,
-    selectAppList: SnapshotStateList<NotificationInfo>,
-    unSelectAppList: SnapshotStateList<NotificationInfo>
+    selected: String,
+    selectAppList: SnapshotStateSet<NotificationInfo>,
+    allAppList: SnapshotStateSet<NotificationInfo>
 ) {
     Log.d("ggc", "NotificationOfIm:  getAppInfo $selected")
 
-    val selectedList: ArrayList<NotificationInfo> = ArrayList<NotificationInfo>()
-    val unSelectList: ArrayList<NotificationInfo> = ArrayList<NotificationInfo>()
+    val selectedList: ArrayList<NotificationInfo> = ArrayList()
+    val allApp: ArrayList<NotificationInfo> = ArrayList()
     val packageManager = context.packageManager
     val list = packageManager.getInstalledPackages(0)
 
-
-
     for (p in list) {
         val applicationInfo = p.applicationInfo
+        processAppInfo(applicationInfo, packageManager, allApp)
         if (selected.contains("|${applicationInfo?.packageName!!}|")){
             processAppInfo(applicationInfo, packageManager, selectedList)
-        }else{
-            processAppInfo(applicationInfo, packageManager, unSelectList)
         }
     }
     selectAppList.clear()
-    unSelectAppList.clear()
-    selectAppList.addAll(selectedList)
-    unSelectAppList.addAll(unSelectList)
+    allAppList.clear()
+    allAppList.addAll(allApp)
+    if (selectedList.isNotEmpty()){
+
+        selectAppList.addAll(selectedList)
+    }
 
 }
 

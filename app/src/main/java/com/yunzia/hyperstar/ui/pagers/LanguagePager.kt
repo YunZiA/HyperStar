@@ -42,8 +42,7 @@ fun LanguagePager(
     val recompose = currentRecomposeScope
     LaunchedEffect(activity.language.intValue) {
         activity.setLocale(activity.language.intValue)
-
-        //recompose.invalidate()
+        recompose.invalidate()
     }
 
 
@@ -95,7 +94,6 @@ private fun LazyListScope.languageItem(
             onCheckedChange = {
                 selectedItem.intValue = index
                 PreferencesUtil.putInt("app_language", selectedItem.intValue)
-                activity.recreate()
             }
         )
 

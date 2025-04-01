@@ -48,7 +48,7 @@ fun Loading() {
         contentDescription = null,
         modifier = Modifier
             .wrapContentSize()
-            .padding(15.dp)
+            .padding(bottom = 10.dp)
             .rotate(rotation.value)
     )
 }

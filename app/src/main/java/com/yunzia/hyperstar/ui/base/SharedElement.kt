@@ -45,10 +45,12 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.pager.SearchBar
 import com.yunzia.hyperstar.ui.base.pager.SearchBarFake
 import top.yukonga.miuix.kmp.basic.Text
@@ -198,7 +200,7 @@ fun SearchPager(
                     searchStatus.status = SearchStatus.Status.COLLAPSED
                 }
                 Text(
-                    text = "取消",
+                    text = stringResource(R.string.cancel),
                     fontWeight = FontWeight.Bold,
                     color = colorScheme.primary,
                     modifier = Modifier

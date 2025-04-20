@@ -6,12 +6,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.SystemUIMoreList
-import com.yunzia.hyperstar.ui.base.pager.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.base.XSuperSwitch
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
+import com.yunzia.hyperstar.ui.base.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
+import com.yunzia.hyperstar.utils.isOS2Settings
 
 @Composable
 fun SystemUIOtherPager(
@@ -44,16 +45,18 @@ fun SystemUIOtherPager(
                 key = "is_transparent_navigationBar_background"
             )
         }
-        classes(
-            title = "经典通知样式"
-        ) {
-            SuperNavHostArrow(
-                title = "图标优化白名单",
-                navController = navController,
-                route = SystemUIMoreList.NOTIFICATIONOFIM
+        if (isOS2Settings()){
+            classes(
+                title = R.string.classic_noy_type
+            ) {
+                SuperNavHostArrow(
+                    title = stringResource(R.string.icon_stacking_whitelist),
+                    navController = navController,
+                    route = SystemUIMoreList.NOTIFICATIONOFIM
 
-            )
+                )
 
+            }
         }
         classes(
             title = R.string.power_menu,

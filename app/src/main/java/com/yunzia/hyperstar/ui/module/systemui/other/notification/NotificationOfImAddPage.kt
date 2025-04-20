@@ -119,7 +119,7 @@ fun NotificationOfImAddPage(
                 TopAppBar(
                     modifier = Modifier.showBlur(hazeState),
                     color = Color.Transparent,
-                    title = "应用选择",
+                    title = stringResource(R.string.application_selection),
                     scrollBehavior = topAppBarScrollBehavior,
                     navigationIcon = {
                         TopButton(
@@ -160,7 +160,8 @@ fun NotificationOfImAddPage(
             searchStatus,
         ){
             LazyColumn(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
                 contentPadding = PaddingValues(
                     top = 0.dp,

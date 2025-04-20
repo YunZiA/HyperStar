@@ -162,7 +162,7 @@ fun NotificationOfIm(
     }
 
     SearchModuleNavPager(
-        activityTitle = "图标优化白名单",
+        activityTitle = stringResource(R.string.icon_stacking_whitelist),
         searchStatus = searchStatus,
         navController = navController,
         parentRoute = currentStartDestination,

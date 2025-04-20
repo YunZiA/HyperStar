@@ -282,4 +282,7 @@
     <string name="unlock_ai_wallpaper">Unlock the entrance to AI wallpapers</string>
     <string name="disable_click_events">Disable click events</string>
     <string name="empty">Empty</string>
+    <string name="classic_noy_type">Classic Notification Style</string>
+    <string name="icon_stacking_whitelist">Icon Stacking Whitelist</string>
+    <string name="application_selection">Application Selection</string>
 </resources>

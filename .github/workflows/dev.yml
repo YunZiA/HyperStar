@@ -2,7 +2,7 @@ name: Build DEV Apk
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   build:

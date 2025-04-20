@@ -106,7 +106,7 @@ class MainActivity : BaseActivity() {
                     barrage.longVersionCode
                 )
             } catch (e: PackageManager.NameNotFoundException) {
-                // Handle the case where the package is not found
+
             }
         }
 

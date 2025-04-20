@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: DEVApp
-          path: ./app/dev
+          path: ./app/build/outputs/apk/dev
       - name: List all files in workspace
         run: |
           echo "Listing all files and directories:"
@@ -51,7 +51,7 @@ jobs:
             ```
         run: |
           if [ ! -z "${{ secrets.BOT_TOKEN }}" ]; then
-            export DEV=$(find ./app/dev -name "*.apk")
+            export DEV=$(find ./app/build/outputs/apk/dev -name "*.apk")
             ESCAPED=`python3 -c 'import json,os,urllib.parse; print(urllib.parse.quote(json.dumps(os.environ["COMMIT_MESSAGE"])))'`
             curl -v "https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup?chat_id=${CHANNEL_ID}&media=%5B%7B%22type%22:%22document%22,%20%22media%22:%22attach://dev%22,%22parse_mode%22:%22MarkdownV2%22,%22caption%22:${ESCAPED}%7D%5D" -F dev="@${DEV}"
           fi

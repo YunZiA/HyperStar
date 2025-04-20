@@ -26,7 +26,7 @@ jobs:
           ./gradlew :app:assembleDev
         env:
           KEYSTORE_PATH: "./.github/HyperStar.jks"
-          KEYSTORE_PASS: ${{ secrets.KEY_STORE_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       - name: Upload android artifact
@@ -34,10 +34,6 @@ jobs:
         with:
           name: DEVApp
           path: ./app/build/outputs/apk/dev
-      - name: List all files in workspace
-        run: |
-          echo "Listing all files and directories:"
-          ls -R
       - name: Post to Telegram ci channel
         if: ${{ success() && github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.ref_type != 'tag' }}
         env:

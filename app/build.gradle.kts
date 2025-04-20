@@ -81,19 +81,16 @@ android {
 
     val keystoreFile = System.getenv("KEYSTORE_PATH")
     signingConfigs {
-        if (keystoreFile != null) {
-            create("ci") {
+        create("dev") {
+            if (keystoreFile != null) {
                 storeFile = file(keystoreFile)
                 storePassword = System.getenv("KEYSTORE_PASSWORD")
                 keyAlias = System.getenv("KEY_ALIAS")
                 keyPassword = System.getenv("KEY_PASSWORD")
-                enableV4Signing = true
             }
-        } else {
-            create("release") {
-                enableV4Signing = true
-            }
+            enableV4Signing = true
         }
+
     }
 
     applicationVariants.all {

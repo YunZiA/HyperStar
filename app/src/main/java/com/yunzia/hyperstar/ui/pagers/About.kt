@@ -248,7 +248,7 @@ fun ThirdPage(
             )
 
             Text(
-                text = stringResource(id = R.string.xposed_desc),
+                text = stringResource(R.string.xposed_desc),
                 fontSize = 14.sp,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -263,7 +263,8 @@ fun ThirdPage(
 
 
         LazyColumn(
-            modifier = Modifier.height(getWindowSize().height.dp)
+            modifier = Modifier
+                .height(getWindowSize().height.dp)
                 .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
             state = scroll,
             contentPadding = PaddingValues(top = padding.calculateTopPadding(), bottom = padding.calculateBottomPadding()+16.dp),

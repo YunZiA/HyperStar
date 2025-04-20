@@ -79,6 +79,23 @@ android {
         }
     }
 
+    val keystoreFile = System.getenv("KEYSTORE_PATH")
+    signingConfigs {
+        if (keystoreFile != null) {
+            create("ci") {
+                storeFile = file(keystoreFile)
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
+                enableV4Signing = true
+            }
+        } else {
+            create("release") {
+                enableV4Signing = true
+            }
+        }
+    }
+
     applicationVariants.all {
         outputs.all {
             if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {

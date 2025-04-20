@@ -25,7 +25,7 @@ jobs:
         run: |
           ./gradlew :app:assembleDev
         env:
-          KEYSTORE_PATH: "../HyperStar.jks"
+          KEYSTORE_PATH: "./github/HyperStar.jks"
           KEYSTORE_PASS: ${{ secrets.KEY_STORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}

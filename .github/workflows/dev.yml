@@ -23,9 +23,11 @@ jobs:
         run: chmod +x gradlew
       - name: Build app
         run: |
+          rm -f keystore.jks || true
+          echo ${{ secrets.SIGNING_KEY }} | base64 -d > keystore.jks
           ./gradlew :app:assembleDev
         env:
-          KEYSTORE_PATH: "../.github/HyperStar.jks"
+          KEYSTORE_PATH: "../keystore.jks"
           KEYSTORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}

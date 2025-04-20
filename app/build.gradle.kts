@@ -81,14 +81,20 @@ android {
 
     val keystoreFile = System.getenv("KEYSTORE_PATH")
     signingConfigs {
-        create("dev") {
-            if (keystoreFile != null) {
+        if (keystoreFile != null) {
+            create("ci") {
                 storeFile = file(keystoreFile)
                 storePassword = System.getenv("KEYSTORE_PASSWORD")
                 keyAlias = System.getenv("KEY_ALIAS")
                 keyPassword = System.getenv("KEY_PASSWORD")
+                enableV4Signing = true
             }
-            enableV4Signing = true
+
+        }else{
+            create("default"){
+                enableV4Signing = true
+
+            }
         }
 
     }
@@ -108,6 +114,7 @@ android {
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName(if (keystoreFile != null) "ci" else "default")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -118,12 +125,14 @@ android {
         }
 
         debug {
+            signingConfig = signingConfigs.getByName(if (keystoreFile != null) "ci" else "default")
             // 对于debug版本，可以不使用混和资源压缩
             isMinifyEnabled = false
             isShrinkResources = false
 
         }
         create("dev") {
+            signingConfig = signingConfigs.getByName(if (keystoreFile != null) "ci" else "default")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(

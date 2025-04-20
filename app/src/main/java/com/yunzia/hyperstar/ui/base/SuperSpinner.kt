@@ -46,7 +46,7 @@ import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.extra.SpinnerEntry
 import top.yukonga.miuix.kmp.extra.SpinnerItemImpl
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.base.ArrowUpDownIntegrated
+import top.yukonga.miuix.kmp.icon.icons.basic.ArrowUpDownIntegrated
 import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
@@ -191,7 +191,7 @@ fun SuperSpinner(
                     .padding(start = 8.dp)
                     .size(10.dp, 16.dp)
                     .align(Alignment.CenterVertically),
-                imageVector = MiuixIcons.Base.ArrowUpDownIntegrated,
+                imageVector = MiuixIcons.Basic.ArrowUpDownIntegrated,
                 colorFilter = ColorFilter.tint(actionColor),
                 contentDescription = null
             )

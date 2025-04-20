@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.ui.welcome
 
 import android.view.HapticFeedbackConstants
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -46,7 +48,6 @@ import com.yunzia.hyperstar.utils.JBUtil
 import com.yunzia.hyperstar.utils.JBUtil.openFile
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Card
-import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
@@ -57,7 +58,7 @@ fun ProviderPage(
 
     val view = LocalView.current
     val coroutineScope = rememberCoroutineScope()
-    val activity = LocalContext.current as MainActivity
+    val activity = LocalActivity.current as MainActivity
     val context = LocalContext.current
     val  success = remember { mutableStateOf(false) }
     val eventState = remember { mutableStateOf(EventState.Idle) }
@@ -96,9 +97,11 @@ fun ProviderPage(
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold
         )
-        LazyColumn(modifier = Modifier
-            .weight(1f)
-            .padding(bottom = 10.dp)) {
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .padding(bottom = 10.dp)
+        ) {
 
             item{
                 Spacer(modifier = Modifier.height(10.dp))

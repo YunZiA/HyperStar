@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.ui.welcome
 
 import android.view.HapticFeedbackConstants
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
@@ -18,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -36,7 +37,6 @@ import com.yunzia.hyperstar.ui.base.XSuperDropdown
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import kotlinx.coroutines.launch
-import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.Text
 
 @Composable
@@ -44,7 +44,7 @@ fun BaseSettingPage(pagerState: PagerState) {
     val view = LocalView.current
     val coroutineScope = rememberCoroutineScope()
     val selectedItem = remember { mutableIntStateOf(PreferencesUtil.getInt("app_language",0)) }
-    val activity = LocalContext.current as MainActivity
+    val activity = LocalActivity.current as MainActivity
     val rebootStyle = activity.rebootStyle
 
     val languageList = stringArrayResource(R.array.language_list).toList()

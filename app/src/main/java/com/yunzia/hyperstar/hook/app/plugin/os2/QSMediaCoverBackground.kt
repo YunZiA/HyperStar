@@ -12,6 +12,8 @@ import androidx.core.graphics.drawable.toDrawable
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.plugin.ControlCenterUtils
+import com.yunzia.hyperstar.hook.util.plugin.MiBlurCompat
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import yunzia.utils.BitmapUtils
@@ -59,6 +61,9 @@ class QSMediaCoverBackground: Hooker() {
         val MediaPlayerMetaData  = findClass("miui.systemui.controlcenter.media.MediaPlayerMetaData",classLoader)
         val MediaPlayerViewHolder  = findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",classLoader)
         val CommonUtils = findClass("miui.systemui.util.CommonUtils",classLoader)
+
+        val controlCenterUtils = ControlCenterUtils(classLoader)
+        val miBlurCompat = MiBlurCompat(classLoader)
 
         MediaPlayerViewHolder.afterHookMethod("updateMetaData",MediaPlayerMetaData!!){
 

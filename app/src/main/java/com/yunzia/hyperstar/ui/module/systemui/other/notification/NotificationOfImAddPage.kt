@@ -1,6 +1,8 @@
 package com.yunzia.hyperstar.ui.module.systemui.other.notification
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -37,6 +40,7 @@ import com.yunzia.hyperstar.ui.base.TopButton
 import com.yunzia.hyperstar.ui.base.XScaffold
 import com.yunzia.hyperstar.ui.base.modifier.blur
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
+import com.yunzia.hyperstar.ui.base.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.base.modifier.showBlur
 import com.yunzia.hyperstar.ui.base.rememberSearchStatus
 import dev.chrisbanes.haze.HazeState
@@ -46,7 +50,6 @@ import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Checkbox
-import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
@@ -101,9 +104,17 @@ fun NotificationOfImAddPage(
         popupHost = { },
         topBar = {
             AnimatedVisibility(
-                searchStatus.isCollapsed()||searchStatus.isCollapsedAnim(),
-                enter = fadeIn(),
-                exit = fadeOut(),
+                searchStatus.isCollapsed()||searchStatus.isAnimatingCollapse(),
+                enter = fadeIn(
+                    animationSpec = spring(
+                        stiffness = Spring.StiffnessLow
+                    )
+                ),
+                exit = fadeOut(
+                    animationSpec = spring(
+                        stiffness = Spring.StiffnessMedium
+                    )
+                ),
             ) {
                 TopAppBar(
                     modifier = Modifier.showBlur(hazeState),
@@ -149,12 +160,12 @@ fun NotificationOfImAddPage(
             searchStatus,
         ){
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
+                    .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
                 contentPadding = PaddingValues(
                     top = 0.dp,
                     bottom = padding.calculateBottomPadding() + 28.dp
-                ),
-                topAppBarScrollBehavior = topAppBarScrollBehavior
+                )
             ) {
 
                 unSelectApp.forEach {

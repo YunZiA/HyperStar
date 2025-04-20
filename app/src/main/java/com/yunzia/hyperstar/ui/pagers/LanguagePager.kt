@@ -94,6 +94,7 @@ private fun LazyListScope.languageItem(
             onCheckedChange = {
                 selectedItem.intValue = index
                 PreferencesUtil.putInt("app_language", selectedItem.intValue)
+                //activity.recreate()
             }
         )
 

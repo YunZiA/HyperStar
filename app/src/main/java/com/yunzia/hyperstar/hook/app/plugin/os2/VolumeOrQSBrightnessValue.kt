@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.core.graphics.toColorInt
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.tool.starLog
@@ -209,9 +210,10 @@ class VolumeOrQSBrightnessValue : Hooker() {
                     "updateBlendBlur"
                 ){
 
-                    val context = this.callMethodAs<Context>("getContext") ?:return@afterHookMethod
-                    val vToggleSliderInner = this.callMethodAs<ViewGroup>("getVToggleSliderInner") ?:return@afterHookMethod
+                    val context = this.callMethodAs<Context>("getContext")
+                    val vToggleSliderInner = this.callMethodAs<ViewGroup>("getVToggleSliderInner")
                     val topValue = vToggleSliderInner.findViewByIdNameAs<TextView>("top_text")
+
 
                     if (!controlCenterUtils.getBackgroundBlurOpenedInDefaultTheme(context)){
                         val color = vToggleSliderInner.resources.getColorBy("toggle_slider_top_text_color",plugin)
@@ -220,8 +222,11 @@ class VolumeOrQSBrightnessValue : Hooker() {
                         miBlurCompat.clearMiBackgroundBlendColorCompat(topValue)
                         return@afterHookMethod
                     }
-                    //Color.WHITE Color.parseColor("#959595")
+
+
                     topValue.setTextColor(Color.WHITE)
+
+                    //Color.WHITE Color.parseColor("#959595")
                     miBlurCompat.setMiViewBlurModeCompat(topValue,3)
                     val colorArray = vToggleSliderInner.resources.getIntArrayBy("toggle_slider_icon_blend_colors",plugin)
                     miBlurCompat.setMiBackgroundBlendColors(topValue,colorArray,1f)
@@ -229,7 +234,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
                 afterHookMethod(
                     "updateLargeSize"
                 ){
-                    val item = this.callMethodAs<ViewGroup>("getVToggleSliderInner") ?:return@afterHookMethod
+                    val item = this.callMethodAs<ViewGroup>("getVToggleSliderInner")
                     val topValue = item.findViewByIdNameAs<TextView>("top_text")
                     topValue.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
                     topValue.setTextSize(TypedValue.COMPLEX_UNIT_DIP,15f)
@@ -237,7 +242,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
                 afterHookMethod(
                     "updateSmallSize"
                 ){
-                    val item = this.callMethodAs<ViewGroup>("getVToggleSliderInner") ?:return@afterHookMethod
+                    val item = this.callMethodAs<ViewGroup>("getVToggleSliderInner")
                     val topValue = item.findViewByIdNameAs<TextView>("top_text")
                     topValue.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
                     topValue.setTextSize(TypedValue.COMPLEX_UNIT_DIP,13f)
@@ -273,47 +278,57 @@ class VolumeOrQSBrightnessValue : Hooker() {
         findClass(
             "miui.systemui.controlcenter.panel.main.recyclerview.ToggleSliderViewHolder",
             classLoader
-        ).afterHookMethod(
-            "updateBlendBlur"
-        ){
-            val context = this.callMethodAs<Context>("getContext") ?:return@afterHookMethod
-            val item = this.getObjectFieldAs<View>("itemView")
-            val topValue = item.findViewByIdName("top_text") as TextView
-            val icon = item.findViewByIdName("icon")
+        ).apply {
+            afterHookMethod(
+                "updateBlendBlur"
+            ){
+                val context = this.callMethodAs<Context>("getContext")
+                val item = this.getObjectFieldAs<View>("itemView")
+                val topValue = item.findViewByIdName("top_text") as TextView
+                val icon = item.findViewByIdName("icon")
 
-            if (!controlCenterUtils.getBackgroundBlurOpenedInDefaultTheme(context)){
-                val color = item.resources.getColorBy("toggle_slider_top_text_color",plugin)
-                topValue.setTextColor(color)
-                miBlurCompat.setMiViewBlurModeCompat(topValue,0)
-                miBlurCompat.clearMiBackgroundBlendColorCompat(topValue)
-                return@afterHookMethod
-            }
-            //Color.WHITE Color.parseColor("#959595")
-            topValue.setTextColor(Color.WHITE)
-            miBlurCompat.setMiViewBlurModeCompat(topValue,3)
-            if (colorArray == null){
-                colorArray = item.resources.getIntArrayBy("toggle_slider_icon_blend_colors",plugin)
-            }
+                if (!controlCenterUtils.getBackgroundBlurOpenedInDefaultTheme(context)){
+                    val color = item.resources.getColorBy("toggle_slider_top_text_color",plugin)
+                    topValue.setTextColor(color)
+                    miBlurCompat.setMiViewBlurModeCompat(topValue,0)
+                    miBlurCompat.clearMiBackgroundBlendColorCompat(topValue)
+                    return@afterHookMethod
+                }
+                //Color.WHITE Color.parseColor("#959595")
+                topValue.setTextColor(Color.WHITE)
+                val inMirror =  this.getObjectFieldAs<Boolean>("inMirror")
+                if (inMirror){
+                    val mirrorBlendBackground = this.getObjectFieldAs<View>("mirrorBlendBackground")
+                    miBlurCompat.chooseBackgroundBlurContainerCompat(topValue,mirrorBlendBackground)
+                }else{
+                    miBlurCompat.chooseBackgroundBlurContainerCompat(topValue,null)
+                }
+                miBlurCompat.setMiViewBlurModeCompat(topValue,3)
+                if (colorArray == null){
+                    colorArray = item.resources.getIntArrayBy("toggle_slider_icon_blend_colors",plugin)
+                }
 
-            val iconColorArray = colorArray as IntArray
-            if (mainIconBlendColor != "null"){
-                iconColorArray[0] = Color.parseColor(mainIconBlendColor)
-            }
-            if (secondaryIconBlendColor != "null"){
-                iconColorArray[2] = Color.parseColor(secondaryIconBlendColor)
-            }
+                val iconColorArray: IntArray = colorArray
+                if (mainIconBlendColor != "null"){
+                    iconColorArray[0] = mainIconBlendColor!!.toColorInt()
+                }
+                if (secondaryIconBlendColor != "null"){
+                    iconColorArray[2] = secondaryIconBlendColor!!.toColorInt()
+                }
 
-            miBlurCompat.setMiBackgroundBlendColors(icon,iconColorArray,1f)
-            val valueColorArray = colorArray as IntArray
-            if (mainValueBlendColor != "null"){
-                valueColorArray[0] = Color.parseColor(mainValueBlendColor)
-            }
-            if (secondaryValueBlendColor != "null"){
-                valueColorArray[2] = Color.parseColor(secondaryValueBlendColor)
-            }
-            miBlurCompat.setMiBackgroundBlendColors(topValue,valueColorArray,1f)
+                miBlurCompat.setMiBackgroundBlendColors(icon,iconColorArray,1f)
+                val valueColorArray: IntArray = colorArray
+                if (mainValueBlendColor != "null"){
+                    valueColorArray[0] = mainValueBlendColor!!.toColorInt()
+                }
+                if (secondaryValueBlendColor != "null"){
+                    valueColorArray[2] = secondaryValueBlendColor!!.toColorInt()
+                }
+                miBlurCompat.setMiBackgroundBlendColors(topValue,valueColorArray,1f)
 
+            }
         }
+
 
 
 

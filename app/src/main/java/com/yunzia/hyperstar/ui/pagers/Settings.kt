@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -47,13 +48,13 @@ import com.yunzia.hyperstar.ui.base.dialog.SuperCTDialogDefaults
 import com.yunzia.hyperstar.ui.base.dialog.SuperXDialog
 import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.ui.base.firstClasses
+import com.yunzia.hyperstar.ui.base.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.utils.JBUtil
 import com.yunzia.hyperstar.utils.JBUtil.clear
 import com.yunzia.hyperstar.utils.JBUtil.openFile
 import com.yunzia.hyperstar.utils.JBUtil.saveFile
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.isOS2
-import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -89,9 +90,9 @@ fun Settings(
     ErrorDialog(errorDialog,results)
 
     LazyColumn(
-        modifier = Modifier.fillMaxHeight(),
+        modifier = Modifier.fillMaxHeight()
+            .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
         contentPadding =PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+14.dp),
-        topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {
         firstClasses(
             title = R.string.show_title

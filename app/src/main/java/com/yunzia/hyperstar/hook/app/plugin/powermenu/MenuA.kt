@@ -2,7 +2,6 @@ package com.yunzia.hyperstar.hook.os1.app.plugin.powermenu
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Handler
 import android.os.Looper
@@ -12,9 +11,10 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.GridView
 import android.widget.LinearLayout
-import yunzia.utils.DensityUtil.Companion.dpToPx
+import androidx.core.graphics.toColorInt
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu.Item
 import de.robv.android.xposed.XposedHelpers
+import yunzia.utils.DensityUtil.Companion.dpToPx
 
 private val plugin = "miui.systemui.plugin"
 
@@ -25,7 +25,7 @@ fun menuA(mContext: Context, thisObj: Any?, items: List<Item?>,mTalkbackLayout:F
     val drawable = GradientDrawable().apply {
         shape = GradientDrawable.RECTANGLE
         cornerRadius = 120f
-        setColor(Color.parseColor("#40FFFFFF"))
+        setColor("#40FFFFFF".toColorInt())
     }
 
 

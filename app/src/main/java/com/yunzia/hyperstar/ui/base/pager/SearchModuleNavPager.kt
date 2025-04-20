@@ -78,7 +78,7 @@ fun SearchModuleNavPager(
         floatingPagerButton = floatingPagerButton,
         topBar = {
             AnimatedVisibility(
-                searchStatus.isCollapsed()||searchStatus.isCollapsedAnim(),
+                searchStatus.isCollapsed()||searchStatus.isAnimatingCollapse(),
                 enter = fadeIn(),
                 exit = fadeOut(),
             ) {

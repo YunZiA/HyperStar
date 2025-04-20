@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -37,7 +38,6 @@ import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import kotlinx.coroutines.launch
-import top.yukonga.miuix.kmp.basic.HorizontalPager
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 @Composable
@@ -115,7 +115,7 @@ fun WelcomePager(
                 .fillMaxWidth()
                 .padding(bottom = 24.dp),
             beyondViewportPageCount = 0,
-            pagerState = pagerState,
+            state = pagerState,
             userScrollEnabled = false,
             pageContent = { page ->
 

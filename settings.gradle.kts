@@ -23,4 +23,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "HyperStar"
 include(":app")
- 

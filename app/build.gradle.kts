@@ -130,6 +130,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -143,7 +144,6 @@ android {
 }
 dependencies {
     // 系统UI控制库，实现沉浸式状态栏
-    implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.dexkit)
     implementation(libs.gson)

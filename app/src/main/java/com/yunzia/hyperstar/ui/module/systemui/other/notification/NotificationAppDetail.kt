@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -23,11 +24,11 @@ import com.yunzia.hyperstar.ui.base.TopButton
 import com.yunzia.hyperstar.ui.base.XScaffold
 import com.yunzia.hyperstar.ui.base.modifier.blur
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
+import com.yunzia.hyperstar.ui.base.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.base.modifier.showBlur
 import com.yunzia.hyperstar.ui.base.nav.backParentPager
 import dev.chrisbanes.haze.HazeState
 import top.yukonga.miuix.kmp.basic.Icon
-import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
@@ -98,13 +99,13 @@ fun NotificationAppDetail(
 
         LazyColumn(
             modifier = Modifier
+                .nestedOverScrollVertical(scrollBehavior.nestedScrollConnection)
                 .height(getWindowSize().height.dp)
                 .blur(hazeState),
             contentPadding = PaddingValues(
                 top = padding.calculateTopPadding()+14.dp,
                 bottom = padding.calculateBottomPadding()+14.dp
-            ),
-            topAppBarScrollBehavior = scrollBehavior
+            )
         ) {
 
             idItem("111")

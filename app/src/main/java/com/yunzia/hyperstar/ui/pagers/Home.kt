@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,17 +34,17 @@ import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.base.classes
 import com.yunzia.hyperstar.ui.base.firstClasses
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
+import com.yunzia.hyperstar.ui.base.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.pagers.dialog.checkApplication
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.Helper.isRoot
 import com.yunzia.hyperstar.utils.appIcon
 import com.yunzia.hyperstar.utils.isOS2Settings
-import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.base.ArrowRight
+import top.yukonga.miuix.kmp.icon.icons.basic.ArrowRight
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
@@ -59,9 +60,9 @@ fun Home(
     val isModuleActive = isModuleActive()
 
     LazyColumn(
-        modifier = Modifier.height(getWindowSize().height.dp),
+        modifier = Modifier.height(getWindowSize().height.dp)
+            .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
         contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+14.dp),
-        topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {
 
         item{
@@ -107,7 +108,7 @@ fun Home(
                             modifier = Modifier
                                 .padding(end = 24.dp)
                                 .size(10.dp, 14.dp),
-                            imageVector = MiuixIcons.Base.ArrowRight,
+                            imageVector = MiuixIcons.Basic.ArrowRight,
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(colorScheme.onSurfaceVariantActions),
                         )
@@ -147,7 +148,7 @@ fun Home(
                             modifier = Modifier
                                 .padding(end = 24.dp)
                                 .size(10.dp, 14.dp),
-                            imageVector = MiuixIcons.Base.ArrowRight,
+                            imageVector = MiuixIcons.Basic.ArrowRight,
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(colorScheme.onSurfaceVariantActions),
                         )

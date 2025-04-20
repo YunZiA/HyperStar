@@ -23,6 +23,10 @@
         <item>Debug</item>
     </string-array>
 
+    <array name="mix_color">
+
+    </array>
+
 
     <string-array name="status">
         <item>Off</item>

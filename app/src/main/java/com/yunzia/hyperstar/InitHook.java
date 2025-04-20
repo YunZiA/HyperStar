@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar;
 
-import static com.yunzia.hyperstar.BuildConfig.APPLICATION_ID;
 import static com.yunzia.hyperstar.utils.VersionKt.isHookChannel;
 
 import android.content.res.XModuleResources;
@@ -55,7 +54,7 @@ public class InitHook implements IXposedHookLoadPackage, IXposedHookInitPackageR
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-        if (lpparam.packageName.equals(APPLICATION_ID)){
+        if (lpparam.packageName.equals(BuildConfig.APPLICATION_ID)){
 
             XposedHelpers.findAndHookMethod("com.yunzia.hyperstar.utils.Helper", lpparam.classLoader, "isModuleActive", XC_MethodReplacement.returnConstant(true));
         }

@@ -1,10 +1,13 @@
 package com.yunzia.hyperstar.hook.app.plugin.powermenu
 
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.res.XModuleResources
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.view.animation.Interpolator
 import android.widget.FrameLayout
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.Hooker
@@ -134,9 +137,9 @@ class PowerMenu : Hooker() {
                 Int::class.java
             ){
                 if (group == null) return@afterHookMethod
-
-                group!!.visibility = View.GONE
-
+                val mSliderView = this.getObjectFieldAs<FrameLayout>("mSliderView")
+                group.visibility = View.GONE
+                mSliderView.removeView(group)
             }
 
         }
@@ -154,6 +157,30 @@ class PowerMenu : Hooker() {
 
     }
 
+
+    fun View.alphaAnimator(z: Boolean) {
+        val i: Int
+        var f = 0.0f
+        var f2 = 1.0f
+        if (z) {
+            i = 300
+        } else {
+            i = 200
+            f2 = 0.0f
+            f = 1.0f
+        }
+        val animatorSet = AnimatorSet()
+        animatorSet.playTogether(this.createAlphaAnimator(f, f2, i))
+        animatorSet.start()
+    }
+
+    private fun View.createAlphaAnimator(f: Float, f2: Float, i: Int): ObjectAnimator {
+        val ofFloat = ObjectAnimator.ofFloat(this, "alpha", f, f2)
+        ofFloat.setDuration(i.toLong())
+        ofFloat.interpolator = QuadraticEaseOutInterpolator()
+        return ofFloat
+    }
+
     data class Item(
         val image: Drawable? = null,
         val text: String? = null,
@@ -161,6 +188,12 @@ class PowerMenu : Hooker() {
         val isEmpty: Boolean? = false,
         val click: ((View, Context) -> Unit)? = null
     )
+
+    class QuadraticEaseOutInterpolator : Interpolator {
+        public override fun getInterpolation(f: Float): Float {
+            return (-f) * (f - 2.0f)
+        }
+    }
 
 
 

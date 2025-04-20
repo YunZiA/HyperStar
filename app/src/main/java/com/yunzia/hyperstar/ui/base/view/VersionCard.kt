@@ -11,8 +11,6 @@
 //import android.widget.FrameLayout
 //import android.widget.ImageView
 //import com.yunzia.hyperstar.R
-//import top.yukonga.miuix.kmp.theme.darkColorScheme
-//import top.yukonga.miuix.kmp.theme.lightColorScheme
 //import yunzia.utils.MiuiBlurUtils
 //import yunzia.utils.ViewUtils
 //
@@ -36,11 +34,11 @@
 //    private fun setLogoBlur() {
 //        if (MiuiBlurUtils.isEnable() && MiuiBlurUtils.isEffectEnable(context)) {
 //            mRootView.setBackgroundColor(Color.TRANSPARENT)
-////            MiuiBlurUtils.setBackgroundBlur(
-////                mRootView,
-////                (context.resources.displayMetrics.density * 50.0f + 0.5f).toInt()
-////            )
-//            //MiuiBlurUtils.setViewBlurMode(mRootView, 0)
+//            MiuiBlurUtils.setBackgroundBlur(
+//                mRootView,
+//                (context.resources.displayMetrics.density * 50.0f + 0.5f).toInt()
+//            )
+//            MiuiBlurUtils.setViewBlurMode(mRootView, 0)
 //
 //            val mixColors = context.resources.getIntArray(R.array.mix_color)
 //            mTextLogoView.setBackgroundColor(Color.TRANSPARENT)

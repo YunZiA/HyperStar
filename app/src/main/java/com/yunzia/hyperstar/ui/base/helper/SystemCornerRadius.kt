@@ -25,7 +25,7 @@ fun getSystemSmoothCornerRadius(): Dp {
     val cornerDp = getSystemCornerRadius()
     Log.d("ggc", "getSystemCornerRadius: $cornerDp")
     if (cornerDp <= 22.dp) return cornerDp
-    return  cornerDp*11/10
+    return  cornerDp*11/12
 }
 
 @Composable

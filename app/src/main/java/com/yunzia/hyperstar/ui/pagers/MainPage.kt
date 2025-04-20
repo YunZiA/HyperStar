@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -65,8 +67,6 @@ import com.yunzia.hyperstar.utils.isOS2Settings
 import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import top.yukonga.miuix.kmp.basic.HorizontalPager
-import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ListPopup
 import top.yukonga.miuix.kmp.basic.ListPopupColumn
 import top.yukonga.miuix.kmp.basic.ListPopupDefaults
@@ -356,7 +356,7 @@ fun NavigationBarForStart(
     ){
         LazyColumn(
             modifier = Modifier.height(getWindowSize().height.dp),
-            isEnabledOverScroll = { false },
+            userScrollEnabled =  false,
             contentPadding = PaddingValues(top = it.calculateTopPadding()+13.dp, bottom = it.calculateBottomPadding()),
         ) {
 
@@ -388,7 +388,7 @@ fun NavigationBarForStart(
                                     )
                                 }
                         ) {
-                            val maxWidth = maxWidth
+                            val maxWidth = this.maxWidth
                             Row(
                                 Modifier.padding(horizontal = if(maxWidth > 90.dp) 16.dp else 12.dp, vertical = 12.dp),
                                 verticalAlignment = Alignment.CenterVertically,
@@ -590,7 +590,7 @@ fun AppHorizontalPager(
 
     HorizontalPager(
         modifier = modifier,
-        pagerState = pagerState,
+        state = pagerState,
         userScrollEnabled = activity.enablePageUserScroll.value,
         pageContent = { page ->
 

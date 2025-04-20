@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -37,6 +38,7 @@ import com.yunzia.hyperstar.ui.base.LoadStatus
 import com.yunzia.hyperstar.ui.base.SearchStatus
 import com.yunzia.hyperstar.ui.base.SearchStatus.Status
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
+import com.yunzia.hyperstar.ui.base.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.base.pager.SearchModuleNavPager
 import com.yunzia.hyperstar.ui.base.rememberLoadStatus
 import com.yunzia.hyperstar.ui.base.rememberSearchStatus
@@ -53,7 +55,6 @@ import kotlinx.coroutines.withContext
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Checkbox
-import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
@@ -227,12 +228,12 @@ fun MediaAppSettingsPager(
         ){
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
                 contentPadding = PaddingValues(
                     top = 0.dp,
                     bottom = padding.calculateBottomPadding() + 28.dp
-                ),
-                topAppBarScrollBehavior = topAppBarScrollBehavior
+                )
             ) {
 
                 appLists.value.forEachIndexed { index, apps ->

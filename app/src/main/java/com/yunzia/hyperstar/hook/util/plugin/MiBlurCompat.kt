@@ -16,9 +16,19 @@ class MiBlurCompat(private val classLoader: ClassLoader?) {
         XposedHelpers.callStaticMethod(miBlurCompat,"clearMiBackgroundBlendColorCompat",view)
     }
 
+    fun setMiBackgroundBlurRadiusCompat(view: View,radius:Int){
+
+        XposedHelpers.callStaticMethod(miBlurCompat,"setMiBackgroundBlurRadiusCompat",view,radius)
+    }
+
     fun setMiBackgroundBlendColors(view: View?, colorArray:IntArray, float: Float){
 
         XposedHelpers.callStaticMethod(miBlurCompat, "setMiBackgroundBlendColors",view,colorArray,float)
+    }
+
+    fun chooseBackgroundBlurContainerCompat(view: View,view2: View?){
+
+        XposedHelpers.callStaticMethod(miBlurCompat, "chooseBackgroundBlurContainerCompat",view,view2)
     }
 
 }

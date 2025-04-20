@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -13,13 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import dev.chrisbanes.haze.HazeState
 import com.yunzia.hyperstar.ui.base.NavTopAppBar
 import com.yunzia.hyperstar.ui.base.XScaffold
 import com.yunzia.hyperstar.ui.base.modifier.blur
+import com.yunzia.hyperstar.ui.base.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.base.modifier.showBlur
 import com.yunzia.hyperstar.ui.base.nav.backParentPager
-import top.yukonga.miuix.kmp.basic.LazyColumn
+import dev.chrisbanes.haze.HazeState
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.utils.BackHandler
@@ -61,9 +62,9 @@ fun NavPager(
             }
             Box(Modifier.blur(hazeState)) {
                 LazyColumn(
-                    modifier = Modifier.height(getWindowSize().height.dp),
+                    modifier = Modifier.height(getWindowSize().height.dp)
+                        .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
                     contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+28.dp),
-                    topAppBarScrollBehavior = topAppBarScrollBehavior
                 ) {
                     content()
                 }

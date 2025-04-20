@@ -41,7 +41,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -53,10 +52,8 @@ import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
 import kotlinx.coroutines.delay
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
-
 
 @Composable
 fun FloatingPagerButton(
@@ -71,90 +68,61 @@ fun FloatingPagerButton(
     buttonContent: @Composable () -> Unit,
     content: @Composable (MutableState<Boolean>) -> Unit,
 ) {
-
-    val mul = LocalConfiguration.current
     val activity = LocalActivity.current
-
-
     val expand = remember { mutableStateOf(false) }
+    val complete = remember { mutableStateOf(false) }
 
     val durationMillis = 300
     val easing = CubicBezierEasing(0.38F, 0.0F, 0.55F, 0.99F)
-    //LinearOutSlowInEasing
+    val roundedCorner = rememberUpdatedState (getSystemSmoothCornerRadius())
 
-    val roundedCorner by rememberUpdatedState(getSystemSmoothCornerRadius())
-
-    val dim = animateColorAsState(
-        if (expand.value){
-            colorScheme.windowDimming
-        }else{
-            Color.Transparent
-        },
-        animationSpec = tween(200, easing = LinearEasing),
+    // 动画状态
+    val dim by animateColorAsState(
+        targetValue = if (expand.value) MiuixTheme.colorScheme.windowDimming else Color.Transparent,
+        animationSpec = tween(200, easing = LinearEasing)
     )
 
     val layoutDirection = LayoutDirection.Rtl
 
-    val complete = remember { mutableStateOf(false) }
-
-    val end = animateDpAsState(
-        if (expand.value){
-            0.dp
-        }else{
-            insideMargin.calculateEndPadding(layoutDirection)
-        },
+    val endPadding by animateDpAsState(
+        targetValue = if (expand.value) 0.dp else insideMargin.calculateEndPadding(layoutDirection),
         animationSpec = tween(durationMillis, easing = FastOutSlowInEasing)
     )
 
-
-    val bottom = animateDpAsState(
-        if (expand.value){
-            0.dp
-        }else{
-            insideMargin.calculateBottomPadding()
-        },
+    val bottomPadding by animateDpAsState(
+        targetValue = if (expand.value) 0.dp else insideMargin.calculateBottomPadding(),
         animationSpec = tween(durationMillis, easing = FastOutSlowInEasing)
     )
 
-    val radius = animateDpAsState(
-        if (expand.value){
-            if (activity?.isInMultiWindowMode == true){
-                16.dp
-            }else{
-                roundedCorner
-            }
-        }else{
-            buttonRadius
-        },
+    val radius by animateDpAsState(
+        targetValue = if (expand.value) {
+            if (activity?.isInMultiWindowMode == true) 16.dp else roundedCorner.value
+        } else buttonRadius,
         animationSpec = tween(durationMillis, easing = FastOutSlowInEasing),
-        finishedListener = {
-        }
-
+        finishedListener = {}
     )
+
     LaunchedEffect(radius.value) {
         if (!expand.value){
             complete.value = false
             return@LaunchedEffect
         }
-        if (
-            radius.value == if (activity?.isInMultiWindowMode == true){
+        if (radius == if (activity?.isInMultiWindowMode == true){
                 16.dp
             }else{
-                roundedCorner
+                roundedCorner.value
             }){
             delay(200L)
             complete.value = true
         }else{
             complete.value = false
         }
-
-
     }
 
     Box(
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
-            .background(dim.value),
+            .background(dim),
         contentAlignment = Alignment.BottomEnd
     ) {
         Box(
@@ -162,8 +130,8 @@ fun FloatingPagerButton(
                 .padding(
                     insideMargin.calculateStartPadding(layoutDirection),
                     insideMargin.calculateTopPadding(),
-                    end.value,
-                    bottom.value
+                    endPadding,
+                    bottomPadding
                 )
                 .apply {
                     if (defaultWindowInsetsPadding && !expand.value) {
@@ -172,100 +140,62 @@ fun FloatingPagerButton(
                     }
                     bounceAnim(!expand.value)
                 }
-
-        ){
-
+        ) {
             Surface(
                 modifier = Modifier.semantics { role = Role.Button },
-                shape = SmoothRoundedCornerShape(if (complete.value) 0.dp else radius.value,0.8f),
+                shape = SmoothRoundedCornerShape(if (complete.value) 0.dp else radius, 0.7f),
                 color = containerColor,
                 shadowElevation = if (expand.value) 0.dp else shadowElevation,
                 enabled = !expand.value,
-                onClick = {
-                },
+                onClick = {}
             ) {
-
                 AnimatedVisibility(
-                    !expand.value,
-                    enter = fadeIn(
-                        animationSpec = tween(
-                            durationMillis/3,
-                            easing = LinearEasing,
-                            delayMillis  = durationMillis/2
-                        )
-                    ),
-                    exit = fadeOut(
-                        animationSpec = tween(
-                            durationMillis/3,
-                            easing = LinearEasing,
-                        )
-                    )
-                ){
+                    visible = !expand.value,
+                    enter = fadeIn(tween(durationMillis / 3, easing = LinearEasing, delayMillis = durationMillis / 2)),
+                    exit = fadeOut(tween(durationMillis / 3, easing = LinearEasing))
+                ) {
                     Box(
                         modifier = Modifier
-                            .clickable {
-                                expand.value = true
-                            }
-                            .defaultMinSize(
-                                minWidth = minWidth,
-                                minHeight = minHeight,
-                            ),
-                        contentAlignment = Alignment.Center,
+                            .clickable { expand.value = true }
+                            .defaultMinSize(minWidth = minWidth, minHeight = minHeight),
+                        contentAlignment = Alignment.Center
                     ) {
                         buttonContent()
                     }
-
                 }
                 AnimatedVisibility(
-                    expand.value,
+                    visible = expand.value,
                     enter = expandIn(
                         animationSpec = tween(durationMillis, easing = LinearOutSlowInEasing)
                     ) + fadeIn(
-                        animationSpec = tween(
-                            durationMillis/2,
-                            easing = LinearEasing,
-                        )
+                        animationSpec = tween(durationMillis / 2, easing = LinearEasing)
                     ) + scaleIn(
-                        animationSpec = tween(
-                            durationMillis/2,
-                            easing = LinearEasing
-                        ),
+                        animationSpec = tween(durationMillis / 2, easing = LinearEasing),
                         initialScale = 0.5f,
                         transformOrigin = TransformOrigin(1f, 1f)
-                    )
-                    ,
+                    ),
                     exit = shrinkOut(
                         animationSpec = tween(durationMillis, easing = LinearEasing)
                     ) + fadeOut(
-                        animationSpec = tween(
-                            durationMillis/2,
-                            easing = LinearEasing
-                        )
+                        animationSpec = tween(durationMillis / 2, easing = LinearEasing)
                     ) + scaleOut(
-                        animationSpec = tween(
-                            durationMillis,
-                            easing = LinearEasing
-                        ),
+                        animationSpec = tween(durationMillis, easing = LinearEasing),
                         targetScale = 0f,
                         transformOrigin = TransformOrigin(1f, 1f)
                     )
                 ) {
-                    BackHandler(expand.value) {
+                    BackHandler(enabled = expand.value) {
                         expand.value = false
                     }
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(colorScheme.background)
-
-                    ){
+                            .background(MiuixTheme.colorScheme.background)
+                    ) {
                         content(expand)
                     }
                 }
-
             }
-
         }
-
     }
 }

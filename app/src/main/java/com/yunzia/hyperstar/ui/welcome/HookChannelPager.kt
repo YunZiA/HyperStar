@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
@@ -43,7 +44,6 @@ import com.yunzia.hyperstar.utils.SPUtils
 import com.yunzia.hyperstar.utils.isOS2
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.CardDefaults
-import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.CheckboxLocation
 import top.yukonga.miuix.kmp.extra.SuperCheckbox
@@ -83,10 +83,12 @@ fun HookChannelPager(
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold
         )
-        LazyColumn(modifier = Modifier
-            .weight(1f)
-            .padding(bottom = 10.dp)
-            .padding(horizontal = 4.dp)) {
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .padding(bottom = 10.dp)
+                .padding(horizontal = 4.dp)
+        ) {
 
             item{
                 Spacer(modifier = Modifier.height(10.dp))

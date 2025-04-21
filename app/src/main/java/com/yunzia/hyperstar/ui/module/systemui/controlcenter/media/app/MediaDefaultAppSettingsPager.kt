@@ -43,6 +43,7 @@ import com.yunzia.hyperstar.ui.base.pager.SearchModuleNavPager
 import com.yunzia.hyperstar.ui.base.rememberLoadStatus
 import com.yunzia.hyperstar.ui.base.rememberSearchStatus
 import com.yunzia.hyperstar.ui.pagers.titleColor
+import com.yunzia.hyperstar.utils.GetInstalledApps
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.SPUtils
 import kotlinx.coroutines.Dispatchers
@@ -145,7 +146,7 @@ fun MediaAppSettingsPager(
     val context = LocalContext.current
     val activity = LocalActivity.current as MainActivity
     val loadStatus = rememberLoadStatus()
-    getInstalledApps(activity)
+    GetInstalledApps(activity)
     val appLists = remember { mutableStateOf<List<AppInfo>>(emptyList()) }
     val searchApp = remember {  mutableStateOf<List<AppInfo>>(emptyList()) }
 

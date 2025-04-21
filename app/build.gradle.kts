@@ -125,7 +125,6 @@ android {
         }
 
         debug {
-            signingConfig = signingConfigs.getByName(if (keystoreFile != null) "ci" else "default")
             // 对于debug版本，可以不使用混和资源压缩
             isMinifyEnabled = false
             isShrinkResources = false

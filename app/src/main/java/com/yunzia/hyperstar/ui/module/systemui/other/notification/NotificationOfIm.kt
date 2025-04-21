@@ -48,6 +48,7 @@ import com.yunzia.hyperstar.ui.base.pager.SearchModuleNavPager
 import com.yunzia.hyperstar.ui.base.rememberLoadStatus
 import com.yunzia.hyperstar.ui.base.rememberSearchStatus
 import com.yunzia.hyperstar.ui.pagers.titleColor
+import com.yunzia.hyperstar.utils.GetInstalledApps
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.SPUtils
@@ -77,6 +78,7 @@ fun NotificationOfIm(
     val activity = navController.context as MainActivity
     val loadStatus = rememberLoadStatus()
 
+    GetInstalledApps(activity)
     val searchStatus = rememberSearchStatus(
         label = stringResource(R.string.app_name_type)
     )

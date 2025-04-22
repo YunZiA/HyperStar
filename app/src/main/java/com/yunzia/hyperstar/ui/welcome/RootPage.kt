@@ -132,7 +132,7 @@ fun RootPage(pagerState: PagerState) {
     LaunchedEffect(pagerState.currentPage) {
 
         if (pagerState.currentPage == 1){
-            Helper.isRoot
+            Helper.isRoot()
 
             coroutineScope.launch {
                 val result = withContext(Dispatchers.IO) {

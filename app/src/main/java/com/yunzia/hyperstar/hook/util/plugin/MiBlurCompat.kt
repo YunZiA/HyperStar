@@ -28,7 +28,13 @@ class MiBlurCompat(private val classLoader: ClassLoader?) {
 
     fun chooseBackgroundBlurContainerCompat(view: View,view2: View?){
 
-        XposedHelpers.callStaticMethod(miBlurCompat, "chooseBackgroundBlurContainerCompat",view,view2)
+        try {
+            XposedHelpers.callStaticMethod(miBlurCompat, "chooseBackgroundBlurContainerCompat",view,view2)
+        }  catch (e: NoSuchMethodError) {
+            View::class.java.getMethod("chooseBackgroundBlurContainer", View::class.java).invoke(view,view2)
+
+            //XposedHelpers.callMethod(view, "chooseBackgroundBlurContainerCompat",view2)
+        }
     }
 
 }

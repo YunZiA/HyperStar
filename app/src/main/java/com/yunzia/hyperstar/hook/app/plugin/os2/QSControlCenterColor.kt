@@ -11,10 +11,14 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.graphics.toColorInt
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.util.plugin.ConfigUtils
+import com.yunzia.hyperstar.hook.base.afterHookAllConstructors
+import com.yunzia.hyperstar.hook.base.afterHookConstructor
+import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.plugin.ConfigUtils
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
@@ -416,25 +420,25 @@ class QSControlCenterColor : Hooker() {
                     val deviceIcon = itemView.findViewByIdNameAs<ImageView>("device_icon")
                     deviceIcon.alpha = 1f
                     starLog.logE("$deviceIconColor")
-                    deviceIcon.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceIconColor), PorterDuff.Mode.SRC_IN)
+                    deviceIcon.colorFilter = PorterDuffColorFilter(deviceIconColor!!.toColorInt(), PorterDuff.Mode.SRC_IN)
 
                 }
 
                 if (titleColor != "null"){
                     val title = itemView.findViewByIdNameAs<TextView>("title")
-                    title.setTextColor(Color.parseColor(titleColor))
+                    title.setTextColor(titleColor!!.toColorInt())
 
                 }
 
                 if(artistColor != "null"){
                     val artist = itemView.findViewByIdNameAs<TextView>("artist")
-                    artist.setTextColor(Color.parseColor(artistColor))
+                    artist.setTextColor(artistColor!!.toColorInt())
 
                 }
 
                 if (emptyStateColor != "null"){
                     val emptyState = itemView.findViewByIdNameAs<TextView>("empty_state")
-                    emptyState.setTextColor(Color.parseColor(emptyStateColor))
+                    emptyState.setTextColor(emptyStateColor!!.toColorInt())
                 }
 
             }
@@ -445,20 +449,20 @@ class QSControlCenterColor : Hooker() {
                 if (configUtils.textAppearanceChanged(configuration)){
                     if (titleColor != "null"){
                         val title = itemView.findViewByIdNameAs<TextView>("title")
-                        title.setTextColor(Color.parseColor(titleColor))
+                        title.setTextColor(titleColor!!.toColorInt())
 
                     }
 
                     if(artistColor != "null"){
                         val artist = itemView.findViewByIdNameAs<TextView>("artist")
-                        artist.setTextColor(Color.parseColor(artistColor))
+                        artist.setTextColor(artistColor!!.toColorInt())
 
                     }
 
                     if (emptyStateColor != "null"){
 
                         val emptyState = itemView.findViewByIdNameAs<TextView>("empty_state")
-                        emptyState.setTextColor(Color.parseColor(emptyStateColor))
+                        emptyState.setTextColor(emptyStateColor!!.toColorInt())
                     }
 
                 }
@@ -469,14 +473,14 @@ class QSControlCenterColor : Hooker() {
                 if (disabledIconColor != "null"){
                     val prev = itemView.findViewByIdNameAs<ImageView>("prev")
                     val next = itemView.findViewByIdNameAs<ImageView>("next")
-                    prev.colorFilter = PorterDuffColorFilter(Color.parseColor(disabledIconColor), PorterDuff.Mode.SRC_IN)
-                    next.colorFilter = PorterDuffColorFilter(Color.parseColor(disabledIconColor), PorterDuff.Mode.SRC_IN)
+                    prev.colorFilter = PorterDuffColorFilter(disabledIconColor!!.toColorInt(), PorterDuff.Mode.SRC_IN)
+                    next.colorFilter = PorterDuffColorFilter(disabledIconColor.toColorInt(), PorterDuff.Mode.SRC_IN)
 
                 }
                 if (enabledIconColor != "null"){
                     val play = itemView.findViewByIdName("play") as ImageView
 
-                    play.colorFilter = PorterDuffColorFilter(Color.parseColor(enabledIconColor), PorterDuff.Mode.SRC_IN)
+                    play.colorFilter = PorterDuffColorFilter(enabledIconColor!!.toColorInt(), PorterDuff.Mode.SRC_IN)
                 }
 
             }
@@ -490,7 +494,7 @@ class QSControlCenterColor : Hooker() {
                         val itemView = this.getObjectFieldAs<View>("itemView")
                         val deviceIcon = itemView.findViewByIdNameAs<ImageView>("device_icon")
                         deviceIcon.alpha = 1f
-                        deviceIcon.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceIconColor), PorterDuff.Mode.SRC_IN)
+                        deviceIcon.colorFilter = PorterDuffColorFilter(deviceIconColor.toColorInt(), PorterDuff.Mode.SRC_IN)
 
                     }
                 }
@@ -502,9 +506,9 @@ class QSControlCenterColor : Hooker() {
                     val prev = itemView.findViewByIdNameAs<ImageView>("prev")
                     val play = itemView.findViewByIdNameAs<ImageView>("play")
                     val next = itemView.findViewByIdNameAs<ImageView>("next")
-                    prev.colorFilter = PorterDuffColorFilter(Color.parseColor(enabledIconColor), PorterDuff.Mode.SRC_IN)
-                    play.colorFilter = PorterDuffColorFilter(Color.parseColor(enabledIconColor), PorterDuff.Mode.SRC_IN)
-                    next.colorFilter = PorterDuffColorFilter(Color.parseColor(enabledIconColor), PorterDuff.Mode.SRC_IN)
+                    prev.colorFilter = PorterDuffColorFilter(enabledIconColor!!.toColorInt(), PorterDuff.Mode.SRC_IN)
+                    play.colorFilter = PorterDuffColorFilter(enabledIconColor.toColorInt(), PorterDuff.Mode.SRC_IN)
+                    next.colorFilter = PorterDuffColorFilter(enabledIconColor.toColorInt(), PorterDuff.Mode.SRC_IN)
                 }
 
             }
@@ -538,7 +542,7 @@ class QSControlCenterColor : Hooker() {
                 return@afterHookAllMethods
             }
             val sta = this.getObjectField("state")
-            val states = Companion.callMethodAs<Boolean>("isRestrictedCompat",sta) ?: return@afterHookAllMethods
+            val states = Companion.callMethodAs<Boolean>("isRestrictedCompat",sta)
             val state = sta.getIntField("state")
             val title = this.findViewByIdNameAs<TextView>("title")
             val status = this.findViewByIdNameAs<TextView>("status")
@@ -547,20 +551,24 @@ class QSControlCenterColor : Hooker() {
             when(state){
 
                 1->{
-                    if (disablePrimaryColor != "null") title.setTextColor(Color.parseColor(disablePrimaryColor))
-                    if (disableSecondaryColor != "null") status.setTextColor(Color.parseColor(disableSecondaryColor))
+                    if (disablePrimaryColor != "null") title.setTextColor(disablePrimaryColor!!.toColorInt())
+                    if (disableSecondaryColor != "null") status.setTextColor(disableSecondaryColor!!.toColorInt())
                 }
                 2->{
-                    if (enablePrimaryColor != "null") title.setTextColor(Color.parseColor(enablePrimaryColor))
-                    if (enableSecondaryColor != "null") status.setTextColor(Color.parseColor(enableSecondaryColor))
+                    if (enablePrimaryColor != "null") title.setTextColor(enablePrimaryColor!!.toColorInt())
+                    if (enableSecondaryColor != "null") status.setTextColor(enableSecondaryColor!!.toColorInt())
                 }
                 else->{
                     if (states) {
-                        if (restrictedPrimaryColor != "null") title.setTextColor(Color.parseColor(restrictedPrimaryColor))
-                        if (restrictedSecondaryColor != "null") status.setTextColor(Color.parseColor(restrictedSecondaryColor))
+                        if (restrictedPrimaryColor != "null") title.setTextColor(
+                            restrictedPrimaryColor!!.toColorInt())
+                        if (restrictedSecondaryColor != "null") status.setTextColor(
+                            restrictedSecondaryColor!!.toColorInt())
                     }else{
-                        if (unavailablePrimaryColor != "null") title.setTextColor(Color.parseColor(unavailablePrimaryColor))
-                        if (unavailableSecondaryColor != "null") status.setTextColor(Color.parseColor(unavailableSecondaryColor))
+                        if (unavailablePrimaryColor != "null") title.setTextColor(
+                            unavailablePrimaryColor!!.toColorInt())
+                        if (unavailableSecondaryColor != "null") status.setTextColor(
+                            unavailableSecondaryColor!!.toColorInt())
                     }
 
                 }

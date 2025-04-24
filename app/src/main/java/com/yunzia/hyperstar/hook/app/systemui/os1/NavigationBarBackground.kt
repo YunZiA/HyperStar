@@ -2,6 +2,8 @@ package com.yunzia.hyperstar.hook.app.systemui.os1
 
 import android.view.View
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.afterHookConstructor
+import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.utils.XSPUtils
 
 
@@ -41,7 +43,7 @@ class NavigationBarBackground : Hooker() {
         )
 
         val NavigationBarView = findClass(
-            "com.android.systemui.navigationbar.NavigationBarView",
+            "com.android.systemui.navigation.NavigationBarView",
             classLoader
         )
         val LightBarTransitionsControllerFactory = findClass(

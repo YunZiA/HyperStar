@@ -1,6 +1,8 @@
 package com.yunzia.hyperstar.hook.app.plugin.os2
 
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import com.yunzia.hyperstar.utils.XSPUtils
 
 class QSEditButton : Hooker() {

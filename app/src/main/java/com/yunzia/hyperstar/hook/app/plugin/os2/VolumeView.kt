@@ -12,9 +12,14 @@ import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.util.plugin.Util
+import com.yunzia.hyperstar.hook.base.afterHookAllConstructors
+import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.base.getDimensionPixelSize
+import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.plugin.Util
 import com.yunzia.hyperstar.utils.XSPUtils
 import yunzia.utils.DensityUtil.Companion.dpToPx
 
@@ -121,14 +126,14 @@ class VolumeView: Hooker() {
             if (!(this.callMethodAs<Boolean>("isLandscape")!!)){
                 if (ShadowMarginTopP == -1f) return@afterHookMethod
                 var top= dpToPx(res,ShadowMarginTopP).toInt()
-                if (mSuperVolume.visibility == View.VISIBLE) {
+                if (mSuperVolume.isVisible) {
                     top -= getDimensionPixelSize(res,"miui_shadow_super_volume_height",plugin)
                 }
                 layoutParams.topMargin = top
                 mShadowView.layoutParams = layoutParams
 
             }
-            if (mRingerModeLayout.visibility == View.VISIBLE){
+            if (mRingerModeLayout.isVisible){
 
                 if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
                     if (ShadowHeightP == -1f) return@afterHookMethod

@@ -1,6 +1,8 @@
 package com.yunzia.hyperstar.hook.app.systemui.os2
 
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.afterHookConstructor
+import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.utils.XSPUtils
 
 

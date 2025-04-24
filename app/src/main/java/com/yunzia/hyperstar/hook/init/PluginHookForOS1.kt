@@ -23,12 +23,14 @@ import com.yunzia.hyperstar.hook.app.plugin.os1.QSMediaCoverBackground
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSMediaDeviceName
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSMediaView
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSMiplayAppIconRadius
+import com.yunzia.hyperstar.hook.app.plugin.os1.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeOrQSBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeView
-import com.yunzia.hyperstar.hook.app.plugin.os1.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
 import com.yunzia.hyperstar.hook.base.InitHooker
+import com.yunzia.hyperstar.hook.base.MethodHook
+import com.yunzia.hyperstar.hook.base.hookAllMethods
 import com.yunzia.hyperstar.hook.tool.starLog
 import de.robv.android.xposed.XC_MethodHook
 
@@ -93,9 +95,11 @@ class PluginHookForOS1() : InitHooker() {
             }
         }
         )
-        hookAllMethods(classLoader,
+        hookAllMethods(
+            classLoader,
             "com.android.systemui.shared.plugins.PluginInstance\$Factory$\$ExternalSyntheticLambda0",
-            "get",object : MethodHook {
+            "get",
+            object : MethodHook {
             override fun before(param: XC_MethodHook.MethodHookParam) {
 
             }

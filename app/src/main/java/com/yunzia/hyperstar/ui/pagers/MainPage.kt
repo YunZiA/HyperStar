@@ -619,7 +619,7 @@ fun AppHorizontalPager(
                         showBlurs = showBlurs,
                         navController = navController,
                         topAppBarScrollBehavior = topAppBarScrollBehaviorList[2],
-                        padding = padding,
+                        padding = padding
                     )
                 }
             }

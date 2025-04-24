@@ -16,8 +16,11 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.util.plugin.CommonUtils
+import com.yunzia.hyperstar.hook.base.afterHookConstructor
+import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.plugin.CommonUtils
 import com.yunzia.hyperstar.hook.util.startMarqueeOfFading
 import com.yunzia.hyperstar.utils.XSPUtils
 import yunzia.utils.DensityUtil.Companion.dpToPx
@@ -187,10 +190,10 @@ class QSListView : Hooker() {
         }
 
 
-        val commonUtils = CommonUtils(classLoader)
 
         if ( labelMode != 0 ){
 
+            val commonUtils = CommonUtils(classLoader)
             findClass(
                 "miui.systemui.controlcenter.panel.main.qs.QSListController",
                 classLoader

@@ -6,6 +6,8 @@ import android.util.AttributeSet
 import android.util.Log
 import android.widget.LinearLayout
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.afterHookConstructor
+import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.hook.tool.starLog.logE
 import com.yunzia.hyperstar.utils.XSPUtils

@@ -11,6 +11,7 @@ import android.view.animation.Interpolator
 import android.widget.FrameLayout
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.Action
 import com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.menuA
 import com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.menuB

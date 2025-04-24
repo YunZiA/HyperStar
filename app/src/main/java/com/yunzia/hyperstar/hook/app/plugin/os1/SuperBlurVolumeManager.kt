@@ -2,6 +2,7 @@ package com.yunzia.hyperstar.hook.app.plugin.os1
 
 import android.content.Context
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.utils.XSPUtils
 
 class SuperBlurVolumeManager : Hooker() {

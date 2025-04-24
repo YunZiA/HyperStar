@@ -6,6 +6,9 @@ import android.widget.RelativeLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.base.getColor
+import com.yunzia.hyperstar.hook.base.getDimension
 import com.yunzia.hyperstar.utils.XSPUtils
 
 

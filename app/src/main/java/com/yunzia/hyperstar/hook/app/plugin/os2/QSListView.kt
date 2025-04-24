@@ -18,8 +18,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.util.plugin.CommonUtils
+import com.yunzia.hyperstar.hook.base.afterHookConstructor
+import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.plugin.CommonUtils
 import com.yunzia.hyperstar.hook.util.startMarqueeOfFading
 import com.yunzia.hyperstar.utils.XSPUtils
 import yunzia.utils.DensityUtil.Companion.dpToPx
@@ -483,29 +486,56 @@ class QSListView : Hooker() {
             findClass(
                 "miui.systemui.controlcenter.panel.main.qs.QSListController",
                 classLoader
-            ).beforeHookMethod(
-                "updateTextMode"
-            ){
-                val contentResolver = this.getObjectFieldAs<ContentResolver>("contentResolver")
-                when (labelMode) {
-                    1 -> {
-                        Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
-                    }
-                    2 -> {
-                        when (isWordlessMode2) {
-                            2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
-                            1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+            ).apply {
+                beforeHookMethod(
+                    "updateTextMode"
+                ){
+                    val contentResolver = this.getObjectFieldAs<ContentResolver>("contentResolver")
+                    when (labelMode) {
+                        1 -> {
+                            Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+                        }
+                        2 -> {
+                            when (isWordlessMode2) {
+                                2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
+                                1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+                            }
+                        }
+                        else -> {
+                            when (isWordlessMode0) {
+                                2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
+                                1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+                            }
+                            return@beforeHookMethod
                         }
                     }
-                    else -> {
-                        when (isWordlessMode0) {
-                            2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
-                            1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
-                        }
-                        return@beforeHookMethod
-                    }
-                }
 
+                }
+                beforeHookMethod(
+                    "updateTextMode",
+                    Boolean::class.java
+                ){
+                    val contentResolver = this.getObjectFieldAs<ContentResolver>("contentResolver")
+                    when (labelMode) {
+                        1 -> {
+                            Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+                        }
+                        2 -> {
+                            when (isWordlessMode2) {
+                                2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
+                                1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+                            }
+                        }
+                        else -> {
+                            when (isWordlessMode0) {
+                                2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
+                                1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+                            }
+                            return@beforeHookMethod
+                        }
+                    }
+
+                }
             }
             QSTileItemView.replaceHookMethod(
                 "changeExpand"
@@ -558,8 +588,8 @@ class QSListView : Hooker() {
             }
 
             val updateTextSizeForKDDI = QSTileItemView.findMethodExactIfExists("updateTextSizeForKDDI")
-            updateTextSizeForKDDI?.replaceHookMethod{
-                return@replaceHookMethod null
+            updateTextSizeForKDDI?.replace{
+                return@replace null
             }
         }
 

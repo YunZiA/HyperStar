@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.SeekBar
+import androidx.core.graphics.toColorInt
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.tool.starLog
 import de.robv.android.xposed.XC_MethodHook
@@ -234,7 +235,7 @@ abstract class HookerHelper {
 
     }
 
-    fun Method.replaceHookMethod(
+    fun Method.replace(
         methodHook: Any?.(param:MethodHookParam) -> Any?,
     ){
         XposedBridge.hookMethod(this, object : XC_MethodReplacement() {
@@ -304,167 +305,176 @@ abstract class HookerHelper {
         vararg parameterTypes: Any?,
         methodHook: Any?.(param:MethodHookParam) -> Unit,
     ){
-        XposedHelpers.findAndHookMethod(this, methodName, *parameterTypes, object :XC_MethodHook(){
-            override fun beforeHookedMethod(param: MethodHookParam) {
-                param.thisObject.methodHook(param)
-            }
-        })
+        try {
+            XposedHelpers.findAndHookMethod(this, methodName, *parameterTypes, object :XC_MethodHook(){
+                override fun beforeHookedMethod(param: MethodHookParam) {
+                    param.thisObject.methodHook(param)
+                }
+            })
 
+        }catch (e: NoSuchMethodError) {
+            starLog.logE("$e")
+        }catch (e: Exception){
+            starLog.logE("$e")
+        }
     }
 
 
-    fun Class<*>?.replaceHookMethod(
-        methodName: String,
-        vararg parameterTypes: Any?,
-        methodHook: Any?.(param:MethodHookParam) -> Any?,
-    ){
-        XposedHelpers.findAndHookMethod(this,methodName, *parameterTypes, object :XC_MethodReplacement(){
-            override fun replaceHookedMethod(param: MethodHookParam): Any? {
-                return param.thisObject.methodHook(param)
-            }
-        })
-
-    }
+}
 
 
-    fun Class<*>?.afterHookConstructor(
-        vararg parameterTypes: Any?,
-        methodHook: Any?.(param:MethodHookParam) -> Unit
-    ){
-        XposedHelpers.findAndHookConstructor(this, *parameterTypes, object :XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam) {
-                param.thisObject.methodHook(param)
-            }
-        })
+fun Class<*>?.replaceHookMethod(
+    methodName: String,
+    vararg parameterTypes: Any?,
+    methodHook: Any?.(param:MethodHookParam) -> Any?,
+){
+    XposedHelpers.findAndHookMethod(this,methodName, *parameterTypes, object :XC_MethodReplacement(){
+        override fun replaceHookedMethod(param: MethodHookParam): Any? {
+            return param.thisObject.methodHook(param)
+        }
+    })
 
-    }
+}
 
-    fun Class<*>?.beforeHookConstructor(
-        vararg parameterTypes: Any?,
-        methodHook: Any?.(param:MethodHookParam) -> Unit
-    ){
-        XposedHelpers.findAndHookConstructor(this, *parameterTypes, object :XC_MethodHook(){
-            override fun beforeHookedMethod(param: MethodHookParam) {
-                param.thisObject.methodHook(param)
-            }
-        })
 
-    }
+fun Class<*>?.afterHookConstructor(
+    vararg parameterTypes: Any?,
+    methodHook: Any?.(param:MethodHookParam) -> Unit
+){
+    XposedHelpers.findAndHookConstructor(this, *parameterTypes, object :XC_MethodHook(){
+        override fun afterHookedMethod(param: MethodHookParam) {
+            param.thisObject.methodHook(param)
+        }
+    })
 
-    fun Class<*>?.afterHookAllConstructors(
-        methodHook: Any?.(param:MethodHookParam) -> Unit,
-    ){
-        XposedBridge.hookAllConstructors(this,object :XC_MethodHook(){
-            override fun afterHookedMethod(param: MethodHookParam) {
-                param.thisObject.methodHook(param)
-            }
-        })
+}
 
-    }
+fun Class<*>?.beforeHookConstructor(
+    vararg parameterTypes: Any?,
+    methodHook: Any?.(param:MethodHookParam) -> Unit
+){
+    XposedHelpers.findAndHookConstructor(this, *parameterTypes, object :XC_MethodHook(){
+        override fun beforeHookedMethod(param: MethodHookParam) {
+            param.thisObject.methodHook(param)
+        }
+    })
 
-    fun Class<*>?.replaceHookedAllConstructors(
-        methodHook: Any?.(param:MethodHookParam) -> Any?,
-    ){
-        XposedBridge.hookAllConstructors(this,object :XC_MethodReplacement(){
-            override fun replaceHookedMethod(param: MethodHookParam): Any? {
-                return param.thisObject.methodHook(param)
-            }
-        })
+}
 
-    }
+fun Class<*>?.afterHookAllConstructors(
+    methodHook: Any?.(param:MethodHookParam) -> Unit,
+){
+    XposedBridge.hookAllConstructors(this,object :XC_MethodHook(){
+        override fun afterHookedMethod(param: MethodHookParam) {
+            param.thisObject.methodHook(param)
+        }
+    })
 
-    fun getDrawable(res: Resources, name: String, defPackage: String): Drawable {
-        val id = res.getIdentifier(name, "drawable", defPackage)
-        return res.getDrawable(id, res.newTheme())
-    }
+}
 
-    fun getColor(res: Resources, name: String, defPackage: String): Int {
+fun Class<*>?.replaceHookedAllConstructors(
+    methodHook: Any?.(param:MethodHookParam) -> Any?,
+){
+    XposedBridge.hookAllConstructors(this,object :XC_MethodReplacement(){
+        override fun replaceHookedMethod(param: MethodHookParam): Any? {
+            return param.thisObject.methodHook(param)
+        }
+    })
+
+}
+
+fun getDrawable(res: Resources, name: String, defPackage: String): Drawable {
+    val id = res.getIdentifier(name, "drawable", defPackage)
+    return res.getDrawable(id, res.newTheme())
+}
+
+fun getColor(res: Resources, name: String, defPackage: String): Int {
+    val id = res.getIdentifier(name, "color", defPackage)
+    return res.getColor(id, res.newTheme())
+}
+
+fun getColor(res: Resources, name: String, defPackage: String, defColor: String): Int {
+    try {
         val id = res.getIdentifier(name, "color", defPackage)
         return res.getColor(id, res.newTheme())
+    } catch (e: Resources.NotFoundException) {
+        starLog.logE("color $name is not found!")
+        return defColor.toColorInt()
     }
+}
 
-    fun getColor(res: Resources, name: String, defPackage: String, defColor: String): Int {
-        try {
-            val id = res.getIdentifier(name, "color", defPackage)
-            return res.getColor(id, res.newTheme())
-        } catch (e: Resources.NotFoundException) {
-            starLog.logE("color $name is not found!")
-            return Color.parseColor(defColor)
+fun getDimension(res: Resources, name: String, defPackage: String): Float {
+    val id = res.getIdentifier(name, "dimen", defPackage)
+    return res.getDimension(id)
+}
+
+fun getDimensionPixelOffset(res: Resources, name: String, defPackage: String): Int {
+    val id = res.getIdentifier(name, "dimen", defPackage)
+    return res.getDimensionPixelOffset(id)
+}
+
+fun getDimensionPixelSize(res: Resources, name: String, defPackage: String): Int {
+    val id = res.getIdentifier(name, "dimen", defPackage)
+    return res.getDimensionPixelSize(id)
+}
+
+fun findClass(className: String, classLoader: ClassLoader?): Class<*>? {
+    val cc = XposedHelpers.findClassIfExists(className, classLoader)
+    if (cc == null) {
+        starLog.logE("$className is not find")
+    }
+    return cc
+}
+
+fun hookAllMethods(
+    classLoader: ClassLoader?,
+    className: String,
+    methodName: String,
+    methodHook: MethodHook
+) {
+    val hookClass = XposedHelpers.findClassIfExists(className, classLoader)
+    if (hookClass == null) {
+        starLog.logE("$className is not find")
+        return
+    }
+    XposedBridge.hookAllMethods(hookClass, methodName, object : XC_MethodHook() {
+        @Throws(Throwable::class)
+        override fun beforeHookedMethod(param: MethodHookParam) {
+            super.beforeHookedMethod(param)
+            methodHook.before(param)
         }
-    }
 
-    fun getDimension(res: Resources, name: String, defPackage: String): Float {
-        val id = res.getIdentifier(name, "dimen", defPackage)
-        return res.getDimension(id)
-    }
-
-    fun getDimensionPixelOffset(res: Resources, name: String, defPackage: String): Int {
-        val id = res.getIdentifier(name, "dimen", defPackage)
-        return res.getDimensionPixelOffset(id)
-    }
-
-    fun getDimensionPixelSize(res: Resources, name: String, defPackage: String): Int {
-        val id = res.getIdentifier(name, "dimen", defPackage)
-        return res.getDimensionPixelSize(id)
-    }
-
-    fun findClass(className: String, classLoader: ClassLoader?): Class<*>? {
-        val cc = XposedHelpers.findClassIfExists(className, classLoader)
-        if (cc == null) {
-            starLog.logE("$className is not find")
+        @Throws(Throwable::class)
+        override fun afterHookedMethod(param: MethodHookParam) {
+            super.afterHookedMethod(param)
+            methodHook.after(param)
         }
-        return cc
-    }
+    })
+}
 
-    fun hookAllMethods(
-        classLoader: ClassLoader?,
-        className: String,
-        methodName: String,
-        methodHook: MethodHook
-    ) {
-        val hookClass = XposedHelpers.findClassIfExists(className, classLoader)
-        if (hookClass == null) {
-            starLog.logE("$className is not find")
-            return
+fun hookAllMethods(
+    hookClass: Class<*>?,
+    methodName: String,
+    methodHook: MethodHook
+) {
+    if (hookClass == null) {
+        starLog.logE("$methodName's class is null")
+        return
+    }
+    XposedBridge.hookAllMethods(hookClass, methodName, object : XC_MethodHook() {
+        @Throws(Throwable::class)
+        override fun beforeHookedMethod(param: MethodHookParam) {
+            super.beforeHookedMethod(param)
+            methodHook.before(param)
         }
-        XposedBridge.hookAllMethods(hookClass, methodName, object : XC_MethodHook() {
-            @Throws(Throwable::class)
-            override fun beforeHookedMethod(param: MethodHookParam) {
-                super.beforeHookedMethod(param)
-                methodHook.before(param)
-            }
 
-            @Throws(Throwable::class)
-            override fun afterHookedMethod(param: MethodHookParam) {
-                super.afterHookedMethod(param)
-                methodHook.after(param)
-            }
-        })
-    }
-
-    fun hookAllMethods(
-        hookClass: Class<*>?,
-        methodName: String,
-        methodHook: MethodHook
-    ) {
-        if (hookClass == null) {
-            starLog.logE("$methodName's class is null")
-            return
+        @Throws(Throwable::class)
+        override fun afterHookedMethod(param: MethodHookParam) {
+            super.afterHookedMethod(param)
+            methodHook.after(param)
         }
-        XposedBridge.hookAllMethods(hookClass, methodName, object : XC_MethodHook() {
-            @Throws(Throwable::class)
-            override fun beforeHookedMethod(param: MethodHookParam) {
-                super.beforeHookedMethod(param)
-                methodHook.before(param)
-            }
-
-            @Throws(Throwable::class)
-            override fun afterHookedMethod(param: MethodHookParam) {
-                super.afterHookedMethod(param)
-                methodHook.after(param)
-            }
-        })
-    }
+    })
+}
 
 //    private fun getParameterClasses(
 //        classLoader: ClassLoader,
@@ -477,9 +487,7 @@ abstract class HookerHelper {
 //    }
 
 
-    interface MethodHook {
-        fun before(param: MethodHookParam)
-        fun after(param: MethodHookParam)
-    }
-
+interface MethodHook {
+    fun before(param: MethodHookParam)
+    fun after(param: MethodHookParam)
 }

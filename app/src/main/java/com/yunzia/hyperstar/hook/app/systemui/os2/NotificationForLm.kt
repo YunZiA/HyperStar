@@ -5,6 +5,8 @@ import android.content.pm.ApplicationInfo
 import android.os.Parcelable
 import android.text.TextUtils
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 

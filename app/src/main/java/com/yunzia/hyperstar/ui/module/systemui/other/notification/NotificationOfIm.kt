@@ -7,8 +7,11 @@ import android.content.pm.PackageManager
 import android.util.Log
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.IndicationNodeFactory
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -242,6 +245,18 @@ private fun AppNotifItem(
     val packageName = notificationInfo.packageName
     val shouldDelete = remember { mutableStateOf(false) }
 
+    val localIndication = LocalIndication.current
+    val interactionSource =
+        if (localIndication is IndicationNodeFactory) {
+            // We can fast path here as it will be created inside clickable lazily
+            null
+        } else {
+            // We need an interaction source to pass between the indication modifier and
+            // clickable, so
+            // by creating here we avoid another composed down the line
+            remember { MutableInteractionSource() }
+        }
+
     Box{
         DeletePup(shouldDelete,selectApp,notificationInfo)
 
@@ -260,6 +275,7 @@ private fun AppNotifItem(
                 }
                 .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
                 .background( if (shouldDelete.value) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
+
             ,
             insideMargin =  PaddingValues(17.dp),
             title = label,

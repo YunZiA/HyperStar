@@ -31,11 +31,14 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      - name: Get APK file name
+        id: get-apk-name
+        run: echo "APK_NAME=$(basename ./app/build/outputs/apk/release/*.apk)" >> $GITHUB_ENV
       - name: Upload android artifact
         uses: actions/upload-artifact@v4
         with:
-          name: DEVApp
-          path: ./app/build/outputs/apk/dev
+          name: ${{ env.APK_NAME }}
+          path: ./app/build/outputs/apk/dev/*.apk
       - name: Post to Telegram ci channel
         if: ${{ success() && github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.ref_type != 'tag' }}
         env:

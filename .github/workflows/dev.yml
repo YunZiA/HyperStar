@@ -33,7 +33,9 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       - name: Get APK file name
         id: get-apk-name
-        run: echo "APK_NAME=$(basename ./app/build/outputs/apk/release/*.apk)" >> $GITHUB_ENV
+        run: |
+            APK_NAME=$(basename ./app/build/outputs/apk/release/*.apk)
+            echo "APK_NAME=${APK_NAME}" >> $GITHUB_ENV
       - name: Upload android artifact
         uses: actions/upload-artifact@v4
         with:

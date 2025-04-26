@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -22,7 +23,12 @@ import com.yunzia.hyperstar.utils.AppInfo
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.SPUtils
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
 
 
 class MainActivity : BaseActivity() {
@@ -125,6 +131,38 @@ class MainActivity : BaseActivity() {
         intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive")
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         this.startActivity(intent)
+    }
+
+    fun downloadArtifactWithoutToken(artifactUrl: String, outputFileName: String) {
+        val client = OkHttpClient()
+
+        // 构建请求（不需要 Authorization）
+        val request = Request.Builder()
+            .url(artifactUrl)
+            .build()
+
+        // 执行请求
+        val response = client.newCall(request).execute()
+        if (!response.isSuccessful) {
+            throw IOException("下载工件失败: ${response.code}")
+        }
+
+        // 将响应流写入文件
+        val file = File(outputFileName)
+        val inputStream: InputStream? = response.body?.byteStream()
+        val outputStream = FileOutputStream(file)
+
+        inputStream?.use { input ->
+            outputStream.use { output ->
+                val buffer = ByteArray(2048)
+                var bytesRead: Int
+                while (input.read(buffer).also { bytesRead = it } != -1) {
+                    output.write(buffer, 0, bytesRead)
+                }
+            }
+        }
+
+        Toast.makeText(this,"工件已下载到: ${file.absolutePath}",Toast.LENGTH_LONG).show()
     }
 
     override fun onRequestPermissionsResult(

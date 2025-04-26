@@ -259,6 +259,20 @@ fun ThirdPage(
                 color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
                 textAlign = TextAlign.Center
             )
+//            Box(modifier = Modifier
+//                .size(60.dp)
+//                .background(Color.Red)
+//                .clickable() {
+//                    val artifactUrl =
+//                        "https://api.github.com/repos/YunZiA/HyperStar/actions/artifacts/{artifact_id}/zip"
+//                    val outputFileName = "artifact.zip"
+//                    try {
+//                        activity.downloadArtifactWithoutToken(artifactUrl, outputFileName)
+//                    } catch (e: Exception) {
+//                        Log.d("ggc", "ThirdPage: $e")
+//                        e.printStackTrace()
+//                    }
+//                })
         }
 
 

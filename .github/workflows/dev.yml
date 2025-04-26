@@ -34,15 +34,35 @@ jobs:
       - name: Get APK file name
         id: get-apk-name
         run: |
-            APK=$(basename ./app/build/outputs/apk/dev/*.apk)
-            APK_NAME=${APK%.apk}
-            echo "APK 文件名为: ${APK_NAME}"
-            echo "APK_NAME=${APK_NAME}" >> $GITHUB_ENV
+          APK=$(basename ./app/build/outputs/apk/dev/*.apk)
+          APK_NAME=${APK%.apk}
+          echo "APK 文件名为: ${APK_NAME}"
+          echo "APK_NAME=${APK_NAME}" >> $GITHUB_ENV
       - name: Upload android artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APK_NAME }}
           path: ./app/build/outputs/apk/dev/*.apk
+      - name: Configure Git
+        run: |
+          git config --global user.name "dongdong-gc"  # 替换为你的 Gitee 用户名
+          git config --global user.email "2574822036@qq.com"          # 替换为你的邮箱
+
+      - name: Copy Specific File
+        run: |
+          mkdir gitee-repo
+          cp ./app/build/outputs/apk/dev/*.apk ./gitee-repo/  # 替换为你的 APK 文件路径
+
+      - name: Push to Gitee
+        run: |
+          cd gitee-repo
+          git init
+          git remote add origin https://oauth2:${{ secrets.GITEE_TOKEN }}@gitee.com/dongdong-gc/hyper-star-updater.git
+          git add .
+          git commit -m "Sync specific file from GitHub"
+          git branch -M main
+          git push -u origin main --force
+
       - name: Post to Telegram ci channel
         if: ${{ success() && github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.ref_type != 'tag' }}
         env:

@@ -38,7 +38,6 @@ jobs:
           APK_NAME=${APK%.apk}
           echo "APK 文件名为: ${APK_NAME}"
           echo "APK_NAME=${APK_NAME}" >> $GITHUB_ENV
-          echo "${{ env.APK_NAME }}" > gitee-repo/apk_name.txt
       - name: Upload android artifact
         uses: actions/upload-artifact@v4
         with:
@@ -52,6 +51,7 @@ jobs:
       - name: Copy APK and metadata to Gitee folder
         run: |
           mkdir -p gitee-repo/dev
+          echo "${{ env.APK_NAME }}" > gitee-repo/apk_name.txt
           cp ./app/build/outputs/apk/dev/*.apk gitee-repo/dev/  # 将 APK 文件复制到目标文件夹
           mv gitee-repo/apk_name.txt gitee-repo/dev/  # 将文件名文件移动到目标文件夹
 

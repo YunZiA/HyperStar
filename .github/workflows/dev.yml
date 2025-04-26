@@ -35,6 +35,7 @@ jobs:
         id: get-apk-name
         run: |
             APK_NAME=$(basename ./app/build/outputs/apk/release/*.apk)
+            echo "APK 文件名为: ${APK_NAME}"
             echo "APK_NAME=${APK_NAME}" >> $GITHUB_ENV
       - name: Upload android artifact
         uses: actions/upload-artifact@v4

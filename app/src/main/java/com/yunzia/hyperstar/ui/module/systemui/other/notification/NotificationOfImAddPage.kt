@@ -1,10 +1,5 @@
 package com.yunzia.hyperstar.ui.module.systemui.other.notification
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -103,19 +98,7 @@ fun NotificationOfImAddPage(
             .background(Color.Black),
         popupHost = { },
         topBar = {
-            AnimatedVisibility(
-                searchStatus.isCollapsed()||searchStatus.isAnimatingCollapse(),
-                enter = fadeIn(
-                    animationSpec = spring(
-                        stiffness = Spring.StiffnessLow
-                    )
-                ),
-                exit = fadeOut(
-                    animationSpec = spring(
-                        stiffness = Spring.StiffnessMedium
-                    )
-                ),
-            ) {
+            searchStatus.TopAppBarAnim{
                 TopAppBar(
                     modifier = Modifier.showBlur(hazeState),
                     color = Color.Transparent,

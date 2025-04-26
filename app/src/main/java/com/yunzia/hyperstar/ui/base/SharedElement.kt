@@ -2,8 +2,13 @@ package com.yunzia.hyperstar.ui.base
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -67,7 +72,7 @@ fun rememberSearchStatus(
             query = searchStatus.searchText,
             label = searchStatus.label,
             onQueryChange = { searchStatus.searchText = it },
-            expanded = searchStatus.isExpand(),
+            expanded = searchStatus.shouldExpand(),
             onExpandedChange = {
                 Log.d("SearchStatus", "Expanded: $it")
                 searchStatus.status = if (it) SearchStatus.Status.EXPANDED else SearchStatus.Status.COLLAPSED
@@ -109,8 +114,34 @@ class SearchStatus(val label: String) {
     fun isExpand() = status == Status.EXPANDED && !isAnimating
     fun isCollapsed() = status == Status.COLLAPSED && !isAnimating
     fun shouldExpand() = status == Status.EXPANDED
+    fun shouldCollapsed() = status == Status.COLLAPSED
     fun isAnimatingExpand() = status == Status.EXPANDED && isAnimating
     fun isAnimatingCollapse() = status == Status.COLLAPSED && isAnimating
+
+    @Composable
+    fun TopAppBarAnim(
+        modifier: Modifier = Modifier,
+        visible: Boolean = shouldCollapsed(),
+        content: @Composable() AnimatedVisibilityScope.() -> Unit
+    ) {
+        AnimatedVisibility(
+            visible = visible,
+            modifier = modifier,
+            enter = fadeIn(
+                animationSpec = spring(
+                    stiffness = Spring.StiffnessLow
+                )
+            ),
+            exit = fadeOut(
+                animationSpec = spring(
+                    stiffness = Spring.StiffnessMedium
+                )
+            ),
+            label = "TopAppBarAnim"
+        ) {
+            this.content()
+        }
+    }
 
 
     enum class Status { EXPANDED, COLLAPSED }
@@ -144,9 +175,9 @@ fun SearchBox(
             searchStatus.collapseBar()
         }
         AnimatedVisibility(
-            visible = searchStatus.isCollapsed() || searchStatus.isAnimatingCollapse(),
-            enter = fadeIn() + slideInVertically { -it / 8 },
-            exit = fadeOut() + slideOutVertically { -it / 10 }
+            visible = searchStatus.shouldCollapsed(),
+            enter = fadeIn() + slideInVertically { -it / 6 },
+            exit = fadeOut() + slideOutVertically { -it / 7 }
         ) {
             content()
         }
@@ -161,10 +192,16 @@ fun SearchPager(
     result: LazyListScope.() -> Unit
 ) {
     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
-    val topPadding by animateDpAsState(if (searchStatus.isExpand()) systemBarsPadding else searchStatus.offsetY) {
+    val topPadding by animateDpAsState(
+        if (searchStatus.shouldExpand()) systemBarsPadding else searchStatus.offsetY,
+        animationSpec = tween(250, easing = LinearOutSlowInEasing)
+    ) {
         searchStatus.isAnimating = false
     }
-    val backgroundAlpha by animateFloatAsState(if (searchStatus.isExpand()) 1f else 0f)
+    val backgroundAlpha by animateFloatAsState(
+        if (searchStatus.shouldExpand()) 1f else 0f,
+        animationSpec = tween(250, easing = LinearOutSlowInEasing)
+    )
 
     Column(
         modifier = Modifier
@@ -179,7 +216,7 @@ fun SearchPager(
             Modifier
                 .fillMaxWidth()
                 .padding(top = topPadding)
-                .alpha(if (searchStatus.isExpand() || searchStatus.isAnimatingCollapse()) 1f else 0f),
+                .alpha(if (searchStatus.isCollapsed()) 0f else 1f),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {

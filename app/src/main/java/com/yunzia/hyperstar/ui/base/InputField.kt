@@ -28,7 +28,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
@@ -136,7 +135,7 @@ fun InputField(
     )
 
     LaunchedEffect(expanded) {
-        delay(100)
+        //delay(100)
         if (expanded){
             focusRequester.requestFocus()
         }else if (focused){

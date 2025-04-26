@@ -77,11 +77,7 @@ fun SearchModuleNavPager(
         floatingActionButtonPosition = floatingActionButtonPosition,
         floatingPagerButton = floatingPagerButton,
         topBar = {
-            AnimatedVisibility(
-                searchStatus.isCollapsed()||searchStatus.isAnimatingCollapse(),
-                enter = fadeIn(),
-                exit = fadeOut(),
-            ) {
+            searchStatus.TopAppBarAnim{
                 ModuleNavTopAppBar(
                     modifier = Modifier.showBlur(hazeState),
                     color = Color.Transparent,

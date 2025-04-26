@@ -165,6 +165,7 @@ android {
 
 }
 dependencies {
+    implementation(libs.okhttp)
     // 系统UI控制库，实现沉浸式状态栏
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.dexkit)

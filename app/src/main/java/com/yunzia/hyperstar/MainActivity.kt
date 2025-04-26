@@ -22,6 +22,7 @@ import com.yunzia.hyperstar.utils.AppInfo
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.SPUtils
+import java.io.File
 
 
 class MainActivity : BaseActivity() {
@@ -68,6 +69,62 @@ class MainActivity : BaseActivity() {
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         }
+    }
+
+//    fun downloadApkFromGithub() {
+//        val client = OkHttpClient()
+//        val request = Request.Builder()
+//            .url("https://api.github.com/repos/YunZiA/HyperStar/releases/latest") // 修改为你的仓库
+//            .build()
+//
+//        client.newCall(request).enqueue(object : Callback {
+//            override fun onFailure(call: Call, e: IOException) {
+//                e.printStackTrace()
+//            }
+//
+//            override fun onResponse(call: Call, response: Response) {
+//                val json = response.body?.string()
+//                val downloadUrl = extractApkUrlFromJson(json) // 提取 APK 的下载链接
+//                downloadAndInstallApk(downloadUrl)
+//            }
+//        })
+//    }
+//
+//    fun extractApkUrlFromJson(json: String?): String {
+//        // 使用 JSON 解析提取 APK 文件的下载链接
+//        // 示例：解析 "assets" 中的 "browser_download_url"
+//        return "https://github.com/YunZiA/HyperStar/releases/download/v1.0.0/app-release.apk"
+//    }
+//
+//    fun downloadAndInstallApk(url: String) {
+//        val client = OkHttpClient()
+//        val request = Request.Builder().url(url).build()
+//
+//        client.newCall(request).enqueue(object : Callback {
+//            override fun onFailure(call: Call, e: IOException) {
+//                e.printStackTrace()
+//            }
+//
+//            override fun onResponse(call: Call, response: Response) {
+//                val file = File(this.getExternalFilesDir(null), "app-release.apk")
+//                val inputStream = response.body?.byteStream()
+//                val outputStream = FileOutputStream(file)
+//
+//                inputStream?.copyTo(outputStream)
+//                inputStream?.close()
+//                outputStream.close()
+//
+//                // 安装 APK
+//                installApk(file)
+//            }
+//        })
+//    }
+
+    fun installApk(file: File) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive")
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        this.startActivity(intent)
     }
 
     override fun onRequestPermissionsResult(

@@ -46,13 +46,37 @@ jobs:
       - name: Configure Git
         run: |
           git config --global user.name "dongdong-gc"  # 替换为你的 Gitee 用户名
-          git config --global user.email "2574822036@qq.com"          # 替换为你的邮箱
+          git config --global user.email "2574822036@qq.com"  # 替换为你的邮箱
+
+      - name: Prepare Gitee Folder
+        run: |
+          mkdir -p gitee-repo/dev
+
+      - name: Fetch Historical Commit File from Gitee
+        run: |
+          curl -o gitee-repo/dev/commit_history.txt https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/commit_history.txt || echo "历史提交文件不存在，创建新文件。" > gitee-repo/dev/commit_history.txt
 
       - name: Copy APK and metadata to Gitee folder
         run: |
-          mkdir -p gitee-repo/dev
+          # 写入当前提交信息到 head_commit.txt
           echo "${{ env.APK_NAME }}" > gitee-repo/apk_name.txt
-          cp ./app/build/outputs/apk/dev/*.apk gitee-repo/dev/  # 将 APK 文件复制到目标文件夹
+          echo "${{ github.event.head_commit.message }}" > gitee-repo/dev/head_commit.txt
+
+          if [ ! -f gitee-repo/dev/commit_history.json ]; then
+            echo "[]" > gitee-repo/dev/commit_history.json
+          fi
+
+          # 获取当前提交的信息并以 JSON 格式追加到文件中
+          APK_NAME="${{ env.APK_NAME }}"
+          COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
+
+          # 使用 jq 工具追加 JSON 对象
+          jq ". += [{\"apk_name\": \"${APK_NAME}\", \"commit_message\": \"${COMMIT_MESSAGE}\"}]" \
+                               gitee-repo/dev/commit_history.json > gitee-repo/dev/tmp_commit_history.json && \
+          mv gitee-repo/dev/tmp_commit_history.json gitee-repo/dev/commit_history.json
+    
+          # 将 APK 文件复制到目标文件夹
+          cp ./app/build/outputs/apk/dev/*.apk gitee-repo/dev/
           mv gitee-repo/apk_name.txt gitee-repo/dev/  # 将文件名文件移动到目标文件夹
 
       - name: Push to Gitee
@@ -72,7 +96,7 @@ jobs:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           COMMIT_MESSAGE: |+
             New CI from HyperStar
-
+          
             ```
             ${{ github.event.head_commit.message }}
             ```

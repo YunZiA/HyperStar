@@ -97,7 +97,6 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import java.util.Scanner
-import kotlin.math.abs
 
 
 private fun getColorList(
@@ -142,9 +141,7 @@ fun ThirdPage(
         targetValue = if (isNeedUpdate.value) 27.dp else 55.dp,
         animationSpec = tween(750, easing = LinearOutSlowInEasing)
     )
-
-
-
+    
     val darkTheme = isSystemInDarkTheme()
     val colorsMode = when (activity.colorMode.intValue) {
         1 -> 1
@@ -177,12 +174,8 @@ fun ThirdPage(
 
     val blurRadius = remember {
         derivedStateOf {
-            // 最大模糊值，单位为 dp
             val maxBlur = 3.dp
-            // 归一化 paddingTop 值，确保在 [0, 1] 范围内
             val normalizedOffset = ((55.dp - paddingTop.value)/28.dp).coerceIn(0f, 1f)
-            // 使用公式计算模糊值，确保清晰到模糊再回到清晰
-            val curveFactor = 1 - (2 * abs(normalizedOffset - 0.3f))
             if (isNeedUpdate.value){
                 maxBlur * (1-(normalizedOffset/0.7f).coerceIn(0f, 1f))
             }else{
@@ -246,6 +239,7 @@ fun ThirdPage(
             // 比较版本号
             if (currentVersion < newVersion) {
                 isNeedUpdate.value = true
+            }else{
             }
         }
 
@@ -254,7 +248,6 @@ fun ThirdPage(
             snapshotFlow { scroll.firstVisibleItemScrollOffset }
                 .onEach {
 
-                    Log.d("ggc", "ThirdPage: $it")
                     if (scroll.firstVisibleItemIndex > 0) {
                         bgAlpha.floatValue = 0f
                         secAlpha.floatValue = 0f
@@ -613,7 +606,7 @@ fun UpdaterButton(
         contentAlignment = Alignment.Center
     ){
         Text(
-            text = "有新版本",
+            text = stringResource(R.string.update_has),
             fontSize = 17.sp,
             fontWeight = FontWeight.SemiBold,
             color = MiuixTheme.colorScheme.onSurface

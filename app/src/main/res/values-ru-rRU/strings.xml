@@ -294,4 +294,21 @@ o(╥﹏╥)o</string>
     <string name="classic_noy_type">Classic Notification Style</string>
     <string name="icon_stacking_whitelist">Icon Stacking Whitelist</string>
     <string name="application_selection">Application Selection</string>
+    <string name="update_attention">
+        Attention\n\n
+        • After a software update, major issues are unlikely to occur. If you encounter any critical problems, please downgrade immediately and report the issue to the developers. Kindly wait for the release of a fixed version.\n\n
+        • When the software starts, it will automatically clean up downloaded files to ensure they do not occupy your storage space.\n\n
+        • If you encounter any issues during use, feel free to seek help or provide feedback in the group.
+    </string>
+    <string name="app_update_title">App Update</string>
+    <string name="download_update">Download update</string>
+    <string name="update_available">An update is available</string>
+    <string name="go_channel_discuss">Join Group Discussion</string>
+    <string name="install_update">Install Update</string>
+    <string name="downloading">Downloading</string>
+    <string name="checking_update">Checking for Updates…</string>
+    <string name="download_failed">Download Failed: %1$s</string>
+    <string name="UpdateFetchError">Unable to fetch update details. Please check your network connection!</string>
+    <string name="update_has">Update</string>
+    <string name="no_updates_available">No updates available</string>
 </resources>

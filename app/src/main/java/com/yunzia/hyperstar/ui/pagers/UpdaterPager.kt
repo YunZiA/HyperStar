@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -86,7 +87,7 @@ fun UpdaterPager(
 
     // 更新历史和 UI 状态
     val commitHistory = remember { mutableStateListOf<CommitHistory>() }
-    val title = remember { mutableStateOf("正在检查更新...") }
+    val title = remember { mutableStateOf(context.getString(R.string.checking_update)) }
     val show = remember { mutableStateOf(false) }
     val showUpdater = remember { mutableStateOf(false) }
 
@@ -104,11 +105,15 @@ fun UpdaterPager(
 
         // 加载更新历史
         commitHistory.addAll(fetchAndParseCommitHistory())
-        lastCommit.value = fetchHeadCommitContent()
+        lastCommit.value = fetchHeadCommitContent(context)
             .replace("--", "")
+            .trim()
             .lines()
             .joinToString("\n") { line -> "• $line" }
         isNeedUpdate.value = currentVersions < newVersions
+        if(!isNeedUpdate.value){
+            Toast.makeText(context, context.getString(R.string.no_updates_available), Toast.LENGTH_SHORT).show()
+        }
     }
 
     // 更新 UI 状态
@@ -130,7 +135,7 @@ fun UpdaterPager(
             NavTopAppBar(
                 modifier = Modifier.showBlur(hazeState),
                 color = Color.Transparent,
-                title = "应用更新",
+                title = stringResource(R.string.app_update_title),
                 largeTitle = "",
                 scrollBehavior = topAppBarScrollBehavior,
                 navController = navController,
@@ -161,26 +166,8 @@ fun UpdaterPager(
             }
             item(2) {
                 if (show.value) {
-                    if (showUpdater.value){
-                        HorizontalDivider(
-                            modifier = Modifier
-                                .padding(top = 100.dp, bottom = 40.dp)
-                                .padding(
-                                    horizontal = 26.dp
-                                )
-                        )
-                        Column(
-                            modifier = Modifier.padding(horizontal = 26.dp)
-                        ) {
-                            Text(
-                                text = lastCommit.value,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium,
-                                lineHeight = 2.em,
-                                color = MiuixTheme.colorScheme.onSurfaceVariantSummary
-                            )
-                        }
-
+                    if (!showUpdater.value){
+                        UpdateContent(lastCommit)
                     }else{
                         UpdateHistory(commitHistory = commitHistory)
                     }
@@ -216,13 +203,52 @@ fun UpdateHeader(
             modifier = Modifier.width(260.dp),
         )
         Spacer(modifier = Modifier.height(20.dp))
-        Toast.makeText(LocalContext.current,summary, Toast.LENGTH_SHORT).show()
         Text(
             text = summary,
             fontSize = 14.sp,
             modifier = Modifier.fillMaxWidth(),
             fontWeight = FontWeight.Medium,
             textAlign = TextAlign.Center,
+            color = MiuixTheme.colorScheme.onSurfaceVariantSummary
+        )
+    }
+}
+
+@Composable
+fun UpdateContent(lastCommit: MutableState<String>) {
+    HorizontalDivider(
+        modifier = Modifier
+            .padding(top = 100.dp)
+            .padding(
+                horizontal = 26.dp
+            )
+    )
+    Column(
+        modifier = Modifier.padding(horizontal = 26.dp, vertical = 40.dp)
+    ) {
+        Text(
+            text = lastCommit.value,
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Medium,
+            lineHeight = 2.em,
+            color = MiuixTheme.colorScheme.onSurfaceVariantSummary
+        )
+    }
+    HorizontalDivider(
+        modifier = Modifier
+            .padding(bottom = 40.dp)
+            .padding(
+                horizontal = 26.dp
+            )
+    )
+    Column(
+        modifier = Modifier.padding(horizontal = 26.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.update_attention),
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Medium,
+            lineHeight = 1.5.em,
             color = MiuixTheme.colorScheme.onSurfaceVariantSummary
         )
     }
@@ -237,7 +263,9 @@ fun UpdateHistory(commitHistory: List<CommitHistory>) {
     )
     commitHistory.forEach {
         Column(
-            modifier = Modifier.padding(horizontal = 26.dp).padding(top = 40.dp)
+            modifier = Modifier
+                .padding(horizontal = 26.dp)
+                .padding(top = 40.dp)
         ) {
             Text(
                 text = "# "+it.apk_name.replace("HyperStar_v",""),
@@ -274,20 +302,22 @@ fun UpdateActions(
     val downloadStatus = remember { mutableStateOf(DownloadStatus.NONE) }
     val downloadsDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
     val outputFile = File(downloadsDir, fileName)
-    val actionText = remember { mutableStateOf(if (showUpdater.value) "下载更新" else "发现新版本") }
+    val download_update = stringResource(R.string.download_update)
+    val update_available = stringResource(R.string.update_available)
+    val actionText = remember { mutableStateOf(if (showUpdater.value) download_update else update_available) }
 
     LaunchedEffect(showUpdater.value) {
         if (showUpdater.value){
-            actionText.value = "下载更新"
+            actionText.value = download_update
         }
     }
     LaunchedEffect(downloadStatus.value) {
         when (downloadStatus.value){
             DownloadStatus.SUCCESS -> {
-                actionText.value = "安装"
+                actionText.value = context.getString(R.string.install_update)
             }
             DownloadStatus.DOWNLOAD ->{
-                actionText.value = "下载中"
+                actionText.value = context.getString(R.string.downloading)
             }
             DownloadStatus.FAIL -> {
 
@@ -318,7 +348,8 @@ fun UpdateActions(
                 // 通知失败
                 withContext(Dispatchers.Main) {
                     downloadStatus.value = DownloadStatus.FAIL
-                    Toast.makeText(context, "下载失败: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,
+                        context.getString(R.string.download_failed, e.message), Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -375,11 +406,10 @@ fun UpdateActions(
                 .padding(horizontal = 28.dp),
             onClick = {
                 view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                navController.navigate("groupDiscussion")
             }
         ) {
             Text(
-                "进入群组讨论",
+                stringResource(R.string.go_channel_discuss),
                 modifier = Modifier.padding(horizontal = 12.dp),
                 fontSize = 18.sp,
                 color = MiuixTheme.colorScheme.onBackground,
@@ -414,15 +444,14 @@ suspend fun fetchAndParseCommitHistory(): List<CommitHistory> {
 }
 
 // 网络请求函数，用于获取 head_commit.txt 内容
-suspend fun fetchHeadCommitContent(): String {
+suspend fun fetchHeadCommitContent(context: Context): String {
     return withContext(Dispatchers.IO) {
         try {
             val connection = URL("https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/head_commit.txt").openConnection() as HttpURLConnection
             connection.inputStream.bufferedReader().use { it.readText() }
         } catch (e: Exception) {
             e.printStackTrace()
-            "无法获取更新内容，请检查网络连接！"
-
+            context.getString(R.string.UpdateFetchError)
         }
     }
 }

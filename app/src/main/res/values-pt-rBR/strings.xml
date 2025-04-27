@@ -302,4 +302,5 @@
     <string name="UpdateFetchError">Unable to fetch update details. Please check your network connection!</string>
     <string name="update_has">Update</string>
     <string name="no_updates_available">No updates available</string>
+    <string name="manual_download_prompt">"\n• If the download fails, please visit the following link to download manually: "</string>
 </resources>

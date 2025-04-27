@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
@@ -17,6 +16,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.profileinstaller.ProfileInstaller
 import com.yunzia.hyperstar.ui.base.BaseActivity
 import com.yunzia.hyperstar.utils.AppInfo
@@ -149,8 +149,8 @@ class MainActivity : BaseActivity() {
             clearDirectory(downloadsDir)
             val apkName = withContext(Dispatchers.IO) {
                 getNewVersionApkName()
-            }
-            newAppVersion.value = apkName.removePrefix("HyperStar_v").removePrefix("_dev").trim()
+            }.trim()
+            newAppVersion.value = apkName.removePrefix("HyperStar_v").removePrefix("_dev")
             newAppName.value = "$apkName.apk"
         }
 
@@ -209,7 +209,7 @@ class MainActivity : BaseActivity() {
 
         if (!Environment.isExternalStorageManager()) {
             val appIntent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-            appIntent.setData(Uri.parse("package:$packageName"))
+            appIntent.setData("package:$packageName".toUri())
             try {
                 this.startActivity(appIntent)
             } catch (ex: ActivityNotFoundException) {

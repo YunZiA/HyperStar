@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,14 +39,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
@@ -99,7 +110,11 @@ fun UpdaterPager(
     val title = remember { mutableStateOf(context.getString(R.string.checking_update)) }
     val show = remember { mutableStateOf(false) }
     val showUpdater = remember { mutableStateOf(false) }
-
+    val fileUrl = remember {
+        derivedStateOf {
+            "https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/${activity.newAppName.value}"
+        }
+    }
 
     val logo = if (activity.isDarkMode){
         painterResource(R.drawable.hyperstar2_dark)
@@ -108,10 +123,16 @@ fun UpdaterPager(
     }
 
     // 检查更新逻辑
-    LaunchedEffect(activity.newAppVersion) {
+    LaunchedEffect(Unit) {
         val currentVersions = extractOnlyNumbers(currentVersion)
+
+        val apkName = withContext(Dispatchers.IO) {
+            activity.getNewVersionApkName()
+        }.trim()
+        activity.newAppVersion.value = apkName.removePrefix("HyperStar_v").removePrefix("_dev")
+        activity.newAppName.value = "$apkName.apk"
         val newVersions = extractOnlyNumbers(activity.newAppVersion.value)
-        Log.d("ggc", "UpdaterPager: currentVersion = $currentVersions newVersion = $newVersions",)
+        Log.d("ggc", "UpdaterPager: currentVersion = $currentVersions newVersion = $newVersions")
 
         // 加载更新历史
         commitHistory.addAll(fetchAndParseCommitHistory())
@@ -127,10 +148,12 @@ fun UpdaterPager(
     }
 
     // 更新 UI 状态
-    LaunchedEffect(Unit) {
+    LaunchedEffect(Unit,activity.newAppName.value) {
         delay(600) // 延迟更新 UI
-        title.value =  currentVersion
-        show.value = true
+        if (activity.newAppName.value != ""){
+            title.value =  currentVersion
+            show.value = true
+        }
     }
 
     // 更新 UI 状态
@@ -177,17 +200,26 @@ fun UpdaterPager(
             item(2) {
                 if (show.value) {
                     if (showUpdater.value){
-                        UpdateContent(lastCommit)
+                        UpdateContent(lastCommit,fileUrl,navController)
                     }else{
                         UpdateHistory(commitHistory = commitHistory)
                     }
                 }
+            }
+            item(3) {
+
+                Spacer(
+                    Modifier.height(
+                        if (isNeedUpdate.value && !showUpdater.value) 180.dp else 100.dp
+                    ).animateContentSize())
+
             }
         }
 
         if (show.value) {
             UpdateActions(
                 isNeedUpdate = isNeedUpdate.value,
+                fileUrl = fileUrl,
                 showUpdater = showUpdater,
                 navController = navController
             )
@@ -225,7 +257,39 @@ fun UpdateHeader(
 }
 
 @Composable
-fun UpdateContent(lastCommit: MutableState<String>) {
+fun UpdateContent(
+    lastCommit: MutableState<String>,
+    fileUrl: State<String>,
+    navController: NavController
+) {
+
+    val styles = TextLinkStyles(style = SpanStyle(color = colorResource(R.color.blue), fontSize = 14.sp))
+
+    val annotatedText = buildAnnotatedString {
+        append(stringResource(R.string.update_attention))
+        append(stringResource(R.string.manual_download_prompt))
+        pushStyle(
+            SpanStyle(
+                color = colorResource(R.color.blue),
+                textDecoration = TextDecoration.Underline
+            )
+        )
+        withLink(LinkAnnotation.Clickable(tag = "URL", linkInteractionListener = {
+
+            navController.context.startActivity(Intent(Intent.ACTION_VIEW, fileUrl.value.toUri()))
+        }, styles = styles)) {
+            append(fileUrl.value)
+        }
+
+        addStringAnnotation(
+            tag = "URL",
+            annotation = fileUrl.value,
+            start = length - fileUrl.value.length,
+            end = length
+        )
+        pop()
+    }
+
     HorizontalDivider(
         modifier = Modifier
             .padding(top = 100.dp)
@@ -255,11 +319,11 @@ fun UpdateContent(lastCommit: MutableState<String>) {
         modifier = Modifier.padding(horizontal = 26.dp)
     ) {
         Text(
-            text = stringResource(R.string.update_attention),
+            text = annotatedText,
             fontSize = 15.sp,
             fontWeight = FontWeight.Medium,
             lineHeight = 1.5.em,
-            color = MiuixTheme.colorScheme.onSurfaceVariantSummary
+            color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
         )
     }
 }
@@ -300,14 +364,13 @@ fun UpdateHistory(commitHistory: List<CommitHistory>) {
 @Composable
 fun UpdateActions(
     isNeedUpdate: Boolean,
+    fileUrl: State<String>,
     showUpdater: MutableState<Boolean>,
     navController: NavController
 ) {
     val view = LocalView.current
     val activity = LocalActivity.current as MainActivity
     val showDialog = remember { mutableStateOf(false) }
-
-    val fileUrl = remember { mutableStateOf("") }
     val context = LocalContext.current
     val fileName = activity.newAppName.value
     val downloadStatus = remember { mutableStateOf(DownloadStatus.NONE) }
@@ -338,11 +401,11 @@ fun UpdateActions(
     }
 
     // 启动协程下载文件
-    LaunchedEffect(fileUrl.value) {
-        if (fileUrl.value == "") return@LaunchedEffect
+    LaunchedEffect(downloadStatus.value) {
+        if (fileUrl.value == "https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/") return@LaunchedEffect
+        if (downloadStatus.value != DownloadStatus.DOWNLOAD) return@LaunchedEffect
         withContext(Dispatchers.IO) {
             try {
-                downloadStatus.value = DownloadStatus.DOWNLOAD
                 // 打开连接并下载文件
                 val connection = URL(fileUrl.value).openConnection() as HttpURLConnection
                 connection.inputStream.use { input ->
@@ -387,8 +450,7 @@ fun UpdateActions(
                         if (downloadStatus.value == DownloadStatus.SUCCESS){
                             installApk(context,outputFile.absolutePath)
                         }else{
-                            fileUrl.value = "https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/${fileName}"
-
+                            downloadStatus.value = DownloadStatus.DOWNLOAD
                         }
                     }else{
                         showUpdater.value = true

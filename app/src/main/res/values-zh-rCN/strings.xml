@@ -290,7 +290,7 @@
         注意事项\n\n
         • 软件更新后通常不会出现重大问题。如遇严重问题，请立即降级并将问题反馈给开发者，耐心等待修复版本发布\n\n
         • 软件启动时会自动清理已下载的文件，确保不会占用您的存储空间\n\n
-        • 使用过程中如遇任何问题，欢迎在群组中寻求帮助或反馈问题",
+        • 使用过程中如遇任何问题，欢迎在群组中寻求帮助或反馈问题"
     </string>
     <string name="app_update_title">应用更新</string>
     <string name="download_update">下载更新</string>
@@ -303,5 +303,6 @@
     <string name="UpdateFetchError">无法获取更新内容，请检查网络连接！</string>
     <string name="update_has">有新版本</string>
     <string name="no_updates_available">已经是最新版本</string>
+    <string name="manual_download_prompt">"\n• 如果下载未成功，请访问以下链接手动下载："</string>
 
 </resources>

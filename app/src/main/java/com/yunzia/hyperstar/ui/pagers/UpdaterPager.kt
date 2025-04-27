@@ -104,7 +104,10 @@ fun UpdaterPager(
 
         // 加载更新历史
         commitHistory.addAll(fetchAndParseCommitHistory())
-        lastCommit.value = fetchHeadCommitContent().replace("--", "• ")
+        lastCommit.value = fetchHeadCommitContent()
+            .replace("--", "")
+            .lines()
+            .joinToString("\n") { line -> "• $line" }
         isNeedUpdate.value = currentVersions < newVersions
     }
 
@@ -243,10 +246,13 @@ fun UpdateHistory(commitHistory: List<CommitHistory>) {
                 color = MiuixTheme.colorScheme.onSurface
             )
             Text(
-                text = it.commit_message.replace("--",""),
+                text = it.commit_message.replace("--","")
+                    .lines()
+                    .joinToString("\n") { line -> "• $line" },
                 fontSize = 14.sp,
                 modifier = Modifier.padding(top = 20.dp),
                 fontWeight = FontWeight.Medium,
+                lineHeight = 1.5.em,
                 color = MiuixTheme.colorScheme.onSurfaceVariantSummary
             )
         }

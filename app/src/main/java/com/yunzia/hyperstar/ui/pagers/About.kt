@@ -191,12 +191,6 @@ fun ThirdPage(
         }
     }
 
-
-//    val blurRadius = animateDpAsState(
-//        targetValue = if (paddingTop.value == 55.dp && isNeedUpdate.value ) 20.dp else 0.dp,
-//        animationSpec = tween(750, easing = LinearOutSlowInEasing)
-//    )
-
     val bgAlpha = remember { mutableFloatStateOf(1f) }
     val buttonAlpha = remember { mutableFloatStateOf(1f) }
 
@@ -221,7 +215,6 @@ fun ThirdPage(
                 actions = {
                     if (rebootStyle.intValue == 1){
                         RebootPup(showReboot)
-
                     }
                     IconButton(
                         modifier = Modifier.padding(end = 12.dp),

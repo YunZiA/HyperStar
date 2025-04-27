@@ -239,7 +239,6 @@ fun ThirdPage(
             // 比较版本号
             if (currentVersion < newVersion) {
                 isNeedUpdate.value = true
-            }else{
             }
         }
 

@@ -9,9 +9,11 @@ import android.view.HapticFeedbackConstants
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
@@ -44,9 +47,13 @@ import androidx.core.content.FileProvider
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.ui.base.BaseButton
 import com.yunzia.hyperstar.ui.base.Button
 import com.yunzia.hyperstar.ui.base.NavTopAppBar
+import com.yunzia.hyperstar.ui.base.SuperIntentArrow
 import com.yunzia.hyperstar.ui.base.XScaffold
+import com.yunzia.hyperstar.ui.base.dialog.SuperXDialog
+import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.ui.base.modifier.blur
 import com.yunzia.hyperstar.ui.base.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.base.modifier.showBlur
@@ -63,7 +70,9 @@ import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import java.io.File
 import java.io.FileOutputStream
@@ -102,6 +111,7 @@ fun UpdaterPager(
     LaunchedEffect(activity.newAppVersion) {
         val currentVersions = extractOnlyNumbers(currentVersion)
         val newVersions = extractOnlyNumbers(activity.newAppVersion.value)
+        Log.d("ggc", "UpdaterPager: currentVersion = $currentVersions newVersion = $newVersions",)
 
         // 加载更新历史
         commitHistory.addAll(fetchAndParseCommitHistory())
@@ -166,7 +176,7 @@ fun UpdaterPager(
             }
             item(2) {
                 if (show.value) {
-                    if (!showUpdater.value){
+                    if (showUpdater.value){
                         UpdateContent(lastCommit)
                     }else{
                         UpdateHistory(commitHistory = commitHistory)
@@ -295,6 +305,7 @@ fun UpdateActions(
 ) {
     val view = LocalView.current
     val activity = LocalActivity.current as MainActivity
+    val showDialog = remember { mutableStateOf(false) }
 
     val fileUrl = remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -406,6 +417,7 @@ fun UpdateActions(
                 .padding(horizontal = 28.dp),
             onClick = {
                 view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                showDialog.value = true
             }
         ) {
             Text(
@@ -416,6 +428,58 @@ fun UpdateActions(
                 fontWeight = FontWeight.Bold
             )
         }
+
+    }
+
+    ChannelDialog(showDialog,navController)
+}
+
+@Composable
+private fun ChannelDialog(
+    show: MutableState<Boolean>,
+    navController: NavController
+) {
+    SuperXDialog(
+        title = stringResource(R.string.go_channel_discuss),
+        show = show,
+        onDismissRequest = {
+            dismissXDialog(show)
+        }
+    ) {
+
+        Column(
+            modifier = Modifier
+                .padding(top = 8.dp, bottom = 18.dp)
+                .fillMaxWidth()
+                .clip(SmoothRoundedCornerShape(12.dp, 0.5f))
+                .background(colorScheme.secondaryContainer)
+        ) {
+
+            SuperIntentArrow(
+                title = stringResource(R.string.qq_group_title),
+                navController = navController,
+                url = "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&amp;k=5ONF7LuaoQS6RWEOUYBuA0x4X8ssvHJp&amp;authKey=Pic4VQJxKBJwSjFzsIzbJ50ILs0vAEPjdC8Nat4zmiuJRlftqz9%2FKjrBwZPQTc4I&amp;noverify=0&amp;group_code=810317966"
+            )
+            SuperIntentArrow(
+                title = stringResource(R.string.telegram_group),
+                navController = navController,
+                url = "https://t.me/Hyperstar_chat"
+            )
+
+        }
+
+        Row {
+            BaseButton(
+                text = stringResource(R.string.cancel),
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    dismissXDialog(show)
+                }
+
+            )
+
+        }
+
     }
 }
 

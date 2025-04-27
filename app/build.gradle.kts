@@ -2,6 +2,7 @@
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Properties
 
@@ -27,7 +28,7 @@ android {
 
             val versionName = properties["VERSION_NAME"].toString().split(".")[0]
             val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
-            val createTime = LocalDateTime.now().format(formatter).takeLast(  6)
+            val createTime = LocalDateTime.now(ZoneId.of("Asia/Shanghai")).format(formatter).takeLast(  6)
             val baseVersionCode = "$versionName$createTime"
             var versionCode = "${baseVersionCode}00".toInt()
             val runTasks = gradle.startParameter.taskNames
@@ -66,7 +67,7 @@ android {
 
             val versionName = properties["VERSION_NAME"].toString()
             val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHm")
-            val createTime = LocalDateTime.now().format(formatter)
+            val createTime = LocalDateTime.now(ZoneId.of("Asia/Shanghai")).format(formatter)
             return "${versionName}_${createTime}_$buildChannel"
         } else {
             throw GradleException("Could not find version.properties!")

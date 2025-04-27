@@ -76,11 +76,11 @@ jobs:
           # 获取当前提交的信息并以 JSON 格式追加到文件中
           APK_NAME="${{ env.APK_NAME }}"
           COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
-
+          
           # 使用 jq 工具追加 JSON 对象
           jq ". += [{\"apk_name\": \"${APK_NAME}\", \"commit_message\": \"${COMMIT_MESSAGE}\"}]" \
-                               gitee-repo/dev/commit_history.json > gitee-repo/dev/tmp_commit_history.json && \
-          mv gitee-repo/dev/tmp_commit_history.json gitee-repo/dev/commit_history.json
+                               gitee-repo/dev/commit_history.json > gitee-repo/dev/commit_history.json.tmp && \
+          mv gitee-repo/dev/commit_history.json.tmp gitee-repo/dev/commit_history.json
     
           # 将 APK 文件复制到目标文件夹
           cp ./app/build/outputs/apk/dev/*.apk gitee-repo/dev/

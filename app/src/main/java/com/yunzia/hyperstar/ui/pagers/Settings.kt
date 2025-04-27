@@ -75,7 +75,8 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 @Composable
 fun Settings(
     navController: NavHostController,
-    hazeState: HazeState
+    hazeState: HazeState,
+    showReboot: MutableState<Boolean>
 ) {
 
     val context = LocalContext.current
@@ -83,7 +84,6 @@ fun Settings(
 
     val view = LocalView.current
     val rebootStyle = activity.rebootStyle
-    val show = remember { mutableStateOf(false) }
 
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
     //val hookedChannel = remember { mutableIntStateOf(if (isOS2()) 1 else 0) }
@@ -117,17 +117,17 @@ fun Settings(
                 scrollBehavior = topAppBarScrollBehavior,
                 actions = {
                     if (rebootStyle.intValue == 1){
-                        RebootPup(show)
+                        RebootPup(showReboot)
 
                     }
 
                     IconButton(
-
                         modifier = Modifier.padding(end = 12.dp),
                         onClick = {
                             view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                            show.value = true
-                        }) {
+                            showReboot.value = true
+                        }
+                    ) {
 
                         Icon(
                             imageVector = Icons.Default.MoreVert,

@@ -37,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import androidx.navigation.NavController
@@ -103,7 +104,7 @@ fun UpdaterPager(
 
         // 加载更新历史
         commitHistory.addAll(fetchAndParseCommitHistory())
-        lastCommit.value = fetchHeadCommitContent().replace("--", "")
+        lastCommit.value = fetchHeadCommitContent().replace("--", "• ")
         isNeedUpdate.value = currentVersions < newVersions
     }
 
@@ -172,6 +173,7 @@ fun UpdaterPager(
                                 text = lastCommit.value,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Medium,
+                                lineHeight = 2.em,
                                 color = MiuixTheme.colorScheme.onSurfaceVariantSummary
                             )
                         }

@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -124,7 +125,8 @@ fun extractOnlyNumbers(input: String): String {
 @Composable
 fun ThirdPage(
     navController: NavHostController,
-    hazeState: HazeState
+    hazeState: HazeState,
+    showReboot: MutableState<Boolean>
 ) {
 
     val context = navController.context
@@ -133,7 +135,6 @@ fun ThirdPage(
 
     val view = LocalView.current
     val rebootStyle = activity.rebootStyle
-    val show = remember { mutableStateOf(false) }
     val showBlurs = remember { mutableStateOf(false) }
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
 
@@ -219,15 +220,16 @@ fun ThirdPage(
                 scrollBehavior = topAppBarScrollBehavior,
                 actions = {
                     if (rebootStyle.intValue == 1){
-                        RebootPup(show)
+                        RebootPup(showReboot)
 
                     }
                     IconButton(
                         modifier = Modifier.padding(end = 12.dp),
                         onClick = {
                             view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                            show.value = true
-                        }) {
+                            showReboot.value = true
+                        }
+                    ) {
 
                         Icon(
                             imageVector = Icons.Default.MoreVert,
@@ -249,7 +251,7 @@ fun ThirdPage(
             Log.d("ggc", "ThirdPage: currentVersion = $currentVersion newVersion = $newVersion",)
 
             // 比较版本号
-            if (currentVersion > newVersion) {
+            if (currentVersion < newVersion) {
                 isNeedUpdate.value = true
             }
         }

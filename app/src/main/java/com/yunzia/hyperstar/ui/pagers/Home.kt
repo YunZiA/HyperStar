@@ -18,8 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -65,14 +64,14 @@ import top.yukonga.miuix.kmp.utils.getWindowSize
 @Composable
 fun Home(
     navController: NavHostController,
-    hazeState: HazeState
+    hazeState: HazeState,
+    showReboot: MutableState<Boolean>
 ) {
     val isModuleActive = isModuleActive()
     val context = LocalContext.current
     val view = LocalView.current
     val activity = LocalActivity.current as MainActivity
     val rebootStyle = activity.rebootStyle
-    val show = remember { mutableStateOf(false) }
 
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
 
@@ -88,17 +87,17 @@ fun Home(
                 scrollBehavior = topAppBarScrollBehavior,
                 actions = {
                     if (rebootStyle.intValue == 1){
-                        RebootPup(show)
+                        RebootPup(showReboot)
 
                     }
 
                     IconButton(
-
                         modifier = Modifier.padding(end = 12.dp),
                         onClick = {
                             view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                            show.value = true
-                        }) {
+                            showReboot.value = true
+                        }
+                    ) {
 
                         Icon(
                             imageVector = Icons.Default.MoreVert,

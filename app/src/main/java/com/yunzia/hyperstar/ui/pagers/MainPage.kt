@@ -165,7 +165,8 @@ fun MainPager(
                 .height(getWindowSize().height.dp).padding(bottom = padding.calculateBottomPadding()),
             navController = navController,
             pagerState = pagerState,
-            hazeState = hazeState
+            hazeState = hazeState,
+            showReboot = show
         )
     }
 
@@ -224,10 +225,11 @@ fun MainPagerByThree(
 
 
         AppHorizontalPager(
-            modifier = Modifier.blur(hazeState).weight(1f).widthIn(min = 400.dp),
             navController = navController,
+            modifier = Modifier.blur(hazeState).weight(1f).widthIn(min = 400.dp),
             pagerState = pagerState,
-            hazeState = hazeState
+            hazeState = hazeState,
+            showReboot = show
         )
 
 
@@ -478,6 +480,7 @@ fun AppHorizontalPager(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
     hazeState: HazeState,
+    showReboot: MutableState<Boolean>,
 ) {
 
 
@@ -493,15 +496,15 @@ fun AppHorizontalPager(
             when (page) {
 
                 0 ->{
-                    Home(navController = navController,hazeState)
+                    Home(navController = navController,hazeState,showReboot)
                 }
 
                 1 -> {
-                    Settings(navController = navController,hazeState)
+                    Settings(navController = navController,hazeState,showReboot)
                 }
 
                 else -> {
-                    ThirdPage(navController = navController,hazeState)
+                    ThirdPage(navController = navController,hazeState,showReboot)
                 }
             }
 

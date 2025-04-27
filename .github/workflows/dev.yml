@@ -56,6 +56,7 @@ jobs:
         env:
           GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
         run: |
+          wget https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/commit_history.json -O gitee-repo/dev/commit_history.json
           wget https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/head_commit.txt -O last_head_commit.text
           wget https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/apk_name.txt -O last_apk_name.text
 

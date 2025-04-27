@@ -35,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
@@ -149,7 +150,7 @@ fun UpdaterPager(
 
     // 更新 UI 状态
     LaunchedEffect(Unit,activity.newAppName.value) {
-        delay(600) // 延迟更新 UI
+        delay(650) // 延迟更新 UI
         if (activity.newAppName.value != ""){
             title.value =  currentVersion
             show.value = true
@@ -442,7 +443,14 @@ fun UpdateActions(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .padding(horizontal = 28.dp),
+                    .padding(horizontal = 28.dp)
+                    .shadow(
+                        elevation = 2.dp,
+                        shape = SmoothRoundedCornerShape(16.dp),
+                        clip = false,
+                        ambientColor = Color(0x80000000),
+                        spotColor = Color(0x80000000)
+                    ),
                 colors = Color(0xFF3482FF),
                 onClick = {
                     view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
@@ -476,7 +484,14 @@ fun UpdateActions(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .padding(horizontal = 28.dp),
+                .padding(horizontal = 28.dp)
+                .shadow(
+                    elevation = 2.dp,
+                    shape = SmoothRoundedCornerShape(16.dp),
+                    clip = false,
+                    ambientColor = Color(0x80000000),
+                    spotColor = Color(0x80000000)
+                ),
             onClick = {
                 view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                 showDialog.value = true

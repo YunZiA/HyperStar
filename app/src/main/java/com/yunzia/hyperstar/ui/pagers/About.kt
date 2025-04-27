@@ -1,16 +1,12 @@
 package com.yunzia.hyperstar.ui.pagers
 
 import android.annotation.SuppressLint
-import android.content.res.Resources
-import android.graphics.RenderEffect
-import android.graphics.RuntimeShader
 import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -22,8 +18,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,21 +36,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
@@ -74,6 +68,7 @@ import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.BaseActivity
+import com.yunzia.hyperstar.ui.base.Button
 import com.yunzia.hyperstar.ui.base.LinearImage
 import com.yunzia.hyperstar.ui.base.SuperIntentArrow
 import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
@@ -96,7 +91,6 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
-import java.util.Scanner
 
 
 private fun getColorList(
@@ -141,7 +135,7 @@ fun ThirdPage(
         targetValue = if (isNeedUpdate.value) 27.dp else 55.dp,
         animationSpec = tween(750, easing = LinearOutSlowInEasing)
     )
-    
+
     val darkTheme = isSystemInDarkTheme()
     val colorsMode = when (activity.colorMode.intValue) {
         1 -> 1
@@ -186,6 +180,7 @@ fun ThirdPage(
 
     val bgAlpha = remember { mutableFloatStateOf(1f) }
     val buttonAlpha = remember { mutableFloatStateOf(1f) }
+    val buttonScale = remember { mutableFloatStateOf(1f) }
 
     val mainAlpha = remember { mutableFloatStateOf(1f) }
     val mainScale = remember { mutableFloatStateOf(1f) }
@@ -266,6 +261,7 @@ fun ThirdPage(
                         ((but.value - it.toFloat().coerceIn(min, but.value)) / but.value).coerceIn(0f, 1f)
 
                     buttonAlpha.floatValue = buttonValue
+                    buttonScale.floatValue = lerp(0.99f, 1f, buttonValue)
                     val secValue = ((sec - it.toFloat().coerceIn(but.value, sec)) / secHeight.value).coerceIn(0f, 1f)
 
                     secAlpha.floatValue = secValue
@@ -439,7 +435,8 @@ fun ThirdPage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .alpha(buttonAlpha.floatValue)
-                    .height(435.dp),
+                    .scale(buttonScale.floatValue)
+                    .height(450.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
 
@@ -460,87 +457,11 @@ fun ThirdPage(
 
 }
 
-
-fun Modifier.runtimeShader(
-    shader: RenderEffect
-): Modifier = this.composed{
-    //val runtimeShader = remember { RuntimeShader(shader) }
-    //val shaderUniformProvider = remember { ShaderUniformProviderImpl(runtimeShader) }
-    graphicsLayer {
-        clip = true
-        renderEffect = shader.asComposeRenderEffect()
-    }
-}
-
-
-private fun loadShader(resources: Resources, i: Int): String? {
-    try {
-        val openRawResource = resources.openRawResource(i)
-        try {
-            val scanner = Scanner(openRawResource)
-            try {
-                val sb = StringBuilder()
-                while (scanner.hasNextLine()) {
-                    sb.append(scanner.nextLine())
-                    sb.append("\n")
-                }
-                val sb2 = sb.toString()
-                scanner.close()
-                openRawResource.close()
-                return sb2
-            } finally {
-            }
-        } finally {
-        }
-    } catch (e: Exception) {
-        Log.e("Error", e.toString())
-        return null
-    }
-}
-
-// ShaderModifier.kt
-interface ShaderUniformProvider {
-    fun uniform(name: String, value: Int)
-    fun uniform(name: String, value: Float)
-    fun uniform(name: String, value1: Float, value2: Float)
-    fun uniform(name: String, color: Color)
-}
-
-private class ShaderUniformProviderImpl(
-    private val runtimeShader: RuntimeShader,
-) : ShaderUniformProvider {
-
-    fun updateResolution(size: Size) {
-        uniform("resolution", size.width, size.height)
-    }
-
-    override fun uniform(name: String, value: Int) {
-        runtimeShader.setIntUniform(name, value)
-    }
-
-    override fun uniform(name: String, value: Float) {
-        runtimeShader.setFloatUniform(name, value)
-    }
-
-    override fun uniform(name: String, value1: Float, value2: Float) {
-        runtimeShader.setFloatUniform(name, value1, value2)
-    }
-
-    override fun uniform(name: String, color: Color) {
-        val colorArray = floatArrayOf(color.red, color.green, color.blue, color.alpha)
-        val colorArray3 = floatArrayOf(color.red, color.green, color.blue)
-        runtimeShader.setFloatUniform(name, colorArray)
-        // runtimeShader.setColorUniform(name, color.toArgb())
-        // runtimeShader.setFloatUniform(name, colorArray3)
-    }
-}
-
-
 @Composable
 fun UpdaterButton(
     modifier: Modifier = Modifier,
 
-){
+    ){
     val activity = LocalActivity.current as BaseActivity
 
     val isDark = activity.isDarkMode
@@ -563,11 +484,10 @@ fun UpdaterButton(
         integerArrayResource(R.array.my_card_stroke_gradient_colors_light)
     }
 
-    Box(
+    Button(
         modifier = Modifier
-            .size(250.dp, 52.dp)
-            .clip(SmoothRoundedCornerShape(16.dp, 0.5f))
-            .background(backgroundColor)
+            .wrapContentHeight()
+            .padding(bottom = 10.dp)
             .drawBehind {
                 // 定义渐变色画刷
                 val gradientBrush = Brush.linearGradient(
@@ -579,7 +499,7 @@ fun UpdaterButton(
                     end = Offset(size.width / 2, Float.POSITIVE_INFINITY) // 终点（垂直方向到底部）
                 )
                 // 绘制渐变色的矩形边框
-                val strokeWidth = 1.3.dp.toPx()
+                val strokeWidth = 1.5.dp.toPx()
                 val inset = strokeWidth / 2
 
                 drawRoundRect(
@@ -589,28 +509,36 @@ fun UpdaterButton(
                         size.width - strokeWidth,
                         size.height - strokeWidth
                     ),
-                    cornerRadius = CornerRadius(17.dp.toPx(), 17.dp.toPx()),
+                    cornerRadius = CornerRadius(16.dp.toPx()),
                     style = Stroke(width = strokeWidth)
                 )
 
             }
+            .shadow(
+                elevation = 1.5.dp,
+                shape = SmoothRoundedCornerShape(16.dp),
+                clip = true,
+                ambientColor = shadowColor,
+                spotColor = shadowColor
+            )
             .then(modifier)
-//            .graphicsLayer {
-//                shape = SmoothRoundedCornerShape(40.dp,0.5f)
-//                translationX = 0f
-//                translationY = 20f
-//                ambientShadowColor = shadowColor
-//            }
         ,
-        contentAlignment = Alignment.Center
+        colors = backgroundColor,
+        minHeight = 52.dp,
+        minWidth = 250.dp,
+        onClick = {
+
+        }
     ){
         Text(
             text = stringResource(R.string.update_has),
             fontSize = 17.sp,
             fontWeight = FontWeight.SemiBold,
-            color = MiuixTheme.colorScheme.onSurface
+            color = colorScheme.onSurface
         )
 
     }
+
+
 
 }

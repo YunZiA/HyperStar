@@ -212,15 +212,15 @@ fun UpdateHeader(title: String) {
 fun UpdateHistory(commitHistory: List<CommitHistory>) {
     HorizontalDivider(
         modifier = Modifier
-            .padding(top = 100.dp, bottom = 40.dp)
+            .padding(top = 100.dp)
             .padding(horizontal = 26.dp)
     )
     commitHistory.forEach {
         Column(
-            modifier = Modifier.padding(horizontal = 26.dp)
+            modifier = Modifier.padding(horizontal = 26.dp).padding(top = 40.dp)
         ) {
             Text(
-                text = it.apk_name.replace("HyperStar_v",""),
+                text = "# "+it.apk_name.replace("HyperStar_v",""),
                 fontSize = 17.sp,
                 fontWeight = FontWeight(550),
                 color = MiuixTheme.colorScheme.onSurface

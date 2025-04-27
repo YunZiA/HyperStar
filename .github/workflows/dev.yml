@@ -56,8 +56,8 @@ jobs:
         env:
           GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
         run: |
-          wget https://gitee.com/dongdong-gc/hyper-star-updater/blob/main/dev/head_commit.txt -O last_head_commit.text
-          wget https://gitee.com/dongdong-gc/hyper-star-updater/blob/main/dev/apk_name.txt -O last_apk_name.txt
+          wget https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/head_commit.txt -O last_head_commit.text
+          wget https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/apk_name.txt -O last_apk_name.text
 
       - name: Copy APK and metadata to Gitee folder
         run: |

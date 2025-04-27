@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
@@ -88,6 +89,13 @@ fun UpdaterPager(
     val show = remember { mutableStateOf(false) }
     val showUpdater = remember { mutableStateOf(false) }
 
+
+    val logo = if (activity.isDarkMode){
+        painterResource(R.drawable.hyperstar2_dark)
+    }else{
+        painterResource(R.drawable.hyperstar2)
+    }
+
     // 检查更新逻辑
     LaunchedEffect(activity.newAppVersion) {
         val currentVersions = extractOnlyNumbers(currentVersion)
@@ -142,7 +150,10 @@ fun UpdaterPager(
             ),
         ) {
             item(1) {
-                UpdateHeader(title = title.value)
+                UpdateHeader(
+                    summary = title.value,
+                    logo = logo
+                )
             }
             item(2) {
                 if (show.value) {
@@ -183,7 +194,11 @@ fun UpdaterPager(
 }
 
 @Composable
-fun UpdateHeader(title: String) {
+fun UpdateHeader(
+    summary: String,
+    logo: Painter
+) {
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -192,13 +207,13 @@ fun UpdateHeader(title: String) {
     ) {
         Image(
             contentDescription = "",
-            painter = painterResource(R.drawable.hyperstar2),
+            painter = logo,
             modifier = Modifier.width(260.dp),
         )
         Spacer(modifier = Modifier.height(20.dp))
-        Toast.makeText(LocalContext.current,title, Toast.LENGTH_SHORT).show()
+        Toast.makeText(LocalContext.current,summary, Toast.LENGTH_SHORT).show()
         Text(
-            text = title,
+            text = summary,
             fontSize = 14.sp,
             modifier = Modifier.fillMaxWidth(),
             fontWeight = FontWeight.Medium,

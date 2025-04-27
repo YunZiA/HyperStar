@@ -11,6 +11,7 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -150,17 +151,23 @@ fun ThirdPage(
         else -> if (darkTheme) 2 else 1
     }
 
-    val flingBehavior = ScrollableDefaults.flingBehavior()
-
     val density = LocalDensity.current
     val min = with(density) { 0.dp.toPx() }
-    val but = if (isNeedUpdate.value){
-        with(density) { 60.dp.toPx() }
-    }else{
-        0f
+    val but = remember {
+        derivedStateOf {
+            if (isNeedUpdate.value){
+                with(density) { 60.dp.toPx() }
+            }else{
+                min
+            }
+        }
     }
     val sec = with(density) { 100.dp.toPx() }
-    val secHeight = sec-but
+    val secHeight = remember(but.value) {
+        derivedStateOf {
+            sec-but.value
+        }
+    }
     val main = with(density) { 160.dp.toPx() }
     val mainHeight = main-sec
 
@@ -242,7 +249,7 @@ fun ThirdPage(
             Log.d("ggc", "ThirdPage: currentVersion = $currentVersion newVersion = $newVersion",)
 
             // 比较版本号
-            if (currentVersion < newVersion) {
+            if (currentVersion > newVersion) {
                 isNeedUpdate.value = true
             }
         }
@@ -269,10 +276,10 @@ fun ThirdPage(
                     bgAlpha.floatValue = alpha
                     showBlurs.value = alpha == 0f
                     val buttonValue =
-                        ((but - it.toFloat().coerceIn(min, but)) / but).coerceIn(0f, 1f)
+                        ((but.value - it.toFloat().coerceIn(min, but.value)) / but.value).coerceIn(0f, 1f)
 
                     buttonAlpha.floatValue = buttonValue
-                    val secValue = ((sec - it.toFloat().coerceIn(but, sec)) / secHeight).coerceIn(0f, 1f)
+                    val secValue = ((sec - it.toFloat().coerceIn(but.value, sec)) / secHeight.value).coerceIn(0f, 1f)
 
                     secAlpha.floatValue = secValue
                     secScale.floatValue = lerp(0.9f, 1f, secValue)
@@ -290,7 +297,11 @@ fun ThirdPage(
 
 
 
-        Box(Modifier.blur(hazeState).clip(RoundedCornerShape(0.dp))) {
+        Box(
+            Modifier
+                .blur(hazeState)
+                .clip(RoundedCornerShape(0.dp))
+        ) {
 
             AndroidView(
                 modifier = Modifier
@@ -358,7 +369,8 @@ fun ThirdPage(
 
                 item {
                     Box(
-                        Modifier.height(410.dp)
+                        Modifier
+                            .height(410.dp)
                             .fillMaxWidth()
                             .pointerInput(Unit) {
                                 detectTapGestures() {
@@ -444,9 +456,13 @@ fun ThirdPage(
                 contentAlignment = Alignment.BottomCenter
             ) {
 
-                if (isNeedUpdate.value){
+                if (isNeedUpdate.value && buttonAlpha.floatValue != 0.0f){
 
-                    UpdaterButton()
+                    UpdaterButton(
+                        modifier = Modifier.clickable(){
+                            navController.nav(PagerList.UPDATER)
+                        }
+                    )
                 }
 
 
@@ -561,7 +577,7 @@ fun UpdaterButton(
     }
 
     Box(
-        modifier = modifier
+        modifier = Modifier
             .size(250.dp, 52.dp)
             .clip(SmoothRoundedCornerShape(16.dp, 0.5f))
             .background(backgroundColor)
@@ -591,6 +607,7 @@ fun UpdaterButton(
                 )
 
             }
+            .then(modifier)
 //            .graphicsLayer {
 //                shape = SmoothRoundedCornerShape(40.dp,0.5f)
 //                translationX = 0f

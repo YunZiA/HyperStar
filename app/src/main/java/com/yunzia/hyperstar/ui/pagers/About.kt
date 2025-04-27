@@ -141,6 +141,8 @@ fun ThirdPage(
         animationSpec = tween(750, easing = LinearOutSlowInEasing)
     )
 
+
+
     val darkTheme = isSystemInDarkTheme()
     val colorsMode = when (activity.colorMode.intValue) {
         1 -> 1

@@ -48,13 +48,13 @@ jobs:
           git config --global user.name "dongdong-gc"  # 替换为你的 Gitee 用户名
           git config --global user.email "2574822036@qq.com"  # 替换为你的邮箱
 
+      # 拉取目标仓库
+      - name: Clone Target Repository
+        run: |
+          git clone https://gitee.com/dongdong-gc/hyper-star-updater.git gitee-repo
       - name: Prepare Gitee Folder
         run: |
           mkdir -p gitee-repo/dev
-
-      - name: Fetch Historical Commit File from Gitee
-        run: |
-          curl -o gitee-repo/dev/commit_history.txt https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/commit_history.txt || echo "历史提交文件不存在，创建新文件。" > gitee-repo/dev/commit_history.txt
 
       - name: Copy APK and metadata to Gitee folder
         run: |

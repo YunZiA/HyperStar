@@ -115,9 +115,8 @@ android {
                 val config = project.android.defaultConfig
                 val appName = "HyperStar"
                 val versionName = "v"+config.versionName
-                val buildType = this.name
 
-                this.outputFileName = "${appName}_${versionName}_${buildType}.apk"
+                this.outputFileName = "${appName}_${versionName}.apk"
             }
         }
     }

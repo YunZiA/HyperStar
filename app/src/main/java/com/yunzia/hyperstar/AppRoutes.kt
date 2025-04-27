@@ -10,6 +10,8 @@ object PagerList {
 
     const val BARRAGE = "${MAIN}/barrage"
 
+    const val UPDATER = "${MAIN}/updater"
+
     const val THEMEMANAGER = "${MAIN}/thememanager"
 
     const val LANGUAGE = "${MAIN}/language"

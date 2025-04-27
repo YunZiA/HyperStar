@@ -1,0 +1,3 @@
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <external-path name="downloads" path="Android/data/com.yunzia.hyperstar/files/Download/" />
+</paths>

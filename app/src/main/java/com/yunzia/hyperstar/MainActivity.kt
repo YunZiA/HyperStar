@@ -9,7 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
-import android.widget.Toast
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -23,15 +23,18 @@ import com.yunzia.hyperstar.utils.AppInfo
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.SPUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
 
 
 class MainActivity : BaseActivity() {
+
+    val newAppVersion = mutableStateOf("")
+    val newAppName = mutableStateOf("")
 
     val enablePageUserScroll = mutableStateOf(false)
     val rebootStyle =  mutableIntStateOf(0)
@@ -77,93 +80,29 @@ class MainActivity : BaseActivity() {
         }
     }
 
-//    fun downloadApkFromGithub() {
-//        val client = OkHttpClient()
-//        val request = Request.Builder()
-//            .url("https://api.github.com/repos/YunZiA/HyperStar/releases/latest") // 修改为你的仓库
-//            .build()
-//
-//        client.newCall(request).enqueue(object : Callback {
-//            override fun onFailure(call: Call, e: IOException) {
-//                e.printStackTrace()
-//            }
-//
-//            override fun onResponse(call: Call, response: Response) {
-//                val json = response.body?.string()
-//                val downloadUrl = extractApkUrlFromJson(json) // 提取 APK 的下载链接
-//                downloadAndInstallApk(downloadUrl)
-//            }
-//        })
-//    }
-//
-//    fun extractApkUrlFromJson(json: String?): String {
-//        // 使用 JSON 解析提取 APK 文件的下载链接
-//        // 示例：解析 "assets" 中的 "browser_download_url"
-//        return "https://github.com/YunZiA/HyperStar/releases/download/v1.0.0/app-release.apk"
-//    }
-//
-//    fun downloadAndInstallApk(url: String) {
-//        val client = OkHttpClient()
-//        val request = Request.Builder().url(url).build()
-//
-//        client.newCall(request).enqueue(object : Callback {
-//            override fun onFailure(call: Call, e: IOException) {
-//                e.printStackTrace()
-//            }
-//
-//            override fun onResponse(call: Call, response: Response) {
-//                val file = File(this.getExternalFilesDir(null), "app-release.apk")
-//                val inputStream = response.body?.byteStream()
-//                val outputStream = FileOutputStream(file)
-//
-//                inputStream?.copyTo(outputStream)
-//                inputStream?.close()
-//                outputStream.close()
-//
-//                // 安装 APK
-//                installApk(file)
-//            }
-//        })
-//    }
-
-    fun installApk(file: File) {
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive")
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        this.startActivity(intent)
-    }
-
-    fun downloadArtifactWithoutToken(artifactUrl: String, outputFileName: String) {
+    fun getNewVersionApkName(): String {
+        val rawFileUrl = "https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/apk_name.txt"
         val client = OkHttpClient()
 
-        // 构建请求（不需要 Authorization）
         val request = Request.Builder()
-            .url(artifactUrl)
+            .url(rawFileUrl)
             .build()
 
-        // 执行请求
-        val response = client.newCall(request).execute()
-        if (!response.isSuccessful) {
-            throw IOException("下载工件失败: ${response.code}")
-        }
-
-        // 将响应流写入文件
-        val file = File(outputFileName)
-        val inputStream: InputStream? = response.body?.byteStream()
-        val outputStream = FileOutputStream(file)
-
-        inputStream?.use { input ->
-            outputStream.use { output ->
-                val buffer = ByteArray(2048)
-                var bytesRead: Int
-                while (input.read(buffer).also { bytesRead = it } != -1) {
-                    output.write(buffer, 0, bytesRead)
-                }
+        try {
+            val response = client.newCall(request).execute()
+            if (response.isSuccessful) {
+                val fileContent = response.body?.string()
+                Log.d("ggc","文件内容: $fileContent")
+                return fileContent.toString()
+            } else {
+                Log.d("ggc","请求失败，状态码: $response.code")
             }
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
-
-        Toast.makeText(this,"工件已下载到: ${file.absolutePath}",Toast.LENGTH_LONG).show()
+        return "null"
     }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -205,6 +144,16 @@ class MainActivity : BaseActivity() {
             }
         }
 
+        LaunchedEffect(Unit) {
+            val downloadsDir = this@MainActivity.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+            clearDirectory(downloadsDir)
+            val apkName = withContext(Dispatchers.IO) {
+                getNewVersionApkName()
+            }
+            newAppVersion.value = apkName.removePrefix("HyperStar_v").removePrefix("_dev").trim()
+            newAppName.value = "$apkName.apk"
+        }
+
         val isRecreate = savedInstanceState?.getBoolean("isRecreate",true)
         if (isRecreate != null && isRecreate){
             this.isRecreate = true
@@ -238,6 +187,22 @@ class MainActivity : BaseActivity() {
         return ComponentName(this@MainActivity, "com.yunzia.hyperstar.MainActivityAlias")
 
 
+    }
+
+    fun clearDirectory(directory: File?) {
+        // 确保目录存在且是一个文件夹
+        if (directory != null && directory.exists() && directory.isDirectory) {
+            // 遍历目录中的所有文件并逐一删除
+            directory.listFiles()?.forEach { file ->
+                if (file.isFile) {
+                    file.delete()
+                } else if (file.isDirectory) {
+                    // 如果是子目录，递归清理
+                    clearDirectory(file)
+                    file.delete() // 删除空的子目录
+                }
+            }
+        }
     }
 
     fun goManagerFileAccess():Boolean {

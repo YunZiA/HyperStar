@@ -85,6 +85,7 @@ import com.yunzia.hyperstar.ui.pagers.NeedMessagePager
 import com.yunzia.hyperstar.ui.pagers.ReferencesPager
 import com.yunzia.hyperstar.ui.pagers.SettingsShowPage
 import com.yunzia.hyperstar.ui.pagers.TranslatorPager
+import com.yunzia.hyperstar.ui.pagers.UpdaterPager
 import com.yunzia.hyperstar.ui.pagers.updateLanguage
 import com.yunzia.hyperstar.ui.welcome.ActivePage
 import com.yunzia.hyperstar.ui.welcome.WelcomePager
@@ -99,7 +100,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
-@SuppressLint("SourceLockedOrientationActivity")
+@SuppressLint("SourceLockedOrientationActivity", "UnusedBoxWithConstraintsScope")
 @Composable
 fun App(){
 
@@ -163,28 +164,33 @@ fun App(){
                 //FirstDialog(navController)
                 Log.d("ggc", "App:  $maxWidth")
 
-                layoutType.intValue = if (isFold()){
-                    if (maxWidth > 480.dp && Settings.Global.getInt(context.contentResolver, "device_posture", 0) != 1){
+                layoutType.intValue = if (isFold()) {
+                    if (maxWidth > 480.dp && Settings.Global.getInt(
+                            context.contentResolver,
+                            "device_posture",
+                            0
+                        ) != 1
+                    ) {
                         2
-                    }else{
+                    } else {
                         1
                     }
-                }else if (isPad()){
-                    if (isLandscape){
+                } else if (isPad()) {
+                    if (isLandscape) {
                         3
-                    }else{
+                    } else {
                         1
                     }
-                }else{
-                    if (isLandscape && maxWidth > 480.dp){
+                } else {
+                    if (isLandscape && maxWidth > 480.dp) {
                         2
-                    }else{
+                    } else {
                         1
                     }
                 }
 
-                when(layoutType.intValue){
-                    1->{
+                when (layoutType.intValue) {
+                    1 -> {
                         OneLayout(
                             pagerState,
                             navController,
@@ -192,7 +198,8 @@ fun App(){
                         )
 
                     }
-                    2->{
+
+                    2 -> {
                         TwoLayout(
                             pagerState,
                             navController,
@@ -200,7 +207,8 @@ fun App(){
                         )
 
                     }
-                    3->{
+
+                    3 -> {
                         ExpandLayout(
                             pagerState,
                             navController,
@@ -220,8 +228,6 @@ fun App(){
 
                 }
             }
-
-
 
         }
         AnimatedVisibility(
@@ -290,11 +296,14 @@ fun NavGraphBuilder.pagerContent(
 
     composable(PagerList.THEMEMANAGER) { ThemeManagerPage(navController,parentRoute) }
 
+    composable(PagerList.UPDATER) { UpdaterPager(navController,parentRoute) }
+
     composable(SystemUIList.VOLUME_DIALOG) { VolumePager(navController,parentRoute) }
 
     composable(SystemUIList.MORE) { SystemUIOtherPager(navController,parentRoute) }
 
     composable(SystemUIMoreList.POWERMENU){ PowerMenuStylePager(navController,parentRoute) }
+
 
 
     composable(SystemUIMoreList.NOTIFICATIONOFIM){

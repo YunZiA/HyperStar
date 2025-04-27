@@ -109,6 +109,7 @@ fun ActivityTopAppBar(
 fun NavTopAppBar(
     modifier: Modifier,
     title: String,
+    largeTitle: String? = null,
     scrollBehavior: ScrollBehavior? = null,
     color: Color,
     navController: NavController,
@@ -122,6 +123,7 @@ fun NavTopAppBar(
         modifier = modifier,
         color = color,
         title = title,
+        largeTitle = largeTitle,
         scrollBehavior = scrollBehavior,
         navigationIcon = {
             IconButton(

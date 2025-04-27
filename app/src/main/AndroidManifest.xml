@@ -13,7 +13,6 @@
         tools:ignore="ProtectedPermissions" />
     <!--联网-->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!--存储权限-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -53,6 +52,17 @@
         <meta-data
             android:name="xposedminversion"
             android:value="93" />
+
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.yunzia.hyperstar.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <activity
             android:name=".MainActivity"

@@ -7,6 +7,16 @@
         <item>com.xiaomi.barrage</item>
     </string-array>
 
+    <integer-array name="my_card_stroke_gradient_colors_light">
+        <item>0x29ffffff</item>
+        <item>0xccffffff</item>
+    </integer-array>
+
+    <integer-array name="my_card_stroke_gradient_colors_dark">
+        <item>0x00ffffff</item>
+        <item>0x30ffffff</item>
+    </integer-array>
+
     <string-array name="language_list">
         <item>@string/follow_system</item>
         <item>English</item>

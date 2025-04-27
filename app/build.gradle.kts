@@ -54,10 +54,20 @@ android {
     fun getVersionName():String{
         if (versionFile.canRead()) {
 
+            val runTasks = gradle.startParameter.taskNames
+            System.out.println("> Configure project :runTasks = $runTasks")
+
+            val buildChannel = when {
+                runTasks.any { it.contains("assembleDebug", ignoreCase = true) } -> "debug"
+                runTasks.any { it.contains("assembleRelease", ignoreCase = true) } -> "release"
+                runTasks.any { it.contains("assembleDev", ignoreCase = true) } -> "dev"
+                else -> "Unknown"
+            }
+
             val versionName = properties["VERSION_NAME"].toString()
             val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHm")
             val createTime = LocalDateTime.now().format(formatter)
-            return "${versionName}_$createTime"
+            return "${versionName}_${createTime}_$buildChannel"
         } else {
             throw GradleException("Could not find version.properties!")
         }

@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.ui.pagers
 
-import android.view.HapticFeedbackConstants
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -11,12 +10,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,9 +21,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -75,9 +69,7 @@ import top.yukonga.miuix.kmp.basic.NavigationBar
 import top.yukonga.miuix.kmp.basic.NavigationItem
 import top.yukonga.miuix.kmp.basic.PopupPositionProvider
 import top.yukonga.miuix.kmp.basic.Scaffold
-import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.extra.CheckboxLocation
 import top.yukonga.miuix.kmp.extra.DropdownImpl
@@ -152,36 +144,6 @@ fun MainPager(
     XScaffold(
         modifier = Modifier.fillMaxSize(),
         popupHost = { },
-        topBar = {
-            TopAppBar(
-                modifier = if (currentPage == 2 && showBlurs.value) Modifier else  Modifier.showBlur(hazeState),
-                color = Color.Transparent,
-                title = pagerTitle,
-                largeTitle = if (currentPage == 2) "" else pagerTitle,
-                scrollBehavior = currentScrollBehavior,
-                actions = {
-                    if (rebootStyle.intValue == 1){
-                        RebootPup(show)
-
-                    }
-                    IconButton(
-                        modifier = Modifier.padding(end = 12.dp),
-                        onClick = {
-                            view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                            show.value = true
-                        }) {
-
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "restart",
-                            tint = colorScheme.onBackground)
-
-                    }
-                }
-            )
-
-
-        },
         bottomBar = {
             NavigationBar(
                 modifier = Modifier.showBlur(hazeState),
@@ -199,12 +161,11 @@ fun MainPager(
     ) { padding ->
 
         AppHorizontalPager(
-            modifier = Modifier.blur(hazeState),
+            modifier = Modifier
+                .height(getWindowSize().height.dp).padding(bottom = padding.calculateBottomPadding()),
             navController = navController,
             pagerState = pagerState,
-            topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
-            padding = padding,
-            showBlurs = showBlurs
+            hazeState = hazeState
         )
     }
 
@@ -225,40 +186,19 @@ fun MainPagerByThree(
     val activity = context as MainActivity
     val rebootStyle = activity.rebootStyle
 
-    val topAppBarScrollBehavior0 = MiuixScrollBehavior(rememberTopAppBarState())
-    val topAppBarScrollBehavior1 = MiuixScrollBehavior(rememberTopAppBarState())
-    val topAppBarScrollBehavior2 = MiuixScrollBehavior(rememberTopAppBarState())
-
-    val topAppBarScrollBehaviorList = listOf(
-        topAppBarScrollBehavior0, topAppBarScrollBehavior1, topAppBarScrollBehavior2
-    )
-
 
     val currentPage = pagerState.currentPage
-
     val coroutineScope = rememberCoroutineScope()
 
-    val currentScrollBehavior = when (currentPage) {
-        0 -> topAppBarScrollBehaviorList[0]
-        1 -> topAppBarScrollBehaviorList[1]
-        else -> topAppBarScrollBehaviorList[2]
-    }
-
     val items = listOf(
-
         NavigationItem(stringResource(R.string.main_page_title), ImageVector.vectorResource(id = R.drawable.home)),
         NavigationItem(stringResource(R.string.settings_page_title), ImageVector.vectorResource(id = R.drawable.setting)),
         NavigationItem(stringResource(R.string.about_page_title), ImageVector.vectorResource(id = R.drawable.about)),
     )
 
-    val pagerTitle = items[currentPage].label
-
     val hazeState = remember { HazeState() }
-
     val show = remember { mutableStateOf(false) }
 
-    val view = LocalView.current
-    val showBlurs = remember { mutableStateOf(false) }
 
     Row {
 
@@ -282,56 +222,14 @@ fun MainPagerByThree(
             color = colorScheme.dividerLine
         )
 
-        Scaffold(
-            modifier = Modifier.weight(1f).widthIn(min = 400.dp),
-            popupHost = { },
-            contentWindowInsets = WindowInsets.navigationBars,
-            topBar = {
-                TopAppBar(
-                    modifier = if (currentPage == 2 && !showBlurs.value) Modifier else Modifier.showBlur(
-                        hazeState
-                    ),
-                    color = Color.Transparent,
-                    title = pagerTitle,
-                    largeTitle = if (currentPage == 2) "" else pagerTitle,
-                    scrollBehavior = currentScrollBehavior,
-                    actions = {
-                        if (rebootStyle.intValue == 1){
-                            RebootPup(show)
 
-                        }
+        AppHorizontalPager(
+            modifier = Modifier.blur(hazeState).weight(1f).widthIn(min = 400.dp),
+            navController = navController,
+            pagerState = pagerState,
+            hazeState = hazeState
+        )
 
-                        IconButton(
-
-                            modifier = Modifier.padding(end = 12.dp),
-                            onClick = {
-                                view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                                show.value = true
-                            }) {
-
-                            Icon(
-                                imageVector = Icons.Default.MoreVert,
-                                contentDescription = "restart",
-                                tint = colorScheme.onBackground)
-
-                        }
-                    }
-                )
-
-
-            }
-        ) { padding ->
-            AppHorizontalPager(
-                modifier = Modifier.blur(hazeState),
-                navController = navController,
-                pagerState = pagerState,
-                topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
-                padding = padding,
-                showBlurs = showBlurs
-            )
-
-
-        }
 
 
     }
@@ -579,9 +477,7 @@ fun AppHorizontalPager(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    topAppBarScrollBehaviorList: List<ScrollBehavior>,
-    padding: PaddingValues,
-    showBlurs: MutableState<Boolean>
+    hazeState: HazeState,
 ) {
 
 
@@ -597,30 +493,15 @@ fun AppHorizontalPager(
             when (page) {
 
                 0 ->{
-                    Home(
-                        navController = navController,
-                        topAppBarScrollBehavior = topAppBarScrollBehaviorList[0],
-                        padding = padding
-                    )
-
+                    Home(navController = navController,hazeState)
                 }
 
                 1 -> {
-                    Settings(
-                        navController = navController,
-                        topAppBarScrollBehavior = topAppBarScrollBehaviorList[1],
-                        padding = padding
-
-                    )
+                    Settings(navController = navController,hazeState)
                 }
 
                 else -> {
-                    ThirdPage(
-                        showBlurs = showBlurs,
-                        navController = navController,
-                        topAppBarScrollBehavior = topAppBarScrollBehaviorList[2],
-                        padding = padding
-                    )
+                    ThirdPage(navController = navController,hazeState)
                 }
             }
 

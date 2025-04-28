@@ -8,7 +8,14 @@ import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -81,7 +88,6 @@ import top.yukonga.miuix.kmp.basic.HorizontalDivider
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
-import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
@@ -200,10 +206,26 @@ fun UpdaterPager(
             }
             item(2) {
                 if (show.value) {
-                    if (showUpdater.value){
-                        UpdateContent(lastCommit,fileUrl,navController)
-                    }else{
-                        UpdateHistory(commitHistory = commitHistory)
+
+                    AnimatedVisibility(
+                        visible = showUpdater.value,
+                        exit = fadeOut(),
+                        enter = fadeIn()
+                    ) {
+                        Column {
+                            UpdateContent(lastCommit, fileUrl, navController)
+                        }
+
+                    }
+                    AnimatedVisibility(
+                        visible = !showUpdater.value,
+                        exit = fadeOut(),
+                        enter = fadeIn()
+                    ) {
+                        Column {
+                            UpdateHistory(commitHistory = commitHistory)
+
+                        }
                     }
                 }
             }
@@ -252,7 +274,7 @@ fun UpdateHeader(
             modifier = Modifier.fillMaxWidth(),
             fontWeight = FontWeight.Medium,
             textAlign = TextAlign.Center,
-            color = MiuixTheme.colorScheme.onSurfaceVariantSummary
+            color = colorScheme.onSurfaceVariantSummary
         )
     }
 }
@@ -298,17 +320,15 @@ fun UpdateContent(
                 horizontal = 26.dp
             )
     )
-    Column(
-        modifier = Modifier.padding(horizontal = 26.dp, vertical = 40.dp)
-    ) {
-        Text(
-            text = lastCommit.value,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Medium,
-            lineHeight = 2.em,
-            color = MiuixTheme.colorScheme.onSurfaceVariantSummary
-        )
-    }
+    Text(
+        text = lastCommit.value,
+        fontSize = 15.sp,
+        modifier = Modifier.padding(horizontal = 26.dp, vertical = 40.dp),
+        fontWeight = FontWeight.Medium,
+        lineHeight = 2.em,
+        color = colorScheme.onSurfaceVariantSummary
+    )
+
     HorizontalDivider(
         modifier = Modifier
             .padding(bottom = 40.dp)
@@ -316,21 +336,22 @@ fun UpdateContent(
                 horizontal = 26.dp
             )
     )
-    Column(
-        modifier = Modifier.padding(horizontal = 26.dp)
-    ) {
-        Text(
-            text = annotatedText,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Medium,
-            lineHeight = 1.5.em,
-            color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
-        )
-    }
+    Text(
+        text = annotatedText,
+        fontSize = 15.sp,
+        modifier = Modifier.padding(horizontal = 26.dp),
+        fontWeight = FontWeight.Medium,
+        lineHeight = 1.5.em,
+        color = colorScheme.onSurfaceVariantSummary,
+    )
+
+
+
 }
 
 @Composable
 fun UpdateHistory(commitHistory: List<CommitHistory>) {
+
     HorizontalDivider(
         modifier = Modifier
             .padding(top = 100.dp)
@@ -346,20 +367,22 @@ fun UpdateHistory(commitHistory: List<CommitHistory>) {
                 text = "# "+it.apk_name.replace("HyperStar_v",""),
                 fontSize = 17.sp,
                 fontWeight = FontWeight(550),
-                color = MiuixTheme.colorScheme.onSurface
+                color = colorScheme.onSurface
             )
             Text(
                 text = it.commit_message.replace("--","")
                     .lines()
                     .joinToString("\n") { line -> "• $line" },
-                fontSize = 14.sp,
+                fontSize = 15.sp,
                 modifier = Modifier.padding(top = 20.dp),
                 fontWeight = FontWeight.Medium,
-                lineHeight = 1.5.em,
-                color = MiuixTheme.colorScheme.onSurfaceVariantSummary
+                lineHeight = 1.6.em,
+                color = colorScheme.onSurfaceVariantSummary
             )
         }
     }
+
+
 }
 
 @Composable
@@ -438,7 +461,11 @@ fun UpdateActions(
             .navigationBarsPadding(),
         verticalArrangement = Arrangement.Bottom
     ) {
-        if (isNeedUpdate) {
+        AnimatedVisibility(
+            visible = isNeedUpdate,
+            enter = fadeIn() + slideInVertically(),
+            exit = fadeOut() + slideOutVertically(),
+        ) {
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -476,34 +503,37 @@ fun UpdateActions(
             }
         }
 
-        if (showUpdater.value) return@Column
-
-        Spacer(modifier = Modifier.height(15.dp))
-
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(horizontal = 28.dp)
-                .shadow(
-                    elevation = 2.dp,
-                    shape = SmoothRoundedCornerShape(16.dp),
-                    clip = false,
-                    ambientColor = Color(0x80000000),
-                    spotColor = Color(0x80000000)
-                ),
-            onClick = {
-                view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                showDialog.value = true
-            }
+        AnimatedVisibility(
+            visible = !showUpdater.value,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically(),
         ) {
-            Text(
-                stringResource(R.string.go_channel_discuss),
-                modifier = Modifier.padding(horizontal = 12.dp),
-                fontSize = 18.sp,
-                color = MiuixTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.Bold
-            )
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(top = 15.dp)
+                    .padding(horizontal = 28.dp)
+                    .shadow(
+                        elevation = 2.dp,
+                        shape = SmoothRoundedCornerShape(16.dp),
+                        clip = false,
+                        ambientColor = Color(0x80000000),
+                        spotColor = Color(0x80000000)
+                    ),
+                onClick = {
+                    view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                    showDialog.value = true
+                }
+            ) {
+                Text(
+                    stringResource(R.string.go_channel_discuss),
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    fontSize = 18.sp,
+                    color = colorScheme.onBackground,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
 
     }

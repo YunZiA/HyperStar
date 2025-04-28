@@ -7,7 +7,6 @@ import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -442,11 +441,7 @@ fun ThirdPage(
 
                 if (isNeedUpdate.value && buttonAlpha.floatValue != 0.0f){
 
-                    UpdaterButton(
-                        modifier = Modifier.clickable(){
-                            navController.nav(PagerList.UPDATER)
-                        }
-                    )
+                    UpdaterButton(navController = navController)
                 }
 
 
@@ -460,8 +455,8 @@ fun ThirdPage(
 @Composable
 fun UpdaterButton(
     modifier: Modifier = Modifier,
-
-    ){
+    navController: NavHostController
+){
     val activity = LocalActivity.current as BaseActivity
 
     val isDark = activity.isDarkMode
@@ -527,7 +522,7 @@ fun UpdaterButton(
         minHeight = 52.dp,
         minWidth = 250.dp,
         onClick = {
-
+            navController.nav(PagerList.UPDATER)
         }
     ){
         Text(

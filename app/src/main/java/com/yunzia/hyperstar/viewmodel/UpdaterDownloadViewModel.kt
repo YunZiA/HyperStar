@@ -196,7 +196,7 @@ class UpdaterDownloadViewModel: ViewModel() {
 
     private fun fetchHeadCommitContent(context: Context): String {
         return try {
-            val connection = URL("https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/head_commit.txt").openConnection() as HttpURLConnection
+            val connection = URL("https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/head_commit.m3u").openConnection() as HttpURLConnection
             connection.inputStream
                 .bufferedReader()
                 .use { it.readText() }

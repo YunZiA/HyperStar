@@ -67,9 +67,8 @@ jobs:
 
       - name: Copy APK and metadata to Gitee folder
         run: |
-          # 写入当前提交信息到 head_commit.txt
-          echo "${{ env.APK_NAME }}" > gitee-repo/dev/apk_name.txt
-          echo "${{ github.event.head_commit.message }}" > gitee-repo/dev/head_commit.txt
+          echo "${{ env.APK_NAME }}" > gitee-repo/dev/apk_name.m3u
+          echo "${{ github.event.head_commit.message }}" > gitee-repo/dev/head_commit.m3u
   
           if [ ! -f gitee-repo/dev/commit_history.json ]; then
             echo "[]" > gitee-repo/dev/commit_history.json

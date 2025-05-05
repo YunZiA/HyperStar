@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -118,7 +119,8 @@ fun extractOnlyNumbers(input: String): String {
 fun ThirdPage(
     navController: NavHostController,
     hazeState: HazeState,
-    showReboot: MutableState<Boolean>
+    showReboot: MutableState<Boolean>,
+    pagerState: PagerState
 ) {
 
     val context = navController.context
@@ -144,7 +146,7 @@ fun ThirdPage(
 
     val density = LocalDensity.current
     val min = with(density) { 0.dp.toPx() }
-    val but = remember {
+    val but = remember(isNeedUpdate.value) {
         derivedStateOf {
             if (isNeedUpdate.value){
                 with(density) { 60.dp.toPx() }
@@ -197,7 +199,7 @@ fun ThirdPage(
             SmallTopAppBar(
                 modifier = if (showBlurs.value) Modifier.showBlur(hazeState) else Modifier,
                 color = Color.Transparent,
-                title = stringResource(R.string.about_page_title),
+                title = if (showBlurs.value) stringResource(R.string.about_page_title) else "",
                 scrollBehavior = topAppBarScrollBehavior,
                 actions = {
                     if (rebootStyle.intValue == 1){
@@ -224,11 +226,16 @@ fun ThirdPage(
         }
     ) { padding ->
 
-
-        LaunchedEffect(activity.newAppVersion) {
+        LaunchedEffect(pagerState.targetPage,activity.newAppVersion) {
+            if (pagerState.targetPage != 2){
+                isNeedUpdate.value = false
+                return@LaunchedEffect
+            }
+            if(activity.newAppVersion.value == "") return@LaunchedEffect
             val currentVersion = extractOnlyNumbers(getVerName(context))
             val newVersion = extractOnlyNumbers(activity.newAppVersion.value)
             Log.d("ggc", "ThirdPage: currentVersion = $currentVersion newVersion = $newVersion",)
+            Log.d("ggc", "ThirdPage: currentPage = ${pagerState.currentPage} ${bgAlpha.floatValue}")
 
             // 比较版本号
             if (currentVersion < newVersion) {
@@ -237,7 +244,7 @@ fun ThirdPage(
         }
 
 
-        LaunchedEffect(scroll) {
+        LaunchedEffect(scroll,isNeedUpdate.value) {
             snapshotFlow { scroll.firstVisibleItemScrollOffset }
                 .onEach {
 
@@ -430,16 +437,16 @@ fun ThirdPage(
 
             }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(buttonAlpha.floatValue)
-                    .scale(buttonScale.floatValue)
-                    .height(450.dp),
-                contentAlignment = Alignment.BottomCenter
-            ) {
-
-                if (isNeedUpdate.value && buttonAlpha.floatValue != 0.0f){
+            if (isNeedUpdate.value && buttonAlpha.floatValue != 0.0f){
+                Log.d("ggc", "ThirdPage: ${isNeedUpdate.value}  ${buttonAlpha.floatValue}")
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .alpha(buttonAlpha.floatValue)
+                        .scale(buttonScale.floatValue)
+                        .height(450.dp),
+                    contentAlignment = Alignment.BottomCenter
+                ) {
 
                     UpdaterButton(navController = navController)
                 }

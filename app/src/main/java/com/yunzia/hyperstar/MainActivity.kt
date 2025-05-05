@@ -84,13 +84,14 @@ class MainActivity : BaseActivity() {
      * Fetch the new APK version name from a remote server.
      */
     private suspend fun fetchNewVersionApkName(): String = withContext(Dispatchers.IO) {
-        val rawFileUrl = "https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/apk_name.txt"
+        val rawFileUrl = "https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/apk_name.m3u"
         val client = OkHttpClient()
         val request = Request.Builder().url(rawFileUrl).build()
 
         try {
             val response = client.newCall(request).execute()
             if (response.isSuccessful) {
+                Log.e(TAG, "Request: ${response}")
                 response.body?.string()?.trim().orEmpty()
             } else {
                 Log.e(TAG, "Request failed with status code: ${response.code}")

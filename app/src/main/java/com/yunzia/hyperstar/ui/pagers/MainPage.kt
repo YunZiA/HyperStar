@@ -481,7 +481,7 @@ fun AppHorizontalPager(
                 }
 
                 else -> {
-                    ThirdPage(navController = navController,hazeState,showReboot)
+                    ThirdPage(navController = navController,hazeState,showReboot,pagerState)
                 }
             }
 

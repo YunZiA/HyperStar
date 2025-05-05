@@ -289,15 +289,7 @@ fun UpdateOverviewPage(
     isLoading: State<Boolean>,
     navPager:()->Unit
 ) {
-    val context = LocalContext.current
-    val text = remember { mutableStateOf(context.getString(R.string.checking_update)) }
 
-    LaunchedEffect(Unit,isLoading.value) {
-        //delay(650) // 延迟更新 UI
-        if (!isLoading.value){
-            text.value =  "当前版本更新日志 >"
-        }
-    }
     Box(
         modifier = modifier
             .fillMaxSize()

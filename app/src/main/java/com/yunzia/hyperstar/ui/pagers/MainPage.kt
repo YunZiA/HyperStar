@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -39,7 +38,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -64,13 +62,12 @@ import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.ListPopup
 import top.yukonga.miuix.kmp.basic.ListPopupColumn
 import top.yukonga.miuix.kmp.basic.ListPopupDefaults
-import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.NavigationBar
 import top.yukonga.miuix.kmp.basic.NavigationItem
 import top.yukonga.miuix.kmp.basic.PopupPositionProvider
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
+import top.yukonga.miuix.kmp.basic.VerticalDivider
 import top.yukonga.miuix.kmp.extra.CheckboxLocation
 import top.yukonga.miuix.kmp.extra.DropdownImpl
 import top.yukonga.miuix.kmp.extra.SuperCheckbox
@@ -107,39 +104,18 @@ fun MainPager(
     pagerState: PagerState,
 ) {
     val activity = LocalActivity.current as MainActivity
-    val topAppBarScrollBehavior0 = MiuixScrollBehavior(rememberTopAppBarState())
-    val topAppBarScrollBehavior1 = MiuixScrollBehavior(rememberTopAppBarState())
-    val topAppBarScrollBehavior2 = MiuixScrollBehavior(rememberTopAppBarState())
-
-    val topAppBarScrollBehaviorList = listOf(
-        topAppBarScrollBehavior0, topAppBarScrollBehavior1, topAppBarScrollBehavior2
-    )
-
-    val coroutineScope = rememberCoroutineScope()
-
+    val rebootStyle = activity.rebootStyle
     val currentPage = pagerState.currentPage
 
-    val currentScrollBehavior = when (currentPage) {
-        0 -> topAppBarScrollBehaviorList[0]
-        1 -> topAppBarScrollBehaviorList[1]
-        else -> topAppBarScrollBehaviorList[2]
-    }
+    val coroutineScope = rememberCoroutineScope()
     val items = listOf(
         NavigationItem(stringResource(R.string.main_page_title), ImageVector.vectorResource(id = R.drawable.home)),
         NavigationItem(stringResource(R.string.settings_page_title), ImageVector.vectorResource(id = R.drawable.setting)),
         NavigationItem(stringResource(R.string.about_page_title), ImageVector.vectorResource(id = R.drawable.about)),
     )
 
-    val pagerTitle = items[currentPage].label
-
     val hazeState = remember { HazeState() }
-
     val show = remember { mutableStateOf(false) }
-
-    val view = LocalView.current
-    val showBlurs = remember { mutableStateOf(true) }
-
-    val rebootStyle = activity.rebootStyle
 
     XScaffold(
         modifier = Modifier.fillMaxSize(),
@@ -327,7 +303,7 @@ fun NavigationBarForStart(
 }
 
 @Composable
-fun  RebootPup(
+fun RebootPup(
     show: MutableState<Boolean>
 ) {
 
@@ -459,14 +435,14 @@ fun  Item(
     type:String,
     onCheckedChange: (Boolean,String) -> Unit
 ) {
-    val ischecked = remember { mutableStateOf(false) }
+    val isChecked = remember { mutableStateOf(false) }
     SuperCheckbox(
         title = title,
-        checked = ischecked.value,
+        checked = isChecked.value,
         checkboxLocation = CheckboxLocation.Right,
         onCheckedChange = {
-            ischecked.value = it
-            onCheckedChange(ischecked.value,type)
+            isChecked.value = it
+            onCheckedChange(isChecked.value,type)
 
 
         }
@@ -490,6 +466,7 @@ fun AppHorizontalPager(
     HorizontalPager(
         modifier = modifier,
         state = pagerState,
+        beyondViewportPageCount = 3,
         userScrollEnabled = activity.enablePageUserScroll.value,
         pageContent = { page ->
 

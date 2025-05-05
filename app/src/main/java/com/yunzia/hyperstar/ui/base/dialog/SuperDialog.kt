@@ -94,6 +94,7 @@ fun SuperDialog(
         }
 
         showDialog(
+            show = show,
             content = {
                 Box(
                     modifier =

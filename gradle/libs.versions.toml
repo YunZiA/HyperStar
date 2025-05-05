@@ -2,13 +2,13 @@
 accompanistDrawablepainter = "0.37.0"
 accompanistSystemuicontroller = "0.36.0"
 api = "82"
-agp = "8.9.1"
+agp = "8.9.2"
 colormathExtJetpackComposeVersion = "3.6.1"
 compilerVersion = "1.5.15"
 constraintlayoutComposeVersion = "1.1.1"
 dexkit = "2.0.3"
 ezxhelper = "2.2.1"
-foundation = "1.7.8"
+foundation = "1.8.0"
 gson = "2.12.1"
 haze = "1.5.0"
 kotlin = "2.1.20"
@@ -18,9 +18,9 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.1"
-composeBom = "2025.04.00"
+composeBom = "2025.04.01"
 composeMaterial = "1.4.1"
-miuix = "0.4.1"
+miuix = "0.4.2"
 okhttp = "4.12.0"
 paletteKtx = "1.0.0"
 profileinstaller = "1.4.1"
@@ -35,10 +35,8 @@ accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-dra
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutComposeVersion" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
-androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "foundation" }
 androidx-palette-ktx = { module = "androidx.palette:palette-ktx", version.ref = "paletteKtx" }
 androidx-profileinstaller = { module = "androidx.profileinstaller:profileinstaller", version.ref = "profileinstaller" }
-androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview" ,version.ref = "recycler"}
 android-xposed = { module = "de.robv.android.xposed:api", version.ref = "api" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
@@ -55,7 +53,6 @@ androidx-activity-compose = { group = "androidx.activity", name = "activity-comp
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "composeMaterial" }
 kyuubiran-ezxhelper = { module = "com.github.kyuubiran:EzXHelper", version.ref = "ezxhelper" }
 miuix = { module = "top.yukonga.miuix.kmp:miuix", version.ref = "miuix" }

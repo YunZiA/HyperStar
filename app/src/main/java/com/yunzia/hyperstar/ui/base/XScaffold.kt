@@ -10,7 +10,7 @@ import com.yunzia.hyperstar.ui.base.dialog.CTPopupUtil.Companion.CTPopupHost
 import com.yunzia.hyperstar.ui.base.dialog.ShowUtil.Companion.ShowHost
 import com.yunzia.hyperstar.ui.base.dialog.SuperNotificationUtil.Companion.SuperNotificationHost
 import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.SuperXPopupHost
-import top.yukonga.miuix.kmp.basic.MiuixFabPosition
+import top.yukonga.miuix.kmp.basic.FabPosition
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.MiuixPopupHost
@@ -21,7 +21,7 @@ fun XScaffold(
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
-    floatingActionButtonPosition: MiuixFabPosition = MiuixFabPosition.End,
+    floatingActionButtonPosition: FabPosition = FabPosition.End,
     floatingPagerButton: @Composable () -> Unit = {},
     snackbarHost: @Composable () -> Unit = {},
     popupHost: @Composable () -> Unit = {

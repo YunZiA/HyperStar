@@ -12,6 +12,11 @@ object PagerList {
 
     const val UPDATER = "${MAIN}/updater"
 
+
+    const val CURRENTLOG = "${UPDATER}/currentlog"
+
+    const val LOGHISTORY = "${UPDATER}/loghistory"
+
     const val THEMEMANAGER = "${MAIN}/thememanager"
 
     const val LANGUAGE = "${MAIN}/language"

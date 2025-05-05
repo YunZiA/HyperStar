@@ -14,9 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
@@ -51,6 +48,7 @@ import com.yunzia.hyperstar.utils.Helper.isRoot
 import com.yunzia.hyperstar.utils.appIcon
 import com.yunzia.hyperstar.utils.isOS2Settings
 import dev.chrisbanes.haze.HazeState
+import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.Text
@@ -58,6 +56,7 @@ import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.basic.ArrowRight
+import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
@@ -100,7 +99,7 @@ fun Home(
                     ) {
 
                         Icon(
-                            imageVector = Icons.Default.MoreVert,
+                            imageVector = MiuixIcons.Useful.ImmersionMore,
                             contentDescription = "restart",
                             tint = colorScheme.onBackground)
 
@@ -269,7 +268,7 @@ fun Home(
                     }
 
                 }
-                activity.barrageManger.value?.let {
+                activity.barrageManager.value?.let {
                     if (it.versionName!!.startsWith("3")){
                         SuperNavHostArrow(
                             leftIcon = rememberDrawablePainter(it.appIcon),

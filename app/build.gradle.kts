@@ -12,7 +12,6 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
-
     id ("kotlin-parcelize")
 }
 
@@ -28,7 +27,7 @@ android {
 
             val versionName = properties["VERSION_NAME"].toString().split(".")[0]
             val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
-            val createTime = LocalDateTime.now(ZoneId.of("Asia/Shanghai")).format(formatter).takeLast(  6)
+            val createTime = LocalDateTime.now(ZoneId.of("Asia/Shanghai")).format(formatter).takeLast(6)
             val baseVersionCode = "$versionName$createTime"
             var versionCode = "${baseVersionCode}00".toInt()
             val runTasks = gradle.startParameter.taskNames
@@ -66,7 +65,7 @@ android {
             }
 
             val versionName = properties["VERSION_NAME"].toString()
-            val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHm")
+            val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm")
             val createTime = LocalDateTime.now(ZoneId.of("Asia/Shanghai")).format(formatter)
             return "${versionName}_${createTime}_$buildChannel"
         } else {
@@ -177,7 +176,6 @@ android {
 dependencies {
     implementation(libs.okhttp)
     // 系统UI控制库，实现沉浸式状态栏
-    implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.dexkit)
     implementation(libs.gson)
     implementation(libs.androidx.navigation.compose)
@@ -188,12 +186,11 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     //implementation ("com.godaddy.android.colorpicker:compose-color-picker-android:0.7.0")
+    implementation(libs.androidx.compose.material)
     implementation(libs.github.colormath.ext.jetpack.compose)
     implementation(libs.androidx.profileinstaller)
     implementation (libs.androidx.constraintlayout.compose)
     implementation (libs.accompanist.drawablepainter)
-    implementation (libs.androidx.recyclerview)
-    implementation(libs.androidx.compose.material)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.constraintlayout)
@@ -208,7 +205,6 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

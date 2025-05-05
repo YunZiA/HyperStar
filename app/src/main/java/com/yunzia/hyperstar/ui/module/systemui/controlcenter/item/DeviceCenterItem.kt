@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,9 +18,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.ui.base.dialog.MSuperDialog
 import com.yunzia.hyperstar.ui.base.modifier.elevation
+import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterListViewModel
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemDropdown
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemSlider
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ItemState
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -31,36 +32,37 @@ import yunzia.ui.Card
 
 @Composable
 fun DeviceCenterItem(
-    items: MutableState<List<Card>>,
-    index: Int,
+    index:Int,
     item: Card,
+    viewModel: ControlCenterListViewModel
 ) {
-    val enable = remember { mutableStateOf(SPUtils.getBoolean("deviceCenter_span_size_enable",false)) }
+
+    val itemStates = viewModel.itemStates.collectAsState()
+    val dialogState = itemStates.value[item.tag] ?: ItemState.loadFromSP(item.tag)
+
     val showDialog = remember { mutableStateOf(false) }
-    val spanSize =  remember { mutableFloatStateOf(SPUtils.getFloat("deviceCenter_span_size", 4f)) }
-
-    LaunchedEffect(showDialog.value) {
-        if (showDialog.value){
-            return@LaunchedEffect
-        }
-
-        val mutableList = items.value.toMutableList().apply{
-            if (enable.value){
-                set(index, Card(item.id,item.tag, spanSize.floatValue.toInt(),item.name))
-            } else{
-                set(index, Card(item.id,item.tag, 4,item.name))
-            }
-
-        }
-
-        items.value = mutableList
-
-
+    val spanSize = remember(dialogState) {
+        mutableFloatStateOf(dialogState.spanSize)
+    }
+    val enable = remember(dialogState) {
+        mutableStateOf(dialogState.enable)
     }
 
-    if (showDialog.value){
+    // 监听本地状态变化并更新 ViewModel
+    LaunchedEffect(spanSize.floatValue, enable.value) {
+        viewModel.updateItemSpan(index, item,spanSize.floatValue,enable.value)
+        viewModel.updateItemDialogState(
+            itemTag = item.tag,
+            enable = enable.value,
+            spanSize = spanSize.floatValue
+        )
+    }
 
-        MiuixPopupUtils.showDialog() {
+
+    if (showDialog.value) {
+        MiuixPopupUtils.showDialog(
+            show = showDialog
+        ) {
             MSuperDialog(
                 title = item.name,
                 show = showDialog,
@@ -73,7 +75,7 @@ fun DeviceCenterItem(
                 Card(
                     Modifier.padding(bottom = 10.dp),
                     color = colorScheme.secondaryContainer
-                ){
+                ) {
                     EnableItemDropdown(
                         key = "deviceCenter_land_rightOrLeft"
                     )
@@ -82,7 +84,7 @@ fun DeviceCenterItem(
 
                 Card(
                     color = colorScheme.secondaryContainer
-                ){
+                ) {
                     EnableItemSlider(
                         key = "deviceCenter_span_size",
                         state = enable,
@@ -95,8 +97,9 @@ fun DeviceCenterItem(
 
             }
         }
-
     }
+
+
 
     Box(
         modifier = Modifier

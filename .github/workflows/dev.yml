@@ -64,31 +64,24 @@ jobs:
           GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
         run: |
           wget https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/commit_history.json -O gitee-repo/dev/commit_history.json
-          wget https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/head_commit.txt -O last_head_commit.text
-          wget https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/apk_name.txt -O last_apk_name.text
 
       - name: Copy APK and metadata to Gitee folder
         run: |
           # 写入当前提交信息到 head_commit.txt
-          echo "${{ env.APK_NAME }}" > gitee-repo/apk_name.txt
+          echo "${{ env.APK_NAME }}" > gitee-repo/dev/apk_name.txt
           echo "${{ github.event.head_commit.message }}" > gitee-repo/dev/head_commit.txt
   
           if [ ! -f gitee-repo/dev/commit_history.json ]; then
             echo "[]" > gitee-repo/dev/commit_history.json
           fi
 
-          # 获取当前提交的信息并以 JSON 格式追加到文件中
-          LAST_HEAD_COMMIT=$(cat last_head_commit.text)
-          LAST_APK_NAME=$(cat last_apk_name.text)
-          
           # 使用 jq 工具追加 JSON 对象
-          jq "[{\"apk_name\": \"${LAST_APK_NAME}\", \"commit_message\": \"${LAST_HEAD_COMMIT}\"}] + ." \
+          jq "[{\"apk_name\": \"${{ env.APK_NAME }}\", \"commit_message\": \"${{ github.event.head_commit.message }}\"}] + ." \
           gitee-repo/dev/commit_history.json > gitee-repo/dev/commit_history.json.tmp && \
           mv gitee-repo/dev/commit_history.json.tmp gitee-repo/dev/commit_history.json
         
           # 将 APK 文件复制到目标文件夹
           cp ./app/build/outputs/apk/dev/*.apk gitee-repo/dev/
-          mv gitee-repo/apk_name.txt gitee-repo/dev/  # 将文件名文件移动到目标文件夹
 
       - name: Push to Gitee
         run: |

@@ -54,7 +54,9 @@ fun ListItem(
 
     if (showDialog.value){
 
-        MiuixPopupUtils.showDialog() {
+        MiuixPopupUtils.showDialog(
+            show = showDialog
+        ) {
             MSuperDialog(
                 title = item.name,
                 show = showDialog,
@@ -91,8 +93,11 @@ fun ListItem(
 
             }
         }
-
     }
+
+
+
+
 
     LazyVerticalGrid(modifier = Modifier
         .height(170.dp)

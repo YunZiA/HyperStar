@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
@@ -23,7 +22,9 @@ import androidx.navigation.NavController
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.nav.backParentPager
+import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
+import top.yukonga.miuix.kmp.basic.SmallTopAppBar
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
@@ -146,6 +147,46 @@ fun NavTopAppBar(
 
 }
 
+
+@Composable
+fun NavSmallTopAppBar(
+    modifier: Modifier,
+    title: String,
+    scrollBehavior: ScrollBehavior? = null,
+    color: Color,
+    navController: NavController,
+    parentRoute: MutableState<String>,
+    actions: @Composable() (RowScope.() -> Unit) = {}
+){
+
+    val view = LocalView.current
+
+    SmallTopAppBar(
+        modifier = modifier,
+        color = color,
+        title = title,
+        scrollBehavior = scrollBehavior,
+        navigationIcon = {
+            IconButton(
+                modifier = Modifier.padding(start = 12.dp),
+                onClick = {
+                    view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                    navController.backParentPager(parentRoute.value)
+
+                }
+            ) {
+                Icon(
+                    ImageVector.vectorResource(R.drawable.bar_back__exit),
+                    contentDescription = "back",
+                    tint = colorScheme.onBackground)
+            }
+
+        },
+        actions = actions
+    )
+
+}
+
 @Composable
 fun ModuleNavTopAppBar(
     modifier: Modifier,
@@ -168,7 +209,6 @@ fun ModuleNavTopAppBar(
                 imageVector = ImageVector.vectorResource(R.drawable.bar_back__exit),
                 contentDescription = "back",
                 onClick = startClick
-
             )
 
 

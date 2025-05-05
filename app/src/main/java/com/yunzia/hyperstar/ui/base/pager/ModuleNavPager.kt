@@ -20,7 +20,7 @@ import com.yunzia.hyperstar.ui.base.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.base.modifier.showBlur
 import com.yunzia.hyperstar.ui.base.nav.backParentPager
 import dev.chrisbanes.haze.HazeState
-import top.yukonga.miuix.kmp.basic.MiuixFabPosition
+import top.yukonga.miuix.kmp.basic.FabPosition
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
@@ -66,7 +66,7 @@ fun ModuleNavPager(
     parentRoute: MutableState<String>,
     floatingActionButton: @Composable () -> Unit = {},
     floatingPagerButton: @Composable () -> Unit = {},
-    floatingActionButtonPosition: MiuixFabPosition = MiuixFabPosition.End,
+    floatingActionButtonPosition: FabPosition = FabPosition.End,
     startClick: () -> Unit = {
         navController.backParentPager(parentRoute.value)
     },

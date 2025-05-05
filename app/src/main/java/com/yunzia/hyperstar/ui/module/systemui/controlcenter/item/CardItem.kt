@@ -13,9 +13,8 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,44 +24,55 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import yunzia.ui.Card
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.dialog.MSuperDialog
 import com.yunzia.hyperstar.ui.base.modifier.elevation
+import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterListViewModel
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemDropdown
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemSlider
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ItemState
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.showDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
+import yunzia.ui.Card
 
 @Composable
 fun CardItem(
-    items: MutableState<List<Card>>,
     index: Int,
-    item: Card
+    item: Card,
+    viewModel: ControlCenterListViewModel
 ) {
-//
-    val enable = remember { mutableStateOf(SPUtils.getBoolean("cards_span_size_enable",false)) }
-    val showDialog = remember { mutableStateOf(false) }
-    val spanSize =  remember { mutableFloatStateOf(SPUtils.getFloat("cards_span_size", 2f)) }
-    val span = remember { mutableIntStateOf(2) }
-    val name = stringArrayResource(id = R.array.card_tile_name)
-    LaunchedEffect(showDialog.value) {
-        if (showDialog.value){
-            return@LaunchedEffect
-        }
-        val mutableList = items.value.toMutableList().apply{
-            val spanIsOne = spanSize.floatValue == 1f && enable.value
-            set(index, Card(item.id, item.tag, if (spanIsOne) 2 else 4, item.name))
-        }
+    val itemStates = viewModel.itemStates.collectAsState()
+    val dialogState = itemStates.value[item.tag] ?: ItemState.loadFromSP(item.tag)
 
-        span.intValue = if (enable.value) spanSize.floatValue.toInt() else 2
-        items.value = mutableList
+    val showDialog = remember { mutableStateOf(false) }
+    val spanSize = remember(dialogState) {
+        mutableFloatStateOf(dialogState.spanSize)
     }
+    val enable = remember(dialogState) {
+        mutableStateOf(dialogState.enable)
+    }
+    val name = stringArrayResource(id = R.array.card_tile_name)
+
+    // 监听本地状态变化并更新 ViewModel
+    LaunchedEffect(spanSize.floatValue, enable.value) {
+
+        viewModel.updateCardItemSpan(
+            index = index,
+            item = item,
+            spanSize = spanSize.floatValue,
+            enable = enable.value
+        )
+        viewModel.updateItemDialogState(
+            itemTag = item.tag,
+            enable = enable.value,
+            spanSize = spanSize.floatValue
+        )
+    }
+
     LazyVerticalGrid(modifier = Modifier
         .fillMaxWidth()
         .pointerInput(Unit) {
@@ -79,7 +89,7 @@ fun CardItem(
     ) {
         items(2,
             span = {
-                GridItemSpan(if (span.intValue != 1) span.intValue else 2)
+                GridItemSpan(if (spanSize.floatValue.toInt() != 1) spanSize.floatValue.toInt() else 2)
             }
         ) {
             Box(
@@ -110,9 +120,11 @@ fun CardItem(
     }
 
 
-    if (showDialog.value){
 
-        showDialog() {
+    if (showDialog.value) {
+        showDialog(
+            show = showDialog
+        ) {
             MSuperDialog(
                 title = item.name,
                 show = showDialog,
@@ -125,7 +137,7 @@ fun CardItem(
                 Card(
                     Modifier.padding(bottom = 10.dp),
                     color = colorScheme.secondaryContainer
-                ){
+                ) {
 
                     EnableItemDropdown(
                         key = "cards_land_rightOrLeft",
@@ -134,7 +146,7 @@ fun CardItem(
                 }
                 Card(
                     color = colorScheme.secondaryContainer
-                ){
+                ) {
                     EnableItemSlider(
                         key = "cards_span_size",
                         progress = 2f,
@@ -142,11 +154,11 @@ fun CardItem(
                         progressState = spanSize
                     )
 
-
                 }
             }
         }
-
     }
+
+
 
 }

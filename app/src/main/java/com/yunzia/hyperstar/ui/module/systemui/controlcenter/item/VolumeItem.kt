@@ -21,7 +21,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Icon
-import yunzia.ui.Card
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.dialog.MSuperDialog
 import com.yunzia.hyperstar.ui.base.modifier.elevation
@@ -31,6 +30,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.showDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
+import yunzia.ui.Card
 
 @Composable
 fun VolumeItem(
@@ -40,8 +40,9 @@ fun VolumeItem(
     val showDialog = remember { mutableStateOf(false) }
 
     if (showDialog.value){
-
-        showDialog {
+        showDialog(
+            show = showDialog
+        ) {
             MSuperDialog(
                 title = item.name,
                 show = showDialog,
@@ -53,7 +54,7 @@ fun VolumeItem(
 
                 Card(
                     color = colorScheme.secondaryContainer
-                ){
+                ) {
                     EnableItemDropdown(
                         key = "volume_land_rightOrLeft",
                         dfOpt = 1
@@ -62,7 +63,6 @@ fun VolumeItem(
 
             }
         }
-
     }
 
     Box(

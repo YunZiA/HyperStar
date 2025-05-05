@@ -27,7 +27,7 @@ object JBUtil {
         activity: MainActivity,
         launcher: ManagedActivityResultLauncher<String, Uri?>
     ) {
-        if (activity.goManagerFileAccess()) {
+        if (activity.requestFileAccessPermission()) {
             launcher.launch("application/json")
         }
     }
@@ -36,7 +36,7 @@ object JBUtil {
         activity: MainActivity,
         launcher: ManagedActivityResultLauncher<String, Uri?>
     ) {
-        if (activity.goManagerFileAccess()) {
+        if (activity.requestFileAccessPermission()) {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
             launcher.launch("HyperStar_backup_${dateFormat.format(Date())}.json")
         }

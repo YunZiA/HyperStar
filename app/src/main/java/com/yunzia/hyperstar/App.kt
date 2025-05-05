@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -75,10 +74,12 @@ import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.PowerMenuStylePag
 import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.SelectFunPager
 import com.yunzia.hyperstar.ui.module.systemui.volume.VolumePager
 import com.yunzia.hyperstar.ui.module.thememanager.ThemeManagerPage
+import com.yunzia.hyperstar.ui.pagers.CurrentVersionLogScreen
 import com.yunzia.hyperstar.ui.pagers.DonationPage
 import com.yunzia.hyperstar.ui.pagers.FPSMonitor
 import com.yunzia.hyperstar.ui.pagers.GoRootPager
 import com.yunzia.hyperstar.ui.pagers.LanguagePager
+import com.yunzia.hyperstar.ui.pagers.LogHistoryScreen
 import com.yunzia.hyperstar.ui.pagers.MainPager
 import com.yunzia.hyperstar.ui.pagers.MainPagerByThree
 import com.yunzia.hyperstar.ui.pagers.NeedMessagePager
@@ -96,6 +97,7 @@ import com.yunzia.hyperstar.utils.isPad
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.VerticalDivider
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.getWindowSize
@@ -253,7 +255,7 @@ fun NavGraphBuilder.pagerContent(
 
 ){
 
-    composable(SystemUIList.CONTROL_CENTER) { ControlCenterPager(navController,parentRoute) }
+    composable(SystemUIList.CONTROL_CENTER,) { ControlCenterPager(navController,parentRoute) }
 
     composable(ControlCenterList.COLOR_EDIT) { ControlCenterColorPager(navController,parentRoute) }
 
@@ -311,6 +313,15 @@ fun NavGraphBuilder.pagerContent(
     }
 
     composable(SystemUIMoreList.NOTIFICATION_APP_DETAIL) { NotificationAppDetail(navController,parentRoute) }
+
+    composable(PagerList.CURRENTLOG) {
+        CurrentVersionLogScreen(navController,parentRoute)
+    }
+
+    composable(PagerList.LOGHISTORY) {
+        LogHistoryScreen(navController,parentRoute)
+
+    }
 
     composable(
         FunList.SELECT_LIST+"?{pagersJson}",

@@ -82,7 +82,7 @@ fun Button(
         },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = SmoothRoundedCornerShape(cornerRadius),
+        shape = SmoothRoundedCornerShape(cornerRadius,1f),
         color = colors
     ) {
         Row(

@@ -304,5 +304,8 @@
     <string name="update_has">有新版本</string>
     <string name="no_updates_available">已经是最新版本</string>
     <string name="manual_download_prompt">"\n• 如果下载未成功，请访问以下链接手动下载："</string>
+    <string name="update_history_log">历史更新日志</string>
+    <string name="current_version_log">当前版本更新日志</string>
+    <string name="no_log_found_current_version">未查询到您当前版本的日志</string>
 
 </resources>

@@ -14,7 +14,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.ui.base.dialog.MSuperDialog
-import yunzia.ui.Card
 import com.yunzia.hyperstar.ui.base.modifier.elevation
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemDropdown
 import top.yukonga.miuix.kmp.basic.Card
@@ -23,6 +22,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.showDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
+import yunzia.ui.Card
 
 @Composable
 fun MediaItem(
@@ -57,9 +57,11 @@ fun MediaItem(
         )
     }
 
-    if (showDialog.value){
 
-        showDialog{
+    if (showDialog.value) {
+        showDialog(
+            show = showDialog
+        ) {
             MSuperDialog(
                 title = item.name,
                 show = showDialog,
@@ -71,7 +73,7 @@ fun MediaItem(
 
                 Card(
                     color = colorScheme.secondaryContainer
-                ){
+                ) {
                     EnableItemDropdown(
                         key = "media_land_rightOrLeft",
                         dfOpt = 1
@@ -81,6 +83,7 @@ fun MediaItem(
 
             }
         }
-
     }
+
+
 }

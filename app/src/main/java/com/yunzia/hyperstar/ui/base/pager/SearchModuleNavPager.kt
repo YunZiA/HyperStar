@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.ui.base.pager
 
-import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -33,16 +32,15 @@ import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.InputField
 import com.yunzia.hyperstar.ui.base.ModuleNavTopAppBar
-import com.yunzia.hyperstar.ui.base.SearchBox
-import com.yunzia.hyperstar.ui.base.SearchPager
-import com.yunzia.hyperstar.ui.base.SearchStatus
 import com.yunzia.hyperstar.ui.base.XScaffold
 import com.yunzia.hyperstar.ui.base.modifier.blur
 import com.yunzia.hyperstar.ui.base.modifier.showBlur
 import com.yunzia.hyperstar.ui.base.nav.backParentPager
-import com.yunzia.hyperstar.ui.base.rememberSearchStatus
+import com.yunzia.hyperstar.ui.base.search.SearchBox
+import com.yunzia.hyperstar.ui.base.search.SearchPager
+import com.yunzia.hyperstar.ui.base.search.SearchStatus
 import dev.chrisbanes.haze.HazeState
-import top.yukonga.miuix.kmp.basic.MiuixFabPosition
+import top.yukonga.miuix.kmp.basic.FabPosition
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
@@ -54,12 +52,12 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 @Composable
 fun SearchModuleNavPager(
     activityTitle: String,
-    searchStatus: SearchStatus = rememberSearchStatus(),
+    searchStatus: SearchStatus,
     navController: NavController,
     parentRoute: MutableState<String>,
     floatingActionButton: @Composable () -> Unit = {},
     floatingPagerButton: @Composable () -> Unit = {},
-    floatingActionButtonPosition: MiuixFabPosition = MiuixFabPosition.End,
+    floatingActionButtonPosition: FabPosition = FabPosition.End,
     startClick: () -> Unit = {
         navController.backParentPager(parentRoute.value)
     },
@@ -98,12 +96,11 @@ fun SearchModuleNavPager(
             navController.backParentPager(parentRoute.value)
         }
 
-        SearchBox(
+        searchStatus.SearchBox(
             modifier = Modifier
                 .blur(hazeState)
                 .padding(top = padding.calculateTopPadding() + 14.dp)
                 .fillMaxSize(),
-            searchStatus,
         ){
             contents(topAppBarScrollBehavior, padding)
 
@@ -111,8 +108,7 @@ fun SearchModuleNavPager(
 
     }
 
-    SearchPager(
-        searchStatus,
+    searchStatus.SearchPager(
         {}
     ) {
         result(topAppBarScrollBehavior)
@@ -187,8 +183,6 @@ fun SearchBar(
 fun SearchBarFake(
     label: String
 ){
-    Log.d("ggc", "SearchBar: load")
-
 
     Row(
         modifier = Modifier.fillMaxWidth()

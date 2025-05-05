@@ -21,16 +21,16 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Icon
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemDropdown
-import yunzia.ui.Card
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.dialog.MSuperDialog
 import com.yunzia.hyperstar.ui.base.modifier.elevation
+import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemDropdown
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.showDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
+import yunzia.ui.Card
 
 @Composable
 fun BrightnessItem(
@@ -38,7 +38,9 @@ fun BrightnessItem(
 ) {
     val showDialog = remember { mutableStateOf(false) }
     if (showDialog.value){
-        showDialog{
+        showDialog(
+            show = showDialog
+        ){
             MSuperDialog(
                 title = item.name,
                 show = showDialog,

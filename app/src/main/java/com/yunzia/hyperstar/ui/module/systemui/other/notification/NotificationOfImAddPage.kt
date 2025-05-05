@@ -1,5 +1,7 @@
 package com.yunzia.hyperstar.ui.module.systemui.other.notification
 
+import android.app.Application
+import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,36 +14,32 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateSet
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.SearchBox
-import com.yunzia.hyperstar.ui.base.SearchPager
-import com.yunzia.hyperstar.ui.base.SearchStatus
+import com.yunzia.hyperstar.ui.base.search.SearchBox
+import com.yunzia.hyperstar.ui.base.search.SearchPager
 import com.yunzia.hyperstar.ui.base.TopButton
 import com.yunzia.hyperstar.ui.base.XScaffold
 import com.yunzia.hyperstar.ui.base.modifier.blur
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.base.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.base.modifier.showBlur
-import com.yunzia.hyperstar.ui.base.rememberSearchStatus
+import com.yunzia.hyperstar.viewmodel.NotificationAddViewModel
 import dev.chrisbanes.haze.HazeState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Checkbox
@@ -57,38 +55,25 @@ fun NotificationOfImAddPage(
     selectApp: SnapshotStateSet<NotificationInfo>,
     unSelectApp: SnapshotStateSet<NotificationInfo>
 ){
-    val hazeState = remember { HazeState() }
-    val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
-    val selectedAppList = remember { mutableSetOf<NotificationInfo>() }
-    val searchStatus = rememberSearchStatus(
-        label = stringResource(R.string.app_name_type)
-    )
-    val searchApp = remember(unSelectApp, searchStatus.searchText) {
-        derivedStateOf {
-            unSelectApp.filter { it.appName.contains(searchStatus.searchText, ignoreCase = true) }
-        }
-    }
-    val coroutineScope = rememberCoroutineScope()
-
-    LaunchedEffect(searchStatus.searchText) {
-        if (searchStatus.searchText == ""){
-            searchStatus.resultStatus = SearchStatus.ResultStatus.DEFAULT
-            return@LaunchedEffect
-
-        }
-        delay(300)
-        coroutineScope.launch(
-            Dispatchers.Default
-        ) {
-            searchStatus.resultStatus = SearchStatus.ResultStatus.LOAD
-
-            searchStatus.resultStatus = if (searchApp.value.isEmpty()){
-                SearchStatus.ResultStatus.EMPTY
-            }else{
-                SearchStatus.ResultStatus.SHOW
+    val context = LocalContext.current
+    val viewModel:NotificationAddViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return NotificationAddViewModel(context.applicationContext as Application) as T
             }
         }
+    )
+    val hazeState = remember { HazeState() }
+    val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
+    val searchStatus by viewModel.searchStatus
+    val searchResults by viewModel.searchResults
 
+    LaunchedEffect(unSelectApp) {
+        viewModel.updateUnselectedApps(unSelectApp)
+    }
+
+    LaunchedEffect(searchStatus.searchText) {
+        viewModel.updateSearchText(searchStatus.searchText, unSelectApp)
     }
 
 
@@ -122,10 +107,15 @@ fun NotificationOfImAddPage(
                             contentDescription = "done",
                             onClick = {
                                 expand.value = false
-                                if (selectedAppList.isNotEmpty()){
-                                    selectApp.addAll(selectedAppList)
-                                    selectedAppList.clear()
+
+                                viewModel.confirmSelection { selectedApps ->
+                                    selectApp.addAll(selectedApps)
+                                    expand.value = false
                                 }
+//                                if (selectedAppList.isNotEmpty()){
+//                                    selectApp.addAll(selectedAppList)
+//                                    selectedAppList.clear()
+//                                }
                             }
                         )
                     }
@@ -135,12 +125,11 @@ fun NotificationOfImAddPage(
         }
     ){ padding->
 
-        SearchBox(
+        searchStatus.SearchBox(
             modifier = Modifier
                 .blur(hazeState)
                 .padding(top = padding.calculateTopPadding() + 14.dp)
                 .fillMaxSize(),
-            searchStatus,
         ){
             LazyColumn(
                 modifier = Modifier
@@ -152,9 +141,14 @@ fun NotificationOfImAddPage(
                 )
             ) {
 
-                unSelectApp.forEach {
-                    item(it.packageName) {
-                        AppNotifItem(it,selectedAppList)
+                unSelectApp.forEach {app->
+                    item(app.packageName) {
+                        AppNotifItem(notificationInfo = app,
+                            isSelected = viewModel.isSelected(app),
+                            onSelectionChanged = { isSelected ->
+                                viewModel.toggleAppSelection(app)
+                            }
+                        )
                     }
                 }
 
@@ -164,13 +158,17 @@ fun NotificationOfImAddPage(
 
     }
 
-    SearchPager(
-        searchStatus,
+    searchStatus.SearchPager(
         {}
     ) {
-        searchApp.value.forEach {
-            item(it.packageName) {
-                AppNotifItem(it,selectedAppList)
+        searchResults.forEach { app->
+            item(app.packageName) {
+                AppNotifItem(notificationInfo = app,
+                    isSelected = viewModel.isSelected(app),
+                    onSelectionChanged = { isSelected ->
+                        viewModel.toggleAppSelection(app)
+                    }
+                )
             }
         }
     }
@@ -181,54 +179,50 @@ fun NotificationOfImAddPage(
 @Composable
 private fun AppNotifItem(
     notificationInfo: NotificationInfo,
-    selectedAppList:MutableSet<NotificationInfo>
-){
-    val label = notificationInfo.appName
-    var isSelect by remember { mutableStateOf(selectedAppList.contains(notificationInfo)) }
-    LaunchedEffect(isSelect) {
-        if (isSelect){
-            selectedAppList.add(notificationInfo)
-        }else{
-            selectedAppList.remove(notificationInfo)
-        }
-    }
-
+    isSelected: Boolean,
+    onSelectionChanged: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
     BasicComponent(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .padding(top = 10.dp)
             .bounceAnimN()
             .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
-            .background(if (isSelect) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
-        ,
-        insideMargin =  PaddingValues(17.dp),
-        title = label,
+            .background(
+                if (isSelected) colorScheme.tertiaryContainer
+                else colorScheme.surfaceVariant
+            ),
+        insideMargin = PaddingValues(17.dp),
+        title = notificationInfo.appName,
         leftAction = {
-            Box(
-                modifier = Modifier.padding(end = 12.dp)
-            ){
-                Image(
-                    modifier = Modifier.size(40.dp),
-                    painter = DrawablePainter(notificationInfo.icon),
-                    contentDescription = label
-                )
-
-            }
+            AppIcon(
+                icon = notificationInfo.icon,
+                appName = notificationInfo.appName
+            )
         },
         rightActions = {
             Checkbox(
-                checked = isSelect,
-                onCheckedChange = {
-                    isSelect = !isSelect
-                }
+                checked = isSelected,
+                onCheckedChange = { onSelectionChanged(!isSelected) }
             )
-
         },
-        onClick = {
-            isSelect = !isSelect
-        }
+        onClick = { onSelectionChanged(!isSelected) }
     )
+}
 
-
+@Composable
+private fun AppIcon(
+    icon: Drawable,
+    appName: String,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = Modifier.padding(end = 12.dp)) {
+        Image(
+            modifier = modifier.size(40.dp),
+            painter = DrawablePainter(icon),
+            contentDescription = appName
+        )
+    }
 }

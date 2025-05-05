@@ -6,7 +6,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,8 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -43,6 +40,8 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.wear.compose.material.Button
+import androidx.wear.compose.material.ButtonDefaults.buttonColors
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.BaseButton
@@ -134,13 +133,17 @@ fun ColorPickerDialog(
                     trailingIcon = {
                         if (hasFocus){
                             Button(
-                                modifier = Modifier.size(60.dp),
+                                modifier = Modifier.size(60.dp).padding(10.dp,16.dp),
                                 onClick = {
                                     doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
                                 },
-                                contentPadding = PaddingValues(10.dp,16.dp),
+                                //contentPadding = PaddingValues(10.dp,16.dp),
                                 shape = SmoothRoundedCornerShape(12.dp,0.8f),
-                                colors = ButtonColors(Color.Transparent, Color.Transparent,Color.Transparent,Color.Transparent)
+                                colors = buttonColors(
+                                    backgroundColor = Color.Transparent,
+                                    contentColor = Color.Transparent,
+                                    disabledContentColor = Color.Transparent
+                                )
                             ) {
                                 Icon(
                                     ImageVector.vectorResource(R.drawable.yes),

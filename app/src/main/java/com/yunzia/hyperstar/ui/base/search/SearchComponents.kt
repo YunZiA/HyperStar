@@ -1,8 +1,10 @@
-package com.yunzia.hyperstar.ui.base
+package com.yunzia.hyperstar.ui.base.search
 
 import android.util.Log
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
@@ -56,6 +58,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.ui.base.Loading
 import com.yunzia.hyperstar.ui.base.pager.SearchBar
 import com.yunzia.hyperstar.ui.base.pager.SearchBarFake
 import top.yukonga.miuix.kmp.basic.Text
@@ -66,35 +69,17 @@ import top.yukonga.miuix.kmp.utils.BackHandler
 @Composable
 fun rememberSearchStatus(
     label: String = "",
-    collapseBar: @Composable (SearchStatus) -> Unit = { SearchBarFake(label) },
-    expandBar: @Composable (SearchStatus) -> Unit = { searchStatus ->
-        SearchBar(
-            query = searchStatus.searchText,
-            label = searchStatus.label,
-            onQueryChange = { searchStatus.searchText = it },
-            expanded = searchStatus.shouldExpand(),
-            onExpandedChange = {
-                Log.d("SearchStatus", "Expanded: $it")
-                searchStatus.status = if (it) SearchStatus.Status.EXPANDED else SearchStatus.Status.COLLAPSED
-            }
-        )
-    },
 ): SearchStatus {
     val searchStatus = remember { SearchStatus(label) }
     var isInitialized by remember { mutableStateOf(false) }
+    LocalActivity.current
 
-    searchStatus.apply {
-        this.collapseBar = { collapseBar(this) }
-        this.expandBar = { expandBar(this) }
-    }
-
-    LaunchedEffect(searchStatus.status) {
-        if (searchStatus.status == SearchStatus.Status.COLLAPSED) searchStatus.searchText = ""
+    LaunchedEffect(searchStatus.current) {
+        if (searchStatus.current == SearchStatus.Status.COLLAPSED) searchStatus.searchText = ""
         if (!isInitialized) {
             isInitialized = true
             return@LaunchedEffect
         }
-        searchStatus.isAnimating = true
     }
 
     return searchStatus
@@ -103,20 +88,31 @@ fun rememberSearchStatus(
 // Search Status Class
 @Stable
 class SearchStatus(val label: String) {
-    var collapseBar: @Composable () -> Unit = {}
-    var expandBar: @Composable () -> Unit = {}
+    private var isInitialized = false
     var searchText by mutableStateOf("")
-    var status by mutableStateOf(Status.COLLAPSED)
-    var isAnimating by mutableStateOf(false)
+    var current by mutableStateOf(Status.COLLAPSED)
+
     var offsetY by mutableStateOf(0.dp)
     var resultStatus by mutableStateOf(ResultStatus.DEFAULT)
 
-    fun isExpand() = status == Status.EXPANDED && !isAnimating
-    fun isCollapsed() = status == Status.COLLAPSED && !isAnimating
-    fun shouldExpand() = status == Status.EXPANDED
-    fun shouldCollapsed() = status == Status.COLLAPSED
-    fun isAnimatingExpand() = status == Status.EXPANDED && isAnimating
-    fun isAnimatingCollapse() = status == Status.COLLAPSED && isAnimating
+    fun isExpand() = current == Status.EXPANDED
+    fun isCollapsed() = current == Status.COLLAPSED
+    fun shouldExpand() = current == Status.EXPANDED || current == Status.EXPANDING
+    fun shouldCollapsed() = current == Status.COLLAPSED || current == Status.COLLAPSING
+    fun isAnimatingExpand() = current == Status.EXPANDING
+    fun isAnimatingCollapse() = current == Status.COLLAPSING
+
+    // 动画完成回调
+    fun onAnimationComplete() {
+        current = when (current) {
+            Status.EXPANDING -> Status.EXPANDED
+            Status.COLLAPSING -> {
+                searchText = ""
+                Status.COLLAPSED
+            }
+            else -> current
+        }
+    }
 
     @Composable
     fun TopAppBarAnim(
@@ -144,17 +140,18 @@ class SearchStatus(val label: String) {
     }
 
 
-    enum class Status { EXPANDED, COLLAPSED }
+    enum class Status { EXPANDED,EXPANDING, COLLAPSED,COLLAPSING }
     enum class ResultStatus { DEFAULT, EMPTY, LOAD, SHOW }
 }
 
 // Search Box Composable
 @Composable
-fun SearchBox(
+fun SearchStatus.SearchBox(
     modifier: Modifier = Modifier,
-    searchStatus: SearchStatus,
+    collapseBar: @Composable (SearchStatus) -> Unit = { SearchBarFake(label) },
     content: @Composable ColumnScope.() -> Unit
 ) {
+    val searchStatus = this
     val density = LocalDensity.current
 
     Column(modifier = modifier) {
@@ -169,10 +166,10 @@ fun SearchBox(
                     }
                 }
                 .pointerInput(Unit) {
-                    detectTapGestures { searchStatus.status = SearchStatus.Status.EXPANDED }
+                    detectTapGestures { searchStatus.current = SearchStatus.Status.EXPANDING }
                 }
         ) {
-            searchStatus.collapseBar()
+            collapseBar(searchStatus)
         }
         AnimatedVisibility(
             visible = searchStatus.shouldCollapsed(),
@@ -186,21 +183,33 @@ fun SearchBox(
 
 // Search Pager Composable
 @Composable
-fun SearchPager(
-    searchStatus: SearchStatus,
+fun SearchStatus.SearchPager(
     defaultResult: @Composable () -> Unit,
+    expandBar: @Composable (SearchStatus) -> Unit = { searchStatus ->
+        SearchBar(
+            query = searchStatus.searchText,
+            label = searchStatus.label,
+            onQueryChange = { searchStatus.searchText = it },
+            expanded = searchStatus.shouldExpand(),
+            onExpandedChange = {
+                Log.d("SearchStatus", "Expanded: $it")
+                searchStatus.current = if (it) SearchStatus.Status.EXPANDED else SearchStatus.Status.COLLAPSED
+            }
+        )
+    },
     result: LazyListScope.() -> Unit
 ) {
+    val searchStatus = this
     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
     val topPadding by animateDpAsState(
         if (searchStatus.shouldExpand()) systemBarsPadding else searchStatus.offsetY,
         animationSpec = tween(250, easing = LinearOutSlowInEasing)
     ) {
-        searchStatus.isAnimating = false
+        searchStatus.onAnimationComplete()
     }
     val backgroundAlpha by animateFloatAsState(
         if (searchStatus.shouldExpand()) 1f else 0f,
-        animationSpec = tween(250, easing = LinearOutSlowInEasing)
+        animationSpec = tween(250, easing = FastOutLinearInEasing)
     )
 
     Column(
@@ -226,7 +235,7 @@ fun SearchPager(
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
-                searchStatus.expandBar()
+                expandBar(searchStatus)
             }
             AnimatedVisibility(
                 visible = searchStatus.isExpand() || searchStatus.isAnimatingExpand(),
@@ -234,7 +243,7 @@ fun SearchPager(
                 exit = shrinkHorizontally() + slideOutHorizontally(targetOffsetX = { it })
             ) {
                 BackHandler(enabled = true) {
-                    searchStatus.status = SearchStatus.Status.COLLAPSED
+                    searchStatus.current = SearchStatus.Status.COLLAPSING
                 }
                 Text(
                     text = stringResource(R.string.cancel),
@@ -246,7 +255,7 @@ fun SearchPager(
                             interactionSource = null,
                             enabled = searchStatus.isExpand(),
                             indication = null
-                        )  { searchStatus.status = SearchStatus.Status.COLLAPSED }
+                        )  { searchStatus.current = SearchStatus.Status.COLLAPSING }
                 )
             }
         }

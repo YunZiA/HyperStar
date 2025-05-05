@@ -202,13 +202,14 @@ fun UpdaterPager(
             downloadModel.clearInit()
             navController.backParentPager(currentStartDestination.value)
         }
-        val isScrollEnabled = remember { mutableStateOf(false) }
-
 
         LaunchedEffect(isLoading.value , isNeedUpdate.value,uiState.value.newPageState.currentPage) {
             if (isLoading.value) return@LaunchedEffect
             if (isNeedUpdate.value) {
-                isScrollEnabled.value = uiState.value.newPageState.currentPage == 0
+
+                viewModel.handleEvent(
+                    UpdaterViewModel.UpdateDetailEvent.SetScrollEnabled(uiState.value.newPageState.currentPage == 0)
+                )
                 if (!showUpdater.value){
                     coroutineScope {
                         delay(500)
@@ -220,7 +221,9 @@ fun UpdaterPager(
                     }
                 }
             }else{
-                isScrollEnabled.value = false
+                viewModel.handleEvent(
+                    UpdaterViewModel.UpdateDetailEvent.SetScrollEnabled(false)
+                )
             }
 
         }
@@ -231,7 +234,7 @@ fun UpdaterPager(
                 .blur(hazeState),
             beyondViewportPageCount = PagerDefaults.BeyondViewportPageCount+1,
             state = pagerState,
-            userScrollEnabled = isScrollEnabled.value,
+            userScrollEnabled = uiState.value.isScrollEnabled,
         ) { page ->
 
             when (page) {

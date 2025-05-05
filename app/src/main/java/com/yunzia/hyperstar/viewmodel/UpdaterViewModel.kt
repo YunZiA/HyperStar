@@ -37,7 +37,7 @@ class UpdaterViewModel : ViewModel() {
     data class UpdateDetailUiState(
         val newPageState: NewPageState = NewPageState(),
         val animationState: UpdatePageAnimationState? = null,
-        val isScrollEnabled: Boolean = true,
+        val isScrollEnabled: Boolean = false,
         val isBlur: Boolean = false,
         val needCancel: MutableState<Boolean> = mutableStateOf(true)
     )
@@ -47,7 +47,7 @@ class UpdaterViewModel : ViewModel() {
         data class PageChanged(val page: Int) : UpdateDetailEvent()
         data class ScrollOffsetChanged(val offset: Float) : UpdateDetailEvent()
         data class AnimationCompleted(val radius: Dp,val finalRadius: Dp) : UpdateDetailEvent()
-        data class TiltingStateChanged(val isTilting: Boolean) : UpdateDetailEvent()
+        data class SetScrollEnabled(val isScrollEnabled: Boolean) : UpdateDetailEvent()
         object NavigateToDetailPage : UpdateDetailEvent()
         object NavigateBack : UpdateDetailEvent()
         object CancelTiltEffect : UpdateDetailEvent()
@@ -133,9 +133,9 @@ class UpdaterViewModel : ViewModel() {
                         }
                     }
                 }
-                is UpdateDetailEvent.TiltingStateChanged -> {
+                is UpdateDetailEvent.SetScrollEnabled -> {
                     _uiState.update {
-                        it.copy(isScrollEnabled = !event.isTilting)
+                        it.copy(isScrollEnabled = event.isScrollEnabled)
                     }
                 }
 

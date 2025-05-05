@@ -235,12 +235,9 @@ fun ThirdPage(
             val currentVersion = extractOnlyNumbers(getVerName(context))
             val newVersion = extractOnlyNumbers(activity.newAppVersion.value)
             Log.d("ggc", "ThirdPage: currentVersion = $currentVersion newVersion = $newVersion",)
-            Log.d("ggc", "ThirdPage: currentPage = ${pagerState.currentPage} ${bgAlpha.floatValue}")
 
             // 比较版本号
-            if (currentVersion < newVersion) {
-                isNeedUpdate.value = true
-            }
+            isNeedUpdate.value = currentVersion < newVersion
         }
 
 

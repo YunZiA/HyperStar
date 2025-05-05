@@ -257,7 +257,7 @@ fun PagerState.UpdateDetailPage(
                                 needCancel = uiState.value.needCancel,
                             ) { isTilting ->
                                 viewModel.handleEvent(
-                                    UpdaterViewModel.UpdateDetailEvent.TiltingStateChanged(isTilting)
+                                    UpdaterViewModel.UpdateDetailEvent.SetScrollEnabled(!isTilting)
                                 )
                             }
                         }

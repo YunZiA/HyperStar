@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.welcome
 
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
@@ -13,12 +14,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.RecomposeScope
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,8 +67,7 @@ fun LanguagePage(
         val coroutineScope = rememberCoroutineScope()
 
         LaunchedEffect(activity.language.intValue) {
-            activity.setLocale(activity.language.intValue)
-            recompose.invalidate()
+            Log.d("ggc", "LaunchedEffect: ${activity.language.intValue}")
         }
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -99,8 +100,19 @@ fun LanguagePage(
 
             languageList.forEachIndexed { index, language ->
 
-                languageItem(language, index, activity.language,recompose)
+                item(index) {
+                    val isSelected = remember { derivedStateOf { activity.language.intValue == index } }
 
+                    LanguageItem(language, index, isSelected) {
+                        if (activity.language.intValue == index) return@LanguageItem
+                        activity.language.intValue = index
+                        PreferencesUtil.putInt("app_language", activity.language.intValue)
+                        activity.setLocale(activity.language.intValue)
+                        recompose.invalidate()
+
+                    }
+
+                }
             }
         }
 
@@ -124,39 +136,34 @@ fun LanguagePage(
 
 }
 
-private fun LazyListScope.languageItem(
+@Composable
+private fun LanguageItem(
     language: String,
     index: Int,
-    selectedItem: MutableIntState,
-    recompose: RecomposeScope
+    isSelected: State<Boolean>,
+    onCheckedChange: ((Boolean) -> Unit)
 ){
 
-    val isSelected = index == selectedItem.intValue
 
 
-    item(language){
+    SuperCheckbox(
+        title = language,
+        titleColor =  titleColor(isSelected.value),
+        checked = isSelected.value,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 28.dp)
+            .padding(vertical = 5.dp)
+            .bounceAnimN {}
+            .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
+            .background(if (isSelected.value) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
+        ,
+        checkboxLocation = CheckboxLocation.Right,
+        insideMargin = PaddingValues(20.dp),
+        onCheckedChange =  {onCheckedChange(it) }
+    )
 
-        SuperCheckbox(
-            title = language,
-            titleColor =  titleColor(isSelected),
-            checked = isSelected,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 28.dp)
-                .padding(vertical = 5.dp)
-                .bounceAnimN {}
-                .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
-                .background(if (isSelected) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
-            ,
-            checkboxLocation = CheckboxLocation.Right,
-            insideMargin = PaddingValues(20.dp),
-            onCheckedChange = {
-                selectedItem.intValue = index
-                PreferencesUtil.putInt("app_language", selectedItem.intValue)
-            }
-        )
 
-    }
 
 
 

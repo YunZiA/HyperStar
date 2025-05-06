@@ -5,12 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.currentRecomposeScope
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringArrayResource
@@ -38,12 +38,7 @@ fun LanguagePager(
     val activity = LocalActivity.current as MainActivity
 
     val languageList = stringArrayResource(R.array.language_list).toList()
-
     val recompose = currentRecomposeScope
-    LaunchedEffect(activity.language.intValue) {
-        activity.setLocale(activity.language.intValue)
-        recompose.invalidate()
-    }
 
 
     NavPager(
@@ -55,7 +50,18 @@ fun LanguagePager(
 
         languageList.forEachIndexed { index, language ->
 
-            languageItem(language, index,activity.language)
+            item(index){
+                val isSelected = remember { derivedStateOf { activity.language.intValue == index } }
+
+                LanguageItem(language, index,isSelected){
+                    if (activity.language.intValue == index) return@LanguageItem
+                    activity.language.intValue = index
+                    PreferencesUtil.putInt("app_language", activity.language.intValue)
+                    activity.setLocale(activity.language.intValue)
+                    recompose.invalidate()
+                }
+            }
+
 
         }
 
@@ -64,41 +70,32 @@ fun LanguagePager(
 
 }
 
-
-private fun LazyListScope.languageItem(
-    language:String,
-    index:Int,
-    selectedItem: MutableIntState
+@Composable
+private fun LanguageItem(
+    language: String,
+    index: Int,
+    isSelected: State<Boolean>,
+    onCheckedChange: (Boolean) -> Unit
 ){
 
-    val isSelected =  index == selectedItem.intValue
-
-
-    item(index){
-
-        val activity = LocalActivity.current as MainActivity
         SuperCheckbox(
             title = language,
-            titleColor =  titleColor(isSelected),
-            checked = isSelected,
+            titleColor =  titleColor(isSelected.value),
+            checked = isSelected.value,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 28.dp)
                 .padding(top = 10.dp)
                 .bounceAnimN {}
                 .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
-                .background(if (isSelected) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
+                .background(if (isSelected.value) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
             ,
             checkboxLocation = CheckboxLocation.Right,
             insideMargin = PaddingValues(20.dp),
-            onCheckedChange = {
-                selectedItem.intValue = index
-                PreferencesUtil.putInt("app_language", selectedItem.intValue)
-                //activity.recreate()
-            }
+            onCheckedChange = { onCheckedChange(it) }
         )
 
-    }
+
 
 
 

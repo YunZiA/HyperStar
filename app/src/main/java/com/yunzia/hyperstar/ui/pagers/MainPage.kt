@@ -369,7 +369,7 @@ fun  RebootDialog(
             modifier = Modifier
                 .padding(top = 8.dp, bottom = 18.dp)
                 .fillMaxWidth()
-                .clip(SmoothRoundedCornerShape(12.dp, 0.5f))
+                .clip(SmoothRoundedCornerShape(16.dp, 1f))
                 .background(colorScheme.secondaryContainer)
         ) {
             Item(

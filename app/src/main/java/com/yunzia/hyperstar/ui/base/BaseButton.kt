@@ -196,7 +196,7 @@ fun BaseButton(
         },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = SmoothRoundedCornerShape(cornerRadius,0.8f),
+        shape = SmoothRoundedCornerShape(cornerRadius,1f),
                 //SquircleShape(cornerRadius,CornerSmoothing.High),
         color = color
     ) {

@@ -119,12 +119,12 @@ fun SuperXDialog(
                             }
                             .align(contentAlignment.invoke().value)
                             .graphicsLayer(
-                                shape = SmoothRoundedCornerShape(bottomCornerRadius,0.5f),
+                                shape = SmoothRoundedCornerShape(bottomCornerRadius,1f),
                                 clip = false
                             )
                             .background(
                                 color = backgroundColor,
-                                shape = SmoothRoundedCornerShape(bottomCornerRadius,0.5f)
+                                shape = SmoothRoundedCornerShape(bottomCornerRadius,1f)
                             )
                             .padding(
                                 horizontal = insideMargin.width,

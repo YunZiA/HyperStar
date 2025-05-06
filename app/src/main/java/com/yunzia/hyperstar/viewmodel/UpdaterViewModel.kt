@@ -29,7 +29,6 @@ import top.yukonga.miuix.kmp.utils.getWindowSize
 
 class UpdaterViewModel : ViewModel() {
 
-
     private val _uiState = MutableStateFlow(UpdateDetailUiState())
     val uiState: StateFlow<UpdateDetailUiState> = _uiState.asStateFlow()
 

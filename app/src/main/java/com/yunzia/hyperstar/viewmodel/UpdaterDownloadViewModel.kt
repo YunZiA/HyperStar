@@ -1,10 +1,8 @@
 package com.yunzia.hyperstar.viewmodel
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.nav.CommitHistory
 import com.yunzia.hyperstar.utils.FileSize
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +17,6 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 class UpdaterDownloadViewModel: ViewModel() {
-
 
     private val _noInit = MutableStateFlow(false)
 
@@ -76,11 +73,9 @@ class UpdaterDownloadViewModel: ViewModel() {
         _showUpdater.value = true
     }
 
-
     fun noInit(){
         _noInit.value = true
     }
-
 
     fun clearInit(){
         _noInit.value = false
@@ -125,13 +120,6 @@ class UpdaterDownloadViewModel: ViewModel() {
 
     }
 
-
-    sealed class DownloadInfo {
-        object Idle : DownloadInfo()
-        data class Progress(val downloadedSize: Long, val totalSize: Long, val formattedTotal: String) : DownloadInfo()
-        data class Error(val message: String) : DownloadInfo()
-        data class Complete(val totalSize: Long, val formattedSize: String) : DownloadInfo()
-    }
     fun getFileTotalSize(fileUrl: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _fileSize.value = formatSize(FileSize(fileUrl).getFileSize())
@@ -193,24 +181,6 @@ class UpdaterDownloadViewModel: ViewModel() {
         }
     }
 
-
-    private fun fetchHeadCommitContent(context: Context): String {
-        return try {
-            val connection = URL("https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/head_commit.m3u").openConnection() as HttpURLConnection
-            connection.inputStream
-                .bufferedReader()
-                .use { it.readText() }
-                .replace("--", "• ")
-                .trim()
-                .lines()
-                .joinToString("\n") { line -> line }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.d("ggc", "fetchHeadCommitContent: $e")
-            context.getString(R.string.UpdateFetchError)
-        }
-    }
-
     private fun fetchJsonFromUrl(): String {
         val connection = URL("https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/commit_history.json").openConnection() as HttpURLConnection
         return connection.inputStream.bufferedReader().use { it.readText() }
@@ -220,15 +190,6 @@ class UpdaterDownloadViewModel: ViewModel() {
         val numberString = input.filter { it.isDigit() }
         return numberString.toLongOrNull() ?: 0L // 安全转换为 Long 类型
     }
-
-
-    data class FileInfo(
-        val size: Long,
-        val fileName: String?,
-        val mimeType: String?
-    )
-
-
 
     enum class DownloadStatus {
         NONE, DOWNLOAD, SUCCESS, FAIL

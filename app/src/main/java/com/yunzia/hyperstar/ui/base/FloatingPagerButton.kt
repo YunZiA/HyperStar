@@ -1,20 +1,13 @@
 package com.yunzia.hyperstar.ui.base
 
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandIn
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -29,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -49,10 +44,10 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.ui.base.helper.getSystemSmoothCornerRadius
 import com.yunzia.hyperstar.ui.base.modifier.bounceAnim
+import com.yunzia.hyperstar.utils.rememberWindowSize
 import kotlinx.coroutines.delay
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 @Composable
@@ -61,8 +56,7 @@ fun FloatingPagerButton(
     buttonRadius: Dp = 60.dp,
     containerColor: Color = MiuixTheme.colorScheme.primary,
     shadowElevation: Dp = 4.dp,
-    minWidth: Dp = 60.dp,
-    minHeight: Dp = 60.dp,
+    minSize: Dp = 60.dp,
     insideMargin: PaddingValues = PaddingValues(0.dp),
     defaultWindowInsetsPadding: Boolean = true,
     buttonContent: @Composable () -> Unit,
@@ -72,33 +66,50 @@ fun FloatingPagerButton(
     val expand = remember { mutableStateOf(false) }
     val complete = remember { mutableStateOf(false) }
 
-    val durationMillis = 300
+    val durationMillis = 400
     val easing = CubicBezierEasing(0.38F, 0.0F, 0.55F, 0.99F)
     val roundedCorner = rememberUpdatedState (getSystemSmoothCornerRadius())
+
+    val windowSize = rememberWindowSize()
 
     // 动画状态
     val dim by animateColorAsState(
         targetValue = if (expand.value) MiuixTheme.colorScheme.windowDimming else Color.Transparent,
-        animationSpec = tween(200, easing = LinearEasing)
+        animationSpec = tween(durationMillis, easing = LinearOutSlowInEasing)
+    )
+
+    val alpha by animateFloatAsState(
+        targetValue = if (expand.value) 1f else 0f,
+        animationSpec = tween(durationMillis, easing = LinearOutSlowInEasing)
+    )
+
+    val height by animateDpAsState(
+        targetValue = if (expand.value) windowSize.value.height else minSize,
+        animationSpec = tween(durationMillis, easing = LinearOutSlowInEasing)
+    )
+
+    val width by animateDpAsState(
+        targetValue = if (expand.value) windowSize.value.width else minSize,
+        animationSpec = tween(durationMillis, easing = LinearOutSlowInEasing)
     )
 
     val layoutDirection = LayoutDirection.Rtl
 
     val endPadding by animateDpAsState(
         targetValue = if (expand.value) 0.dp else insideMargin.calculateEndPadding(layoutDirection),
-        animationSpec = tween(durationMillis, easing = FastOutSlowInEasing)
+        animationSpec = tween(durationMillis+50, 50, easing = LinearOutSlowInEasing)
     )
 
     val bottomPadding by animateDpAsState(
         targetValue = if (expand.value) 0.dp else insideMargin.calculateBottomPadding(),
-        animationSpec = tween(durationMillis, easing = FastOutSlowInEasing)
+        animationSpec = tween(durationMillis+50, 50, easing = LinearOutSlowInEasing)
     )
 
     val radius by animateDpAsState(
         targetValue = if (expand.value) {
             if (activity?.isInMultiWindowMode == true) 16.dp else roundedCorner.value
         } else buttonRadius,
-        animationSpec = tween(durationMillis, easing = FastOutSlowInEasing),
+        animationSpec = tween(durationMillis, easing = LinearOutSlowInEasing),
         finishedListener = {}
     )
 
@@ -139,63 +150,60 @@ fun FloatingPagerButton(
                         windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
                     }
                     bounceAnim(!expand.value)
-                }
+                },
+            contentAlignment = Alignment.BottomEnd,
         ) {
-            Surface(
-                modifier = Modifier.semantics { role = Role.Button },
-                shape = SmoothRoundedCornerShape(if (complete.value) 0.dp else radius, 0.7f),
-                color = containerColor,
-                shadowElevation = if (expand.value) 0.dp else shadowElevation,
-                enabled = !expand.value,
-                onClick = {}
-            ) {
-                AnimatedVisibility(
-                    visible = !expand.value,
-                    enter = fadeIn(tween(durationMillis / 3, easing = LinearEasing, delayMillis = durationMillis / 2)),
-                    exit = fadeOut(tween(durationMillis / 3, easing = LinearEasing))
+            if (alpha <= 0.8f){
+
+                Surface(
+                    modifier = Modifier.semantics { role = Role.Button },
+                    shape = SmoothRoundedCornerShape(if (complete.value) 0.dp else radius, 1f),
+                    color = containerColor,
+                    shadowElevation = if (expand.value) 0.dp else shadowElevation,
+                    enabled = !expand.value,
+                    onClick = {}
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .clickable { expand.value = true }
-                            .defaultMinSize(minWidth = minWidth, minHeight = minHeight),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        buttonContent()
-                    }
-                }
-                AnimatedVisibility(
-                    visible = expand.value,
-                    enter = expandIn(
-                        animationSpec = tween(durationMillis, easing = LinearOutSlowInEasing)
-                    ) + fadeIn(
-                        animationSpec = tween(durationMillis / 2, easing = LinearEasing)
-                    ) + scaleIn(
-                        animationSpec = tween(durationMillis / 2, easing = LinearEasing),
-                        initialScale = 0.5f,
-                        transformOrigin = TransformOrigin(1f, 1f)
-                    ),
-                    exit = shrinkOut(
-                        animationSpec = tween(durationMillis, easing = LinearEasing)
-                    ) + fadeOut(
-                        animationSpec = tween(durationMillis / 2, easing = LinearEasing)
-                    ) + scaleOut(
-                        animationSpec = tween(durationMillis, easing = LinearEasing),
-                        targetScale = 0f,
-                        transformOrigin = TransformOrigin(1f, 1f)
-                    )
-                ) {
+
                     BackHandler(enabled = expand.value) {
                         expand.value = false
                     }
                     Box(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .clickable { expand.value = true }
+                            .size(width,height)
+                            .defaultMinSize(minWidth = minSize, minHeight = minSize),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        buttonContent()
+                    }
+                }
+            }
+            if (alpha >= 0.2f){
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .graphicsLayer(
+                            alpha = alpha,
+                            scaleX = width/windowSize.value.width,
+                            scaleY = height/windowSize.value.height,
+                            shape = SmoothRoundedCornerShape(if (complete.value) 0.dp else radius, 1f),
+                            clip = true,
+                            transformOrigin = TransformOrigin(1f, 1f)
+                        )
+                ){
+                    BackHandler(enabled = expand.value) {
+                        expand.value = false
+                    }
+                    Box(
+                        modifier = Modifier
                             .background(MiuixTheme.colorScheme.background)
                     ) {
                         content(expand)
                     }
                 }
             }
+
         }
     }
 }

@@ -6,9 +6,14 @@ import android.graphics.drawable.Drawable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.unit.DpSize
 
 
 @Composable
@@ -51,6 +56,25 @@ fun loadAppInfo(packageName: String, content: Context = LocalContext.current): M
 
     return appInfo
 }
+
+@Composable
+fun rememberWindowSize(): State<DpSize> {
+    val windowInfo = LocalWindowInfo.current
+    val density = LocalDensity.current
+
+    val size =  remember {
+        derivedStateOf {
+            with(density) {
+                DpSize(
+                    width = windowInfo.containerSize.width.toDp(),
+                    height = windowInfo.containerSize.height.toDp()
+                )
+            }
+        }
+    }
+    return size
+}
+
 
 data class AppInfo(
     val appIcon:Drawable?,

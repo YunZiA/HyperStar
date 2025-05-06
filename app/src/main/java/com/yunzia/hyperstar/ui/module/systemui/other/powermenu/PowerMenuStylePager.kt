@@ -3,14 +3,15 @@ package com.yunzia.hyperstar.ui.module.systemui.other.powermenu
 //import com.chaos.hyperstar.R
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,13 +25,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerDefaults
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -46,25 +50,27 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.ColorUtils
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.FunList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.base.Classes
-import com.yunzia.hyperstar.ui.base.pager.ModuleNavPagers
 import com.yunzia.hyperstar.ui.base.SuperArgNavHostArrow
 import com.yunzia.hyperstar.ui.base.TopButton
 import com.yunzia.hyperstar.ui.base.helper.getSystemCornerRadius
+import com.yunzia.hyperstar.ui.base.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.utils.rememberWindowSize
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import kotlin.math.absoluteValue
 
 @Composable
 fun PowerMenuStylePager(
@@ -76,6 +82,17 @@ fun PowerMenuStylePager(
     val pagerState = rememberPagerState(initialPage = style.intValue,pageCount = { 3 })
     val funTypes = stringArrayResource(R.array.power_fun_types).toList()
     val funTitles = stringArrayResource(R.array.power_fun_titles).toList()
+
+    val windowSize = rememberWindowSize()
+    val screenHeight = animateDpAsState(
+        windowSize.value.height * 0.52f,
+        animationSpec = TweenSpec(100,0,FastOutSlowInEasing)
+    )
+    val screenWidth = animateDpAsState(
+        windowSize.value.width * 0.52f,
+        animationSpec = TweenSpec(100,0,FastOutSlowInEasing)
+    )
+    val titleSize = remember { mutableStateOf(16.sp) }
 
     ModuleNavPagers(
         activityTitle = stringResource(R.string.power_menu_extra),
@@ -107,27 +124,25 @@ fun PowerMenuStylePager(
     ) {
 
         item {
-
-            val configuration = LocalConfiguration.current
-            val screenHeight = animateDpAsState(
-                configuration.screenHeightDp.dp*0.52f,
-                animationSpec = TweenSpec(100,0,FastOutSlowInEasing)
-            )
-            val screenWidth = animateDpAsState(
-                configuration.screenWidthDp.dp*0.52f,
-                animationSpec = TweenSpec(100,0,FastOutSlowInEasing)
-            )
-            val titleSize = remember { mutableStateOf(16.sp) }
-
             Spacer(Modifier.height(20.dp))
 
             HorizontalPager(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .heightIn(350.dp)
                     .height(screenHeight.value),
                 state = pagerState,
                 contentPadding = PaddingValues(horizontal = 100.dp),
-                pageSpacing = 0.dp,
+                flingBehavior = PagerDefaults.flingBehavior(
+                    state = pagerState,
+                    // 自定义减速度
+                    decayAnimationSpec = rememberSplineBasedDecay(),
+                    snapAnimationSpec = spring(
+                        dampingRatio = 1f,
+                        stiffness = 570f
+                    )
+                ),
+                pageSpacing = (-10).dp,
                 userScrollEnabled = true
             ) { page ->
                 when (page) {
@@ -135,7 +150,7 @@ fun PowerMenuStylePager(
                     0 -> {
                         AnimPager(
                             0,
-                            pagerState.currentPage,
+                            pagerState,
                             screenWidth
                         ) {
                             PowerMenuStyleDefault(titleSize)
@@ -145,7 +160,7 @@ fun PowerMenuStylePager(
                     1 -> {
                         AnimPager(
                             1,
-                            pagerState.currentPage,
+                            pagerState,
                             screenWidth
                         ) {
                             PowerMenuStyleA(titleSize)
@@ -155,7 +170,7 @@ fun PowerMenuStylePager(
                     2 -> {
                         AnimPager(
                             2,
-                            pagerState.currentPage,
+                            pagerState,
                             screenWidth
                         ){
                             PowerMenuStyleB(titleSize)
@@ -171,34 +186,49 @@ fun PowerMenuStylePager(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        top = 26.dp,
-                        bottom = 36.dp
+                        top = 28.dp,
+                        bottom = 38.dp
                     ),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 repeat(pagerState.pageCount) { index ->
-                    val mgScale by animateDpAsState(
-                        targetValue = if (index == pagerState.currentPage) 14.dp else 7.dp,
-                        animationSpec = tween(300),
-                        label = ""
-                    )
 
+                    val progress = remember { mutableStateOf(0f) }
+
+
+                    LaunchedEffect(pagerState.currentPageOffsetFraction, pagerState.currentPage) {
+                        // 首先获取线性进度
+                        progress.value = when {
+                            // 当前页面
+                            index == pagerState.currentPage -> {
+                                1f - pagerState.currentPageOffsetFraction.absoluteValue
+                            }
+                            // 下一页或上一页（正在滑入的页面）
+                            (index == pagerState.currentPage - 1 && pagerState.currentPageOffsetFraction < 0) ||
+                                    (index == pagerState.currentPage + 1 && pagerState.currentPageOffsetFraction > 0) -> {
+                                pagerState.currentPageOffsetFraction.absoluteValue
+                            }
+                            // 其他页面
+                            else -> 0f
+                        }
+                    }
+//                    +8.dp*progress.value
                     Box(
                         modifier = Modifier
                             .padding(horizontal = 3.dp)
-                            .width(mgScale)
-                            .height(7.dp)
-                            .clip(if (index == pagerState.currentPage) RoundedCornerShape(2.dp) else CircleShape)
+                            .width(8.dp+8.dp*progress.value)
+                            .height(8.dp)
+                            .clip(RoundedCornerShape(8.dp-2.dp*progress.value))
                             .background(
-                                color = if (index == pagerState.currentPage) Color(
-                                    0xff3988FF
-                                ) else Color(
-                                    0xffE4E5E7
-                                ),
-                                shape = if (index == pagerState.currentPage) RoundedCornerShape(
-                                    6.dp
-                                ) else CircleShape
+                                color =
+                                    Color(
+                                        ColorUtils.blendARGB(
+                                            0xffE4E5E7.toInt(),  // 起始颜色
+                                            0xff3988FF.toInt(),  // 目标颜色
+                                            progress.value
+                                        )
+                                    )
                             )
                     )
                 }
@@ -227,7 +257,9 @@ fun PowerMenuStylePager(
 
                 }
                 2->{
-                    Classes{
+
+                    Classes(
+                    ){
                         SuperArgNavHostArrow(
                             title = stringResource(R.string.button)+0,
                             navController = navController,
@@ -299,7 +331,6 @@ fun PowerMenuStylePager(
 
 }
 
-
 @Composable
 private fun getFunTitle(
     types: List<String>,
@@ -312,37 +343,46 @@ private fun getFunTitle(
 @Composable
 fun AnimPager(
     page:Int,
-    currentPage:Int,
+    pagerState:PagerState,
     width: State<Dp>,
     content: @Composable() BoxWithConstraintsScope.() -> Unit
 ){
 
+    val progress = remember { mutableStateOf(0f) }
+
+
+    LaunchedEffect(pagerState.currentPageOffsetFraction, pagerState.currentPage) {
+        // 首先获取线性进度
+        progress.value = when {
+            // 当前页面
+            page == pagerState.currentPage -> {
+                1f - pagerState.currentPageOffsetFraction.absoluteValue
+            }
+            // 下一页或上一页（正在滑入的页面）
+            (page == pagerState.currentPage - 1 && pagerState.currentPageOffsetFraction < 0) ||
+                    (page == pagerState.currentPage + 1 && pagerState.currentPageOffsetFraction > 0) -> {
+                pagerState.currentPageOffsetFraction.absoluteValue
+            }
+            // 其他页面
+            else -> 0f
+        }
+    }
+
     val roundedCorner by rememberUpdatedState(getSystemCornerRadius())
 
-    val imgScale by animateFloatAsState(
-        targetValue = if (currentPage == page) 1f else 0.8f,
-        animationSpec =  TweenSpec(400,0,LinearOutSlowInEasing),
-        label = ""
-    )
-    val select by animateDpAsState(
-        targetValue = if (currentPage == page) 3.dp else 0.dp,
-        animationSpec = TweenSpec(400,0,LinearOutSlowInEasing),
-        label = ""
-    )
-
     val selectAlpha by animateFloatAsState(
-        targetValue = if (currentPage == page) 1f else 0f,
-        animationSpec = TweenSpec(400,0, LinearOutSlowInEasing),
+        targetValue = if (pagerState.currentPage == page) 1f else 0f,
+        animationSpec = TweenSpec(250,0, LinearEasing),
         label = ""
     )
     Box(
         modifier = Modifier
-            .scale(imgScale)
+            .scale(0.7f + progress.value * 0.3f)
             .fillMaxHeight()
             .border(
-                select,
-                Color(0xff3988FF ).copy(alpha = selectAlpha),
-                SmoothRoundedCornerShape(roundedCorner, 0.8F)
+                3.dp,
+                Color(0xff3988FF).copy(alpha = selectAlpha),
+                SmoothRoundedCornerShape(roundedCorner, 1F)
             )
             .width(width.value),
         contentAlignment = Alignment.Center,
@@ -350,7 +390,7 @@ fun AnimPager(
         BoxWithConstraints(
             Modifier
                 .padding(6.dp)
-                .clip(SmoothRoundedCornerShape(roundedCorner/5*4, 0.8F))
+                .clip(SmoothRoundedCornerShape(roundedCorner / 5 * 4, 1F))
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(Color(0xFF5470CB), Color(0xFF62B1D0)),

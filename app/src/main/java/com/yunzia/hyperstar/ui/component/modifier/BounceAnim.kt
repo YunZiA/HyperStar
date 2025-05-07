@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.ui.component.enums.EventState
@@ -95,24 +94,21 @@ fun Modifier.bounceClick(
     enabled: Boolean = true,
 ) = composed {
 
-
     this.pointerInput(Unit) {
         awaitPointerEventScope {
             while (enabled) {
+                // 等待按下事件
                 val event = awaitPointerEvent()
-                when (event.type) {
-                    PointerEventType.Press -> {
-                        buttonState.value = EventState.Pressed
-                    }
-                    PointerEventType.Release -> {
-                        buttonState.value = EventState.Idle
-                    }
+                if (event.changes.any { it.pressed }) {
+                    buttonState.value = EventState.Pressed
                 }
-
+                // 等待释放事件
+                event.changes.forEach { it.consume() }
+                if (event.changes.none { it.pressed }) {
+                    buttonState.value = EventState.Idle
+                }
             }
         }
 
     }
 }
-
-

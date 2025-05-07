@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -60,20 +61,25 @@ fun ProviderPage(
     val coroutineScope = rememberCoroutineScope()
     val activity = LocalActivity.current as MainActivity
     val context = LocalContext.current
-    val  success = remember { mutableStateOf(false) }
+    val success = remember { mutableStateOf(false) }
     val eventState = remember { mutableStateOf(EventState.Idle) }
 
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { result ->
         if (result == null) return@rememberLauncherForActivityResult
-        success.value = !JBUtil.readGson(context, result)
+        success.value = JBUtil.readGson(context, result)
+
         //activity.recreate()
 
     }
-
-    if (success.value){
-        MiuiStrongToast.showStrongToast(context,"导入成功!")
-
+    LaunchedEffect(
+        success.value
+    ) {
+        if (success.value){
+            MiuiStrongToast.showStrongToast(context, context.getString(R.string.import_success))
+        }
     }
+
+
 
     Column (
         modifier = Modifier.fillMaxSize(),

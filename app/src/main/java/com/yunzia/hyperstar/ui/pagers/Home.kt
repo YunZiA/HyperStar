@@ -64,6 +64,7 @@ import top.yukonga.miuix.kmp.utils.getWindowSize
 fun Home(
     navController: NavHostController,
     hazeState: HazeState,
+    contentPadding: PaddingValues,
     showReboot: MutableState<Boolean>
 ) {
     val isModuleActive = isModuleActive()
@@ -73,7 +74,6 @@ fun Home(
     val rebootStyle = activity.rebootStyle
 
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
-
 
     Scaffold(
         modifier = Modifier,
@@ -87,7 +87,6 @@ fun Home(
                 actions = {
                     if (rebootStyle.intValue == 1){
                         RebootPup(showReboot)
-
                     }
 
                     IconButton(
@@ -115,7 +114,7 @@ fun Home(
         LazyColumn(
             modifier = Modifier.height(getWindowSize().height.dp).blur(hazeState)
                 .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
-            contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+14.dp),
+            contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = contentPadding.calculateBottomPadding()+14.dp),
         ) {
 
             item{
@@ -217,6 +216,7 @@ fun Home(
             firstClasses(
                 title = R.string.systemui
             ){
+
                 SuperNavHostArrow(
                     leftIcon = R.drawable.icon_controlcenter,
                     title = stringResource(R.string.control_center),

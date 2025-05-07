@@ -54,6 +54,7 @@ import com.yunzia.hyperstar.ui.component.firstClasses
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
+import com.yunzia.hyperstar.ui.miuiStrongToast.MiuiStrongToast
 import com.yunzia.hyperstar.utils.JBUtil
 import com.yunzia.hyperstar.utils.JBUtil.clear
 import com.yunzia.hyperstar.utils.JBUtil.openFile
@@ -76,11 +77,13 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 fun Settings(
     navController: NavHostController,
     hazeState: HazeState,
+    contentPadding: PaddingValues,
     showReboot: MutableState<Boolean>
 ) {
 
     val context = LocalContext.current
     val activity = LocalActivity.current as MainActivity
+    //if (updateLanguage(activity)) return
 
     val view = LocalView.current
     val rebootStyle = activity.rebootStyle
@@ -94,6 +97,9 @@ fun Settings(
         if (result == null) return@rememberLauncherForActivityResult
         results.value = result
         errorDialog.value = !JBUtil.readGson(context, result)
+        if (!errorDialog.value){
+            MiuiStrongToast.showStrongToast(context, context.getString(R.string.restore_success))
+        }
         activity.updateUI()
 
     }
@@ -150,7 +156,7 @@ fun Settings(
                 .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
             contentPadding = PaddingValues(
                 top = padding.calculateTopPadding() + 14.dp,
-                bottom = padding.calculateBottomPadding() + 14.dp
+                bottom = contentPadding.calculateBottomPadding() + 14.dp
             ),
         ) {
             firstClasses(

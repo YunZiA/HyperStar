@@ -90,17 +90,17 @@ abstract class BaseActivity : ComponentActivity() {
 
     fun updateUI(){
         updateUI += 1
-        setLocale()
     }
 
     fun setLocale(
         index:Int = PreferencesUtil.getInt("app_language",0)
     ){
         val res = this.resources;
-        val configuration = res.configuration;
         val metrics = res.displayMetrics
+        val configuration = res.configuration.apply {
+            setLocale(LanguageHelper.getIndexLanguage(index))
+        }
 
-        configuration.setLocale(LanguageHelper.getIndexLanguage(index))
         res.updateConfiguration(configuration,metrics)
     }
 

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
-import androidx.compose.runtime.currentRecomposeScope
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -36,10 +35,7 @@ fun LanguagePager(
 
 ) {
     val activity = LocalActivity.current as MainActivity
-
     val languageList = stringArrayResource(R.array.language_list).toList()
-    val recompose = currentRecomposeScope
-
 
     NavPager(
         activityTitle = stringResource(R.string.language),
@@ -58,7 +54,6 @@ fun LanguagePager(
                     activity.language.intValue = index
                     PreferencesUtil.putInt("app_language", activity.language.intValue)
                     activity.setLocale(activity.language.intValue)
-                    recompose.invalidate()
                 }
             }
 

@@ -22,7 +22,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.currentRecomposeScope
 import androidx.compose.runtime.getValue
@@ -57,7 +56,6 @@ import com.yunzia.hyperstar.ui.component.modifier.showBlur
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.isOS2Settings
 import dev.chrisbanes.haze.HazeState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.ListPopup
 import top.yukonga.miuix.kmp.basic.ListPopupColumn
@@ -76,28 +74,6 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
-
-@Composable
-fun updateLanguage(
-    activity :BaseActivity = LocalActivity.current as BaseActivity
-): Boolean {
-    val update = remember { mutableStateOf(false) }
-    val recompose = currentRecomposeScope
-    var init by remember { mutableStateOf(false) }
-
-    LaunchedEffect(activity.language.intValue) {
-        if (!init){
-            init = true
-            return@LaunchedEffect
-        }
-        delay(50)
-        update.value = true
-        delay(5)
-        update.value = false
-    }
-    return update.value
-}
-
 @Composable
 fun MainPager(
     navController: NavHostController,
@@ -108,11 +84,6 @@ fun MainPager(
     val currentPage = pagerState.currentPage
 
     val coroutineScope = rememberCoroutineScope()
-    val items = listOf(
-        NavigationItem(stringResource(R.string.main_page_title), ImageVector.vectorResource(id = R.drawable.home)),
-        NavigationItem(stringResource(R.string.settings_page_title), ImageVector.vectorResource(id = R.drawable.setting)),
-        NavigationItem(stringResource(R.string.about_page_title), ImageVector.vectorResource(id = R.drawable.about)),
-    )
 
     val hazeState = remember { HazeState() }
     val show = remember { mutableStateOf(false) }
@@ -121,6 +92,11 @@ fun MainPager(
         modifier = Modifier.fillMaxSize(),
         popupHost = { },
         bottomBar = {
+            val items = listOf(
+                NavigationItem(stringResource(R.string.main_page_title), ImageVector.vectorResource(id = R.drawable.home)),
+                NavigationItem(stringResource(R.string.settings_page_title), ImageVector.vectorResource(id = R.drawable.setting)),
+                NavigationItem(stringResource(R.string.about_page_title), ImageVector.vectorResource(id = R.drawable.about)),
+            )
             NavigationBar(
                 modifier = Modifier.showBlur(hazeState),
                 color = Color.Transparent,
@@ -138,7 +114,8 @@ fun MainPager(
 
         AppHorizontalPager(
             modifier = Modifier
-                .height(getWindowSize().height.dp).padding(bottom = padding.calculateBottomPadding()),
+                .height(getWindowSize().height.dp).padding(),
+            contentPadding = PaddingValues(bottom = padding.calculateBottomPadding()) ,
             navController = navController,
             pagerState = pagerState,
             hazeState = hazeState,
@@ -162,6 +139,7 @@ fun MainPagerByThree(
     val context = LocalContext.current
     val activity = context as MainActivity
     val rebootStyle = activity.rebootStyle
+    val recomposeScope = currentRecomposeScope
 
 
     val currentPage = pagerState.currentPage
@@ -179,7 +157,6 @@ fun MainPagerByThree(
 
     Row {
 
-        if (updateLanguage(activity)) return
         NavigationBarForStart(
             modifier = Modifier.weight(0.25f).widthIn(max = 130.dp),
             items = items,
@@ -454,6 +431,7 @@ fun  Item(
 fun AppHorizontalPager(
     navController: NavHostController,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
     pagerState: PagerState,
     hazeState: HazeState,
     showReboot: MutableState<Boolean>,
@@ -466,6 +444,7 @@ fun AppHorizontalPager(
     HorizontalPager(
         modifier = modifier,
         state = pagerState,
+        contentPadding = PaddingValues(0.dp),
         beyondViewportPageCount = 3,
         userScrollEnabled = activity.enablePageUserScroll.value,
         pageContent = { page ->
@@ -473,15 +452,15 @@ fun AppHorizontalPager(
             when (page) {
 
                 0 ->{
-                    Home(navController = navController,hazeState,showReboot)
+                    Home(navController = navController,hazeState,contentPadding,showReboot)
                 }
 
                 1 -> {
-                    Settings(navController = navController,hazeState,showReboot)
+                    Settings(navController = navController,hazeState,contentPadding,showReboot)
                 }
 
                 else -> {
-                    ThirdPage(navController = navController,hazeState,showReboot,pagerState)
+                    ThirdPage(navController = navController,hazeState,contentPadding,showReboot,pagerState)
                 }
             }
 

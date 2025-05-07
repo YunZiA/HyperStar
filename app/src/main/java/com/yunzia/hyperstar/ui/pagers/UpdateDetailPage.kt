@@ -44,7 +44,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
@@ -80,7 +79,6 @@ import java.io.File
 @Composable
 fun PagerState.UpdateDetailPage(
     padding: PaddingValues,
-    logo: Painter,
     newVersion: String,
     fileUrl: State<String>,
     navController: NavController,

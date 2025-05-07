@@ -317,4 +317,5 @@ o(╥﹏╥)o</string>
     <string name="no_log_found_current_version">No Log Available</string>
     <string name="get_new_log">Learn what\'s new</string>
     <string name="new_version_update_content">Updated content</string>
+    <string name="import_success">Import successful!</string>
 </resources>

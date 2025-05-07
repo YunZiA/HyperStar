@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.RecomposeScope
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
@@ -50,7 +49,6 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 @Composable
 fun LanguagePage(
     pagerState: PagerState,
-    recompose: RecomposeScope
 ) {
 
     val view = LocalView.current
@@ -103,8 +101,6 @@ fun LanguagePage(
                         activity.language.intValue = index
                         PreferencesUtil.putInt("app_language", activity.language.intValue)
                         activity.setLocale(activity.language.intValue)
-                        recompose.invalidate()
-
                     }
 
                 }

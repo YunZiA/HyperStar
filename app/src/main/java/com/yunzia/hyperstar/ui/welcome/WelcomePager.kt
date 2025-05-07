@@ -24,7 +24,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.currentRecomposeScope
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,7 +56,6 @@ fun WelcomePager(
             .background(colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val recompose = currentRecomposeScope
 
         Row(
             modifier = Modifier
@@ -133,7 +131,7 @@ fun WelcomePager(
 
                     2 -> {
 
-                        LanguagePage(pagerState,recompose)
+                        LanguagePage(pagerState)
 
                     }
 

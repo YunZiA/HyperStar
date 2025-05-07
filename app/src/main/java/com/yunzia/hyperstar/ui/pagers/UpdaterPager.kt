@@ -37,12 +37,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.LinkAnnotation
@@ -129,12 +127,6 @@ fun UpdaterPager(
         derivedStateOf {
             "https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/${activity.newAppName.value}"
         }
-    }
-
-    val logo = if (activity.isDarkMode) {
-        painterResource(R.drawable.hyperstar2_dark)
-    } else {
-        painterResource(R.drawable.hyperstar2)
     }
 
     // Effect to initialize data
@@ -250,7 +242,6 @@ fun UpdaterPager(
                         padding = padding,
                         title = currentVersion,
                         isLoading = isLoading,
-                        logo = logo,
                         navController = navController
                     ){
                         if (isLoading.value) return@UpdateOverviewPage
@@ -263,7 +254,6 @@ fun UpdaterPager(
                     if (showUpdater.value) {
                         pagerState.UpdateDetailPage(
                             padding = padding,
-                            logo = logo,
                             newVersion = activity.newAppVersion.value,
                             fileUrl = fileUrl,
                             navController = navController,
@@ -291,7 +281,6 @@ fun UpdateOverviewPage(
     modifier: Modifier = Modifier,
     padding: PaddingValues,
     title: String,
-    logo: Painter,
     navController: NavController,
     pagerState: PagerState,
     isLoading: State<Boolean>,

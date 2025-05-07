@@ -170,8 +170,6 @@ object JBUtil {
 
             }
 
-
-            Toast.makeText(context, context.getString(R.string.restore_success),Toast.LENGTH_SHORT).show()
             return true
         } catch (e: JsonSyntaxException) {
             Toast.makeText(context,"文件错误！",Toast.LENGTH_SHORT).show()

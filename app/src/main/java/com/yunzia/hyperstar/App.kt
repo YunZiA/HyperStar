@@ -87,7 +87,6 @@ import com.yunzia.hyperstar.ui.pagers.ReferencesPager
 import com.yunzia.hyperstar.ui.pagers.SettingsShowPage
 import com.yunzia.hyperstar.ui.pagers.TranslatorPager
 import com.yunzia.hyperstar.ui.pagers.UpdaterPager
-import com.yunzia.hyperstar.ui.pagers.updateLanguage
 import com.yunzia.hyperstar.ui.welcome.ActivePage
 import com.yunzia.hyperstar.ui.welcome.WelcomePager
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
@@ -102,7 +101,9 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
-@SuppressLint("SourceLockedOrientationActivity", "UnusedBoxWithConstraintsScope")
+@SuppressLint("SourceLockedOrientationActivity", "UnusedBoxWithConstraintsScope",
+    "LocalContextConfigurationRead"
+)
 @Composable
 fun App(){
 
@@ -244,6 +245,7 @@ fun App(){
 
             WelcomePager(welcome,welcomeState)
         }
+
 
     }
 
@@ -405,7 +407,6 @@ fun TwoLayout(
         Box(
             modifier = Modifier.weight(0.88f)
         ) {
-            if (updateLanguage(activity)) return
             MainPager(navController, pagerState)
         }
         VerticalDivider(

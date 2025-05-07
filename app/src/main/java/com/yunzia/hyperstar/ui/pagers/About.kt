@@ -117,6 +117,7 @@ fun extractOnlyNumbers(input: String): String {
 fun ThirdPage(
     navController: NavHostController,
     hazeState: HazeState,
+    contentPadding: PaddingValues,
     showReboot: MutableState<Boolean>,
     pagerState: PagerState
 ) {
@@ -323,7 +324,7 @@ fun ThirdPage(
                     fontSize = 39.sp,
                     fontWeight = FontWeight(560),
                     modifier = Modifier
-                        .alpha(mainAlpha.floatValue)
+                        .alpha(mainAlpha.floatValue * bgAlpha.floatValue)
                         .scale(mainScale.floatValue),
                     style = TextStyle(
                         brush = Brush.horizontalGradient(
@@ -354,7 +355,7 @@ fun ThirdPage(
                 state = scroll,
                 contentPadding = PaddingValues(
                     top = padding.calculateTopPadding(),
-                    bottom = padding.calculateBottomPadding() + 16.dp
+                    bottom = contentPadding.calculateBottomPadding() + 16.dp
                 ),
             ) {
 

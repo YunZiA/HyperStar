@@ -309,5 +309,6 @@
     <string name="no_log_found_current_version">未查询到您当前版本的日志</string>
     <string name="get_new_log">查看完整日志</string>
     <string name="new_version_update_content">新版本更新内容</string>
+    <string name="import_success">导入成功！</string>
 
 </resources>

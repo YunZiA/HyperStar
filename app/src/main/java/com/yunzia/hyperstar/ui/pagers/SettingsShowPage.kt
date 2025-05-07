@@ -8,11 +8,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.PMiuixSuperDropdown
-import com.yunzia.hyperstar.ui.base.PMiuixSuperSwitch
-import com.yunzia.hyperstar.ui.base.classes
-import com.yunzia.hyperstar.ui.base.firstClasses
-import com.yunzia.hyperstar.ui.base.pager.NavPager
+import com.yunzia.hyperstar.ui.component.PMiuixSuperDropdown
+import com.yunzia.hyperstar.ui.component.PMiuixSuperSwitch
+import com.yunzia.hyperstar.ui.component.classes
+import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.pager.NavPager
 import com.yunzia.hyperstar.utils.PreferencesUtil
 
 @Composable

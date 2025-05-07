@@ -60,11 +60,11 @@ import androidx.core.graphics.ColorUtils
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.FunList
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.Classes
-import com.yunzia.hyperstar.ui.base.SuperArgNavHostArrow
-import com.yunzia.hyperstar.ui.base.TopButton
-import com.yunzia.hyperstar.ui.base.helper.getSystemCornerRadius
-import com.yunzia.hyperstar.ui.base.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.component.Classes
+import com.yunzia.hyperstar.ui.component.SuperArgNavHostArrow
+import com.yunzia.hyperstar.ui.component.TopButton
+import com.yunzia.hyperstar.ui.component.helper.getSystemCornerRadius
+import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.SPUtils
 import com.yunzia.hyperstar.utils.rememberWindowSize

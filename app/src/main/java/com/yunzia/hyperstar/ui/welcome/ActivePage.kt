@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.TextButton
+import com.yunzia.hyperstar.ui.component.TextButton
 import com.yunzia.hyperstar.ui.pagers.dialog.checkApplication
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.getAndroidVersion

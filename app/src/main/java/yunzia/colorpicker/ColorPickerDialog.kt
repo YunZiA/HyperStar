@@ -44,10 +44,10 @@ import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults.buttonColors
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.BaseButton
-import com.yunzia.hyperstar.ui.base.MTextField
-import com.yunzia.hyperstar.ui.base.dialog.SuperDialog
-import com.yunzia.hyperstar.ui.base.tool.FilterColorHex
+import com.yunzia.hyperstar.ui.component.BaseButton
+import com.yunzia.hyperstar.ui.component.MTextField
+import com.yunzia.hyperstar.ui.component.dialog.SuperDialog
+import com.yunzia.hyperstar.ui.component.tool.FilterColorHex
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape

@@ -10,7 +10,6 @@ import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,25 +44,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.Button
-import com.yunzia.hyperstar.ui.base.card.rememberTiltAnimationState
-import com.yunzia.hyperstar.ui.base.card.withTiltEffect
-import com.yunzia.hyperstar.ui.base.helper.getSystemCornerRadius
-import com.yunzia.hyperstar.ui.base.modifier.nestedOverScrollVertical
+import com.yunzia.hyperstar.ui.component.Button
+import com.yunzia.hyperstar.ui.component.card.rememberTiltAnimationState
+import com.yunzia.hyperstar.ui.component.card.withTiltEffect
+import com.yunzia.hyperstar.ui.component.helper.getSystemCornerRadius
+import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.viewmodel.UpdaterDownloadViewModel
 import com.yunzia.hyperstar.viewmodel.UpdaterDownloadViewModel.DownloadStatus
 import com.yunzia.hyperstar.viewmodel.UpdaterViewModel
@@ -73,7 +73,6 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import java.io.File
 
@@ -127,9 +126,8 @@ fun PagerState.UpdateDetailPage(
     val animationState = viewModel.calculateAnimationState(
         newPageState = uiState.value.newPageState,
         padding = padding,
-        tiltState = tiltState,
-
-        )
+        tiltState = tiltState
+    )
 
     LaunchedEffect(animationState.values.radius) {
         viewModel.handleEvent(
@@ -149,7 +147,15 @@ fun PagerState.UpdateDetailPage(
 
     val scale = remember(animationState.values.horizontal) {
         derivedStateOf { (width - animationState.values.horizontal * 2) / width }
+
     }
+
+    val headerContent = lastCommit.value.lines()
+        .filter { it.trimStart().startsWith("#") }
+        .joinToString("\n") { line ->
+            line.replaceFirst("#", "| ").trim()
+        }
+
 
     // Root container
     Box(
@@ -195,27 +201,9 @@ fun PagerState.UpdateDetailPage(
                     .padding(horizontal = animationState.values.horizontal)
                     .padding(top = animationState.values.top)
                     .offset(x = offsetX, y = 0.dp)
-                    .then(
-                        if (uiState.value.newPageState.expand) {
-                            Modifier.graphicsLayer {
-                                rotationX = animationState.rotationX
-                                rotationY = animationState.rotationY
-                                scaleX = animationState.scaleX
-                                scaleY = animationState.scaleY
-                                transformOrigin = TransformOrigin(
-                                    pivotFractionX = animationState.pivotX,
-                                    pivotFractionY = animationState.pivotY
-                                )
-                                shape = SmoothRoundedCornerShape(
-                                    if (uiState.value.newPageState.complete) 0.dp
-                                    else animationState.values.radius,
-                                    1f
-                                )
-                                clip = true
-                            }
-                        } else {
-                            Modifier.withTiltEffect(tiltState)
-                        }
+                    .withTiltEffect(
+                        tiltState, if (uiState.value.newPageState.complete) 0.dp
+                        else animationState.values.radius
                     )
                     .background(animationState.values.color)
             )
@@ -227,41 +215,25 @@ fun PagerState.UpdateDetailPage(
                     .height(animationState.values.cardHeight)
                     .offset(x = offsetX, y = 0.dp)
                     .padding(top = animationState.values.top)
+                    .withTiltEffect(
+                        tiltState,
+                        coroutineScope,
+                        if (uiState.value.newPageState.complete) 0.dp
+                        else animationState.values.radius
+                    ) { isTilting ->
+                        viewModel.handleEvent(
+                            UpdaterViewModel.UpdateDetailEvent.SetScrollEnabled(!isTilting)
+                        )
+                    }
                     .then(
                         if (uiState.value.newPageState.expand) {
-                            Modifier
-                                .graphicsLayer {
-                                    rotationX = animationState.rotationX
-                                    rotationY = animationState.rotationY
-                                    scaleX = animationState.scaleX
-                                    scaleY = animationState.scaleY
-                                    transformOrigin = TransformOrigin(
-                                        pivotFractionX = animationState.pivotX,
-                                        pivotFractionY = animationState.pivotY
-                                    )
-                                    shape = SmoothRoundedCornerShape(
-                                        if (uiState.value.newPageState.complete) 0.dp
-                                        else animationState.values.radius,
-                                        1f
-                                    )
-                                    clip = true
-                                }
-                                .nestedOverScrollVertical(
-                                    topAppBarScrollBehavior.nestedScrollConnection
-                                )
+                            Modifier.nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection)
                         } else {
-                            Modifier.withTiltEffect(
-                                tiltState,
-                                coroutineScope,
-                                animationState.values.radius,
-                                needCancel = uiState.value.needCancel,
-                            ) { isTilting ->
-                                viewModel.handleEvent(
-                                    UpdaterViewModel.UpdateDetailEvent.SetScrollEnabled(!isTilting)
-                                )
-                            }
+                            Modifier
                         }
-                    ),
+                    )
+
+                ,
                 state = listState,
                 userScrollEnabled = uiState.value.newPageState.expand
             ) {
@@ -271,7 +243,7 @@ fun PagerState.UpdateDetailPage(
                         modifier = Modifier
                             .then(
                                 if (uiState.value.newPageState.currentPage == 0) {
-                                    Modifier.height(480.dp)
+                                    Modifier.height(500.dp)
                                 } else Modifier
                             )
                             .padding(horizontal = 28.dp)
@@ -283,25 +255,40 @@ fun PagerState.UpdateDetailPage(
                                 viewModel.handleEvent(
                                     UpdaterViewModel.UpdateDetailEvent.NavigateToDetailPage
                                 )
-                            }
+                            },
+                        horizontalAlignment = Alignment.Start
                     ) {
                         // Logo and version info
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = animationState.values.titleTop),
+                                .padding(top = animationState.values.titleTop)
+                            ,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Image(
-                                contentDescription = "",
-                                painter = logo,
-                                modifier = Modifier.width(265.dp)
+                            Text(
+                                text = buildAnnotatedString {
+                                    withStyle(
+                                        style = SpanStyle(color = colorScheme.onBackground)
+                                    ) {
+                                        append("Hyper")
+                                    }
+                                    withStyle(
+                                        style = SpanStyle(color = Color(0xFF2856FF) )
+                                    ) {
+                                        append("Star "+newVersion.substring(0,3))
+                                    }
+                                },
+                                fontSize = 40.sp,
+                                fontWeight = FontWeight(600),
+                                modifier = Modifier
                             )
-                            Spacer(modifier = Modifier.height(20.dp))
+
+
                             Text(
                                 text = "$newVersion | ${fileSize.value}",
-                                fontSize = 13.5.sp,
-                                modifier = Modifier,
+                                fontSize = 14.sp,
+                                modifier = Modifier.padding(top = 20.dp),
                                 fontWeight = FontWeight.Medium,
                                 textAlign = TextAlign.Center,
                                 color = colorScheme.onSurfaceVariantSummary
@@ -311,7 +298,9 @@ fun PagerState.UpdateDetailPage(
                         // View full log text
                         AnimatedVisibility(
                             uiState.value.newPageState.currentPage == 0,
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
                             enter = fadeIn(
                                 animationSpec = tween(
                                     500,
@@ -320,17 +309,47 @@ fun PagerState.UpdateDetailPage(
                                 )
                             ),
                             exit = fadeOut(
-                                animationSpec = tween(400, easing = LinearOutSlowInEasing)
+                                animationSpec = tween(0),
+                                targetAlpha = 0f
                             ),
                         ) {
-                            Column(verticalArrangement = Arrangement.Bottom) {
+
+                            Column(
+                                modifier = Modifier.padding(top = 130.dp, start = 32.dp, bottom = 32.dp),
+                                verticalArrangement = Arrangement.Top) {
+
+                                Column(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(
+                                            bottom = 20.dp
+                                        ),
+                                    verticalArrangement = Arrangement.Center
+                                ){
+
+                                    Text(
+                                        text = stringResource(R.string.new_version_update_content),
+                                        fontSize = 18.sp,
+                                        modifier = Modifier.padding(
+                                            bottom = 7.dp
+                                        ),
+                                        fontWeight = FontWeight(550),
+                                        color = colorScheme.onBackground.copy(0.7f)
+                                    )
+                                    Text(
+                                        text = headerContent,
+                                        fontSize = 17.sp,
+                                        modifier = Modifier.padding(start = 0.2.dp),
+                                        //lineHeight = 1.25.em,
+                                        fontWeight = FontWeight.Medium,
+                                        overflow = TextOverflow.Ellipsis,
+                                        color = colorScheme.onBackground.copy(0.65f)
+                                    )
+                                }
+
                                 Text(
-                                    text = "查看完整日志 >",
-                                    fontSize = 14.2.sp,
-                                    modifier = Modifier.padding(
-                                        start = 28.dp,
-                                        bottom = 28.dp
-                                    ),
+                                    text = stringResource(R.string.get_new_log)+" >",
+                                    fontSize = 14.5.sp,
                                     fontWeight = FontWeight.Medium,
                                     color = colorScheme.onSurfaceVariantSummary
                                 )
@@ -351,7 +370,8 @@ fun PagerState.UpdateDetailPage(
                             )
                         ),
                         exit = fadeOut(
-                            animationSpec = tween(400, easing = LinearOutSlowInEasing)
+                            animationSpec = tween(0),
+                            targetAlpha = 0f
                         ),
                     ) {
                         Box(
@@ -410,8 +430,6 @@ private fun DetailContent(
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = padding.calculateBottomPadding() + 100.dp)
-        //.navigationBarsPadding()
-        //.clickable(onClick = onBack)
     ) {
         UpdateContent(
             lastCommit = lastCommit,

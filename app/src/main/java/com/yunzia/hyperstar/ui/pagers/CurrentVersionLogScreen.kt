@@ -24,11 +24,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.XScaffold
-import com.yunzia.hyperstar.ui.base.modifier.blur
-import com.yunzia.hyperstar.ui.base.modifier.nestedOverScrollVertical
-import com.yunzia.hyperstar.ui.base.modifier.showBlur
-import com.yunzia.hyperstar.ui.base.nav.backParentPager
+import com.yunzia.hyperstar.ui.component.XScaffold
+import com.yunzia.hyperstar.ui.component.modifier.blur
+import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
+import com.yunzia.hyperstar.ui.component.modifier.showBlur
+import com.yunzia.hyperstar.ui.component.nav.backParentPager
 import com.yunzia.hyperstar.utils.getVerName
 import com.yunzia.hyperstar.viewmodel.UpdaterDownloadViewModel
 import dev.chrisbanes.haze.HazeState

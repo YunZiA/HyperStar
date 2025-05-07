@@ -49,10 +49,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.yunzia.hyperstar.ui.base.BaseActivity
-import com.yunzia.hyperstar.ui.base.XScaffold
-import com.yunzia.hyperstar.ui.base.nav.PagersModel
-import com.yunzia.hyperstar.ui.base.nav.pagersJson
+import com.yunzia.hyperstar.ui.component.BaseActivity
+import com.yunzia.hyperstar.ui.component.XScaffold
+import com.yunzia.hyperstar.ui.component.nav.PagersModel
+import com.yunzia.hyperstar.ui.component.nav.pagersJson
 import com.yunzia.hyperstar.ui.module.NotDeveloperPager
 import com.yunzia.hyperstar.ui.module.barrage.BarragePage
 import com.yunzia.hyperstar.ui.module.home.HomePage

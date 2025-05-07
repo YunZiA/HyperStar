@@ -32,10 +32,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.enums.EventState
-import com.yunzia.hyperstar.ui.base.modifier.nestedOverScrollVertical
-import com.yunzia.hyperstar.ui.base.nav.PagersModel
-import com.yunzia.hyperstar.ui.base.pager.ModuleNavPager
+import com.yunzia.hyperstar.ui.component.enums.EventState
+import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
+import com.yunzia.hyperstar.ui.component.nav.PagersModel
+import com.yunzia.hyperstar.ui.component.pager.ModuleNavPager
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.basic.Checkbox

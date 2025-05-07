@@ -5,10 +5,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.pager.NavPager
-import com.yunzia.hyperstar.ui.base.SuperIntentArrow
-import com.yunzia.hyperstar.ui.base.classes
-import com.yunzia.hyperstar.ui.base.firstClasses
+import com.yunzia.hyperstar.ui.component.pager.NavPager
+import com.yunzia.hyperstar.ui.component.SuperIntentArrow
+import com.yunzia.hyperstar.ui.component.classes
+import com.yunzia.hyperstar.ui.component.firstClasses
 
 @Composable
 fun ReferencesPager(

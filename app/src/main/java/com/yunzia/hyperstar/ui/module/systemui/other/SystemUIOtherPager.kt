@@ -6,11 +6,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.SystemUIMoreList
-import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
-import com.yunzia.hyperstar.ui.base.XSuperSwitch
-import com.yunzia.hyperstar.ui.base.classes
-import com.yunzia.hyperstar.ui.base.firstClasses
-import com.yunzia.hyperstar.ui.base.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
+import com.yunzia.hyperstar.ui.component.XSuperSwitch
+import com.yunzia.hyperstar.ui.component.classes
+import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.isOS2Settings
 

@@ -13,16 +13,16 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.ControlCenterList
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.pager.ModuleNavPagers
-import com.yunzia.hyperstar.ui.base.SuperContentDropdown
-import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
-import com.yunzia.hyperstar.ui.base.SuperStringArrow
-import com.yunzia.hyperstar.ui.base.SwitchContentFolder
-import com.yunzia.hyperstar.ui.base.XSuperDropdown
-import com.yunzia.hyperstar.ui.base.XMiuixSuperSliderSwitch
-import com.yunzia.hyperstar.ui.base.XSuperSwitch
-import com.yunzia.hyperstar.ui.base.classes
-import com.yunzia.hyperstar.ui.base.firstClasses
+import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.component.SuperContentDropdown
+import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
+import com.yunzia.hyperstar.ui.component.SuperStringArrow
+import com.yunzia.hyperstar.ui.component.SwitchContentFolder
+import com.yunzia.hyperstar.ui.component.XSuperDropdown
+import com.yunzia.hyperstar.ui.component.XMiuixSuperSliderSwitch
+import com.yunzia.hyperstar.ui.component.XSuperSwitch
+import com.yunzia.hyperstar.ui.component.classes
+import com.yunzia.hyperstar.ui.component.firstClasses
 import com.yunzia.hyperstar.utils.Helper
 
 

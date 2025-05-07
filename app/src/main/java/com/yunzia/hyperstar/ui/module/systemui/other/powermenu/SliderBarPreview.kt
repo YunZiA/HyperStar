@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import com.yunzia.hyperstar.ui.base.AutoSizeText
+import com.yunzia.hyperstar.ui.component.AutoSizeText
 
 @Composable
 fun SliderBarPreview(

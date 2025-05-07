@@ -30,11 +30,11 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.Button
-import com.yunzia.hyperstar.ui.base.PMiuixSuperDropdown
-import com.yunzia.hyperstar.ui.base.PMiuixSuperSwitch
-import com.yunzia.hyperstar.ui.base.XSuperDropdown
-import com.yunzia.hyperstar.ui.base.classes
+import com.yunzia.hyperstar.ui.component.Button
+import com.yunzia.hyperstar.ui.component.PMiuixSuperDropdown
+import com.yunzia.hyperstar.ui.component.PMiuixSuperSwitch
+import com.yunzia.hyperstar.ui.component.XSuperDropdown
+import com.yunzia.hyperstar.ui.component.classes
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Text

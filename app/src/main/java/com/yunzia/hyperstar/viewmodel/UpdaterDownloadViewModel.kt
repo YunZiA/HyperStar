@@ -3,7 +3,7 @@ package com.yunzia.hyperstar.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yunzia.hyperstar.ui.base.nav.CommitHistory
+import com.yunzia.hyperstar.ui.component.nav.CommitHistory
 import com.yunzia.hyperstar.utils.FileSize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

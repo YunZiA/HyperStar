@@ -51,7 +51,7 @@ import androidx.compose.ui.util.lerp
 import androidx.navigation.NavController
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.nav.backParentPager
+import com.yunzia.hyperstar.ui.component.nav.backParentPager
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Surface

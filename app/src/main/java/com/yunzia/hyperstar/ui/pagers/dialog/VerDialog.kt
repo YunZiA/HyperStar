@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.BaseButton
-import com.yunzia.hyperstar.ui.base.dialog.SuperXDialog
-import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.dismissXDialog
+import com.yunzia.hyperstar.ui.component.BaseButton
+import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
+import com.yunzia.hyperstar.ui.component.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme

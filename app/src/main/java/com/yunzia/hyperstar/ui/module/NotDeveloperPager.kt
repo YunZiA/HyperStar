@@ -31,9 +31,9 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.XSuperSwitch
-import com.yunzia.hyperstar.ui.base.classes
-import com.yunzia.hyperstar.ui.base.pager.NavPager
+import com.yunzia.hyperstar.ui.component.XSuperSwitch
+import com.yunzia.hyperstar.ui.component.classes
+import com.yunzia.hyperstar.ui.component.pager.NavPager
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 

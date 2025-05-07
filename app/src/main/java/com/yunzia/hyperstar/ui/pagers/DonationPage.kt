@@ -47,10 +47,10 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.BaseArrow
-import com.yunzia.hyperstar.ui.base.Classes
-import com.yunzia.hyperstar.ui.base.pager.NavPager
-import com.yunzia.hyperstar.ui.base.classes
+import com.yunzia.hyperstar.ui.component.BaseArrow
+import com.yunzia.hyperstar.ui.component.Classes
+import com.yunzia.hyperstar.ui.component.pager.NavPager
+import com.yunzia.hyperstar.ui.component.classes
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme

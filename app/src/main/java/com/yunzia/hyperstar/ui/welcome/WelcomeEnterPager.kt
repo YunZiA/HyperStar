@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -30,19 +29,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.utils.getVerName
 import kotlinx.coroutines.launch
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 @Composable
 fun WelcomeEnterPager(pagerState: PagerState) {
     val view = LocalView.current
     val activity = LocalActivity.current as MainActivity
+    val context = LocalContext.current
+    val currentVer = getVerName(context)
     val easing  = CubicBezierEasing(.42f,0f,0.26f,.85f)
     val coroutineScope = rememberCoroutineScope()
     val go = remember { mutableStateOf(false) }
@@ -56,11 +66,6 @@ fun WelcomeEnterPager(pagerState: PagerState) {
         animationSpec = tween(durationMillis = 1150,easing = easing),
         label = "alpha"
     )
-    val logo = if (activity.isDarkMode){
-        painterResource(R.drawable.hyperstar2_dark)
-    }else{
-        painterResource(R.drawable.hyperstar2)
-    }
 
     LaunchedEffect(pagerState.currentPage) {
         go.value = pagerState.currentPage == 0
@@ -77,11 +82,21 @@ fun WelcomeEnterPager(pagerState: PagerState) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                contentDescription = "",
-                painter = logo,
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(color = colorScheme.onBackground)
+                    ) {
+                        append("Hyper")
+                    }
+                    withStyle(
+                        style = SpanStyle(color = Color(0xFF2856FF) )
+                    ) {
+                        append("Star "+ currentVer.substring(0,3))
+                    } },
+                fontSize = 39.sp,
+                fontWeight = FontWeight(560),
                 modifier = Modifier
-                    .width(290.dp)
             )
         }
 

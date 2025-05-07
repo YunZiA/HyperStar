@@ -8,7 +8,6 @@ import android.view.HapticFeedbackConstants
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +20,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerDefaults
@@ -55,6 +53,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
@@ -66,16 +65,16 @@ import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.BaseButton
-import com.yunzia.hyperstar.ui.base.Button
-import com.yunzia.hyperstar.ui.base.SuperIntentArrow
-import com.yunzia.hyperstar.ui.base.XScaffold
-import com.yunzia.hyperstar.ui.base.dialog.SuperXDialog
-import com.yunzia.hyperstar.ui.base.dialog.SuperXPopupUtil.Companion.dismissXDialog
-import com.yunzia.hyperstar.ui.base.modifier.blur
-import com.yunzia.hyperstar.ui.base.modifier.showBlur
-import com.yunzia.hyperstar.ui.base.nav.backParentPager
-import com.yunzia.hyperstar.ui.base.nav.nav
+import com.yunzia.hyperstar.ui.component.BaseButton
+import com.yunzia.hyperstar.ui.component.Button
+import com.yunzia.hyperstar.ui.component.SuperIntentArrow
+import com.yunzia.hyperstar.ui.component.XScaffold
+import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
+import com.yunzia.hyperstar.ui.component.dialog.SuperXPopupUtil.Companion.dismissXDialog
+import com.yunzia.hyperstar.ui.component.modifier.blur
+import com.yunzia.hyperstar.ui.component.modifier.showBlur
+import com.yunzia.hyperstar.ui.component.nav.backParentPager
+import com.yunzia.hyperstar.ui.component.nav.nav
 import com.yunzia.hyperstar.utils.getVerName
 import com.yunzia.hyperstar.viewmodel.UpdaterDownloadViewModel
 import com.yunzia.hyperstar.viewmodel.UpdaterViewModel
@@ -163,8 +162,14 @@ fun UpdaterPager(
                         modifier = Modifier.padding(start = 12.dp),
                         onClick = {
                             view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                            downloadModel.clearInit()
-                            navController.backParentPager(currentStartDestination.value)
+                            if (uiState.value.newPageState.expand){
+                                viewModel.handleEvent(
+                                    UpdaterViewModel.UpdateDetailEvent.NavigateBack
+                                )
+                            }else{
+                                downloadModel.clearInit()
+                                navController.backParentPager(currentStartDestination.value)
+                            }
 
                         }
                     ) {
@@ -311,10 +316,22 @@ fun UpdateOverviewPage(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                contentDescription = "",
-                painter = logo,
-                modifier = Modifier.width(260.dp),
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(color = colorScheme.onBackground)
+                    ) {
+                        append("Hyper")
+                    }
+                    withStyle(
+                        style = SpanStyle(color = Color(0xFF2856FF) )
+                    ) {
+                        append("Star "+title.substring(0,3))
+                    }
+                },
+                fontSize = 40.sp,
+                fontWeight = FontWeight(600),
+                modifier = Modifier
             )
             Spacer(modifier = Modifier.height(25.dp))
             Text(

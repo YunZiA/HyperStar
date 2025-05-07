@@ -59,10 +59,10 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Icon
 import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.Button
-import com.yunzia.hyperstar.ui.base.enums.EventState
-import com.yunzia.hyperstar.ui.base.modifier.bounceClick
-import com.yunzia.hyperstar.ui.base.modifier.bounceScale
+import com.yunzia.hyperstar.ui.component.Button
+import com.yunzia.hyperstar.ui.component.enums.EventState
+import com.yunzia.hyperstar.ui.component.modifier.bounceClick
+import com.yunzia.hyperstar.ui.component.modifier.bounceScale
 import com.yunzia.hyperstar.ui.miuiStrongToast.MiuiStrongToast
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.app.AppInfo
 import com.yunzia.hyperstar.utils.Helper

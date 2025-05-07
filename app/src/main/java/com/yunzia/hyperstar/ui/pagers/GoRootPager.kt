@@ -36,10 +36,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.pager.NavPager
-import com.yunzia.hyperstar.ui.base.enums.EventState
-import com.yunzia.hyperstar.ui.base.modifier.bounceClick
-import com.yunzia.hyperstar.ui.base.modifier.bounceScale
+import com.yunzia.hyperstar.ui.component.pager.NavPager
+import com.yunzia.hyperstar.ui.component.enums.EventState
+import com.yunzia.hyperstar.ui.component.modifier.bounceClick
+import com.yunzia.hyperstar.ui.component.modifier.bounceScale
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.app.AppInfo
 import com.yunzia.hyperstar.utils.root
 import kotlinx.coroutines.Dispatchers

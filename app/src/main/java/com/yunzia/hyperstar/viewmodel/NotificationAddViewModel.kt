@@ -12,7 +12,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateSet
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.search.SearchStatus
+import com.yunzia.hyperstar.ui.component.search.SearchStatus
 import com.yunzia.hyperstar.ui.module.systemui.other.notification.NotificationInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

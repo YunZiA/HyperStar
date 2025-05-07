@@ -6,13 +6,11 @@ import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
@@ -24,22 +22,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.Button
+import com.yunzia.hyperstar.ui.component.Button
 import com.yunzia.hyperstar.utils.PreferencesUtil
+import com.yunzia.hyperstar.utils.getVerName
 import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 @Composable
 fun EnterPager(show: MutableState<Boolean>, pagerState: PagerState) {
     val view = LocalView.current
     val activity = LocalActivity.current as MainActivity
+    val context = LocalContext.current
+    val currentVer = getVerName(context)
     val easing  = CubicBezierEasing(.42f,0f,0.26f,.85f)
     val go = remember { mutableStateOf(false) }
     val animatedY =  animateDpAsState(
@@ -75,11 +81,23 @@ fun EnterPager(show: MutableState<Boolean>, pagerState: PagerState) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                contentDescription = "",
-                painter = logo,
+
+
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(color = colorScheme.onBackground)
+                    ) {
+                        append("Hyper")
+                    }
+                    withStyle(
+                        style = SpanStyle(color = Color(0xFF2856FF) )
+                    ) {
+                        append("Star "+currentVer.substring(0,3))
+                    } },
+                fontSize = 39.sp,
+                fontWeight = FontWeight(560),
                 modifier = Modifier
-                    .width(260.dp)
             )
             Text(
                 text = stringResource(R.string.setup_successful),

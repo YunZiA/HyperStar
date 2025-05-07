@@ -32,11 +32,11 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.FloatingPagerButton
-import com.yunzia.hyperstar.ui.base.LoadBox
-import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
-import com.yunzia.hyperstar.ui.base.modifier.nestedOverScrollVertical
-import com.yunzia.hyperstar.ui.base.pager.SearchModuleNavPager
+import com.yunzia.hyperstar.ui.component.FloatingPagerButton
+import com.yunzia.hyperstar.ui.component.LoadBox
+import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN
+import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
+import com.yunzia.hyperstar.ui.component.pager.SearchModuleNavPager
 import com.yunzia.hyperstar.ui.pagers.titleColor
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.viewmodel.NotificationViewModel

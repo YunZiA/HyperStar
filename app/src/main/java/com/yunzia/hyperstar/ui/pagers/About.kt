@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -50,8 +49,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.integerArrayResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -64,18 +63,17 @@ import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.BaseActivity
-import com.yunzia.hyperstar.ui.base.Button
-import com.yunzia.hyperstar.ui.base.LinearImage
-import com.yunzia.hyperstar.ui.base.SuperIntentArrow
-import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
-import com.yunzia.hyperstar.ui.base.classes
-import com.yunzia.hyperstar.ui.base.firstClasses
-import com.yunzia.hyperstar.ui.base.modifier.blur
-import com.yunzia.hyperstar.ui.base.modifier.nestedOverScrollVertical
-import com.yunzia.hyperstar.ui.base.modifier.showBlur
-import com.yunzia.hyperstar.ui.base.nav.nav
-import com.yunzia.hyperstar.ui.base.view.BgEffectView
+import com.yunzia.hyperstar.ui.component.BaseActivity
+import com.yunzia.hyperstar.ui.component.Button
+import com.yunzia.hyperstar.ui.component.SuperIntentArrow
+import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
+import com.yunzia.hyperstar.ui.component.classes
+import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.modifier.blur
+import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
+import com.yunzia.hyperstar.ui.component.modifier.showBlur
+import com.yunzia.hyperstar.ui.component.nav.nav
+import com.yunzia.hyperstar.ui.component.view.BgEffectView
 import com.yunzia.hyperstar.utils.getVerName
 import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.flow.onEach
@@ -133,7 +131,7 @@ fun ThirdPage(
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
 
     val paddingTop = animateDpAsState(
-        targetValue = if (isNeedUpdate.value) 27.dp else 55.dp,
+        targetValue = if (isNeedUpdate.value) 25.dp else 53.dp,
         animationSpec = tween(750, easing = LinearOutSlowInEasing)
     )
 
@@ -155,13 +153,13 @@ fun ThirdPage(
             }
         }
     }
-    val sec = with(density) { 100.dp.toPx() }
+    val sec = with(density) { 155.dp.toPx() }
     val secHeight = remember(but.value) {
         derivedStateOf {
             sec-but.value
         }
     }
-    val main = with(density) { 160.dp.toPx() }
+    val main = with(density) { 205.dp.toPx() }
     val mainHeight = main-sec
 
     val bgHeight = with(density) {  332.dp.toPx() }
@@ -226,13 +224,15 @@ fun ThirdPage(
         }
     ) { padding ->
 
+        val currentVer = getVerName(context)
+
         LaunchedEffect(pagerState.targetPage,activity.newAppVersion) {
             if (pagerState.targetPage != 2){
                 isNeedUpdate.value = false
                 return@LaunchedEffect
             }
             if(activity.newAppVersion.value == "") return@LaunchedEffect
-            val currentVersion = extractOnlyNumbers(getVerName(context))
+            val currentVersion = extractOnlyNumbers(currentVer)
             val newVersion = extractOnlyNumbers(activity.newAppVersion.value)
             Log.d("ggc", "ThirdPage: currentVersion = $currentVersion newVersion = $newVersion",)
 
@@ -264,7 +264,7 @@ fun ThirdPage(
                         ((but.value - it.toFloat().coerceIn(min, but.value)) / but.value).coerceIn(0f, 1f)
 
                     buttonAlpha.floatValue = buttonValue
-                    buttonScale.floatValue = lerp(0.99f, 1f, buttonValue)
+                    buttonScale.floatValue = lerp(0.985f, 1f, buttonValue)
                     val secValue = ((sec - it.toFloat().coerceIn(but.value, sec)) / secHeight.value).coerceIn(0f, 1f)
 
                     secAlpha.floatValue = secValue
@@ -317,14 +317,19 @@ fun ThirdPage(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                LinearImage(
-                    contentDescription = "",
-                    painter = painterResource(R.drawable.hyperstar2),
-                    alpha = mainAlpha.floatValue,
-                    colors = getColorList(colorMode = colorsMode),
+
+                Text(
+                    text = "HyperStar " + currentVer.substring(0,3),
+                    fontSize = 39.sp,
+                    fontWeight = FontWeight(560),
                     modifier = Modifier
-                        .width(260.dp)
+                        .alpha(mainAlpha.floatValue)
                         .scale(mainScale.floatValue),
+                    style = TextStyle(
+                        brush = Brush.horizontalGradient(
+                            colors = getColorList(colorMode = colorsMode)
+                        )
+                    )
                 )
 
                 Text(
@@ -356,7 +361,7 @@ fun ThirdPage(
                 item {
                     Box(
                         Modifier
-                            .height(410.dp)
+                            .height(411.dp)
                             .fillMaxWidth()
                             .pointerInput(Unit) {
                                 detectTapGestures() {

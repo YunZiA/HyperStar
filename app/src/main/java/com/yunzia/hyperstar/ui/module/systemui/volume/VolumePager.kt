@@ -5,14 +5,14 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.ContentFolder
-import com.yunzia.hyperstar.ui.base.pager.ModuleNavPagers
-import com.yunzia.hyperstar.ui.base.XMiuixSuperSliderSwitch
-import com.yunzia.hyperstar.ui.base.XSuperDropdown
-import com.yunzia.hyperstar.ui.base.XSuperSliders
-import com.yunzia.hyperstar.ui.base.XSuperSwitch
-import com.yunzia.hyperstar.ui.base.classes
-import com.yunzia.hyperstar.ui.base.firstClasses
+import com.yunzia.hyperstar.ui.component.ContentFolder
+import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.component.XMiuixSuperSliderSwitch
+import com.yunzia.hyperstar.ui.component.XSuperDropdown
+import com.yunzia.hyperstar.ui.component.XSuperSliders
+import com.yunzia.hyperstar.ui.component.XSuperSwitch
+import com.yunzia.hyperstar.ui.component.classes
+import com.yunzia.hyperstar.ui.component.firstClasses
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.isOS2Settings
 

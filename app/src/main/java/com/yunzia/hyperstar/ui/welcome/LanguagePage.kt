@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.ui.welcome
 
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.RecomposeScope
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
@@ -36,8 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.TextButton
-import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
+import com.yunzia.hyperstar.ui.component.TextButton
+import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.pagers.titleColor
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import kotlinx.coroutines.launch
@@ -66,9 +64,6 @@ fun LanguagePage(
     ) {
         val coroutineScope = rememberCoroutineScope()
 
-        LaunchedEffect(activity.language.intValue) {
-            Log.d("ggc", "LaunchedEffect: ${activity.language.intValue}")
-        }
         Spacer(modifier = Modifier.height(20.dp))
 
         Box(

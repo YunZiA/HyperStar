@@ -52,11 +52,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import yunzia.ui.DraggableGrid
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.pager.ModuleNavPagers
-import com.yunzia.hyperstar.ui.base.TopButton
-import com.yunzia.hyperstar.ui.base.classes
-import com.yunzia.hyperstar.ui.base.firstClasses
-import com.yunzia.hyperstar.ui.base.modifier.elevation
+import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.component.TopButton
+import com.yunzia.hyperstar.ui.component.classes
+import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.modifier.elevation
 import com.yunzia.hyperstar.utils.SPUtils
 import com.yunzia.hyperstar.utils.Helper
 import top.yukonga.miuix.kmp.basic.Text

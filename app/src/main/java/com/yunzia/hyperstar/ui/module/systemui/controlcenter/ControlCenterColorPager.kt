@@ -6,13 +6,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.CenterColorList
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.ColorPickerTool
-import com.yunzia.hyperstar.ui.base.ContentFolder
-import com.yunzia.hyperstar.ui.base.pager.ModuleNavPagers
-import com.yunzia.hyperstar.ui.base.SuperNavHostArrow
-import com.yunzia.hyperstar.ui.base.XMiuixContentDropdown
-import com.yunzia.hyperstar.ui.base.classes
-import com.yunzia.hyperstar.ui.base.firstClasses
+import com.yunzia.hyperstar.ui.component.ColorPickerTool
+import com.yunzia.hyperstar.ui.component.ContentFolder
+import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
+import com.yunzia.hyperstar.ui.component.XMiuixContentDropdown
+import com.yunzia.hyperstar.ui.component.classes
+import com.yunzia.hyperstar.ui.component.firstClasses
 import com.yunzia.hyperstar.utils.Helper
 
 @Composable

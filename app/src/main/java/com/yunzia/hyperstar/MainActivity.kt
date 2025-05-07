@@ -19,7 +19,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.profileinstaller.ProfileInstaller
-import com.yunzia.hyperstar.ui.base.BaseActivity
+import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.utils.AppInfo
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.PreferencesUtil

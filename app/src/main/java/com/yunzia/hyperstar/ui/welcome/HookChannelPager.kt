@@ -37,8 +37,8 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.Button
-import com.yunzia.hyperstar.ui.base.modifier.bounceAnimN
+import com.yunzia.hyperstar.ui.component.Button
+import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.pagers.titleColor
 import com.yunzia.hyperstar.utils.SPUtils
 import com.yunzia.hyperstar.utils.isOS2

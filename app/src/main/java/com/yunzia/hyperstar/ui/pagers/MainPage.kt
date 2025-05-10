@@ -29,7 +29,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,11 +45,9 @@ import androidx.navigation.NavHostController
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.ui.component.BaseButton
 import com.yunzia.hyperstar.ui.component.XScaffold
 import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
-import com.yunzia.hyperstar.ui.component.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
 import com.yunzia.hyperstar.utils.Helper
@@ -70,7 +67,6 @@ import top.yukonga.miuix.kmp.extra.CheckboxLocation
 import top.yukonga.miuix.kmp.extra.DropdownImpl
 import top.yukonga.miuix.kmp.extra.SuperCheckbox
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
@@ -304,7 +300,7 @@ fun RebootPup(
                 index = 0,
                 onSelectedIndexChange = {
                     Helper.rootShell("killall com.android.systemui")
-                    dismissPopup(show)
+                    show.value = false
                 }
             )
             if (os2){
@@ -315,7 +311,7 @@ fun RebootPup(
                     index = 1,
                     onSelectedIndexChange = {
                         Helper.rootShell("killall com.miui.home")
-                        dismissPopup(show)
+                        show.value = false
                     }
                 )
 
@@ -337,7 +333,7 @@ fun  RebootDialog(
         title = stringResource(R.string.fast_reboot),
         show = show,
         onDismissRequest = {
-            dismissXDialog(show)
+            show.value = false
             rebootList.clear()
         }
     ) {
@@ -381,7 +377,7 @@ fun  RebootDialog(
                 text = stringResource(R.string.cancel),
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    dismissXDialog(show)
+                    show.value = false
                     rebootList.clear()
                 }
 
@@ -392,7 +388,7 @@ fun  RebootDialog(
                 modifier = Modifier.weight(1f),
                 submit = true,
                 onClick = {
-                    dismissXDialog(show)
+                    show.value = false
                     if (rebootList.isEmpty()) return@BaseButton
                     for(i in rebootList){
                         Helper.rootShell("killall $i")

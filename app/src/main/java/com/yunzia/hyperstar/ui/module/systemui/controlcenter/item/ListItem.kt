@@ -27,8 +27,6 @@ import com.yunzia.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import yunzia.ui.Card
 
@@ -52,48 +50,44 @@ fun ListItem(
 
     }
 
-    if (showDialog.value){
 
-        MiuixPopupUtils.showDialog(
-            show = showDialog
-        ) {
-            MSuperDialog(
-                title = item.name,
-                show = showDialog,
-                showAction = true,
-                onDismissRequest = {
-                    dismissDialog(showDialog)
-                }
-            ) {
-
-                Card(
-                    Modifier.padding(bottom = 10.dp),
-                    color = colorScheme.secondaryContainer
-
-                ){
-                    EnableItemDropdown(
-                        key = "list_land_rightOrLeft"
-                    )
-
-                }
-
-                Card(
-                    color = colorScheme.secondaryContainer
-                ){
-                    EnableItemSlider(
-                        key = "list_span_size",
-                        progress = 1f,
-                        state = enable,
-                        progressState = spanSize
-                    )
-
-                }
-
-
-
-            }
+    MSuperDialog(
+        title = item.name,
+        show = showDialog,
+        showAction = true,
+        onDismissRequest = {
+            showDialog.value = false
         }
+    ) {
+
+        Card(
+            Modifier.padding(bottom = 10.dp),
+            color = colorScheme.secondaryContainer
+
+        ){
+            EnableItemDropdown(
+                key = "list_land_rightOrLeft"
+            )
+
+        }
+
+        Card(
+            color = colorScheme.secondaryContainer
+        ){
+            EnableItemSlider(
+                key = "list_span_size",
+                progress = 1f,
+                state = enable,
+                progressState = spanSize
+            )
+
+        }
+
+
+
     }
+
+
 
 
 

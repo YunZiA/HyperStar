@@ -47,6 +47,10 @@ class PluginHookForOS2 : InitHooker() {
         pluginInstancePluginFactory.afterHookMethod("createPluginContext"){
             val mPluginContext = it.result as ContextWrapper
             val pathClassLoader = mPluginContext.classLoader
+            if (mPluginContext.packageName != plugin){
+                starLog.log("检测到非目标应用包名: 当前包名为 " + mPluginContext.packageName + ", 目标插件包名为 " + plugin)
+                return@afterHookMethod
+            }
 
             if (pathClassLoader == null) {
                 starLog.log("Failed to load pluginClassLoader: null returned")
@@ -54,6 +58,7 @@ class PluginHookForOS2 : InitHooker() {
             }
             if (!isHooked) {
                 starLog.log("Loaded pluginClassLoader: $pathClassLoader")
+
                 initSecHook(pathClassLoader)
                 isHooked = true
             }else if (secClassLoader != pathClassLoader){

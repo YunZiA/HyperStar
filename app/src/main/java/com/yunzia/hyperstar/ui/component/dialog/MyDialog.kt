@@ -44,6 +44,7 @@ import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.useful.Cancel
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.DialogLayout
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
@@ -62,8 +63,6 @@ fun MSuperDialog(
     insideMargin: DpSize? = null,
     content: @Composable () -> Unit
 ) {
-
-
 
     @Suppress("NAME_SHADOWING")
     val insideMargin = remember { insideMargin } ?: remember { DpSize(14.dp, 12.dp) }
@@ -85,99 +84,104 @@ fun MSuperDialog(
         onDismissRequest()
     }
 
-    Box(
-        modifier = Modifier
-            .navigationBarsPadding()
-            .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
-            .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
-            .fillMaxSize()
-            .pointerInput(Unit) {
-                detectTapGestures(onTap = {
-                    onDismissRequest()
-                })
-            }
-            .then(paddingModifier)
+    DialogLayout(
+        visible = show
     ) {
-        Column(
+
+        Box(
             modifier = Modifier
-                .onGloballyPositioned {
-                    Log.d("ggc", "MSuperDialog: ${it.size}")
-
-                }
-                .widthIn(max = maxWidth)
+                .navigationBarsPadding()
+                .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
+                .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
+                .fillMaxSize()
                 .pointerInput(Unit) {
-                    detectTapGestures {
-                        onFocus()
-                    }
+                    detectTapGestures(onTap = {
+                        onDismissRequest()
+                    })
                 }
-                .align(contentAlignment)
-                .background(
-                    color = color,
-                    shape = SmoothRoundedCornerShape(25.dp, 0.8f)
-                )
-                .padding(24.dp),
+                .then(paddingModifier)
         ) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .onGloballyPositioned {
+                        Log.d("ggc", "MSuperDialog: ${it.size}")
+
+                    }
+                    .widthIn(max = maxWidth)
+                    .pointerInput(Unit) {
+                        detectTapGestures {
+                            onFocus()
+                        }
+                    }
+                    .align(contentAlignment)
+                    .background(
+                        color = color,
+                        shape = SmoothRoundedCornerShape(25.dp, 0.8f)
+                    )
+                    .padding(24.dp),
             ) {
-                Box(
-                    Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.CenterStart
-                ){
-                    if (showAction){
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.CenterStart
+                    ){
+                        if (showAction){
 
-                        IconButton(
-                            modifier = Modifier
-                                .padding(bottom = 20.dp),
-                            onClick = {
-                                view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                                //dismissDialog(show)
-                                onDismissRequest()
-                            }
-                        ) {
-                            Icon(
-                                imageVector =  MiuixIcons.Useful.Cancel,
-                                contentDescription = "back",
-                                tint = colorScheme.onBackground
-                            )
-                        }
-
-                    }
-
-                    Column(Modifier.fillMaxWidth()){
-                        title?.let {
-                            Text(
+                            IconButton(
                                 modifier = Modifier
-                                    .padding(bottom = 20.dp)
-                                    .fillMaxWidth(),
-                                text = it,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Medium,
-                                textAlign = TextAlign.Center,
-                                color = titleColor
-                            )
-                        }
-                        summary?.let {
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
                                     .padding(bottom = 20.dp),
-                                text = it,
-                                textAlign = TextAlign.Center,
-                                color = summaryColor
-                            )
+                                onClick = {
+                                    view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                                    //dismissDialog(show)
+                                    onDismissRequest()
+                                }
+                            ) {
+                                Icon(
+                                    imageVector =  MiuixIcons.Useful.Cancel,
+                                    contentDescription = "back",
+                                    tint = colorScheme.onBackground
+                                )
+                            }
+
+                        }
+
+                        Column(Modifier.fillMaxWidth()){
+                            title?.let {
+                                Text(
+                                    modifier = Modifier
+                                        .padding(bottom = 20.dp)
+                                        .fillMaxWidth(),
+                                    text = it,
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    textAlign = TextAlign.Center,
+                                    color = titleColor
+                                )
+                            }
+                            summary?.let {
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 20.dp),
+                                    text = it,
+                                    textAlign = TextAlign.Center,
+                                    color = summaryColor
+                                )
+                            }
+
                         }
 
                     }
+
 
                 }
 
 
+                content()
             }
-
-
-            content()
         }
     }
 }

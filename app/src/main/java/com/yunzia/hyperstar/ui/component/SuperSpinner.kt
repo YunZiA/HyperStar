@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
-import com.yunzia.hyperstar.ui.component.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.utils.SPUtils
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.BasicComponent
@@ -49,7 +48,6 @@ import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.basic.ArrowUpDownIntegrated
 import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
 
 @Composable
 fun SuperSpinner(
@@ -132,7 +130,7 @@ fun SuperSpinner(
 
     DisposableEffect(Unit) {
         onDispose {
-            dismissPopup(isDropdownExpanded)
+            isDropdownExpanded.value = false
         }
     }
 
@@ -210,13 +208,12 @@ fun SuperSpinner(
         enabled = enabled
     )
 
-    if (isDropdownExpanded.value) {
         SuperXDialog(
             modifier = popupModifier,
             title = title,
             show = isDropdownExpanded,
             onDismissRequest = {
-                dismissXDialog(isDropdownExpanded)
+                isDropdownExpanded.value = false
             },
             insideMargin = DpSize(0.dp, 24.dp)
         ) {
@@ -233,7 +230,7 @@ fun SuperSpinner(
                             ) {
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 onSelectedIndexChange?.let { it1 -> it1(it) }
-                                dismissXDialog(isDropdownExpanded)
+                                isDropdownExpanded.value = false
                             }
                         }
                     }
@@ -244,7 +241,7 @@ fun SuperSpinner(
                         text = dialogButtonString,
                         minHeight = 50.dp,
                         onClick = {
-                            dismissXDialog(isDropdownExpanded)
+                            isDropdownExpanded.value = false
                         }
                     )
                 }
@@ -262,5 +259,5 @@ fun SuperSpinner(
                 }
             }
         }
-    }
+
 }

@@ -49,7 +49,6 @@ import com.yunzia.hyperstar.ui.component.XSuperDropdown
 import com.yunzia.hyperstar.ui.component.classes
 import com.yunzia.hyperstar.ui.component.dialog.SuperCTDialogDefaults
 import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
-import com.yunzia.hyperstar.ui.component.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.ui.component.firstClasses
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
@@ -308,7 +307,7 @@ fun ErrorDialog(
                 text = stringResource(R.string.cancel),
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    dismissXDialog(show)
+                    show.value = false
                 }
 
             )
@@ -318,7 +317,7 @@ fun ErrorDialog(
                 modifier = Modifier.weight(1f),
                 submit = true,
                 onClick = {
-                    dismissXDialog(show)
+                    show.value = false
 
                 }
 

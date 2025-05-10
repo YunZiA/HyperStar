@@ -484,6 +484,34 @@ class QSListView : Hooker() {
         if ( labelMode != 0 ){
 
             findClass(
+                "miui.systemui.controlcenter.panel.main.qs.WordlessModeController",
+                classLoader
+            ).beforeHookMethod(
+                "getSettings",
+                Int::class.java
+            ) {
+                val contentResolver = this.getObjectFieldAs<ContentResolver>("contentResolver")
+                when (labelMode) {
+                    1 -> {
+                        Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+                    }
+                    2 -> {
+                        when (isWordlessMode2) {
+                            2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
+                            1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+                        }
+                    }
+                    else -> {
+                        when (isWordlessMode0) {
+                            2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
+                            1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+                        }
+                        return@beforeHookMethod
+                    }
+                }
+            }
+
+            findClass(
                 "miui.systemui.controlcenter.panel.main.qs.QSListController",
                 classLoader
             ).apply {

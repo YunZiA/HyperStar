@@ -26,8 +26,6 @@ import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ItemState
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import yunzia.ui.Card
 
@@ -62,45 +60,42 @@ fun DeviceControlItem(
     }
 
 
-    if (showDialog.value) {
-        MiuixPopupUtils.showDialog(
-            show = showDialog
+
+    MSuperDialog(
+        title = item.name,
+        show = showDialog,
+        showAction = true,
+        onDismissRequest = {
+            showDialog.value = false
+        }
+    ) {
+
+        Card(
+            Modifier.padding(bottom = 10.dp),
+            color = colorScheme.secondaryContainer
+
         ) {
-            MSuperDialog(
-                title = item.name,
-                show = showDialog,
-                showAction = true,
-                onDismissRequest = {
-                    dismissDialog(showDialog)
-                }
-            ) {
+            EnableItemDropdown(
+                key = "deviceControl_land_rightOrLeft"
+            )
 
-                Card(
-                    Modifier.padding(bottom = 10.dp),
-                    color = colorScheme.secondaryContainer
-
-                ) {
-                    EnableItemDropdown(
-                        key = "deviceControl_land_rightOrLeft"
-                    )
-
-                }
-
-                Card(
-                    color = colorScheme.secondaryContainer
-                ) {
-                    EnableItemSlider(
-                        key = "deviceControl_span_size",
-                        progress = 4f,
-                        state = enable,
-                        progressState = spanSize
-                    )
-
-                }
-            }
         }
 
+        Card(
+            color = colorScheme.secondaryContainer
+        ) {
+            EnableItemSlider(
+                key = "deviceControl_span_size",
+                progress = 4f,
+                state = enable,
+                progressState = spanSize
+            )
+
+        }
     }
+
+
+
 
     GridItemSpan(if (spanSize.floatValue.toInt() != 1) spanSize.floatValue.toInt() else 2)
 

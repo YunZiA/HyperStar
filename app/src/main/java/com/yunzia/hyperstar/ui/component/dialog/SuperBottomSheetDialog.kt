@@ -29,6 +29,7 @@ import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
+
 @Composable
 fun SuperBottomSheetDialog(
     title: String? = null,
@@ -41,6 +42,7 @@ fun SuperBottomSheetDialog(
     insideMargin: DpSize? = null,
     content: @Composable () -> Unit
 ) {
+
     @Suppress("NAME_SHADOWING")
     val insideMargin = remember { insideMargin } ?: remember { DpSize(14.dp, 14.dp) }
 
@@ -51,7 +53,6 @@ fun SuperBottomSheetDialog(
     val contentAlignment by remember { derivedStateOf { if (getWindowSize.width > getWindowSize.height) Alignment.Center else Alignment.BottomCenter } }
 
     BackHandler(enabled = show.value) {
-        CTPopupUtil.dismissCTDialog(show)
         onDismissRequest()
     }
 
@@ -60,7 +61,6 @@ fun SuperBottomSheetDialog(
             .fillMaxSize()
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
-                    CTPopupUtil.dismissCTDialog(show)
                     onDismissRequest()
                 })
             }

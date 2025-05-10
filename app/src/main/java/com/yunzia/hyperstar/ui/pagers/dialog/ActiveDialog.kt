@@ -23,9 +23,8 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseButton
 import com.yunzia.hyperstar.ui.component.dialog.SuperCTDialogDefaults
 import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
-import com.yunzia.hyperstar.ui.component.dialog.SuperXPopupUtil.Companion.dismissXDialog
-import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.Helper
+import com.yunzia.hyperstar.utils.PreferencesUtil
 import top.yukonga.miuix.kmp.basic.Text
 
 
@@ -97,7 +96,7 @@ fun ActiveDialog(
             text = stringResource(R.string.cancel),
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                dismissXDialog(show)
+                show.value = false
                 PreferencesUtil.removePreferences("no_active_waring")
             }
 
@@ -107,7 +106,7 @@ fun ActiveDialog(
             text = stringResource(R.string.no_warning),
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                dismissXDialog(show)
+                show.value = false
                 PreferencesUtil.putBoolean("no_active_waring",false)
 
             }
@@ -120,7 +119,7 @@ fun ActiveDialog(
                 modifier = Modifier.fillMaxWidth(),
                 submit = true,
                 onClick = {
-                    dismissXDialog(show)
+                    show.value = false
                     mContext.startActivity(intent)
 
                 }
@@ -135,7 +134,7 @@ fun ActiveDialog(
                 modifier = Modifier.fillMaxWidth(),
                 submit = true,
                 onClick = {
-                    dismissXDialog(show)
+                    show.value = false
                     Helper.rootShell("am start -c 'org.lsposed.manager.LAUNCH_MANAGER' 'com.android.shell/.BugreportWarningActivity'")
 
 

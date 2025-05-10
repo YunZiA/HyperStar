@@ -27,8 +27,6 @@ import com.yunzia.hyperstar.ui.component.modifier.elevation
 import com.yunzia.hyperstar.ui.module.systemui.controlcenter.EnableItemDropdown
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.showDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import yunzia.ui.Card
 
@@ -37,34 +35,30 @@ fun BrightnessItem(
     item: Card,
 ) {
     val showDialog = remember { mutableStateOf(false) }
-    if (showDialog.value){
-        showDialog(
-            show = showDialog
+    MSuperDialog(
+        title = item.name,
+        show = showDialog,
+        showAction = true,
+        onDismissRequest = {
+            showDialog.value = false
+        }
+    ) {
+
+
+        Card(
+            color = colorScheme.secondaryContainer
         ){
-            MSuperDialog(
-                title = item.name,
-                show = showDialog,
-                showAction = true,
-                onDismissRequest = {
-                    dismissDialog(showDialog)
-                }
-            ) {
+            EnableItemDropdown(
+                key = "brightness_land_rightOrLeft",
+                dfOpt = 1
+            )
 
-
-                Card(
-                    color = colorScheme.secondaryContainer
-                ){
-                    EnableItemDropdown(
-                        key = "brightness_land_rightOrLeft",
-                        dfOpt = 1
-                    )
-
-                }
-
-            }
         }
 
     }
+
+
+
 
     Box(
         modifier = Modifier
@@ -92,7 +86,7 @@ fun BrightnessItem(
                 .background(colorScheme.surface, SquircleShape(8.dp)),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally,
-        ){
+        ) {
             Icon(
                 ImageVector.vectorResource(R.drawable.ic_brightness_slider),
                 modifier = Modifier
@@ -102,6 +96,8 @@ fun BrightnessItem(
             )
             Spacer(modifier = Modifier.height(15.dp))
         }
+    }
+}
 
 
 //        Text(
@@ -110,6 +106,5 @@ fun BrightnessItem(
 //            textAlign = TextAlign.Center,
 //            color = colorScheme.onSurface
 //        )
-    }
 
-}
+

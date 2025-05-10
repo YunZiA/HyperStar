@@ -30,7 +30,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.dialog.SuperDialogs
-import com.yunzia.hyperstar.ui.component.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
 import com.yunzia.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.extra.SuperArrow
@@ -95,7 +94,7 @@ private fun StringDialog(
                 return@SuperDialogs
             }
             text.value = TextFieldValue(text = fText, selection = TextRange(fText.length))
-            dismissXDialog(showDialog)
+            showDialog.value = false
         }
     ) {
         val focusRequester = remember { FocusRequester() }
@@ -130,7 +129,7 @@ private fun StringDialog(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     focusManager.clearFocus()
-                    dismissXDialog(showDialog)
+                    showDialog.value = false
                     isChange.value = false
                     text.value = TextFieldValue(text = fText, selection = TextRange(fText.length))
 
@@ -147,7 +146,7 @@ private fun StringDialog(
                     isChange.value = false
                     text.value = TextFieldValue(text = "", selection = TextRange(0))
                     SPUtils.setString(key, "null")
-                    dismissXDialog(showDialog)
+                    showDialog.value = false
                     //showDialog.value = false
 
                 }
@@ -170,7 +169,7 @@ private fun StringDialog(
 
                     }
                     SPUtils.setString(key, values.value)
-                    dismissXDialog(showDialog)
+                    showDialog.value = false
 
                 }
 

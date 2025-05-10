@@ -55,7 +55,6 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.dialog.SuperDialogs
-import com.yunzia.hyperstar.ui.component.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.ui.component.enums.EventState
 import com.yunzia.hyperstar.ui.component.modifier.bounceClick
 import com.yunzia.hyperstar.ui.component.modifier.bounceScale
@@ -480,7 +479,7 @@ fun ValueDialog(
                 return@SuperDialogs
             }
             filter.setInputValue(String.format("%.${decimalPlaces}f", values.floatValue))
-            dismissXDialog(showDialog)
+            showDialog.value = false
         }
     ) {
         val focusRequester = remember { FocusRequester() }
@@ -529,7 +528,7 @@ fun ValueDialog(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     focusManager.clearFocus()
-                    dismissXDialog(showDialog)
+                    showDialog.value = false
                     if (filter.getInputValue().text == ""){
                         filter.setInputValue(String.format("%.${decimalPlaces}f", defValue))
                     }else{
@@ -548,7 +547,7 @@ fun ValueDialog(
                     filter.setInputValue(String.format("%.${decimalPlaces}f", defValue))
                     values.floatValue = defValue
                     SPUtils.setFloat(key, defValue)
-                    dismissXDialog(showDialog)
+                    showDialog.value = false
                     //showDialog.value = false
 
                 }
@@ -570,7 +569,7 @@ fun ValueDialog(
                         SPUtils.setFloat(key, values.floatValue)
 
                     }
-                    dismissXDialog(showDialog)
+                    showDialog.value = false
                     //showDialog.value = false
 
                 }

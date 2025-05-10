@@ -49,7 +49,6 @@ import com.yunzia.hyperstar.ui.component.MTextField
 import com.yunzia.hyperstar.ui.component.dialog.SuperDialog
 import com.yunzia.hyperstar.ui.component.tool.FilterColorHex
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 
@@ -90,7 +89,7 @@ fun ColorPickerDialog(
             if (doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)){
 
                 color.value = HsvColor.from(fColor)
-                dismissDialog(showDialog)
+                showDialog.value = false
             }
         },
     ) {
@@ -183,7 +182,7 @@ fun ColorPickerDialog(
                 text = stringResource(R.string.cancel),
                 cornerRadius = 15.dp,
                 onClick = {
-                    dismissDialog(showDialog)
+                    showDialog.value = false
                     color.value = HsvColor.from(fColor)
                 }
             )
@@ -196,7 +195,7 @@ fun ColorPickerDialog(
                 onClick = {
                     doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
                     onColorListener(color.value.toColor())
-                    dismissDialog(showDialog)
+                    showDialog.value = false
                 }
             )
         }

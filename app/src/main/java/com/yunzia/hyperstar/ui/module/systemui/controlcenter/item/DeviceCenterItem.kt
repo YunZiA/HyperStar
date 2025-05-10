@@ -25,8 +25,6 @@ import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ItemState
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import yunzia.ui.Card
 
@@ -59,45 +57,41 @@ fun DeviceCenterItem(
     }
 
 
-    if (showDialog.value) {
-        MiuixPopupUtils.showDialog(
-            show = showDialog
-        ) {
-            MSuperDialog(
-                title = item.name,
-                show = showDialog,
-                showAction = true,
-                onDismissRequest = {
-                    dismissDialog(showDialog)
-                }
-            ) {
-
-                Card(
-                    Modifier.padding(bottom = 10.dp),
-                    color = colorScheme.secondaryContainer
-                ) {
-                    EnableItemDropdown(
-                        key = "deviceCenter_land_rightOrLeft"
-                    )
-
-                }
-
-                Card(
-                    color = colorScheme.secondaryContainer
-                ) {
-                    EnableItemSlider(
-                        key = "deviceCenter_span_size",
-                        state = enable,
-                        progress = 4f,
-                        progressState = spanSize
-                    )
-
-
-                }
-
-            }
+    MSuperDialog(
+        title = item.name,
+        show = showDialog,
+        showAction = true,
+        onDismissRequest = {
+            showDialog.value = false
         }
+    ) {
+
+        Card(
+            Modifier.padding(bottom = 10.dp),
+            color = colorScheme.secondaryContainer
+        ) {
+            EnableItemDropdown(
+                key = "deviceCenter_land_rightOrLeft"
+            )
+
+        }
+
+        Card(
+            color = colorScheme.secondaryContainer
+        ) {
+            EnableItemSlider(
+                key = "deviceCenter_span_size",
+                state = enable,
+                progress = 4f,
+                progressState = spanSize
+            )
+
+
+        }
+
     }
+
+
 
 
 

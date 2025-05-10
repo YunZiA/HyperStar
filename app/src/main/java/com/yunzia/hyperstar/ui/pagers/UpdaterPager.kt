@@ -68,7 +68,6 @@ import com.yunzia.hyperstar.ui.component.Button
 import com.yunzia.hyperstar.ui.component.SuperIntentArrow
 import com.yunzia.hyperstar.ui.component.XScaffold
 import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
-import com.yunzia.hyperstar.ui.component.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
 import com.yunzia.hyperstar.ui.component.nav.backParentPager
@@ -94,7 +93,6 @@ import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import java.io.File
 import java.net.URLEncoder
@@ -492,7 +490,7 @@ private fun UpdatePup(
                 isSelected = false,
                 index = 0,
                 onSelectedIndexChange = {
-                    dismissPopup(show)
+                    show.value = false
                     downloadModel.noInit()
                     navController.navigate(PagerList.LOGHISTORY)
                 }
@@ -513,7 +511,7 @@ private fun ChannelDialog(
         title = stringResource(R.string.go_channel_discuss),
         show = show,
         onDismissRequest = {
-            dismissXDialog(show)
+            show.value = false
         }
     ) {
 
@@ -543,7 +541,7 @@ private fun ChannelDialog(
                 text = stringResource(R.string.cancel),
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    dismissXDialog(show)
+                    show.value = false
                 }
 
             )

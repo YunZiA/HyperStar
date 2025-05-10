@@ -25,15 +25,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.google.gson.Gson
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.component.dialog.SuperDialog
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
 import com.yunzia.hyperstar.ui.component.nav.PagersModel
 import com.yunzia.hyperstar.ui.component.nav.nav
 import com.yunzia.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.SuperArrow
+import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.extra.SuperDialogDefaults
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils
 
 
 @Composable
@@ -315,8 +314,7 @@ fun SuperWarnDialogArrow(
         title = warnTitle,
         show = show,
         onDismissRequest = {
-
-            MiuixPopupUtils.dismissDialog(show)
+            show.value = false
 
         }
     ) {
@@ -338,7 +336,7 @@ fun SuperWarnDialogArrow(
                 text = stringResource(R.string.cancel),
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    MiuixPopupUtils.dismissDialog(show)
+                    show.value = false
                 }
 
             )
@@ -349,7 +347,7 @@ fun SuperWarnDialogArrow(
                 modifier = Modifier.weight(1f),
                 submit = true,
                 onClick = {
-                    MiuixPopupUtils.dismissDialog(show)
+                    show.value = false
                     onSure()
 
                 }

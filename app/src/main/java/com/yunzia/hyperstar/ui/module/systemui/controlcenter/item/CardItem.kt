@@ -34,8 +34,6 @@ import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ItemState
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.showDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import yunzia.ui.Card
 
@@ -121,44 +119,39 @@ fun CardItem(
 
 
 
-    if (showDialog.value) {
-        showDialog(
-            show = showDialog
+    MSuperDialog(
+        title = item.name,
+        show = showDialog,
+        showAction = true,
+        onDismissRequest = {
+            showDialog.value = false
+        }
+    ) {
+
+        Card(
+            Modifier.padding(bottom = 10.dp),
+            color = colorScheme.secondaryContainer
         ) {
-            MSuperDialog(
-                title = item.name,
-                show = showDialog,
-                showAction = true,
-                onDismissRequest = {
-                    dismissDialog(showDialog)
-                }
-            ) {
 
-                Card(
-                    Modifier.padding(bottom = 10.dp),
-                    color = colorScheme.secondaryContainer
-                ) {
+            EnableItemDropdown(
+                key = "cards_land_rightOrLeft",
+                dfOpt = 1
+            )
+        }
+        Card(
+            color = colorScheme.secondaryContainer
+        ) {
+            EnableItemSlider(
+                key = "cards_span_size",
+                progress = 2f,
+                state = enable,
+                progressState = spanSize
+            )
 
-                    EnableItemDropdown(
-                        key = "cards_land_rightOrLeft",
-                        dfOpt = 1
-                    )
-                }
-                Card(
-                    color = colorScheme.secondaryContainer
-                ) {
-                    EnableItemSlider(
-                        key = "cards_span_size",
-                        progress = 2f,
-                        state = enable,
-                        progressState = spanSize
-                    )
-
-                }
-            }
         }
     }
-
-
-
 }
+
+
+
+

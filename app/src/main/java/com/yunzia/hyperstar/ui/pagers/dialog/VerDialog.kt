@@ -24,7 +24,6 @@ import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseButton
 import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
-import com.yunzia.hyperstar.ui.component.dialog.SuperXPopupUtil.Companion.dismissXDialog
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -83,7 +82,7 @@ fun VerDialog(
             text = stringResource(R.string.cancel),
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                dismissXDialog(show)
+                show.value = false
                 PreferencesUtil.removePreferences("ver_waring")
             }
 
@@ -93,7 +92,7 @@ fun VerDialog(
             text = stringResource(R.string.no_warning),
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                dismissXDialog(show)
+                show.value = false
                 PreferencesUtil.putBoolean("ver_waring",false)
 
             }

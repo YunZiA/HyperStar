@@ -19,6 +19,18 @@ import java.lang.reflect.Method
 
 abstract class HookerHelper {
 
+    fun replaceColor(name: String,packageName: String,color: Int){
+        Resources::class.java.afterHookAllMethods("getColor") {
+            val resourceId = it.args[0] as Int
+            val mResourcesImpl = this.getObjectField("mResourcesImpl")
+            val id = mResourcesImpl.callMethodAs<Int>("getIdentifier",name,"color",packageName)
+            if (resourceId == id) {
+                it.result = color
+            }
+
+        }
+    }
+
     fun setColorField(context: Any?, fieldName: String, color: String?) {
         XposedHelpers.setIntField(context, fieldName, Color.parseColor(color))
     }

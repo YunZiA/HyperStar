@@ -29,6 +29,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
     val mainIconBlendColor = XSPUtils.getString("toggle_slider_icon_color_main", "null")
     val secondaryIconBlendColor = XSPUtils.getString("toggle_slider_icon_color_secondary", "null")
 
+    val toggleSliderValueColor = XSPUtils.getString("toggle_slider_value_color", "null")
 
     private val volumeShow = XSPUtils.getBoolean("volume_top_value_show",false)
     private val brightnessShow = XSPUtils.getBoolean("qs_brightness_top_value_show",false)
@@ -274,6 +275,12 @@ class VolumeOrQSBrightnessValue : Hooker() {
             }
 
         }
+
+        if (toggleSliderValueColor != null && toggleSliderValueColor != "null"){
+
+            replaceColor("toggle_slider_top_text_color",plugin,toggleSliderValueColor.toColorInt())
+        }
+
 
         var colorArray : IntArray? = null
 

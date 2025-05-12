@@ -80,6 +80,13 @@ fun SystemUIOtherPager(
                 title = stringResource(R.string.low_device_qc_background_color),
                 key = "low_device_qc_background_color"
             )
+            if (isOS2Settings()){
+                ColorPickerTool(
+                    title = stringResource(R.string.notification_expansion_overlay_color_on_low_end_devices),
+                    key = "low_device_not_second_background_color"
+                )
+            }
+
 
 
         }

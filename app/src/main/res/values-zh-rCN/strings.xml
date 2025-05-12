@@ -311,5 +311,6 @@
     <string name="new_version_update_content">新版本更新内容</string>
     <string name="import_success">导入成功！</string>
     <string name="low_device_qc_background_color">低端机通控背景色</string>
+    <string name="notification_expansion_overlay_color_on_low_end_devices">低端机通知中心通知展开叠加色</string>
 
 </resources>

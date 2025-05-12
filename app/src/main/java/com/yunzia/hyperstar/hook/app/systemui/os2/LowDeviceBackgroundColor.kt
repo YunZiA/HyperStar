@@ -7,12 +7,15 @@ import com.yunzia.hyperstar.utils.XSPUtils
 
 class LowDeviceBackgroundColor: Hooker() {
     private val lowDeviceBackgroundColor by lazy {  XSPUtils.getString("low_device_qc_background_color","null")}
+    private val lowDeviceSecondBackgroundColor by lazy {  XSPUtils.getString("low_device_not_second_background_color","null")}
 
     override fun initHook(classLoader: ClassLoader?) {
         super.initHook(classLoader)
 
         if (lowDeviceBackgroundColor != null && lowDeviceBackgroundColor != "null"){
             replaceColor("shade_solid_background_color",systemUI,lowDeviceBackgroundColor!!.toColorInt())
+            replaceColor("notification_control_center_solid_background_color",systemUI,lowDeviceSecondBackgroundColor!!.toColorInt())
+
         }
 
     }

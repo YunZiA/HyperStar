@@ -6,6 +6,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.SystemUIMoreList
+import com.yunzia.hyperstar.ui.component.ColorPickerTool
 import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.component.XSuperSwitch
 import com.yunzia.hyperstar.ui.component.classes
@@ -71,6 +72,16 @@ fun SystemUIOtherPager(
                 route = SystemUIMoreList.POWERMENU
 
             )
+        }
+        classes(
+            title = R.string.other_settings,
+        ) {
+            ColorPickerTool(
+                title = stringResource(R.string.low_device_qc_background_color),
+                key = "low_device_qc_background_color"
+            )
+
+
         }
     }
 }

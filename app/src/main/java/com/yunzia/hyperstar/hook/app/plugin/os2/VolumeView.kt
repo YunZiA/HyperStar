@@ -1,26 +1,22 @@
 package com.yunzia.hyperstar.hook.app.plugin.os2
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.res.Configuration
-import android.os.Handler
-import android.os.Looper
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.afterHookAllConstructors
 import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.base.getDimensionPixelSize
 import com.yunzia.hyperstar.hook.base.replaceHookMethod
-import com.yunzia.hyperstar.hook.tool.starLog
-import com.yunzia.hyperstar.hook.util.plugin.Util
 import com.yunzia.hyperstar.utils.XSPUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import yunzia.utils.DensityUtil.Companion.dpToPx
 
 
@@ -291,6 +287,28 @@ class VolumeView: Hooker() {
 
         if (!isPressExpandVolume) return
 
+        var longClick = false
+        var longPressJob: Job? = null
+
+        fun View.startScaleAnimation() {
+            longClick = true
+            this.animate()
+                .scaleX(0.92f)
+                .scaleY(0.92f)
+                .setDuration(300)
+                .start()
+        }
+
+        fun View.stopScaleAnimation() {
+            // 还原到原始大小
+            longClick = false
+            this.animate()
+                .scaleX(1.0f)
+                .scaleY(1.0f)
+                .setDuration(300)
+                .start()
+        }
+
         findClass(
             "com.android.systemui.miui.volume.MiuiVolumeDialogView",
             classLoader
@@ -319,49 +337,11 @@ class VolumeView: Hooker() {
             }
         }
 
-        var longClick = false
         findClass(
             "com.android.systemui.miui.volume.MiuiVolumeDialogMotion", classLoader
         ).apply {
-            afterHookAllConstructors {
-                this.getObjectFieldAs<View>("mExpandButton").setOnTouchListener(null)
-                val mVolumeView = this.getObjectFieldAs<View>("mVolumeView")
-
-
-            }
-            replaceHookMethod(
-                "lambda\$processExpandTouch\$1"
-            ) {
-                if ( getBooleanField("mExpanded") || !longClick  ) return@replaceHookMethod null
-                val mVolumeView = getObjectFieldAs<View>("mVolumeView")
-
-                starLog.logD("processExpandTouch")
-//                val mVolumeExpandCollapsedAnimator = getObjectField("mVolumeExpandCollapsedAnimator")
-//                val mCallback = getObjectField("mCallback")
-//                mVolumeExpandCollapsedAnimator.callMethod("calculateFromViewValues",true)
-//                mCallback.callMethod("onExpandClicked")
-                with(AnimatorSet()) {
-                    playTogether(
-                        ObjectAnimator.ofFloat(mVolumeView, "scaleX", 0.95f),
-                        ObjectAnimator.ofFloat(mVolumeView, "scaleY", 0.95f)
-                    )
-                    duration = 100L
-                    addListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            super.onAnimationEnd(animation)
-                            mVolumeView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                            val mVolumeExpandCollapsedAnimator = this@replaceHookMethod.getObjectField("mVolumeExpandCollapsedAnimator")
-                            val mCallback = this@replaceHookMethod.getObjectField("mCallback")
-                            mVolumeExpandCollapsedAnimator.callMethod("calculateFromViewValues",true)
-                            mCallback.callMethod("onExpandClicked")
-
-                            mVolumeView.scaleX = 1f
-                            mVolumeView.scaleY = 1f
-                        }
-                    })
-                    start()
-                }
-
+            beforeHookMethod("lambda\$processExpandTouch\$1") {
+                this.setObjectField("mIsExpandButton",true)
             }
 
         }
@@ -369,151 +349,62 @@ class VolumeView: Hooker() {
         findClass(
             "com.android.systemui.miui.volume.MiuiVolumeSeekBar",
             classLoader
-        ).afterHookMethod(
-            "onTouchEvent",
-            MotionEvent::class.java
-        ) {
-            val mSeekBarOnclickListener = this.getObjectField("mSeekBarOnclickListener")
+        ).apply {
+            afterHookMethod(
+                "onTouchEvent",
+                MotionEvent::class.java
+            ) {
+                val mSeekBarOnclickListener = this.getObjectField("mSeekBarOnclickListener")
+                val mSeekBarAnimListener = this.getObjectField("mSeekBarAnimListener")
+                val volumePanelViewController = mSeekBarAnimListener.getObjectField("this\$0")
+                val mVolumeView = volumePanelViewController.getObjectFieldAs<View>("mVolumeView")
 
-            val handler = Handler(Looper.getMainLooper())
-            val mLongPressRunnable = Runnable {
-                val mMoveY = this.getFloatField("mMoveY")
-                if (longClick){
-                    this as View
-                    mSeekBarOnclickListener.callMethod( "onClick")
+
+                this.setLongField("mCurrentMS",0L)
+                if (mSeekBarOnclickListener != null) {
+                    val motionEvent = it.args?.get(0) as MotionEvent
+
+
+                    when (motionEvent.action) {
+                        MotionEvent.ACTION_DOWN -> {
+
+                            if ( !volumePanelViewController.getBooleanField("mExpanded") ){
+
+                                // 启动长按检测协程
+                                longPressJob = CoroutineScope(Dispatchers.Main).launch {
+                                    mVolumeView.startScaleAnimation() // 执行缩放动画
+                                    delay(300)
+                                    val mMoveY = this@afterHookMethod.getFloatField("mMoveY")
+
+                                    if (longClick && mMoveY < 10f){
+                                        mVolumeView.apply {
+                                            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                                            scaleY = 1f
+                                            scaleX = 1f
+                                        }
+
+                                        mSeekBarOnclickListener.callMethod( "onClick")
+
+                                    }
+
+                                }
+                            }
+                        }
+                        MotionEvent.ACTION_UP->{
+                            mVolumeView.stopScaleAnimation()
+                            longPressJob?.cancel()
+
+                        }
+                        MotionEvent.ACTION_CANCEL -> {
+                            mVolumeView.stopScaleAnimation()
+                            longPressJob?.cancel()
+                        }
+                    }
+
                 }
-            }
-
-            if (mSeekBarOnclickListener != null) {
-                val motionEvent = it.args?.get(0) as MotionEvent
-
-                val action = motionEvent.action
-                when (action) {
-                    0 -> {
-
-                        longClick = true
-                        this.setLongField("mCurrentMS",0L)
-
-                        handler.postDelayed(mLongPressRunnable, 300L)
-
-                    }
-                    1-> {
-                        longClick = false
-                        this.setLongField("mCurrentMS",0L)
-                    }
-
-                    2 -> {
-                        longClick = false
-
-
-                    }
-                }
-
             }
         }
 
-
-        val VolumeVerticalSeekBar = findClass("com.android.systemui.miui.volume.widget.VolumeVerticalSeekBar",classLoader)
-        val util = Util(classLoader)
-        val VerticalSeekBar = findClass("miui.systemui.widget.VerticalSeekBar",classLoader)
-//        findClass(
-//            "com.android.systemui.miui.volume.MiuiVolumeSeekBar",
-//            classLoader
-//        ).apply {
-//            replaceHookMethod(
-//                "onTouchEvent",
-//                MotionEvent::class.java
-//            ) {
-//                val motionEvent = it.args[0] as MotionEvent
-//                this.getObjectField("mInjector").callMethod("transformTouchEvent",motionEvent)
-//                it.callSuperMethod() as Boolean
-//            }
-//            afterHookMethod(
-//                "dispatchTouchEvent",
-//                MotionEvent::class.java
-//            ) {
-//                this as View
-//                starLog.log("mVolumeView touch")
-//                val view = this.parent as View
-//
-//                val mLongPressRunnable = Runnable {
-//                    val currentTimeMillis: Long =
-//                        System.currentTimeMillis() - this.getLongField("mCurrentMS")
-//                    val mMoveY = this.getFloatField("mMoveY")
-//                    if (currentTimeMillis > 300 && mMoveY < 20.0f) {
-//
-//                        view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-//                        this.getObjectField("mAnimListener").callMethod("setScale")
-//                        //this.callMethod("lambda\$processExpandTouch\$1")
-//                        view.apply {
-//                            scaleX = 1f
-//                            scaleY = 1f
-//                        }
-//                    }
-//                }
-//
-//                val motionEvent = it.args[0] as MotionEvent
-//
-//                val action = motionEvent.action
-//
-//
-//                when (action) {
-//                    0 -> {
-//
-//                        val scaleDown = ObjectAnimator.ofPropertyValuesHolder(
-//                            view,
-//                            PropertyValuesHolder.ofFloat("scaleX", 0.9f),
-//                            PropertyValuesHolder.ofFloat("scaleY", 0.9f)
-//                        ).apply {
-//                            duration = 120
-//                        }
-//                        scaleDown.start()
-//                        this.setFloatField("mDownY", motionEvent.y)
-//                        this.setFloatField("mMoveY", 0.0f)
-//                        this.setLongField("mCurrentMS", System.currentTimeMillis())
-//                        view.postDelayed(mLongPressRunnable, 300L)
-//
-//                    }
-//
-//                    1 -> {
-//                        view.removeCallbacks(mLongPressRunnable)
-//                        val currentTimeMillis: Long =
-//                            System.currentTimeMillis() - this.getLongField("mCurrentMS")
-//                        val mMoveY = this.getFloatField("mMoveY")
-//                        val scaleUp = ObjectAnimator.ofPropertyValuesHolder(
-//                            view,
-//                            PropertyValuesHolder.ofFloat("scaleX", 1.0f),
-//                            PropertyValuesHolder.ofFloat("scaleY", 1.0f)
-//                        ).apply {
-//                            duration = 120
-//                        }
-//                        scaleUp.start()
-//                    }
-//
-//                    2 -> {
-//                        view.removeCallbacks(mLongPressRunnable)
-//                        val scaleUp = ObjectAnimator.ofPropertyValuesHolder(
-//                            view,
-//                            PropertyValuesHolder.ofFloat("scaleX", 1.0f),
-//                            PropertyValuesHolder.ofFloat("scaleY", 1.0f)
-//                        ).apply {
-//                            duration = 120
-//                        }
-//                        scaleUp.start()
-//                        val mDownY = this.getFloatField("mDownY")
-//
-//                        this.setFloatField("mMoveY", abs(motionEvent.y - mDownY))
-//                        this.setFloatField("mDownY", motionEvent.y)
-//
-//                    }
-//
-//                    else -> {
-//
-//                    }
-//                }
-//
-//            }
-//        }
 
     }
 

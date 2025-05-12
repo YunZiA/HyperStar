@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.yunzia.hyperstar.hook.app.systemui.os2.AddCatPaw;
+import com.yunzia.hyperstar.hook.app.systemui.os2.LowDeviceBackgroundColor;
 import com.yunzia.hyperstar.hook.app.systemui.os2.NavigationBarBackground;
 import com.yunzia.hyperstar.hook.app.systemui.os2.NotificationForLm;
 import com.yunzia.hyperstar.hook.app.systemui.os2.QSHeaderView;
@@ -35,6 +36,7 @@ public class SystemUIHookForOS2 extends InitHooker {
     @Override
     public void initHook() {
         initHooker(new NavigationBarBackground());
+        initHooker(new LowDeviceBackgroundColor());
         initHooker(new NotificationForLm());
         initHooker(qsHeaderView);
         initHooker(pluginHookForOS2);

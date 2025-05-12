@@ -88,6 +88,8 @@ class QSControlCenterColor : Hooker() {
 
     }
 
+
+
     private fun startEditColor() {
         val editTitleColor = XSPUtils.getString("edit_title_color","null")
         val ConfigUtils = findClass("miui.systemui.controlcenter.ConfigUtils",classLoader)

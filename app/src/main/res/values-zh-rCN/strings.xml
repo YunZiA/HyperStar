@@ -310,5 +310,6 @@
     <string name="get_new_log">查看完整日志</string>
     <string name="new_version_update_content">新版本更新内容</string>
     <string name="import_success">导入成功！</string>
+    <string name="low_device_qc_background_color">低端机通控背景色</string>
 
 </resources>

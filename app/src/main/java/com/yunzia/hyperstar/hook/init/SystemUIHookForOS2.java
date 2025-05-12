@@ -28,6 +28,9 @@ public class SystemUIHookForOS2 extends InitHooker {
             return;
         }
         initResource(qsHeaderView);
+       // modRes.fwd(R.color.black)
+        resparam.res.setReplacement(mPackageName,"color","shade_solid_background_color","#00000000");
+
         //initResource(test);
         //initResource(addCatPaw);
 

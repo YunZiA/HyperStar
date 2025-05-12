@@ -436,6 +436,9 @@ fun AppHorizontalPager(
     val context = LocalContext.current
     val activity = context as MainActivity
 
+//    context.resources.getIdentifier()
+//    context.resources.getColor()
+
     HorizontalPager(
         modifier = modifier,
         state = pagerState,

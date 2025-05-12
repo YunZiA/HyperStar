@@ -2,6 +2,7 @@ package com.yunzia.hyperstar.hook.init;
 
 
 import com.yunzia.hyperstar.hook.app.systemui.os1.NavigationBarBackground;
+import com.yunzia.hyperstar.hook.app.systemui.os1.LowDeviceBackgroundColor;
 import com.yunzia.hyperstar.hook.base.Init;
 import com.yunzia.hyperstar.hook.base.InitHooker;
 
@@ -21,6 +22,7 @@ public class SystemUIHookForOS1 extends InitHooker {
     public void initHook() {
         initHooker(pluginHookForOS1);
         initHooker(new NavigationBarBackground());
+        initHooker(new LowDeviceBackgroundColor());
 
         doTestHook();
     }

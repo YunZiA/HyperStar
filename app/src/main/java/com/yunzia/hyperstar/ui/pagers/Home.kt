@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
@@ -65,7 +66,8 @@ fun Home(
     navController: NavHostController,
     hazeState: HazeState,
     contentPadding: PaddingValues,
-    showReboot: MutableState<Boolean>
+    showReboot: MutableState<Boolean>,
+    pagerState: PagerState
 ) {
     val isModuleActive = isModuleActive()
     val context = LocalContext.current
@@ -85,7 +87,7 @@ fun Home(
                 title = stringResource(R.string.main_page_title),
                 scrollBehavior = topAppBarScrollBehavior,
                 actions = {
-                    if (rebootStyle.intValue == 1){
+                    if (rebootStyle.intValue == 1 && pagerState.currentPage == 0){
                         RebootPup(showReboot)
                     }
 

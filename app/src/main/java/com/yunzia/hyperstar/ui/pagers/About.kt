@@ -201,7 +201,7 @@ fun ThirdPage(
                 title = if (showBlurs.value) stringResource(R.string.about_page_title) else "",
                 scrollBehavior = topAppBarScrollBehavior,
                 actions = {
-                    if (rebootStyle.intValue == 1){
+                    if (rebootStyle.intValue == 1 && pagerState.currentPage == 2){
                         RebootPup(showReboot)
                     }
                     IconButton(

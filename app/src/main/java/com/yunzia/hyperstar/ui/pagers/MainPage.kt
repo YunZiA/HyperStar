@@ -46,7 +46,6 @@ import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseButton
-import com.yunzia.hyperstar.ui.component.XScaffold
 import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
@@ -84,7 +83,7 @@ fun MainPager(
     val hazeState = remember { HazeState() }
     val show = remember { mutableStateOf(false) }
 
-    XScaffold(
+    Scaffold(
         modifier = Modifier.fillMaxSize(),
         popupHost = { },
         bottomBar = {
@@ -448,11 +447,11 @@ fun AppHorizontalPager(
             when (page) {
 
                 0 ->{
-                    Home(navController = navController,hazeState,contentPadding,showReboot)
+                    Home(navController = navController,hazeState,contentPadding,showReboot,pagerState)
                 }
 
                 1 -> {
-                    Settings(navController = navController,hazeState,contentPadding,showReboot)
+                    Settings(navController = navController,hazeState,contentPadding,showReboot,pagerState)
                 }
 
                 else -> {

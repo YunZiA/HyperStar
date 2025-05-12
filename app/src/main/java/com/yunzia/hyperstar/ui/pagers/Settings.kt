@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -77,7 +78,8 @@ fun Settings(
     navController: NavHostController,
     hazeState: HazeState,
     contentPadding: PaddingValues,
-    showReboot: MutableState<Boolean>
+    showReboot: MutableState<Boolean>,
+    pagerState: PagerState
 ) {
 
     val context = LocalContext.current
@@ -121,7 +123,7 @@ fun Settings(
                 title = stringResource(R.string.settings_page_title),
                 scrollBehavior = topAppBarScrollBehavior,
                 actions = {
-                    if (rebootStyle.intValue == 1){
+                    if (rebootStyle.intValue == 1 && pagerState.currentPage == 1){
                         RebootPup(showReboot)
 
                     }

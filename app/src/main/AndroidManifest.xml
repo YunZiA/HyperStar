@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.STATUS_BAR"
+        tools:ignore="ProtectedPermissions" />
+
 <!--    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS" />-->
     <uses-permission android:name="com.android.permission.GET_INSTALLED_APPS"/>
     <uses-permission

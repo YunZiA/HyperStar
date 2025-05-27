@@ -4,15 +4,19 @@ import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.core.graphics.toColorInt
 import com.yunzia.hyperstar.BuildConfig
 import kotlinx.serialization.json.Json
 import java.lang.reflect.InvocationTargetException
 
+
 object MiuiStrongToast {
 
     @SuppressLint("WrongConstant")
     fun showStrongToast(context: Context, text: String, duration: Long = 1500L) {
+
         try {
             val textParams = TextParams(text, "#FFFFFFFF".toColorInt())
             val left = Left(textParams = textParams)
@@ -39,11 +43,14 @@ object MiuiStrongToast {
                 "setStatus", Int::class.javaPrimitiveType, String::class.java, Bundle::class.java
             ).invoke(service, 1, "strong_toast_action", bundle)
         } catch (e: IllegalAccessException) {
-            throw RuntimeException(e)
+            Log.d("ggc", "showStrongToast: ${e.message}")
+            Toast.makeText(context,text, Toast.LENGTH_SHORT).show()
         } catch (e: InvocationTargetException) {
-            throw RuntimeException(e)
+            Log.d("ggc", "showStrongToast: ${e.message}")
+            Toast.makeText(context,text, Toast.LENGTH_SHORT).show()
         } catch (e: NoSuchMethodException) {
-            throw RuntimeException(e)
+            Log.d("ggc", "showStrongToast: ${e.message}")
+            Toast.makeText(context,text, Toast.LENGTH_SHORT).show()
         }
     }
 

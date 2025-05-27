@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.ui.component.enums.EventState
@@ -27,8 +28,8 @@ fun Modifier.bounceAnimN(
 
     val eventState = remember { mutableStateOf(EventState.Idle) }
     this.bounceScale(eventState) {
-            finishedListener?.invoke(it)
-        }
+        finishedListener?.invoke(it)
+    }
         .bounceClick(eventState, enabled)
         .clip(RoundedCornerShape(8.dp))
 }
@@ -43,8 +44,8 @@ fun Modifier.bounceAnim(
     if (enabled){
         if (enable){
             this.bounceScale(eventState) {
-                    finishedListener?.invoke(it)
-                }
+                finishedListener?.invoke(it)
+            }
                 .bounceClick(eventState, enabled)
                 .clip(RoundedCornerShape(8.dp))
 
@@ -94,21 +95,23 @@ fun Modifier.bounceClick(
     enabled: Boolean = true,
 ) = composed {
 
+
     this.pointerInput(Unit) {
         awaitPointerEventScope {
             while (enabled) {
-                // 等待按下事件
                 val event = awaitPointerEvent()
-                if (event.changes.any { it.pressed }) {
-                    buttonState.value = EventState.Pressed
+                when (event.type) {
+                    PointerEventType.Press -> {
+                        buttonState.value = EventState.Pressed
+                    }
+                    PointerEventType.Release -> {
+                        buttonState.value = EventState.Idle
+                    }
                 }
-                // 等待释放事件
-                event.changes.forEach { it.consume() }
-                if (event.changes.none { it.pressed }) {
-                    buttonState.value = EventState.Idle
-                }
+
             }
         }
 
     }
 }
+

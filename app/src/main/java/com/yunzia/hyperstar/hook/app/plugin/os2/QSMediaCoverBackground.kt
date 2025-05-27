@@ -73,6 +73,8 @@ class QSMediaCoverBackground: Hooker() {
             val itemView : View = this.getObjectFieldAs<View>("itemView")
             val cover = itemView.findViewByIdNameAs<ImageView>("cover")
             val res = itemView.resources
+            cover.post(object : Runnable{
+                override fun run() {
 
             if (mediaPlayerMetaData == null) {
                 if (!defaultBackground){
@@ -80,7 +82,7 @@ class QSMediaCoverBackground: Hooker() {
                     itemView.setBackgroundResource(background)
 
                 }
-                return@afterHookMethod
+                return
             }
 
             if (isHideCover){
@@ -94,20 +96,20 @@ class QSMediaCoverBackground: Hooker() {
 
 
             }
-            if (defaultBackground) return@afterHookMethod
+            if (defaultBackground) return
 
 
 
             var art = mediaPlayerMetaData.callMethod("getArt")
             if (art == null){
                 starLog.logE("art is null")
-                return@afterHookMethod
+                return
             }
 
             if (art !is Bitmap){
                 starLog.logE("mediaPlayerMetaData:art is not get!!!")
                 this.callMethod("updateResources")
-                return@afterHookMethod
+                return
 
             }
 
@@ -119,7 +121,7 @@ class QSMediaCoverBackground: Hooker() {
                     BitmapUtils.doBitmap(art,isScale,scaleFactor,isBlur,blurRadius,isDim,-alpha)
                 }
                 else -> {
-                    return@afterHookMethod
+                    return
                 }
             }
 
@@ -136,6 +138,9 @@ class QSMediaCoverBackground: Hooker() {
             } else {
                 artDrawable
             }
+                }
+
+            })
 
         }
 

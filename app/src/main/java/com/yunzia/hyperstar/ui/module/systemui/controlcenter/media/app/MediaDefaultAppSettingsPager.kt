@@ -37,6 +37,7 @@ import com.yunzia.hyperstar.ui.component.LoadBox
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.pager.SearchModuleNavPager
+import com.yunzia.hyperstar.ui.pagers.summaryColor
 import com.yunzia.hyperstar.ui.pagers.titleColor
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.viewmodel.MediaAppSettingsViewModel
@@ -166,6 +167,8 @@ fun AppItem(
         insideMargin = PaddingValues(16.dp),
         title = app.label,
         titleColor = titleColor(isSelected),
+        summary = app.packageName,
+        summaryColor = summaryColor(isSelected),
         leftAction = {
             AppIcon(
                 icon = app.icon,

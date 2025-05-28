@@ -37,6 +37,7 @@ import com.yunzia.hyperstar.ui.component.LoadBox
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.pager.SearchModuleNavPager
+import com.yunzia.hyperstar.ui.pagers.summaryColor
 import com.yunzia.hyperstar.ui.pagers.titleColor
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.viewmodel.NotificationViewModel
@@ -198,6 +199,8 @@ private fun AppNotifItem(
             insideMargin = PaddingValues(17.dp),
             title = notificationInfo.appName,
             titleColor = titleColor(false),
+            summary = notificationInfo.packageName,
+            summaryColor = summaryColor(false),
             leftAction = {
                 Box(modifier = Modifier.padding(end = 12.dp)) {
                     Image(

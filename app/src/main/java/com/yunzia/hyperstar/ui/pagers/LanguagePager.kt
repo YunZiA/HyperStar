@@ -105,3 +105,14 @@ fun titleColor(
         disabledColor = colorScheme.disabledOnSecondaryVariant
     )
 }
+
+
+@Composable
+fun summaryColor(
+    isSelected: Boolean
+): BasicComponentColors {
+    return BasicComponentColors(
+        color = if (isSelected) colorScheme.primary else colorScheme.onSurfaceVariantSummary,
+        disabledColor = colorScheme.disabledOnSecondaryVariant
+    )
+}

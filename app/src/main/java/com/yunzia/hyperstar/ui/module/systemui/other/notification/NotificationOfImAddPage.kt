@@ -30,14 +30,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.component.search.SearchBox
-import com.yunzia.hyperstar.ui.component.search.SearchPager
 import com.yunzia.hyperstar.ui.component.TopButton
 import com.yunzia.hyperstar.ui.component.XScaffold
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
+import com.yunzia.hyperstar.ui.component.search.SearchBox
+import com.yunzia.hyperstar.ui.component.search.SearchPager
+import com.yunzia.hyperstar.ui.pagers.summaryColor
+import com.yunzia.hyperstar.ui.pagers.titleColor
 import com.yunzia.hyperstar.viewmodel.NotificationAddViewModel
 import dev.chrisbanes.haze.HazeState
 import top.yukonga.miuix.kmp.basic.BasicComponent
@@ -196,6 +198,9 @@ private fun AppNotifItem(
             ),
         insideMargin = PaddingValues(17.dp),
         title = notificationInfo.appName,
+        titleColor = titleColor(isSelected),
+        summary = notificationInfo.packageName,
+        summaryColor = summaryColor(isSelected),
         leftAction = {
             AppIcon(
                 icon = notificationInfo.icon,

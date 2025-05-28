@@ -178,7 +178,7 @@ class NotificationViewModel(
 
             _searchApp.value = _selectedApps.asFlow()
                 .filter { app ->
-                    app.appName.contains(searchText, ignoreCase = true)
+                    app.appName.contains(searchText, ignoreCase = true) || app.packageName.contains(searchText, ignoreCase = true)
                 }
                 .toList()
 

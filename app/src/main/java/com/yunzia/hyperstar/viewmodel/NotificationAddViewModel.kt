@@ -57,7 +57,7 @@ class NotificationAddViewModel(
             _searchStatus.value.resultStatus = SearchStatus.ResultStatus.LOAD
 
             val results = unSelectApp.filter {
-                it.appName.contains(text, ignoreCase = true)
+                it.appName.contains(text, ignoreCase = true) || it.packageName.contains(text, ignoreCase = true)
             }
 
             _searchResults.value = results

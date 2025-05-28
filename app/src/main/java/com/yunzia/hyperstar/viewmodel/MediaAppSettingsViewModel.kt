@@ -96,7 +96,8 @@ class MediaAppSettingsViewModel(
 
             _searchApp.value = _appLists.value.asFlow()
                 .filter { app ->
-                    app.label.contains(searchText, ignoreCase = true)
+                    app.label.contains(searchText, ignoreCase = true) || app.packageName.contains(searchText, ignoreCase = true)
+
                 }
                 .toList()
 

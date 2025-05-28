@@ -63,7 +63,7 @@ jobs:
         env:
           XX_TOKENS: ${{ secrets.XX_TOKEN }}
         run: |
-          wget --header="Authorization: Bearer XX_TOKENS"  https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/commit_history.json -O gitee-repo/dev/commit_history.json
+          wget https://dongdong-gc:${{ secrets.GITEE_TOKEN }}@gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/commit_history.json -O gitee-repo/dev/commit_history.json
 
       - name: Copy APK and metadata to Gitee folder
         run: |

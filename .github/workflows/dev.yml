@@ -60,10 +60,8 @@ jobs:
           mkdir -p gitee-repo/dev
       # 下载 commit_history.json 文件
       - name: Download commit_history.json
-        env:
-          XX_TOKENS: ${{ secrets.XX_TOKEN }}
         run: |
-          wget https://dongdong-gc:${{ secrets.GITEE_TOKEN }}@gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/commit_history.json -O gitee-repo/dev/commit_history.json
+          wget https://dongdong-gc:${{ secrets.XX_TOKEN }}@gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/commit_history.json -O gitee-repo/dev/commit_history.json
 
       - name: Copy APK and metadata to Gitee folder
         run: |

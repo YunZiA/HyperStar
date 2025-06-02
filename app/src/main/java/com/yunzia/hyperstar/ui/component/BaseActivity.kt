@@ -2,16 +2,12 @@ package com.yunzia.hyperstar.ui.component
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.os.Build
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -44,28 +40,6 @@ abstract class BaseActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-
-            isDarkMode = colorMode.intValue == 2 || (isSystemInDarkTheme() && colorMode.intValue == 0)
-            DisposableEffect(isDarkMode) {
-                enableEdgeToEdge(
-                    statusBarStyle = SystemBarStyle.auto(
-                        Color.TRANSPARENT,
-                        Color.TRANSPARENT,
-                        { isDarkMode }
-                    ) ,
-                    navigationBarStyle = SystemBarStyle.auto(
-                        Color.TRANSPARENT,
-                        Color.TRANSPARENT,
-                        { false }
-                    )
-                )
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                }
-                window.isNavigationBarContrastEnforced = false
-                onDispose {}
-            }
-
-
             HyperStarTheme() {
                 InitData(savedInstanceState)
                 InitView()
@@ -74,7 +48,6 @@ abstract class BaseActivity : ComponentActivity() {
 
 
     }
-
 
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase)
@@ -85,7 +58,16 @@ abstract class BaseActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         setLocale()
+        isDarkMode = colorMode.intValue == 2 || (isNightMode() && colorMode.intValue == 0)
 
+
+    }
+
+    fun isNightMode(): Boolean {
+        return when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            else -> false
+        }
     }
 
     fun updateUI(){

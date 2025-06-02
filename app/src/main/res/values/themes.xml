@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.HyperStar" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.HyperStar" parent="android:Theme.Material.NoActionBar" >
+        <item name="android:windowBackground" >#F7F7F7</item>
+    </style>
 
     <!--&lt;!&ndash;        <item name="android:windowSplashscreenContent" >@mipmap/ic_launcher</item>&ndash;&gt;-->
     <!--        <item name="android:windowSplashScreenBackground">@android:color/white</item>-->

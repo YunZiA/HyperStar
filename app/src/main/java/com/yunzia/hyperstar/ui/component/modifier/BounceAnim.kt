@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.component.modifier
 
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -66,7 +67,7 @@ fun Modifier.bounceScale(
     finishedListener:((Float) -> Unit)? = null
 ) = composed {
     val scale by animateFloatAsState(if (eventState.value == EventState.Pressed) 0.9f else 1f,
-        animationSpec = tween(100),
+        animationSpec = tween(100, easing = LinearOutSlowInEasing),
         label = "", finishedListener ={
             if (it == 1f){
                 finishedListener?.invoke(it)

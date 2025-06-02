@@ -135,8 +135,8 @@ fun Touch3DCard() {
 data class TiltAnimationState(
     val rotationX: Animatable<Float, AnimationVector1D> = Animatable(0f),
     val rotationY: Animatable<Float, AnimationVector1D> = Animatable(0f),
-    val pivotX: Animatable<Float, AnimationVector1D> = Animatable(0f),
-    val pivotY: Animatable<Float, AnimationVector1D> = Animatable(0f),
+    val pivotX: Animatable<Float, AnimationVector1D> = Animatable(0.5f),
+    val pivotY: Animatable<Float, AnimationVector1D> = Animatable(0.5f),
     val scale: Animatable<Float, AnimationVector1D> = Animatable(1f)
 ) {
 
@@ -144,7 +144,7 @@ data class TiltAnimationState(
 
     // 动画规格
     private val setAnimationSpec = tween<Float>(
-        durationMillis = 1000,
+        durationMillis = 700,
         easing = CubicBezierEasing(0.17f, 0.17f, 0.23f, 0.96f)
     )
     private val updateAnimationSpec = tween<Float>(
@@ -206,8 +206,8 @@ data class TiltAnimationState(
         if (noAnim) return
         coroutineScope.launch {
             launch { scale.animateTo(1f, setAnimationSpec) }
-            launch { pivotX.animateTo(0f, setAnimationSpec) }
-            launch { pivotY.animateTo(0f, setAnimationSpec) }
+            launch { pivotX.animateTo(0.5f, setAnimationSpec) }
+            launch { pivotY.animateTo(0.5f, setAnimationSpec) }
             launch { rotationX.animateTo(0f, setAnimationSpec) }
             launch { rotationY.animateTo(0f, setAnimationSpec) }
 
@@ -224,8 +224,8 @@ data class TiltAnimationState(
 
             coroutineScope.launch {
                 launch { scale.snapTo(1f) }
-                launch { pivotX.snapTo(0f) }
-                launch { pivotY.snapTo(0f) }
+                launch { pivotX.snapTo(0.5f) }
+                launch { pivotY.snapTo(0.5f) }
                 launch { rotationX.snapTo(0f) }
                 launch { rotationY.snapTo(0f) }
             }
@@ -233,8 +233,8 @@ data class TiltAnimationState(
 
             coroutineScope.launch {
                 launch { scale.animateTo(1f,animationSpec) }
-                launch { pivotX.animateTo(0f,animationSpec) }
-                launch { pivotY.animateTo(0f,animationSpec) }
+                launch { pivotX.animateTo(0.5f,animationSpec) }
+                launch { pivotY.animateTo(0.5f,animationSpec) }
                 launch { rotationX.animateTo(0f,animationSpec) }
                 launch { rotationY.animateTo(0f,animationSpec) }
             }

@@ -249,7 +249,7 @@ fun UpdaterPager(
                     }
                 }
                 1 -> {
-                    if (!showUpdater.value) {
+                    if (showUpdater.value) {
                         pagerState.UpdateDetailPage(
                             padding = padding,
                             newVersion = activity.newAppVersion.value,

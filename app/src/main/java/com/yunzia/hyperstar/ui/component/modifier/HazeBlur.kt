@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.ExperimentalHazeApi
+import dev.chrisbanes.haze.HazeEffectScope
 import dev.chrisbanes.haze.HazeInputScale
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
@@ -24,7 +25,7 @@ fun Modifier.blur(hazeState: HazeState) = this.hazeSource(hazeState)
 fun Modifier.showBlur(hazeState: HazeState) = composed {
 
     val containerColor: Color = colorScheme.background
-    val alpha = 0.67f
+    val alpha = 0.5f
     val blurRadius: Dp = 25.dp
     val noiseFactor = 0f
     val hazeStyle = HazeStyle(
@@ -38,6 +39,34 @@ fun Modifier.showBlur(hazeState: HazeState) = composed {
         hazeState,
         hazeStyle,
     ){
+        inputScale = HazeInputScale.Fixed(0.5f)
+    }
+
+}
+
+
+@SuppressLint("UnnecessaryComposedModifier")
+@OptIn(ExperimentalHazeApi::class)
+fun Modifier.showBlurs(hazeState: HazeState, tints: List<HazeTint> = emptyList(),block: (HazeEffectScope.() -> Unit)? = null) = composed {
+
+    val containerColor: Color = colorScheme.background
+    val alpha = 0.67f
+    val blurRadius: Dp = 25.dp
+    val noiseFactor = 0f
+    val hazeStyle = HazeStyle(
+        backgroundColor = containerColor.copy(0.1f),
+        tints = tints ,
+        blurRadius = blurRadius,
+        noiseFactor = noiseFactor
+    )
+
+    this.hazeEffect(
+        hazeState,
+        hazeStyle,
+    ){
+        if (block != null) {
+            this.block()
+        }
         inputScale = HazeInputScale.Fixed(0.5f)
     }
 

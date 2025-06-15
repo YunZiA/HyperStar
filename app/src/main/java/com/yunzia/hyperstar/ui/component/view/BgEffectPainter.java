@@ -25,20 +25,20 @@ public class BgEffectPainter {
     private float[] uResolution;
     private float uAnimTime = ((float) System.nanoTime()) / 1.0E9f;
     private float[] uBgBound = {0.0f, 0.4489f, 1.0f, 0.5511f};
-    private float uTranslateY = 0.0f;
+    private final float uTranslateY = 0.0f;
     private float[] uPoints = {0.67f, 0.42f, 1.0f, 0.69f, 0.75f, 1.0f, 0.14f, 0.71f, 0.95f, 0.14f, 0.27f, 0.8f};
     private float[] uColors = {0.57f, 0.76f, 0.98f, 1.0f, 0.98f, 0.85f, 0.68f, 1.0f, 0.98f, 0.75f, 0.93f, 1.0f, 0.73f, 0.7f, 0.98f, 1.0f};
-    private float uAlphaMulti = 1.0f;
-    private float uNoiseScale = 1.5f;
-    private float uPointOffset = 0.1f;
-    private float uPointRadiusMulti = 1.0f;
+    private final float uAlphaMulti = 1.0f;
+    private final float uNoiseScale = 1.5f;
+    private final float uPointOffset = 0.1f;
+    private final float uPointRadiusMulti = 1.0f;
     private float uSaturateOffset = 0.2f;
     private float uLightOffset = 0.1f;
-    private float uAlphaOffset = 0.5f;
-    private float uShadowColorMulti = 0.3f;
-    private float uShadowColorOffset = 0.3f;
-    private float uShadowNoiseScale = 5.0f;
-    private float uShadowOffset = 0.01f;
+    private final float uAlphaOffset = 0.5f;
+    private final float uShadowColorMulti = 0.3f;
+    private final float uShadowColorOffset = 0.3f;
+    private final float uShadowNoiseScale = 5.0f;
+    private final float uShadowOffset = 0.01f;
 
     public BgEffectPainter(Context context) {
         mContext = context;
@@ -149,9 +149,7 @@ public class BgEffectPainter {
                     }
                     String sb2 = sb.toString();
                     scanner.close();
-                    if (openRawResource != null) {
-                        openRawResource.close();
-                    }
+                    openRawResource.close();
                     return sb2;
                 } finally {
                 }

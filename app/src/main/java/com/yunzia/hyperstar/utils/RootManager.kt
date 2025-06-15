@@ -2,7 +2,7 @@ package com.yunzia.hyperstar.utils
 
 import android.content.Context
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.app.AppInfo
+import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.media.app.AppInfo
 
 fun root(mContext:Context) = listOf(
     AppInfo(

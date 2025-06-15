@@ -76,68 +76,69 @@ class QSMediaCoverBackground: Hooker() {
             cover.post(object : Runnable{
                 override fun run() {
 
-            if (mediaPlayerMetaData == null) {
-                if (!defaultBackground){
-                    val background = itemView.resources.getIdentifier("media_player_background","drawable",plugin)
-                    itemView.setBackgroundResource(background)
+                    if (mediaPlayerMetaData == null) {
+                        if (!defaultBackground){
+                            val background = itemView.resources.getIdentifier("media_player_background","drawable",plugin)
+                            itemView.setBackgroundResource(background)
 
-                }
-                return
-            }
+                        }
+                        return
+                    }
 
-            if (isHideCover){
-                if (isTitleCenter){
-                    cover.visibility = View.GONE
+                    if (isHideCover){
+                        if (isTitleCenter){
+                            cover.visibility = View.GONE
 
-                }else{
-                    cover.visibility = View.INVISIBLE
+                        }else{
+                            cover.visibility = View.INVISIBLE
 
-                }
-
-
-            }
-            if (defaultBackground) return
+                        }
 
 
+                    }
+                    if (defaultBackground) return
 
-            var art = mediaPlayerMetaData.callMethod("getArt")
-            if (art == null){
-                starLog.logE("art is null")
-                return
-            }
+                    var art = mediaPlayerMetaData.callMethod("getArt")
+                    if (art == null){
+                        starLog.logE("art is null")
+                        return
+                    }
 
-            if (art !is Bitmap){
-                starLog.logE("mediaPlayerMetaData:art is not get!!!")
-                this.callMethod("updateResources")
-                return
+                    if (art !is Bitmap){
+                        starLog.logE("mediaPlayerMetaData:art is not get!!!")
+                        this.callMethod("updateResources")
+                        return
 
-            }
+                    }
 
-            art = when (mediaBackground) {
-                1 -> {
-                    auto(art)
-                }
-                2 -> {
-                    BitmapUtils.doBitmap(art,isScale,scaleFactor,isBlur,blurRadius,isDim,-alpha)
-                }
-                else -> {
-                    return
-                }
-            }
+                    art = when (mediaBackground) {
+                        1 -> {
+                            auto(art)
+                        }
+                        2 -> {
+                            BitmapUtils.doBitmap(art,isScale,scaleFactor,isBlur,blurRadius,isDim,-alpha)
+                        }
+                        else -> {
+                            return
+                        }
+                    }
 
-            val artDrawable = art.toDrawable(res)
+                    var artDrawable: Drawable = art.toDrawable(res)
 
-            if (coverAnciently && foreground == null) {
+                    if (coverAnciently && mediaBackground == 2) {
+                        if (foreground == null){
+                            foreground = vintage?.let { res.getDrawable(it) }
+                        }
+                        artDrawable =  LayerDrawable(arrayOf(artDrawable, foreground))
 
-                foreground = vintage?.let { res.getDrawable(it) }
-
-            }
-            itemView.background = if (coverAnciently) {
-                val layerDrawable = LayerDrawable(arrayOf(artDrawable, foreground))
-                layerDrawable
-            } else {
-                artDrawable
-            }
+                    }
+                    itemView.background = artDrawable
+//                        if (coverAnciently ) {
+//                        val layerDrawable = LayerDrawable(arrayOf(artDrawable, foreground))
+//                        layerDrawable
+//                    } else {
+//                        artDrawable
+//                    }
                 }
 
             })

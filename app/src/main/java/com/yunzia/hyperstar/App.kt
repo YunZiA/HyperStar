@@ -53,42 +53,42 @@ import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.ui.component.XScaffold
 import com.yunzia.hyperstar.ui.component.nav.PagersModel
 import com.yunzia.hyperstar.ui.component.nav.pagersJson
-import com.yunzia.hyperstar.ui.module.NotDeveloperPager
-import com.yunzia.hyperstar.ui.module.barrage.BarragePage
-import com.yunzia.hyperstar.ui.module.home.HomePage
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterColorPager
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterListPager
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.ControlCenterPager
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.card.QSCardColorPager
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.card.QSCardListPager
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.devicecenter.DeviceCenterColorPager
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.list.QSListColorPager
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.list.QsListViewPager
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.MediaSettingsPager
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.app.MediaAppSettingsPager
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.slider.ToggleSliderColorsPager
-import com.yunzia.hyperstar.ui.module.systemui.other.SystemUIOtherPager
-import com.yunzia.hyperstar.ui.module.systemui.other.notification.NotificationAppDetail
-import com.yunzia.hyperstar.ui.module.systemui.other.notification.NotificationOfIm
-import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.PowerMenuStylePager
-import com.yunzia.hyperstar.ui.module.systemui.other.powermenu.SelectFunPager
-import com.yunzia.hyperstar.ui.module.systemui.volume.VolumePager
-import com.yunzia.hyperstar.ui.module.thememanager.ThemeManagerPage
-import com.yunzia.hyperstar.ui.pagers.CurrentVersionLogScreen
-import com.yunzia.hyperstar.ui.pagers.DonationPage
-import com.yunzia.hyperstar.ui.pagers.FPSMonitor
-import com.yunzia.hyperstar.ui.pagers.GoRootPager
-import com.yunzia.hyperstar.ui.pagers.LanguagePager
-import com.yunzia.hyperstar.ui.pagers.LogHistoryScreen
-import com.yunzia.hyperstar.ui.pagers.MainPager
-import com.yunzia.hyperstar.ui.pagers.MainPagerByThree
-import com.yunzia.hyperstar.ui.pagers.NeedMessagePager
-import com.yunzia.hyperstar.ui.pagers.ReferencesPager
-import com.yunzia.hyperstar.ui.pagers.SettingsShowPage
-import com.yunzia.hyperstar.ui.pagers.TranslatorPager
-import com.yunzia.hyperstar.ui.pagers.UpdaterPager
-import com.yunzia.hyperstar.ui.welcome.ActivePage
-import com.yunzia.hyperstar.ui.welcome.WelcomePager
+import com.yunzia.hyperstar.ui.screen.module.NotDeveloperScreen
+import com.yunzia.hyperstar.ui.screen.module.barrage.BarrageScreen
+import com.yunzia.hyperstar.ui.screen.module.home.HomeScreen
+import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.ControlCenterColorScreen
+import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.ControlCenterListScreen
+import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.ControlCenterScreen
+import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.card.QSCardColorScreen
+import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.card.QSCardListScreen
+import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.devicecenter.DeviceCenterColorScreen
+import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.list.QSListColorScreen
+import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.list.QsListViewScreen
+import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.media.MediaSettingsScreen
+import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.media.app.MediaAppSettingsPager
+import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.slider.ToggleSliderColorsScreen
+import com.yunzia.hyperstar.ui.screen.module.systemui.other.SystemUIOtherScreen
+import com.yunzia.hyperstar.ui.screen.module.systemui.other.notification.NotificationAppDetail
+import com.yunzia.hyperstar.ui.screen.module.systemui.other.notification.NotificationOfImScreen
+import com.yunzia.hyperstar.ui.screen.module.systemui.other.powermenu.PowerMenuStyleScreen
+import com.yunzia.hyperstar.ui.screen.module.systemui.other.powermenu.SelectFunScreen
+import com.yunzia.hyperstar.ui.screen.module.systemui.volume.VolumeScreen
+import com.yunzia.hyperstar.ui.screen.module.thememanager.ThemeManagerScreen
+import com.yunzia.hyperstar.ui.screen.pagers.CurrentVersionLogScreen
+import com.yunzia.hyperstar.ui.screen.pagers.DonationPage
+import com.yunzia.hyperstar.ui.screen.pagers.FPSMonitor
+import com.yunzia.hyperstar.ui.screen.pagers.GoRootPager
+import com.yunzia.hyperstar.ui.screen.pagers.LanguagePager
+import com.yunzia.hyperstar.ui.screen.pagers.LogHistoryScreen
+import com.yunzia.hyperstar.ui.screen.pagers.MainPager
+import com.yunzia.hyperstar.ui.screen.pagers.MainPagerByThree
+import com.yunzia.hyperstar.ui.screen.pagers.NeedMessageScreen
+import com.yunzia.hyperstar.ui.screen.pagers.ReferencesScreen
+import com.yunzia.hyperstar.ui.screen.pagers.SettingsShowScreen
+import com.yunzia.hyperstar.ui.screen.pagers.TranslatorScreen
+import com.yunzia.hyperstar.ui.screen.pagers.UpdaterScreen
+import com.yunzia.hyperstar.ui.screen.welcome.ActivePage
+import com.yunzia.hyperstar.ui.screen.welcome.WelcomeScreen
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.isFold
@@ -243,7 +243,7 @@ fun App(){
                 activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             }
 
-            WelcomePager(welcome,welcomeState)
+            WelcomeScreen(welcome,welcomeState)
         }
 
 
@@ -257,61 +257,61 @@ fun NavGraphBuilder.pagerContent(
 
 ){
 
-    composable(SystemUIList.CONTROL_CENTER,) { ControlCenterPager(navController,parentRoute) }
+    composable(SystemUIList.CONTROL_CENTER,) { ControlCenterScreen(navController,parentRoute) }
 
-    composable(ControlCenterList.COLOR_EDIT) { ControlCenterColorPager(navController,parentRoute) }
+    composable(ControlCenterList.COLOR_EDIT) { ControlCenterColorScreen(navController,parentRoute) }
 
-    composable(ControlCenterList.LAYOUT_ARRANGEMENT) { ControlCenterListPager(navController,parentRoute) }
+    composable(ControlCenterList.LAYOUT_ARRANGEMENT) { ControlCenterListScreen(navController,parentRoute) }
 
-    composable(ControlCenterList.MEDIA) { MediaSettingsPager(navController,parentRoute) }
+    composable(ControlCenterList.MEDIA) { MediaSettingsScreen(navController,parentRoute) }
 
-    composable(ControlCenterList.CARD_LIST) { QSCardListPager(navController,parentRoute) }
+    composable(ControlCenterList.CARD_LIST) { QSCardListScreen(navController,parentRoute) }
 
-    composable(ControlCenterList.TILE_LAYOUT) { QsListViewPager(navController,parentRoute) }
+    composable(ControlCenterList.TILE_LAYOUT) { QsListViewScreen(navController,parentRoute) }
 
     composable(ControlCenterList.MEDIA_APP) { MediaAppSettingsPager(navController,parentRoute) }
 
-    composable(CenterColorList.CARD_TILE) { QSCardColorPager(navController,parentRoute) }
+    composable(CenterColorList.CARD_TILE) { QSCardColorScreen(navController,parentRoute) }
 
-    composable(CenterColorList.TOGGLE_SLIDER) { ToggleSliderColorsPager(navController,parentRoute) }
+    composable(CenterColorList.TOGGLE_SLIDER) { ToggleSliderColorsScreen(navController,parentRoute) }
 
-    composable(CenterColorList.DEVICE_CENTER) { DeviceCenterColorPager(navController,parentRoute) }
+    composable(CenterColorList.DEVICE_CENTER) { DeviceCenterColorScreen(navController,parentRoute) }
 
-    composable(CenterColorList.LIST_COLOR) { QSListColorPager(navController,parentRoute) }
+    composable(CenterColorList.LIST_COLOR) { QSListColorScreen(navController,parentRoute) }
 
     composable(PagerList.GO_ROOT){ GoRootPager(navController,parentRoute) }
-    composable(PagerList.NOTDEVELOP){ NotDeveloperPager(navController,parentRoute) }
+    composable(PagerList.NOTDEVELOP){ NotDeveloperScreen(navController,parentRoute) }
 
     composable(PagerList.LANGUAGE){ LanguagePager(navController,parentRoute) }
 
-    composable(PagerList.TRANSLATOR) { TranslatorPager(navController,parentRoute) }
+    composable(PagerList.TRANSLATOR) { TranslatorScreen(navController,parentRoute) }
 
     composable(PagerList.DONATION) { DonationPage(navController,parentRoute)  }
 
-    composable(PagerList.SHOW){ SettingsShowPage(navController,parentRoute) }
+    composable(PagerList.SHOW){ SettingsShowScreen(navController,parentRoute) }
 
-    composable(PagerList.MESSAGE) { NeedMessagePager(navController,parentRoute)  }
+    composable(PagerList.MESSAGE) { NeedMessageScreen(navController,parentRoute)  }
 
-    composable(PagerList.REFERENCES) { ReferencesPager(navController,parentRoute)  }
+    composable(PagerList.REFERENCES) { ReferencesScreen(navController,parentRoute)  }
 
-    composable(PagerList.HOME) { HomePage(navController,parentRoute) }
+    composable(PagerList.HOME) { HomeScreen(navController,parentRoute) }
 
-    composable(PagerList.BARRAGE) { BarragePage(navController,parentRoute) }
+    composable(PagerList.BARRAGE) { BarrageScreen(navController,parentRoute) }
 
-    composable(PagerList.THEMEMANAGER) { ThemeManagerPage(navController,parentRoute) }
+    composable(PagerList.THEMEMANAGER) { ThemeManagerScreen(navController,parentRoute) }
 
-    composable(PagerList.UPDATER) { UpdaterPager(navController,parentRoute) }
+    composable(PagerList.UPDATER) { UpdaterScreen(navController,parentRoute) }
 
-    composable(SystemUIList.VOLUME_DIALOG) { VolumePager(navController,parentRoute) }
+    composable(SystemUIList.VOLUME_DIALOG) { VolumeScreen(navController,parentRoute) }
 
-    composable(SystemUIList.MORE) { SystemUIOtherPager(navController,parentRoute) }
+    composable(SystemUIList.MORE) { SystemUIOtherScreen(navController,parentRoute) }
 
-    composable(SystemUIMoreList.POWERMENU){ PowerMenuStylePager(navController,parentRoute) }
+    composable(SystemUIMoreList.POWERMENU){ PowerMenuStyleScreen(navController,parentRoute) }
 
 
 
     composable(SystemUIMoreList.NOTIFICATIONOFIM){
-        NotificationOfIm(navController,parentRoute)
+        NotificationOfImScreen(navController,parentRoute)
     }
 
     composable(SystemUIMoreList.NOTIFICATION_APP_DETAIL) { NotificationAppDetail(navController,parentRoute) }
@@ -332,7 +332,7 @@ fun NavGraphBuilder.pagerContent(
                 type = pagersJson<PagersModel>()
             }
         )
-    ){ SelectFunPager(navController,it,parentRoute) }
+    ){ SelectFunScreen(navController,it,parentRoute) }
 
 }
 

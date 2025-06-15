@@ -13,7 +13,7 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.LoadStatus
 import com.yunzia.hyperstar.ui.component.search.SearchStatus
 import com.yunzia.hyperstar.ui.component.search.SearchStatus.Status
-import com.yunzia.hyperstar.ui.module.systemui.controlcenter.media.app.AppInfo
+import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.media.app.AppInfo
 import com.yunzia.hyperstar.utils.SPUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

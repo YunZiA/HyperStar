@@ -15,7 +15,7 @@ import androidx.lifecycle.viewModelScope
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.LoadStatus
 import com.yunzia.hyperstar.ui.component.search.SearchStatus
-import com.yunzia.hyperstar.ui.module.systemui.other.notification.NotificationInfo
+import com.yunzia.hyperstar.ui.screen.module.systemui.other.notification.NotificationInfo
 import com.yunzia.hyperstar.utils.SPUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

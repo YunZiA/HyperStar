@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.hook.app.systemui.os2
 
+import android.content.res.TypedArray
 import android.content.res.XModuleResources
 import android.os.Bundle
 import android.view.Gravity
@@ -14,6 +15,7 @@ import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.base.getDimensionPixelOffset
 import com.yunzia.hyperstar.hook.tool.starLog
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
+
 
 class AddCatPaw:Hooker() {
 

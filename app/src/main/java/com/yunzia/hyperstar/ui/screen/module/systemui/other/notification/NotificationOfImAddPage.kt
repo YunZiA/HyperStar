@@ -78,6 +78,12 @@ fun NotificationOfImAddPage(
         viewModel.updateSearchText(searchStatus.searchText, unSelectApp)
     }
 
+    LaunchedEffect(expand.value) {
+        if (!expand.value){
+            viewModel.clearSelection()
+        }
+    }
+
 
     XScaffold(
         modifier = Modifier
@@ -96,7 +102,9 @@ fun NotificationOfImAddPage(
                             modifier = Modifier.padding(start = 18.dp),
                             imageVector = ImageVector.vectorResource(R.drawable.ic_close),
                             contentDescription = "close",
-                            onClick = { expand.value = false }
+                            onClick = {
+                                expand.value = false
+                            }
 
                         )
 
@@ -109,10 +117,8 @@ fun NotificationOfImAddPage(
                             contentDescription = "done",
                             onClick = {
                                 expand.value = false
-
                                 viewModel.confirmSelection { selectedApps ->
                                     selectApp.addAll(selectedApps)
-                                    expand.value = false
                                 }
 //                                if (selectedAppList.isNotEmpty()){
 //                                    selectApp.addAll(selectedAppList)

@@ -93,6 +93,11 @@ public class starLog {
         XposedBridge.log(HOOK_TAG+"[D]: " + msg);
     }
 
+    public static void logD(String tag, String msg) {
+        if (!show) return;
+        XposedBridge.log(HOOK_TAG+"[D][" + tag + "]: " + msg);
+    }
+
     public static void logD(String tag, String pkg, String msg) {
         if (!show) return;
         XposedBridge.log(HOOK_TAG+"[D][" + pkg + "][" + tag + "]: " + msg);

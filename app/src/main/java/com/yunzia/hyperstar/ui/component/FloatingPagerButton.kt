@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
@@ -194,8 +195,9 @@ fun FloatingPagerButton(
                     }
                     Box(
                         modifier = Modifier
+                            .alpha(0.8f - alpha)
                             .clickable { expand.value = true }
-                            .size(width,height)
+                            .size(width, height)
                             .defaultMinSize(minWidth = minSize, minHeight = minSize),
                         contentAlignment = Alignment.Center
                     ) {

@@ -10,7 +10,6 @@ import androidx.core.view.isVisible
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.base.getDimensionPixelSize
-import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import com.yunzia.hyperstar.utils.XSPUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,58 +50,97 @@ class VolumeView: Hooker() {
 
     private fun startCollpasedColumn() {
 
-        findClass(
-            "com.android.systemui.miui.ViewStateGroup\$Builder",
-            classLoader
-        ).afterHookMethod(
-            "addStateWithIntDimen",
-            Int::class.java,
-            Int::class.java,
-            Int::class.java
-        ) {
 
-            val i3 = it.args[2] as Int
-            val mContext = this.getObjectFieldAs<Context>("mContext")
-            val res = mContext.resources
-            val miuiVolumeOffsetTopCollapsed = res.getIdentifier("miui_volume_offset_top_collapsed","dimen",plugin)
-            val miuiVolumeDialogShadowMarginTop = res.getIdentifier("miui_volume_dialog_shadow_margin_top","dimen",plugin)
-
-            when(i3) {
-                miuiVolumeOffsetTopCollapsed -> {
-                    val VolumeOffsetTop = if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                        if (VolumeOffsetTopCollapsedP == -1f) return@afterHookMethod
-                        VolumeOffsetTopCollapsedP
-                    } else {
-                        if (VolumeOffsetTopCollapsedL == -1f) return@afterHookMethod
-                        VolumeOffsetTopCollapsedL
-                    }
-                    it.result = this.callMethod(
-                        "addState",
-                        it.args[0],
-                        it.args[1],
-                        dpToPx(res, VolumeOffsetTop).toInt()
-                    )
-
-                }
-
-                miuiVolumeDialogShadowMarginTop -> {
-                    val ShadowMarginTop = if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                        if (ShadowMarginTopP == -1f) return@afterHookMethod
-                        ShadowMarginTopP
-                    } else {
-                        if (ShadowMarginTopL == -1f) return@afterHookMethod
-                        ShadowMarginTopL
-                    }
-                    it.result = this.callMethod(
-                        "addState",
-                        it.args[0],
-                        it.args[1],
-                        dpToPx(res, ShadowMarginTop).toInt()
-                    )
-
-                }
+        replaceDimen(
+            "miui_volume_offset_top_collapsed", plugin
+        ){
+            if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                if (VolumeOffsetTopCollapsedP == -1f) return@replaceDimen null
+                dpToPx(displayMetrics,VolumeOffsetTopCollapsedP)
+            } else {
+                if (VolumeOffsetTopCollapsedL == -1f) return@replaceDimen null
+                dpToPx(displayMetrics,VolumeOffsetTopCollapsedL)
             }
         }
+
+
+        replaceDimen(
+            "miui_volume_dialog_shadow_margin_top", plugin
+        ){
+            if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                if (ShadowMarginTopP == -1f) return@replaceDimen null
+                dpToPx(displayMetrics,ShadowMarginTopP)
+            } else {
+                if (ShadowMarginTopL == -1f) return@replaceDimen null
+                dpToPx(displayMetrics,ShadowMarginTopL)
+            }
+        }
+
+
+        replaceDimen(
+            "miui_volume_column_height",plugin
+        ){
+            if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                if (VolumeHeightCollapsedP == -1f) return@replaceDimen null
+                dpToPx(displayMetrics,VolumeHeightCollapsedP)
+            } else {
+                if (VolumeHeightCollapsedL == -1f) return@replaceDimen null
+                dpToPx(displayMetrics,VolumeHeightCollapsedL)
+            }
+        }
+
+//        findClass(
+//            "com.android.systemui.miui.ViewStateGroup\$Builder",
+//            classLoader
+//        ).afterHookMethod(
+//            "addStateWithIntDimen",
+//            Int::class.java,
+//            Int::class.java,
+//            Int::class.java
+//        ) {
+//
+//            val i3 = it.args[2] as Int
+//            val mContext = this.getObjectFieldAs<Context>("mContext")
+//            val res = mContext.resources
+//            val miuiVolumeOffsetTopCollapsed = res.getIdentifier("miui_volume_offset_top_collapsed","dimen",plugin)
+//            val miuiVolumeDialogShadowMarginTop = res.getIdentifier("miui_volume_dialog_shadow_margin_top","dimen",plugin)
+//
+//            when(i3) {
+//                miuiVolumeOffsetTopCollapsed -> {
+//                    val VolumeOffsetTop = if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                        if (VolumeOffsetTopCollapsedP == -1f) return@afterHookMethod
+//                        VolumeOffsetTopCollapsedP
+//                    } else {
+//                        if (VolumeOffsetTopCollapsedL == -1f) return@afterHookMethod
+//                        VolumeOffsetTopCollapsedL
+//                    }
+//                    it.result = this.callMethod(
+//                        "addState",
+//                        it.args[0],
+//                        it.args[1],
+//                        dpToPx(res, VolumeOffsetTop).toInt()
+//                    )
+//
+//                }
+//
+//                miuiVolumeDialogShadowMarginTop -> {
+//                    val ShadowMarginTop = if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                        if (ShadowMarginTopP == -1f) return@afterHookMethod
+//                        ShadowMarginTopP
+//                    } else {
+//                        if (ShadowMarginTopL == -1f) return@afterHookMethod
+//                        ShadowMarginTopL
+//                    }
+//                    it.result = this.callMethod(
+//                        "addState",
+//                        it.args[0],
+//                        it.args[1],
+//                        dpToPx(res, ShadowMarginTop).toInt()
+//                    )
+//
+//                }
+//            }
+//        }
 
         findClass(
             "com.android.systemui.miui.volume.MiuiVolumeDialogMotion",
@@ -144,142 +182,142 @@ class VolumeView: Hooker() {
             mShadowView.layoutParams.height = dpToPx(res,shadowHeight).toInt()
 
         }
-
-        findClass(
-            "com.android.systemui.miui.volume.DndPopupWindow",
-            classLoader
-        ).replaceHookMethod(
-            "getPositionY",
-            Int::class.java
-        ){
-            val i = it.args[0] as Int
-            val mContext = this.getObjectFieldAs<Context>("mContext")
-            val res = mContext.resources
-
-            var miuiVolumeOffsetTopCollapsed = getDimensionPixelSize(res,"miui_volume_offset_top_collapsed",plugin)
-
-            if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-                if (VolumeHeightCollapsedP != -1f) {
-                    miuiVolumeOffsetTopCollapsed = dpToPx(res,VolumeHeightCollapsedP).toInt()
-                }
-            } else {
-                if (VolumeHeightCollapsedL != -1f){
-                    miuiVolumeOffsetTopCollapsed= dpToPx(res,VolumeHeightCollapsedL).toInt()
-                }
-            }
-            val miuiVolumeFooterMarginTop = getDimensionPixelSize(res,"miui_volume_footer_margin_top",plugin)
-            val miuiVolumeSilenceButtonHeight = getDimensionPixelSize(res,"miui_volume_silence_button_height",plugin)
-            var miuiVolumeColumnHeight = getDimensionPixelSize(res,"miui_volume_column_height",plugin)
-            if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-                if (VolumeHeightCollapsedP == -1f){
-                    miuiVolumeColumnHeight = dpToPx(res,VolumeHeightCollapsedP).toInt()
-                }
-            } else {
-                if (VolumeHeightCollapsedL != -1f){
-                    miuiVolumeColumnHeight =  dpToPx(res,VolumeHeightCollapsedL).toInt()
-                }
-            }
-
-            val result = (((miuiVolumeOffsetTopCollapsed + miuiVolumeColumnHeight)
-                    + (miuiVolumeSilenceButtonHeight  * 1.5))
-                    + (miuiVolumeFooterMarginTop * 2)) - (i * 0.8f)
-            return@replaceHookMethod result.toInt()
-
-        }
-
-        findClass(
-            "com.android.systemui.miui.volume.VolumePanelViewController",
-            classLoader
-        ).afterHookMethod(
-            "updateColumnsSizeH",
-            View::class.java
-        ){
-            val view = it.args[0] as View
-            val mContext = this.getObjectFieldAs<Context>("mContext")
-            val res = mContext.resources
-            if (!this.getBooleanField("mExpanded")) {
-                val marginLayoutParams = view.layoutParams
-                //marginLayoutParams.width = dpToPx(res,80f).toInt()
-                val height :Float
-                if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-                    if (VolumeHeightCollapsedP == -1f) return@afterHookMethod
-                    height = VolumeHeightCollapsedP
-                } else {
-                    if (VolumeHeightCollapsedL == -1f) return@afterHookMethod
-                    height= VolumeHeightCollapsedL
-                }
-                marginLayoutParams.height = dpToPx(res,height).toInt()
-                view.layoutParams = marginLayoutParams
-            }
-
-        }
-
-
-        findClass(
-            "com.android.systemui.miui.volume.MiuiVolumeSeekBarProgressView",
-            classLoader
-        ).afterHookMethod(
-            "updateProgressViewSize",
-            Boolean::class.java,
-            Boolean::class.java
-        ) { this as View
-            val mContext = this.getObjectField("mContext") as Context
-            val res = mContext.resources
-            val mExpanded =  it.args[0] as Boolean
-            if (!mExpanded) {
-                val marginLayoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
-                //marginLayoutParams.width = dpToPx(res,80f).toInt()
-                var height: Int
-                if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    if (VolumeHeightCollapsedP == -1f) return@afterHookMethod
-                    height = dpToPx(res, VolumeHeightCollapsedP).toInt()
-                } else {
-                    if (VolumeHeightCollapsedL == -1f) return@afterHookMethod
-                    height = dpToPx(res, VolumeHeightCollapsedL).toInt()
-                }
-                marginLayoutParams.height = if (height % 2 == 1) {
-                    ++height
-                } else {
-                    height
-                }
-                this.setObjectField( "mHeight", height)
-                this.layoutParams = marginLayoutParams
-            }
-
-        }
-
-        findClass(
-            "com.android.systemui.miui.volume.RoundRectFrameLayout",
-            classLoader
-        ).afterHookMethod(
-            "updateProgressViewSize",
-            Boolean::class.java,
-            Boolean::class.java
-        ) { this as View
-            val mContext = this.getObjectField("mContext") as Context
-            val res = mContext.resources
-            val mExpanded =  it.args[0] as Boolean
-            if (!mExpanded) {
-                val marginLayoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
-                var height :Int
-                if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-                    if (VolumeHeightCollapsedP == -1f) return@afterHookMethod
-                    height = dpToPx(res,VolumeHeightCollapsedP).toInt()
-                } else {
-                    if (VolumeHeightCollapsedL == -1f) return@afterHookMethod
-                    height= dpToPx(res,VolumeHeightCollapsedL).toInt()
-                }
-                if (height %2 == 1){
-                    height++
-                    marginLayoutParams.height = height
-                }else{
-                    marginLayoutParams.height = height
-
-                }
-                this.layoutParams = marginLayoutParams
-            }
-
-        }
+//
+//        findClass(
+//            "com.android.systemui.miui.volume.DndPopupWindow",
+//            classLoader
+//        ).replaceHookMethod(
+//            "getPositionY",
+//            Int::class.java
+//        ){
+//            val i = it.args[0] as Int
+//            val mContext = this.getObjectFieldAs<Context>("mContext")
+//            val res = mContext.resources
+//
+//            var miuiVolumeOffsetTopCollapsed = getDimensionPixelSize(res,"miui_volume_offset_top_collapsed",plugin)
+//
+//            if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+//                if (VolumeHeightCollapsedP != -1f) {
+//                    miuiVolumeOffsetTopCollapsed = dpToPx(res,VolumeHeightCollapsedP).toInt()
+//                }
+//            } else {
+//                if (VolumeHeightCollapsedL != -1f){
+//                    miuiVolumeOffsetTopCollapsed= dpToPx(res,VolumeHeightCollapsedL).toInt()
+//                }
+//            }
+//            val miuiVolumeFooterMarginTop = getDimensionPixelSize(res,"miui_volume_footer_margin_top",plugin)
+//            val miuiVolumeSilenceButtonHeight = getDimensionPixelSize(res,"miui_volume_silence_button_height",plugin)
+//            var miuiVolumeColumnHeight = getDimensionPixelSize(res,"miui_volume_column_height",plugin)
+//            if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+//                if (VolumeHeightCollapsedP == -1f){
+//                    miuiVolumeColumnHeight = dpToPx(res,VolumeHeightCollapsedP).toInt()
+//                }
+//            } else {
+//                if (VolumeHeightCollapsedL != -1f){
+//                    miuiVolumeColumnHeight =  dpToPx(res,VolumeHeightCollapsedL).toInt()
+//                }
+//            }
+//
+//            val result = (((miuiVolumeOffsetTopCollapsed + miuiVolumeColumnHeight)
+//                    + (miuiVolumeSilenceButtonHeight  * 1.5))
+//                    + (miuiVolumeFooterMarginTop * 2)) - (i * 0.8f)
+//            return@replaceHookMethod result.toInt()
+//
+//        }
+//
+//        findClass(
+//            "com.android.systemui.miui.volume.VolumePanelViewController",
+//            classLoader
+//        ).afterHookMethod(
+//            "updateColumnsSizeH",
+//            View::class.java
+//        ){
+//            val view = it.args[0] as View
+//            val mContext = this.getObjectFieldAs<Context>("mContext")
+//            val res = mContext.resources
+//            if (!this.getBooleanField("mExpanded")) {
+//                val marginLayoutParams = view.layoutParams
+//                //marginLayoutParams.width = dpToPx(res,80f).toInt()
+//                val height :Float
+//                if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+//                    if (VolumeHeightCollapsedP == -1f) return@afterHookMethod
+//                    height = VolumeHeightCollapsedP
+//                } else {
+//                    if (VolumeHeightCollapsedL == -1f) return@afterHookMethod
+//                    height= VolumeHeightCollapsedL
+//                }
+//                marginLayoutParams.height = dpToPx(res,height).toInt()
+//                view.layoutParams = marginLayoutParams
+//            }
+//
+//        }
+//
+//
+//        findClass(
+//            "com.android.systemui.miui.volume.MiuiVolumeSeekBarProgressView",
+//            classLoader
+//        ).afterHookMethod(
+//            "updateProgressViewSize",
+//            Boolean::class.java,
+//            Boolean::class.java
+//        ) { this as View
+//            val mContext = this.getObjectField("mContext") as Context
+//            val res = mContext.resources
+//            val mExpanded =  it.args[0] as Boolean
+//            if (!mExpanded) {
+//                val marginLayoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
+//                //marginLayoutParams.width = dpToPx(res,80f).toInt()
+//                var height: Int
+//                if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                    if (VolumeHeightCollapsedP == -1f) return@afterHookMethod
+//                    height = dpToPx(res, VolumeHeightCollapsedP).toInt()
+//                } else {
+//                    if (VolumeHeightCollapsedL == -1f) return@afterHookMethod
+//                    height = dpToPx(res, VolumeHeightCollapsedL).toInt()
+//                }
+//                marginLayoutParams.height = if (height % 2 == 1) {
+//                    ++height
+//                } else {
+//                    height
+//                }
+//                this.setObjectField( "mHeight", height)
+//                this.layoutParams = marginLayoutParams
+//            }
+//
+//        }
+//
+//        findClass(
+//            "com.android.systemui.miui.volume.RoundRectFrameLayout",
+//            classLoader
+//        ).afterHookMethod(
+//            "updateProgressViewSize",
+//            Boolean::class.java,
+//            Boolean::class.java
+//        ) { this as View
+//            val mContext = this.getObjectField("mContext") as Context
+//            val res = mContext.resources
+//            val mExpanded =  it.args[0] as Boolean
+//            if (!mExpanded) {
+//                val marginLayoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
+//                var height :Int
+//                if (res.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+//                    if (VolumeHeightCollapsedP == -1f) return@afterHookMethod
+//                    height = dpToPx(res,VolumeHeightCollapsedP).toInt()
+//                } else {
+//                    if (VolumeHeightCollapsedL == -1f) return@afterHookMethod
+//                    height= dpToPx(res,VolumeHeightCollapsedL).toInt()
+//                }
+//                if (height %2 == 1){
+//                    height++
+//                    marginLayoutParams.height = height
+//                }else{
+//                    marginLayoutParams.height = height
+//
+//                }
+//                this.layoutParams = marginLayoutParams
+//            }
+//
+//        }
 
     }
 

@@ -87,7 +87,6 @@ class NotificationAddViewModel(
 
     fun confirmSelection(onConfirmed: (Set<NotificationInfo>) -> Unit) {
         onConfirmed(_selectedApps.toSet())
-        clearSelection()
     }
 
     @SuppressLint("QueryPermissionsNeeded")

@@ -77,7 +77,6 @@ class PluginHookForOS2 : InitHooker() {
 
         initResource(qsControlCenterColor)
         initResource(powerMenuHook)
-        initResource(QSMiplayAppIconRadius())
         initResource(qsMediaCoverBackground)
         initResource(deviceCenterRow)
         initResource(QSMediaNoPlayTitle())
@@ -98,6 +97,7 @@ class PluginHookForOS2 : InitHooker() {
         initSecHooker(qsMediaCoverBackground)
         initSecHooker(QSMediaDeviceName())
         initSecHooker(QSMediaDefaultApp())
+        initSecHooker(QSMiplayAppIconRadius())
         initSecHooker(QSMediaView())
         initSecHooker(qsControlCenterColor)
         initSecHooker(QSListView())

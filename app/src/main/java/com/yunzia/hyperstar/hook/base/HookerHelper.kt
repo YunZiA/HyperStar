@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.hook.base
 
 import android.content.res.Resources
+import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.SeekBar
 import androidx.core.graphics.toColorInt
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.base.ResourcesImpl
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodHook.MethodHookParam
 import de.robv.android.xposed.XC_MethodReplacement
@@ -19,11 +21,19 @@ import java.lang.reflect.Method
 
 abstract class HookerHelper {
 
-    fun replaceColor(name: String,packageName: String,color: Int){
+    private val colorIdCache = mutableMapOf<String, Int>()
+
+    fun replaceColor(name: String, packageName: String, color: Int) {
+        fun getCachedId(mResourcesImpl: ResourcesImpl): Int {
+            val key = "$packageName:$name"
+            return colorIdCache[key] ?: mResourcesImpl.getId(name, "color", packageName).also { id ->
+                if (id != 0) colorIdCache[key] = id
+            }
+        }
         Resources::class.java.afterHookAllMethods("getColor") {
             val resourceId = it.args[0] as Int
-            val mResourcesImpl = this.getObjectField("mResourcesImpl")
-            val id = mResourcesImpl.callMethodAs<Int>("getIdentifier",name,"color",packageName)
+            val mResourcesImpl = ResourcesImpl(this)
+            val id = getCachedId(mResourcesImpl)
             if (resourceId == id) {
                 it.result = color
             }
@@ -31,11 +41,78 @@ abstract class HookerHelper {
         }
     }
 
+    private val dimenIdCache = mutableMapOf<String, Int>()
+
+    fun replaceDimen(
+        name: String,
+        packageName: String,
+        replace: ResourcesImpl.() -> Float?
+    ) {
+        val key = "$packageName:$name"
+
+        // 公共缓存逻辑
+        fun getCachedIdBy(
+            getIdBlock: () -> Int
+        ): Int {
+            return dimenIdCache[key] ?: getIdBlock().also { id ->
+                starLog.logE("$name --- $id")
+                if (id != 0) dimenIdCache[key] = id
+            }
+        }
+
+        // hook Resources 的 dimension 获取方法
+        fun hookDimensionMethod(methodName: String, resultSetter: (Float) -> Any) {
+            Resources::class.java.afterHookMethod(methodName, Int::class.java) {
+                val resourceId = it.args[0] as Int
+                val mResourcesImpl = ResourcesImpl(this)
+                val id = getCachedIdBy { mResourcesImpl.getId(name, "dimen", packageName) }
+                if (resourceId == id) {
+                    mResourcesImpl.replace()?.let { value ->
+                        starLog.logD(methodName, "replace $name -> $value")
+                        it.result = resultSetter(value)
+                    }
+                }
+            }
+        }
+
+        // hook TypedArray 的 dimension 获取方法
+        fun hookTADimensionMethod(methodName: String, resultSetter: (Float) -> Any) {
+            TypedArray::class.java.afterHookAllMethods(methodName) { this as TypedArray
+                val index = it.args[0] as Int
+
+                val resourceId = this.getResourceId(index, 0)
+                if (resourceId == 0) return@afterHookAllMethods
+
+                val mResources = this.getObjectFieldAs<Resources>("mResources")
+                val mResourcesImpl = ResourcesImpl(mResources)
+                val id = getCachedIdBy { mResources.getId(name, "dimen", packageName) }
+                if (resourceId == id) {
+                    mResourcesImpl.replace()?.let { value ->
+                        starLog.logD(methodName, "replace $name -> $value")
+                        it.result = resultSetter(value)
+                    }
+                }
+            }
+        }
+
+        // 注册所有相关 hook
+        listOf(
+            "getDimensionPixelOffset" to { v: Float -> v.toInt() },
+            "getDimensionPixelSize" to { v: Float -> v.toInt() },
+            "getDimension" to { v: Float -> v }
+        ).forEach { (methodName, setter) ->
+            hookDimensionMethod(methodName, setter)
+            hookTADimensionMethod(methodName, setter)
+        }
+    }
+
+
     fun setColorField(context: Any?, fieldName: String, color: String?) {
         XposedHelpers.setIntField(context, fieldName, Color.parseColor(color))
     }
 
     fun Resources.getId(name: String, defPackage: String) = this.getIdentifier(name,"id",defPackage)
+    fun Resources.getId(name: String, type: String, defPackage: String) = this.getIdentifier(name,type,defPackage)
 
 
     fun Resources.getColorBy(name: String, defPackage: String): Int {

@@ -1,9 +1,8 @@
-package com.yunzia.hyperstar.hook.os1.app.plugin.powermenu
+package com.yunzia.hyperstar.hook.app.plugin.powermenu.action
 
+import android.R
 import android.annotation.SuppressLint
 import android.content.ComponentName
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu.Item
-
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.StateListDrawable
@@ -14,31 +13,33 @@ import android.os.PowerManager
 import android.os.RemoteException
 import android.os.UserHandle
 import android.provider.Settings
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.base.MenuItem
 import de.robv.android.xposed.XposedHelpers
 
-class Action(val mContext: Context,
-             var xiaoai:Int,
-             var icBootloader:Int,
-             var icRecovery :Int,
-             var icAirplaneOn :Int,
-             var icAirplaneOff :Int,
-             var icSilentOn :Int,
-             var icSilentOff :Int,
-             var icQsScreenshot :Int,
-             var alipayPay :Int,
-             var wechatScan :Int,
-             var alipayScan :Int,
-             var wechatPay :Int,
-             val VolumeUtil: Class<*>
+class Action(
+    val mContext: Context,
+    var xiaoai:Int,
+    var icBootloader:Int,
+    var icRecovery :Int,
+    var icAirplaneOn :Int,
+    var icAirplaneOff :Int,
+    var icSilentOn :Int,
+    var icSilentOff :Int,
+    var icQsScreenshot :Int,
+    var alipayPay :Int,
+    var wechatScan :Int,
+    var alipayScan :Int,
+    var wechatPay :Int,
+    val VolumeUtil: Class<*>
 ) {
 
     fun getAction(
         action:String
-    ):Item{
+    ): MenuItem {
 
         when(action){
             "empty"->{
-                return Item(isEmpty = true)
+                return MenuItem(isEmpty = true)
             }
             "recovery"->{
                 return recovery(mContext,icRecovery)
@@ -72,7 +73,7 @@ class Action(val mContext: Context,
                 return apCode(mContext,alipayPay)
             }
             else->{
-                return Item(isEmpty = true)
+                return MenuItem(isEmpty = true)
 
             }
 
@@ -81,7 +82,7 @@ class Action(val mContext: Context,
 
     }
 
-    fun rebootToMode(context: Context,mode:String) {
+    fun rebootToMode(context: Context, mode:String) {
         val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
         try {
             powerManager.reboot(mode)
@@ -90,14 +91,14 @@ class Action(val mContext: Context,
         }
     }
 
-    fun createStateListDrawable(context: Context, state: Boolean,selectedID:Int,defaultID:Int): StateListDrawable {
+    fun createStateListDrawable(context: Context, state: Boolean, selectedID:Int, defaultID:Int): StateListDrawable {
 
         val selectedDrawable = context.getDrawable(selectedID)
 
         val defaultDrawable = context.getDrawable(defaultID)
 
         val stateListDrawable = StateListDrawable().apply {
-            addState(intArrayOf(android.R.attr.state_selected), selectedDrawable)
+            addState(intArrayOf(R.attr.state_selected), selectedDrawable)
             addState(intArrayOf(), if (state) selectedDrawable else defaultDrawable)
         }
 
@@ -106,8 +107,8 @@ class Action(val mContext: Context,
     fun recovery (
         mContext: Context,
         icRecovery:Int
-    ): Item {
-        return Item(
+    ): MenuItem {
+        return MenuItem(
             mContext.getDrawable(icRecovery),
             "Recovery",
             false
@@ -116,27 +117,27 @@ class Action(val mContext: Context,
         }
     }
     fun bootloader (
-        mContext:Context,
+        mContext: Context,
         icBootloader:Int
-    ):Item{
-        return  Item(
+    ): MenuItem {
+        return MenuItem(
             mContext.getDrawable(icBootloader),
             "Fastboot",
             false
-        ){ _, _ ->
-            rebootToMode(mContext,"bootloader")
+        ) { _, _ ->
+            rebootToMode(mContext, "bootloader")
         }
     }
     @SuppressLint("MissingPermission")
     fun screenshot (
-        mContext:Context,
+        mContext: Context,
         icQsScreenshot:Int
-    ):Item{
-        return  Item(
+    ): MenuItem {
+        return MenuItem(
             mContext.getDrawable(icQsScreenshot),
             "SCREENSHOT",
             false
-        ){ _, context: Context ->
+        ) { _, context: Context ->
             Handler(Looper.getMainLooper()).postDelayed({
                 try {
                     val clazz = Class.forName("android.os.UserHandle")
@@ -159,14 +160,14 @@ class Action(val mContext: Context,
     }
     @SuppressLint("WrongConstant")
     fun xiaoai (
-        mContext:Context,
+        mContext: Context,
         isXiaoai:Int
-    ):Item{
-        return  Item(
+    ): MenuItem {
+        return MenuItem(
             mContext.getDrawable(isXiaoai),
             "小爱同学",
             false
-        ){ _, context: Context ->
+        ) { _, context: Context ->
             val intent = Intent("android.intent.action.ASSIST")
             intent.setPackage("com.miui.voiceassist")
             intent.putExtra("voice_assist_start_from_key", "FOD")
@@ -177,19 +178,23 @@ class Action(val mContext: Context,
 
     }
     fun airPlane (
-        mContext:Context,
+        mContext: Context,
         icAirplaneOn:Int,
         icAirplaneOff:Int
-    ):Item{
+    ): MenuItem {
         val airPlaneMode = Settings.Global.getInt(mContext.contentResolver,"airplane_mode_on",0)==1
-        return  Item(
-            createStateListDrawable(mContext,airPlaneMode,icAirplaneOn,icAirplaneOff),
+        return MenuItem(
+            createStateListDrawable(mContext, airPlaneMode, icAirplaneOn, icAirplaneOff),
             "飞行模式",
             airPlaneMode
-        ){ v,context->
+        ) { v, context ->
             val enable = !airPlaneMode
             v.isSelected = enable
-            Settings.Global.putInt(context.contentResolver, Settings.Global.AIRPLANE_MODE_ON, if (enable) 1 else 0)
+            Settings.Global.putInt(
+                context.contentResolver,
+                Settings.Global.AIRPLANE_MODE_ON,
+                if (enable) 1 else 0
+            )
             val intent = Intent("android.intent.action.AIRPLANE_MODE")
             intent.putExtra("state", enable)
             context.sendBroadcast(intent)
@@ -200,26 +205,26 @@ class Action(val mContext: Context,
         VolumeUtil: Class<*>,
         icSilentOn:Int,
         icSilentOff:Int
-    ):Item{
+    ): MenuItem {
         val silentMode = XposedHelpers.callStaticMethod(VolumeUtil,"isSilentMode",mContext)  as Boolean
-        return  Item(
-            createStateListDrawable(mContext,silentMode,icSilentOn,icSilentOff),
+        return MenuItem(
+            createStateListDrawable(mContext, silentMode, icSilentOn, icSilentOff),
             "静音",
             silentMode
-        ){ v, _ ->
+        ) { v, _ ->
             v.isSelected = !silentMode
-            XposedHelpers.callStaticMethod(VolumeUtil,"setSilenceMode",mContext,!silentMode)
+            XposedHelpers.callStaticMethod(VolumeUtil, "setSilenceMode", mContext, !silentMode)
         }
     }
     fun wcScaner (
-        mContext:Context,
+        mContext: Context,
         wechatScan:Int
-    ):Item{
-        return  Item(
+    ): MenuItem {
+        return MenuItem(
             mContext.getDrawable(wechatScan),
             "微信扫一扫",
             false
-        ){ _, context: Context ->
+        ) { _, context: Context ->
 
             val intent = Intent()
             intent.setComponent(ComponentName("com.tencent.mm", "com.tencent.mm.ui.LauncherUI"))
@@ -232,10 +237,14 @@ class Action(val mContext: Context,
     }
     @SuppressLint("WrongConstant")
     fun wcCode (
-        mContext:Context,
+        mContext: Context,
         wechatPay:Int
-    ):Item{
-        return Item(mContext.getDrawable(wechatPay),"微信收付款",false){ _, context: Context ->
+    ): MenuItem {
+        return MenuItem(
+            mContext.getDrawable(wechatPay),
+            "微信收付款",
+            false
+        ) { _, context: Context ->
 
             val intent = Intent("android.intent.action.VIEW")
             intent.setFlags(0x14800000)
@@ -251,10 +260,14 @@ class Action(val mContext: Context,
         }
     }
     fun apCode (
-        mContext:Context,
+        mContext: Context,
         alipayPay:Int
-    ):Item{
-        return  Item(mContext.getDrawable(alipayPay),"支付宝收款码",false){ _, context: Context ->
+    ): MenuItem {
+        return MenuItem(
+            mContext.getDrawable(alipayPay),
+            "支付宝收款码",
+            false
+        ) { _, context: Context ->
 
             val uri = Uri.parse("alipayqr://platformapi/startapp?saId=20000056")
             val intent = Intent(Intent.ACTION_VIEW, uri)
@@ -264,16 +277,16 @@ class Action(val mContext: Context,
         }
     }
     fun apScan (
-        mContext:Context,
+        mContext: Context,
         alipayScan:Int
-    ):Item{
-        return  Item(
+    ): MenuItem {
+        return MenuItem(
             mContext.getDrawable(alipayScan),
             "支付宝扫一扫",
             false
-        ){ _, context: Context ->
+        ) { _, context: Context ->
             val uri = Uri.parse("alipayqr://platformapi/startapp?saId=20000056");
-            val intent =  Intent(Intent.ACTION_VIEW, uri)
+            val intent = Intent(Intent.ACTION_VIEW, uri)
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
 

@@ -1,10 +1,10 @@
-package com.yunzia.hyperstar.hook.os1.app.plugin.powermenu
+package com.yunzia.hyperstar.hook.app.plugin.powermenu.menu
 
+import android.R
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Outline
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.StateListDrawable
@@ -17,16 +17,17 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.BaseAdapter
 import android.widget.FrameLayout
 import android.widget.ImageView
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu.Item
-import yunzia.utils.DensityUtil.Companion.dpToPx
+import androidx.core.graphics.toColorInt
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.base.MenuItem
+import yunzia.utils.DensityUtil
 
-class GridAdapter(private val context: Context, private val items: List<Item?>, private val itemClick: () -> Unit) : BaseAdapter() {
+class GridAdapter(private val context: Context, private val items: List<MenuItem?>, private val itemClick: () -> Unit) : BaseAdapter() {
 
     override fun getCount(): Int {
         return items.size
     }
 
-    override fun getItem(position: Int): Item {
+    override fun getItem(position: Int): MenuItem {
         return items[position]!!
     }
 
@@ -40,9 +41,6 @@ class GridAdapter(private val context: Context, private val items: List<Item?>, 
             view = createItemLayout(context, items[position]!!)
         }
 
-
-
-        //addShowAnimation(view)
         view.setOnClickListener {
             if (view is ViewGroup){
                 view.getChildAt(0).isSelected =  !view.getChildAt(0).isSelected
@@ -78,8 +76,8 @@ class GridAdapter(private val context: Context, private val items: List<Item?>, 
 
 
     private fun createStateListDrawable(context: Context, state: Boolean): StateListDrawable {
-        val selectedColor = Color.parseColor("#277af7") // 按下时的颜色
-        val defaultColor = Color.parseColor("#59FFFFFF") // 默认颜色
+        val selectedColor = "#277af7".toColorInt() // 按下时的颜色
+        val defaultColor = "#59FFFFFF".toColorInt() // 默认颜色
 
         val selectedDrawable = GradientDrawable().apply {
             shape = GradientDrawable.OVAL
@@ -92,26 +90,26 @@ class GridAdapter(private val context: Context, private val items: List<Item?>, 
         }
 
         val stateListDrawable = StateListDrawable().apply {
-            addState(intArrayOf(android.R.attr.state_selected), selectedDrawable)
+            addState(intArrayOf(R.attr.state_selected), selectedDrawable)
             addState(intArrayOf(), if (state) selectedDrawable else defaultDrawable)
         }
 
         return stateListDrawable
     }
 
-    private fun createItemLayout(context: Context, item: Item): FrameLayout {
+    private fun createItemLayout(context: Context, item: MenuItem): FrameLayout {
         val drawable = GradientDrawable()
         drawable.shape = GradientDrawable.OVAL
 
         val res =  context.resources
 
         val sliderWidth =res.getIdentifier("slider_width","dimen","miui.systemui.plugin")
-        val size = res.getDimensionPixelOffset(sliderWidth)- dpToPx(res,5f).toInt()
+        val size = res.getDimensionPixelOffset(sliderWidth)- DensityUtil.Companion.dpToPx(res, 5f).toInt()
 
         drawable.setColor(if(item.state){
-            Color.parseColor("#2856FF")
+            "#2856FF".toColorInt()
         }else{
-            Color.parseColor("#40FFFFFF")
+            "#40FFFFFF".toColorInt()
         })
 
 
@@ -156,7 +154,7 @@ class GridAdapter(private val context: Context, private val items: List<Item?>, 
                         v.performClick()
                         true
                     }
-                    MotionEvent.ACTION_CANCEL-> {
+                    MotionEvent.ACTION_CANCEL -> {
                         // 结束按压动画
                         val scaleUp = ObjectAnimator.ofPropertyValuesHolder(
                             this,
@@ -183,12 +181,7 @@ class GridAdapter(private val context: Context, private val items: List<Item?>, 
 
         }
 
-        //recovery.foreground = Recovery
-
-
         layout.addView(imageView)
-
-
 
 
         return layout

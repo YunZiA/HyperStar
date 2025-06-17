@@ -11,6 +11,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -36,15 +37,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.ui.component.helper.getSystemSmoothCornerRadius
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
-import com.yunzia.hyperstar.utils.rememberWindowSize
 import kotlinx.coroutines.delay
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -70,7 +70,6 @@ fun FloatingPagerButton(
     val easing = CubicBezierEasing(0.38F, 0.0F, 0.55F, 0.99F)
     val roundedCorner = rememberUpdatedState (getSystemSmoothCornerRadius())
 
-    val windowSize = rememberWindowSize()
 
     // 动画状态
     val dim by animateColorAsState(
@@ -83,17 +82,8 @@ fun FloatingPagerButton(
         animationSpec = tween(durationMillis, easing = LinearOutSlowInEasing)
     )
 
-    val height by animateDpAsState(
-        targetValue = if (expand.value) windowSize.value.height else minSize,
-        animationSpec = tween(durationMillis, easing = LinearOutSlowInEasing)
-    )
 
-    val width by animateDpAsState(
-        targetValue = if (expand.value) windowSize.value.width else minSize,
-        animationSpec = tween(durationMillis, easing = LinearOutSlowInEasing)
-    )
-
-    val layoutDirection = LayoutDirection.Rtl
+    val layoutDirection = LocalLayoutDirection.current
 
     val endPadding by animateDpAsState(
         targetValue = if (expand.value) 0.dp else insideMargin.calculateEndPadding(layoutDirection),
@@ -130,12 +120,24 @@ fun FloatingPagerButton(
         }
     }
 
-    Box(
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(dim),
         contentAlignment = Alignment.BottomEnd
     ) {
+
+
+        val height by animateDpAsState(
+            targetValue = if (expand.value) this.maxHeight else minSize,
+            animationSpec = tween(durationMillis, easing = LinearOutSlowInEasing)
+        )
+
+        val width by animateDpAsState(
+            targetValue = if (expand.value) this.maxWidth else minSize,
+            animationSpec = tween(durationMillis, easing = LinearOutSlowInEasing)
+        )
+
         Box(
             modifier = modifier
                 .padding(
@@ -153,6 +155,29 @@ fun FloatingPagerButton(
                 },
             contentAlignment = Alignment.BottomEnd,
         ) {
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer(
+                        alpha = if (alpha >= 0.2f) alpha else 0f,
+                        scaleX = width/this@BoxWithConstraints.maxWidth,
+                        scaleY = height/this@BoxWithConstraints.maxHeight,
+                        shape = SmoothRoundedCornerShape(if (complete.value) 0.dp else radius, 1f),
+                        clip = true,
+                        transformOrigin = TransformOrigin(1f, 1f)
+                    )
+            ){
+                BackHandler(enabled = expand.value) {
+                    expand.value = false
+                }
+                Box(
+                    modifier = Modifier
+                        .background(MiuixTheme.colorScheme.background)
+                ) {
+                    content(expand)
+                }
+            }
             if (alpha <= 0.8f){
 
                 Surface(
@@ -178,31 +203,9 @@ fun FloatingPagerButton(
                     }
                 }
             }
-            if (alpha >= 0.2f){
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .graphicsLayer(
-                            alpha = alpha,
-                            scaleX = width/windowSize.value.width,
-                            scaleY = height/windowSize.value.height,
-                            shape = SmoothRoundedCornerShape(if (complete.value) 0.dp else radius, 1f),
-                            clip = true,
-                            transformOrigin = TransformOrigin(1f, 1f)
-                        )
-                ){
-                    BackHandler(enabled = expand.value) {
-                        expand.value = false
-                    }
-                    Box(
-                        modifier = Modifier
-                            .background(MiuixTheme.colorScheme.background)
-                    ) {
-                        content(expand)
-                    }
-                }
-            }
+
+
 
         }
     }

@@ -111,13 +111,11 @@ class QSListView : Hooker() {
         val QSItemViewHolder = findClass("miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder", classLoader)
         val QSItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSItemView", classLoader)
         val QSTileItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemView", classLoader)
-        val QSListController = findClass("miui.systemui.controlcenter.panel.main.qs.QSListController",classLoader)
-        val WhenMappings = findClass("miui.systemui.controlcenter.panel.main.qs.QSListController\$WhenMappings",classLoader)
         val commonUtils = CommonUtils(classLoader)
-
-        val AnimValue = findClass("miui.systemui.controlcenter.panel.detail.DetailPanelAnimator\$AnimValue",classLoader)
-
-        val DetailPanelAnimator = findClass("miui.systemui.controlcenter.panel.detail.DetailPanelAnimator",classLoader)
+        val QSListController = findClass("miui.systemui.controlcenter.panel.main.qs.QSListController", classLoader)
+        val WhenMappings = findClass("miui.systemui.controlcenter.panel.main.qs.QSListController\$WhenMappings", classLoader)
+        val AnimValue = findClass("miui.systemui.controlcenter.panel.detail.DetailPanelAnimator\$AnimValue", classLoader)
+        val DetailPanelAnimator = findClass("miui.systemui.controlcenter.panel.detail.DetailPanelAnimator", classLoader)
 
 
 //        XposedHelpers.findAndHookMethod(QSItemViewHolder,"getTarget",object :XC_MethodReplacement(){
@@ -584,7 +582,7 @@ class QSListView : Hooker() {
                             2 -> {
                                 y = dpToPx(res,listLabelTop)
                                 space += labelHeight
-                                space = (space*listLabelSpacingY).toInt()
+                                space = (space * listLabelSpacingY).toInt()
                             }
                             1 -> {
                                 y = -4f
@@ -598,7 +596,7 @@ class QSListView : Hooker() {
                 }else{
                     y = labelHeight.toFloat()
                     if (!isDetailTile){
-                        space = (space*listSpacingY).toInt()
+                        space = (space * listSpacingY).toInt()
                     }
                 }
                 label.translationY = y

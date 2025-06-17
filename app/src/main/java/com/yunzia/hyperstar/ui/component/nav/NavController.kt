@@ -8,11 +8,10 @@ fun NavController.backParentPager(){
     val parentRoute = this.currentDestination?.route!!.substringBeforeLast("/")
     Log.d("ggc", "backParentPager: ${this.currentDestination?.route!!}\n$parentRoute")
     this.popBackStack(parentRoute,false)
-
 }
+
 fun NavController.backParentPager(parentRoute: String){
     this.popBackStack(parentRoute,false)
-
 }
 
 fun NavController.nav(

@@ -11,15 +11,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.get
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.base.afterHookAllConstructors
 import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.base.getDimensionPixelOffset
-import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.ConstraintSet
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import java.util.Locale
@@ -49,6 +48,7 @@ class QSHeaderView() : Hooker() {
         if (!is_use_chaos_header) return
 
         startMethodsHook()
+        //startMethodsHook1()
 
     }
 
@@ -326,33 +326,33 @@ class QSHeaderView() : Hooker() {
 
     }
 
-    private fun startMethodsHook1(classLoader: ClassLoader?) {
+    private fun startMethodsHook1() {
         val CommonUtils = findClass("miui.systemui.util.CommonUtils",classLoader)
         findClass(
-            "miui.systemui.controlcenter.panel.main.header.StatusHeaderController",
+            "com.android.systemui.controlcenter.shade.ControlCenterHeaderController",
             classLoader
-        ).replaceHookMethod(
+        ).afterHookMethod(
             "updateConstraint"
         ) {
 
-            val fakeStatusBarViewController  = this.getObjectField("fakeStatusBarViewController")
+            val fakeStatusBarViewController  = this.getObjectField("fakeStatusBarViewController")?:return@afterHookMethod
+
             val sysUIContext   = this.getObjectField("sysUIContext") as Context
             val parent = this.callMethod("getView") as ViewGroup
             val mContext = this.callMethod("getContext") as Context
+            val res = mContext.resources
 
-            if (fakeStatusBarViewController == null) {
-                return@replaceHookMethod null
-            }
+            val constraintSet = ConstraintSet(classLoader)
 
-            val constraintSet = ConstraintSet()
             //val header_status_bar_icon:Int = sysUIContext.resources.get("header_status_bar_icons", "id", "miui.systemui.plugin");
 
-            val header_carrier_vertical_mode_margin_bottom = mContext.resources.getIdentifier("header_carrier_vertical_mode_margin_bottom","dimen","miui.systemui.plugin")
+            val header_carrier_vertical_mode_margin_bottom = mContext.resources.getIdentifier("header_carrier_vertical_mode_margin_bottom","dimen",plugin)
 
-            val header_status_bar_icons:Int = mContext.resources.getIdentifier("header_status_bar_icons", "id", "miui.systemui.plugin");
-            val header_date:Int = mContext.resources.getIdentifier("header_date", "id", "miui.systemui.plugin");
-            val header_carrier_view:Int = mContext.resources.getIdentifier("header_carrier_view", "id", "miui.systemui.plugin");
-            val privacy_container:Int = mContext.resources.getIdentifier("privacy_container", "id", "miui.systemui.plugin");
+            val header_status_bar_icons: Int = res.getId("header_status_bar_icons", plugin)
+            val header_date: Int = res.getId("header_date",plugin)
+
+            val header_carrier_view:Int = res.getId("header_carrier_view", plugin)
+            val privacy_container:Int = res.getId("privacy_container", plugin)
             starLog.log(""+header_status_bar_icons+header_date+header_carrier_view+privacy_container)
             constraintSet.constrainWidth(header_status_bar_icons, -2)
             constraintSet.constrainHeight(header_status_bar_icons, -2)
@@ -360,12 +360,12 @@ class QSHeaderView() : Hooker() {
             constraintSet.constrainHeight(header_date, -2)
             constraintSet.constrainWidth(header_carrier_view, -2)
             constraintSet.constrainHeight(header_carrier_view, -2)
-            val header_privacy_container_height:Int = mContext.resources.getIdentifier("header_privacy_container_height", "dimen", "miui.systemui.plugin");
+            val header_privacy_container_height:Int = res.getIdentifier("header_privacy_container_height", "dimen", plugin)
 
             constraintSet.constrainWidth(privacy_container, -2)
             constraintSet.constrainHeight(
                 privacy_container,
-                mContext.resources.getDimensionPixelSize(header_privacy_container_height)
+                res.getDimensionPixelSize(header_privacy_container_height)
             )
 
             val INSTANCE = CommonUtils.getStaticObjectField("INSTANCE")
@@ -376,7 +376,7 @@ class QSHeaderView() : Hooker() {
                 constraintSet.connect(header_date, 3, header_status_bar_icons, 3);
                 constraintSet.connect(header_date, 4, header_status_bar_icons, 4);
                 constraintSet.createHorizontalChainRtl(0, 6, 0, 7, intArrayOf(header_date, header_status_bar_icons), null as FloatArray? , 1);
-                val dimensionPixelSize = mContext.resources.getDimensionPixelSize(header_carrier_vertical_mode_margin_bottom);
+                val dimensionPixelSize = res.getDimensionPixelSize(header_carrier_vertical_mode_margin_bottom);
                 constraintSet.connect(header_carrier_view, 4, header_status_bar_icons, 3, dimensionPixelSize);
                 constraintSet.connect(header_carrier_view, 7, 0, 7);
                 constraintSet.connect(privacy_container, 4, header_status_bar_icons, 3, dimensionPixelSize);
@@ -390,10 +390,9 @@ class QSHeaderView() : Hooker() {
                 constraintSet.connect(privacy_container, 7, 0, 7);
                 constraintSet.createHorizontalChainRtl(0, 6, privacy_container, 6,intArrayOf(header_carrier_view, header_status_bar_icons) , null as FloatArray? , 1);
             }
+            constraintSet.applyTo(parent)
 
-            constraintSet.callMethod("applyTo", parent )
-
-            return@replaceHookMethod null;
+            return@afterHookMethod
         }
 
     }

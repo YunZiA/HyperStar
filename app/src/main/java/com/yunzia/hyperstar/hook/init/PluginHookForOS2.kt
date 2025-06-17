@@ -25,7 +25,7 @@ import com.yunzia.hyperstar.hook.app.plugin.os2.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeOrQSBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeView
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenuHook
 import com.yunzia.hyperstar.hook.base.InitHooker
 import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.base.replaceHookMethod
@@ -36,7 +36,7 @@ class PluginHookForOS2 : InitHooker() {
 
     private val qsMediaCoverBackground = QSMediaCoverBackground()
     private val qsControlCenterColor = QSControlCenterColor()
-    private val powerMenu = PowerMenu()
+    private val powerMenuHook = PowerMenuHook()
     private val deviceCenterRow = DeviceCenterRow()
 
     override fun initHook() {
@@ -48,12 +48,12 @@ class PluginHookForOS2 : InitHooker() {
             val mPluginContext = it.result as ContextWrapper
             val pathClassLoader = mPluginContext.classLoader
             if (mPluginContext.packageName != plugin){
-                starLog.log("检测到非目标应用包名: 当前包名为 " + mPluginContext.packageName + ", 目标插件包名为 " + plugin)
+                starLog.logD("检测到非目标应用包名: 当前包名为 " + mPluginContext.packageName + ", 目标插件包名为 " + plugin)
                 return@afterHookMethod
             }
 
             if (pathClassLoader == null) {
-                starLog.log("Failed to load pluginClassLoader: null returned")
+                starLog.logE("Failed to load pluginClassLoader: null returned")
                 return@afterHookMethod
             }
             if (!isHooked) {
@@ -76,7 +76,7 @@ class PluginHookForOS2 : InitHooker() {
         if (resparam.packageName != plugin) return
 
         initResource(qsControlCenterColor)
-        initResource(powerMenu)
+        initResource(powerMenuHook)
         initResource(QSMiplayAppIconRadius())
         initResource(qsMediaCoverBackground)
         initResource(deviceCenterRow)
@@ -109,7 +109,7 @@ class PluginHookForOS2 : InitHooker() {
         initSecHooker(QSEditButton())
         initSecHooker(QSControlCenterList())
         initSecHooker(VolumeColumnProgressRadius())
-        initSecHooker(powerMenu)
+        initSecHooker(powerMenuHook)
         initSecHooker(VolumeView())
         initSecHooker(deviceCenterRow)
         initSecHooker(QSMiplayDetailVolumeBar())

@@ -1,4 +1,4 @@
-package com.yunzia.hyperstar.hook.os1.app.plugin.powermenu
+package com.yunzia.hyperstar.hook.app.plugin.powermenu.menu
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
@@ -17,49 +17,53 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import yunzia.utils.DensityUtil.Companion.dpToPx
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu.Item
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.base.MenuItem
 import de.robv.android.xposed.XposedHelpers
+import yunzia.utils.DensityUtil.Companion.dpToPx
 
 
 private val plugin = "miui.systemui.plugin"
 
-fun menuB(mContext: Context, thisObj: Any?, items: List<Item?>, mTalkbackLayout: FrameLayout, mSliderView: FrameLayout): View {
+fun menuB(mContext: Context, thisObj: Any?, items: List<MenuItem?>, mTalkbackLayout: FrameLayout, mSliderView: FrameLayout): View {
     val res = mContext.resources
 
-
-    val menu1 = ButtonB(mContext,items[0]!!){
+    val leftMenu = ButtonB(mContext,items[0]!!){
         Handler(Looper.getMainLooper()).postDelayed({
             XposedHelpers.callMethod(thisObj,"dismiss",1)
         }, 100)
     }
 
-    val menu2 = ButtonB(mContext,items[1]!!){
+    val space = View(mContext)
+
+    val rightMenu = ButtonB(mContext,items[1]!!){
         Handler(Looper.getMainLooper()).postDelayed({
             XposedHelpers.callMethod(thisObj,"dismiss",1)
         }, 100)
     }
 
-    val m1 = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT )
-    m1.gravity = Gravity.TOP+ Gravity.CENTER_HORIZONTAL
-    //m1.addRule(RelativeLayout.ALIGN_PARENT_TOP)
+    val leftLP = LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams.WRAP_CONTENT,
+        LinearLayout.LayoutParams.WRAP_CONTENT
+    ).apply {
+        gravity = Gravity.TOP + Gravity.CENTER_HORIZONTAL
+    }
 
-    val c = View(mContext)
-    val m3 = LinearLayout.LayoutParams(0,0 ).apply {
+    val spaceLP = LinearLayout.LayoutParams(0,0 ).apply {
         weight = 1f
     }
 
-    val m2 = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT )
-    m2.gravity = Gravity.BOTTOM+ Gravity.CENTER_HORIZONTAL
-    //m1.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+    val rightLP = LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams.WRAP_CONTENT,
+        LinearLayout.LayoutParams.WRAP_CONTENT
+    ).apply {
+        gravity = Gravity.BOTTOM + Gravity.CENTER_HORIZONTAL
+    }
 
-    val sliderWidth = res.getIdentifier("slider_width","dimen",
-        com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.plugin
-    )
+    val sliderWidth = res.getIdentifier("slider_width","dimen", plugin)
     val size = res.getDimensionPixelOffset(sliderWidth)
     val width = size/4*3*2+size/5*4*2+size + dpToPx(res,20f).toInt()
     val sliderHeight = res.getIdentifier("slider_height","dimen",
-        com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.plugin
+        plugin
     )
     val top = res.getDimensionPixelOffset(sliderHeight)
     val height = top+ dpToPx(res,230f).toInt()
@@ -68,17 +72,17 @@ fun menuB(mContext: Context, thisObj: Any?, items: List<Item?>, mTalkbackLayout:
     val group = LinearLayout(mContext).apply {
         orientation = LinearLayout.HORIZONTAL
         //translationX = -100f
-        addView(menu1,m1)
-        addView(c,m3)
-        addView(menu2,m2)
+        addView(leftMenu,leftLP)
+        addView(space,spaceLP)
+        addView(rightMenu,rightLP)
 
     }
 
-    val layoutParams = FrameLayout.LayoutParams(width, size/4*3 )
-    //val layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT )
-    layoutParams.gravity = Gravity.CENTER
-    mTalkbackLayout.addView(group, layoutParams)
+    val layoutParams = FrameLayout.LayoutParams(width, size/4*3 ).apply {
+        gravity = Gravity.CENTER
+    }
 
+    mTalkbackLayout.addView(group, layoutParams)
 
     val initialHeight = 0
     ValueAnimator.ofInt(initialHeight, width).apply {
@@ -94,7 +98,7 @@ fun menuB(mContext: Context, thisObj: Any?, items: List<Item?>, mTalkbackLayout:
         start()
     }
     ValueAnimator.ofFloat(0.4f, 1f).apply {
-        duration = 250  // 动画持续时间
+        duration =  250  // 动画持续时间
         interpolator = AccelerateDecelerateInterpolator()  // 使用加速减速插值器
         addUpdateListener { animation ->
             val value = animation.animatedValue as Float
@@ -108,12 +112,12 @@ fun menuB(mContext: Context, thisObj: Any?, items: List<Item?>, mTalkbackLayout:
 
 fun ButtonB(
     mContext: Context,
-    item: Item,
+    item: MenuItem,
     itemClick: () -> Unit
 ):View{
     val res = mContext.resources
     val sliderWidth = res.getIdentifier("slider_width","dimen",
-        com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.plugin
+        plugin
     )
     val sliderWidths = res.getDimensionPixelOffset(sliderWidth)
     val size = sliderWidths/4*3
@@ -165,11 +169,9 @@ fun  View.pressAnimClick() {
 
     val mHandler = Handler(Looper.getMainLooper());
     var isLongPressing = false;
-    val mLongPressRunnable = {
+    val mLongPressRunnable = Runnable {
         isLongPressing = true
     }
-
-
 
     setOnTouchListener { v,  event ->
 
@@ -182,7 +184,7 @@ fun  View.pressAnimClick() {
                     PropertyValuesHolder.ofFloat("scaleX", 0.8f),
                     PropertyValuesHolder.ofFloat("scaleY", 0.8f)
                 ).apply {
-                    duration = 150
+                    duration =  150
                 }
                 scaleDown.start()
 

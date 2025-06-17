@@ -27,7 +27,7 @@ import com.yunzia.hyperstar.hook.app.plugin.os1.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeOrQSBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeView
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenuHook
 import com.yunzia.hyperstar.hook.base.InitHooker
 import com.yunzia.hyperstar.hook.base.MethodHook
 import com.yunzia.hyperstar.hook.base.hookAllMethods
@@ -40,7 +40,7 @@ class PluginHookForOS1() : InitHooker() {
     private val qsMediaCoverBackground: QSMediaCoverBackground = QSMediaCoverBackground()
     private val padVolume: PadVolume = PadVolume()
     private val qsControlCenterColor: QSControlCenterColor = QSControlCenterColor()
-    private val powerMenu: PowerMenu = PowerMenu()
+    private val powerMenuHook: PowerMenuHook = PowerMenuHook()
     private val deviceCenterRow: DeviceCenterRow = DeviceCenterRow()
 
 
@@ -64,7 +64,7 @@ class PluginHookForOS1() : InitHooker() {
             modRes.fwd(R.drawable.ic_controls_edit)
         )
 
-        initResource(powerMenu)
+        initResource(powerMenuHook)
         initResource(qsMediaCoverBackground)
         initResource(padVolume)
         initResource(qsControlCenterColor)
@@ -152,7 +152,7 @@ class PluginHookForOS1() : InitHooker() {
         initSecHooker(QSClockAnim())
         initSecHooker(QSControlCenterList())
         initSecHooker(VolumeColumnProgressRadius())
-        initSecHooker(powerMenu)
+        initSecHooker(powerMenuHook)
         initSecHooker(VolumeView())
         initSecHooker(deviceCenterRow)
         initSecHooker(QSMiplayDetailVolumeBar())

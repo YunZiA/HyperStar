@@ -5,21 +5,21 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.res.XModuleResources
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.animation.Interpolator
 import android.widget.FrameLayout
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.action.Action
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.base.MenuItem
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.menu.menuB
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.Action
 import com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.menuA
-import com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.menuB
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
 
-class PowerMenu : Hooker() {
+class PowerMenuHook : Hooker() {
 
     var icBootloader = 0
     var icRecovery = 0
@@ -45,7 +45,6 @@ class PowerMenu : Hooker() {
     ) {
         super.initResources(resparam, modRes)
 
-
         xiaoai = resparam?.res?.addResource(modRes,R.drawable.xiaoai)!!
         icBootloader = resparam.res?.addResource(modRes,R.drawable.ic_bootloader)!!
         icRecovery = resparam.res?.addResource(modRes,R.drawable.ic_recovery)!!
@@ -59,6 +58,7 @@ class PowerMenu : Hooker() {
         wechatScan = resparam.res?.addResource(modRes,R.drawable.wechat_scan)!!
         wechatPay = resparam.res?.addResource(modRes,R.drawable.wechat_pay)!!
 
+
     }
 
 
@@ -71,11 +71,13 @@ class PowerMenu : Hooker() {
 
         if (isPowerMenuNavShow) {
             MiuiGlobalActionsDialog.afterHookMethod(
-                "initDialog"
+                "initViews"
             ) {
-                val flags = (View.SYSTEM_UI_FLAG_VISIBLE or
+                val flags = (
+                        View.SYSTEM_UI_FLAG_VISIBLE or
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        )
                 this.getObjectFieldAs<FrameLayout>("mRoot").systemUiVisibility = flags
 
             }
@@ -101,34 +103,27 @@ class PowerMenu : Hooker() {
                 )
 
                 when(isPowerMenuStyle){
-                    1->{
 
-                        val items1: List<Item?> = listOf(
+                    1->{
+                        val items1: List<MenuItem?> = listOf(
                             action.getAction("recovery"),
                             action.getAction("bootloader"),
                         )
-
                         group = menuB(
                             mContext, this, items1, mTalkbackLayout, mSliderView
                         )
                     }
+
                     2->{
 
-                        var items1: List<Item?> = emptyList()
-                        val items1m  = items1.toMutableList()
-                        for (i in 0..7){
-                            val type = XSPUtils.getString("power_menu_style_b_$i","null").toString()
-                            if (type != "null"){
-                                items1m.add(action.getAction(type))
-
-                            }
-
-                        }
-                        items1 = items1m.toList()
-
+                        val items: MutableList<MenuItem?> = (0..7)
+                            .map { i -> XSPUtils.getString("power_menu_style_b_$i", "null").toString() }
+                            .filter { it != "null" }
+                            .map { action.getAction(it) }
+                            .toMutableList()
 
                         group = menuA(
-                            mContext, this, items1, mTalkbackLayout, mSliderView
+                            mContext, this, items.toList(), mTalkbackLayout, mSliderView
                         )
                     }
                 }
@@ -137,12 +132,21 @@ class PowerMenu : Hooker() {
                 "dismiss",
                 Int::class.java
             ){
-                if (group == null) return@afterHookMethod
-                val mSliderView = this.getObjectFieldAs<FrameLayout>("mSliderView")
-                group.visibility = View.GONE
-                mSliderView.removeView(group)
-            }
+                group?.apply {
+                    val mSliderView = this@afterHookMethod.getObjectFieldAs<FrameLayout>("mSliderView")
+                    visibility = View.GONE
+                    mSliderView.removeView(group)
 
+                }
+            }
+            afterHookMethod("sliderViewDismiss") {
+                this.getObjectField("mDialog")?.apply {
+                    if (this.callMethodAs<Boolean>("isShowing")){
+                        group = null
+                    }
+                }
+
+            }
         }
         findClass(
             "com.android.systemui.miui.globalactions.SliderView",
@@ -151,9 +155,11 @@ class PowerMenu : Hooker() {
             "handleActionMoveForAlpha",
             Float::class.java
         ) {
-            if (group == null) return@afterHookMethod
-            val mDark = this.getObjectFieldAs<View>("mDark")
-            group!!.alpha = (1-mDark.alpha)
+            group?.apply {
+                val mDark = this@afterHookMethod.getObjectFieldAs<View>("mDark")
+                alpha = (1 - mDark.alpha)
+
+            }
         }
 
     }
@@ -182,13 +188,6 @@ class PowerMenu : Hooker() {
         return ofFloat
     }
 
-    data class Item(
-        val image: Drawable? = null,
-        val text: String? = null,
-        val state: Boolean = false,
-        val isEmpty: Boolean? = false,
-        val click: ((View, Context) -> Unit)? = null
-    )
 
     class QuadraticEaseOutInterpolator : Interpolator {
         public override fun getInterpolation(f: Float): Float {

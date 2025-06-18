@@ -1,4 +1,4 @@
-package com.yunzia.hyperstar.ui.component.theme
+package com.yunzia.hyperstar.ui.theme
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration

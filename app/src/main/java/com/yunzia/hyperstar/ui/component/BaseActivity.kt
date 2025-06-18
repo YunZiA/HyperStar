@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.yunzia.hyperstar.ui.component.theme.HyperStarTheme
+import com.yunzia.hyperstar.ui.theme.HyperStarTheme
 import com.yunzia.hyperstar.utils.LanguageHelper
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import kotlin.system.exitProcess

@@ -397,7 +397,7 @@ fun ThirdPage(
                     SuperIntentArrow(
                         title = stringResource(R.string.qq_group_title),
                         navController = navController,
-                        url = "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&amp;k=5ONF7LuaoQS6RWEOUYBuA0x4X8ssvHJp&amp;authKey=Pic4VQJxKBJwSjFzsIzbJ50ILs0vAEPjdC8Nat4zmiuJRlftqz9%2FKjrBwZPQTc4I&amp;noverify=0&amp;group_code=810317966"
+                        url = "mqqapi://card/show_pslcard?src_type=internal&version=1&uin=810317966&card_type=group&source=qrcode"
                     )
                     SuperIntentArrow(
                         title = stringResource(R.string.telegram_channel),

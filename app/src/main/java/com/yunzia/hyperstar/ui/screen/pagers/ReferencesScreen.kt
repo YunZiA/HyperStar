@@ -50,6 +50,20 @@ fun ReferencesScreen(
                 navController = navController,
                 url = "https://github.com/chrisbanes/haze"
             )
+
+            SuperIntentArrow(
+                title = "Gson",
+                summary = "Android Open Source Project, Google Inc.",
+                navController = navController,
+                url = "https://github.com/google/gson"
+            )
+
+            SuperIntentArrow(
+                title = "OkHttp",
+                summary = "squarejesse",
+                navController = navController,
+                url = "https://github.com/square/okhttp"
+            )
         }
         classes(title = "AGPL-3.0") {
 
@@ -61,7 +75,7 @@ fun ReferencesScreen(
             )
 
         }
-        classes(title = "Unknown") {
+        classes(title = "No License") {
 
             SuperIntentArrow(
                 title = "IAmNotADeveloper",

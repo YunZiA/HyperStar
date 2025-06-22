@@ -51,17 +51,17 @@ class PluginHookForOS1() : InitHooker() {
     override fun initResources() {
         if (resparam!!.packageName != "miui.systemui.plugin") return
 
-        resparam.res.setReplacement(
+        resparam!!.res.setReplacement(
             "miui.systemui.plugin",
             "drawable",
             "ic_header_settings",
             modRes!!.fwd(R.drawable.ic_header_settings)
         )
-        resparam.res.setReplacement(
+        resparam!!.res.setReplacement(
             "miui.systemui.plugin",
             "drawable",
             "ic_controls_edit",
-            modRes.fwd(R.drawable.ic_controls_edit)
+            modRes!!.fwd(R.drawable.ic_controls_edit)
         )
 
         initResource(powerMenuHook)

@@ -1,51 +1,36 @@
-package com.yunzia.hyperstar.hook.base;
+package com.yunzia.hyperstar.hook.base
 
-import android.content.res.XModuleResources;
-import android.graphics.Color;
+import android.content.res.XModuleResources
+import android.graphics.Color
+import de.robv.android.xposed.callbacks.XC_InitPackageResources.InitPackageResourcesParam
 
-import de.robv.android.xposed.callbacks.XC_InitPackageResources;
+abstract class Hooker : HookerHelper() {
+    var plugin: String = "miui.systemui.plugin"
+    var systemUI: String = "com.android.systemui"
 
-
-public abstract class Hooker extends HookerHelper  {
-
-    public String plugin = "miui.systemui.plugin";
-    public String systemUI = "com.android.systemui";
-
-    public XC_InitPackageResources.InitPackageResourcesParam resparam;
-    public XModuleResources modRes;
-    public ClassLoader classLoader;
+    var resparam: InitPackageResourcesParam? = null
+    var modRes: XModuleResources? = null
+    var classLoader: ClassLoader? = null
 
 
-    public Hooker(){
-
+    open fun initResources(resparam: InitPackageResourcesParam?, modRes: XModuleResources?) {
+        this.resparam = resparam
+        this.modRes = modRes
     }
 
-    public void initResources(XC_InitPackageResources.InitPackageResourcesParam resparam, XModuleResources modRes){
-        this.resparam = resparam;
-        this.modRes = modRes;
+    open fun initHook(classLoader: ClassLoader?) {
+        this.classLoader = classLoader
     }
 
-    public void initHook(ClassLoader classLoader){
-        this.classLoader = classLoader;
+    fun ReplaceColor(color: String?, colorValue: String?) {
+        resparam!!.res.setReplacement(plugin, "color", color, Color.parseColor(colorValue))
     }
 
-    public void ReplaceColor(String color,String colorValue){
-        resparam.res.setReplacement(plugin, "color", color, Color.parseColor(colorValue));
+    fun ReplaceIntArray(array: String?, arrayChange: (array: IntArray)->Unit) {
+        val arrayId = resparam!!.res.getIdentifier(array, "array", plugin)
+        val ay = resparam!!.res.getIntArray(arrayId)
+        arrayChange(ay)
+        resparam!!.res.setReplacement(plugin, "array", array, ay)
     }
-
-    public void ReplaceIntArray(String array, ArrayChange arrayChange){
-        int arrayId = resparam.res.getIdentifier(array,"array",plugin);
-        int[] ay = resparam.res.getIntArray(arrayId);
-        arrayChange.change(ay);
-        resparam.res.setReplacement(plugin, "array", array, ay);
-
-    }
-
-    public interface ArrayChange{
-        void change(int[] array);
-    }
-
-
-
 
 }

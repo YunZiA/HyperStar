@@ -46,7 +46,7 @@ class QSControlCenterColor : Hooker() {
         val deviceCenterDetailIconColor = XSPUtils.getString("device_center_detail_icon_color","null")
 
         if (deviceCenterDetailIconColor != "null"){
-            resparam.res.setReplacement(plugin, "drawable", "ic_device_center_detail_item", object : XResources.DrawableLoader(){
+            resparam!!.res.setReplacement(plugin, "drawable", "ic_device_center_detail_item", object : XResources.DrawableLoader(){
                 override fun newDrawable(res: XResources?, id: Int): Drawable {
                     val newDraw = res?.getDrawable(id) as Drawable
                     newDraw.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceCenterDetailIconColor),PorterDuff.Mode.SRC_IN)
@@ -59,7 +59,7 @@ class QSControlCenterColor : Hooker() {
 
         //单个设备项颜色替换
         if (deviceCenterItemBackgroundColor != "null"){
-            resparam.res.setReplacement(plugin, "drawable", "ic_device_center_item_background_default", object : XResources.DrawableLoader(){
+            resparam!!.res.setReplacement(plugin, "drawable", "ic_device_center_item_background_default", object : XResources.DrawableLoader(){
                 override fun newDrawable(res: XResources?, id: Int): Drawable {
                     val newDraw = res?.getDrawable(id) as Drawable
                     starLog.logD("${newDraw.alpha}")
@@ -289,7 +289,7 @@ class QSControlCenterColor : Hooker() {
 
         }else{
 
-            val res = resparam.res
+            val res = resparam!!.res
             val array = res.getIntArrayBy("control_center_list_items_blend_colors", plugin)
             res.setReplacement(plugin,"array","control_center_edit_button_blend_colors",array)
             val color = res.getColorBy("external_entry_background_color",plugin)

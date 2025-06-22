@@ -4,6 +4,7 @@ import static com.yunzia.hyperstar.utils.VersionKt.isHookChannel;
 
 import android.content.res.XModuleResources;
 
+import com.yunzia.hyperstar.hook.app.NotDeveloperHooker;
 import com.yunzia.hyperstar.hook.init.InitBarrageHook;
 import com.yunzia.hyperstar.hook.init.InitMiuiHomeHook;
 import com.yunzia.hyperstar.hook.init.InitThemeManagerHook;
@@ -18,18 +19,17 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import xyz.xfqlittlefan.notdeveloper.xposed.NotDeveloperHooker;
 
 public class InitHook implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
 
     private final SystemUIHookForOS2 systemUIHook0S2 = new SystemUIHookForOS2();
     private final SystemUIHookForOS1 systemUIHook0S1 = new SystemUIHookForOS1();
     private String mPath;
-    private final int isHookChannel = isHookChannel()+1;
+    private final int isHookChannel = isHookChannel() + 1;
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
-        mPath=startupParam.modulePath;
+        mPath = startupParam.modulePath;
         starLog.log("HookChannel is currently configured for OS" + isHookChannel);
 
     }

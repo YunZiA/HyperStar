@@ -12,7 +12,6 @@ import androidx.core.graphics.drawable.toDrawable
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.base.afterHookAllConstructors
-import com.yunzia.hyperstar.hook.base.afterHookConstructor
 import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import com.yunzia.hyperstar.hook.tool.starLog
@@ -149,7 +148,7 @@ class QSMediaCoverBackground: Hooker() {
             val HapticFeedback = findClass("miui.systemui.util.HapticFeedback",classLoader)
 
             MediaPlayerViewHolder.apply {
-                afterHookConstructor(View::class.java,HapticFeedback!!){
+                afterHookMethod("updateSize") {
                     val itemView = this.getObjectFieldAs<View>("itemView")
                     val _cornerRadius = this.getFloatField("_cornerRadius")
                     itemView.outlineProvider = object : ViewOutlineProvider(){

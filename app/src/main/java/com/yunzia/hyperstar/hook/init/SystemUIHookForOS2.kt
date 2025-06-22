@@ -1,47 +1,48 @@
-package com.yunzia.hyperstar.hook.init;
+package com.yunzia.hyperstar.hook.init
 
-import android.graphics.Color;
-import android.util.Log;
-import android.view.View;
-
-import com.yunzia.hyperstar.hook.app.systemui.os2.AddCatPaw;
-import com.yunzia.hyperstar.hook.app.systemui.os2.LowDeviceBackgroundColor;
-import com.yunzia.hyperstar.hook.app.systemui.os2.NavigationBarBackground;
-import com.yunzia.hyperstar.hook.app.systemui.os2.NotificationForLm;
-import com.yunzia.hyperstar.hook.app.systemui.os2.QSHeaderView;
-import com.yunzia.hyperstar.hook.app.systemui.os2.Test;
-import com.yunzia.hyperstar.hook.base.Init;
-import com.yunzia.hyperstar.hook.base.InitHooker;
+import android.graphics.Color
+import android.util.Log
+import android.view.View
+import com.yunzia.annotations.Init
+import com.yunzia.hyperstar.hook.app.systemui.os2.AddCatPaw
+import com.yunzia.hyperstar.hook.app.systemui.os2.LowDeviceBackgroundColor
+import com.yunzia.hyperstar.hook.app.systemui.os2.NavigationBarBackground
+import com.yunzia.hyperstar.hook.app.systemui.os2.NotificationForLm
+import com.yunzia.hyperstar.hook.app.systemui.os2.QSHeaderView
+import com.yunzia.hyperstar.hook.app.systemui.os2.Test
+import com.yunzia.hyperstar.hook.base.InitHooker
+import java.lang.Boolean
+import java.lang.Float
+import kotlin.Exception
+import kotlin.Int
 
 @Init(packageName = "com.android.systemui")
-public class SystemUIHookForOS2 extends InitHooker {
+class SystemUIHookForOS2 : InitHooker() {
+    private val pluginHookForOS2 = PluginHookForOS2()
+    private val qsHeaderView = QSHeaderView()
+    private val addCatPaw = AddCatPaw()
+    private val test = Test()
 
-    private final PluginHookForOS2 pluginHookForOS2 = new PluginHookForOS2();
-    private final QSHeaderView qsHeaderView = new QSHeaderView();
-    private final AddCatPaw addCatPaw = new AddCatPaw();
-    private final Test test = new Test();
-
-    @Override
-    public void initResources() {
-        if (!resparam.packageName.equals(mPackageName)){
-            initResource(pluginHookForOS2);
-            return;
+    override fun initResources() {
+        if (resparam!!.packageName != mPackageName) {
+            initResource(pluginHookForOS2)
+            return
         }
-        initResource(qsHeaderView);
-       // modRes.fwd(R.color.black)
+        initResource(qsHeaderView)
+
+        // modRes.fwd(R.color.black)
 
         //initResource(test);
         //initResource(addCatPaw);
-
     }
 
-    @Override
-    public void initHook() {
-        initHooker(new NavigationBarBackground());
-        initHooker(new LowDeviceBackgroundColor());
-        initHooker(new NotificationForLm());
-        initHooker(qsHeaderView);
-        initHooker(pluginHookForOS2);
+    override fun initHook() {
+        initHooker(NavigationBarBackground())
+        initHooker(LowDeviceBackgroundColor())
+        initHooker(NotificationForLm())
+        initHooker(qsHeaderView)
+        initHooker(pluginHookForOS2)
+
         //initHooker(test);
 
         //initHooker(addCatPaw);
@@ -50,24 +51,22 @@ public class SystemUIHookForOS2 extends InitHooker {
     }
 
 
-    private void doTestHook() {
-
-//    "isFlipDevice"
-
-
-
+    private fun doTestHook() {
+        //    "isFlipDevice"
     }
 
-    public static void applyViewShadowForMediaAlbum(float f, float f2, int i, View view) {
+    fun applyViewShadowForMediaAlbum(f: Float, f2: Float, i: Int, view: View?) {
         try {
-            Class<?> cls = Class.forName("android.view.View");
-            Class<?> cls2 = Float.TYPE;
-            cls.getMethod("setMiShadow", Integer.TYPE, cls2, cls2, cls2, cls2, Boolean.TYPE).invoke(view, Integer.valueOf(Color.argb(i, 0, 0, 0)), Float.valueOf(0.0f), Float.valueOf(f), Float.valueOf(f2), Float.valueOf(1.0f), Boolean.FALSE);
-        } catch (Exception unused) {
-            Log.d("NotificationUtil", "applyViewShadowForMediaAlbum setMiShadow Method not found!");
+            val cls = Class.forName("android.view.View")
+            val cls2: Class<*> = Float.TYPE
+            cls.getMethod("setMiShadow", Integer.TYPE, cls2, cls2, cls2, cls2, Boolean.TYPE)
+                .invoke(view, Color.argb(i, 0, 0, 0), 0.0f, f, f2, 1.0f, Boolean.FALSE)
+        } catch (unused: Exception) {
+            Log.d(
+                "NotificationUtil",
+                "applyViewShadowForMediaAlbum setMiShadow Method not found!"
+            )
         }
     }
-
-
 
 }

@@ -1,38 +1,28 @@
-package com.yunzia.hyperstar.hook.init;
+package com.yunzia.hyperstar.hook.init
 
-
-import com.yunzia.hyperstar.hook.app.systemui.os1.NavigationBarBackground;
-import com.yunzia.hyperstar.hook.app.systemui.os1.LowDeviceBackgroundColor;
-import com.yunzia.hyperstar.hook.base.Init;
-import com.yunzia.hyperstar.hook.base.InitHooker;
+import com.yunzia.annotations.Init
+import com.yunzia.hyperstar.hook.app.systemui.os1.LowDeviceBackgroundColor
+import com.yunzia.hyperstar.hook.app.systemui.os1.NavigationBarBackground
+import com.yunzia.hyperstar.hook.base.InitHooker
 
 @Init(packageName = "com.android.systemui")
-public class SystemUIHookForOS1 extends InitHooker {
+class SystemUIHookForOS1 : InitHooker() {
+    private val pluginHookForOS1 = PluginHookForOS1()
 
-    private final PluginHookForOS1 pluginHookForOS1 = new PluginHookForOS1();
-
-
-    @Override
-    public void initResources() {
-        initResource(pluginHookForOS1);
-        if (!resparam.packageName.equals(mPackageName)) return;
+    override fun initResources() {
+        initResource(pluginHookForOS1)
+        if (resparam!!.packageName != mPackageName) return
     }
 
-    @Override
-    public void initHook() {
-        initHooker(pluginHookForOS1);
-        initHooker(new NavigationBarBackground());
-        initHooker(new LowDeviceBackgroundColor());
+    override fun initHook() {
+        initHooker(pluginHookForOS1)
+        initHooker(NavigationBarBackground())
+        initHooker(LowDeviceBackgroundColor())
 
-        doTestHook();
+        doTestHook()
     }
 
 
-    private void doTestHook() {
-
-
-
+    private fun doTestHook() {
     }
-
-
 }

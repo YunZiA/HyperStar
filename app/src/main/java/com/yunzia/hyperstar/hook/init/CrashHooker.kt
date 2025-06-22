@@ -15,9 +15,9 @@ import java.lang.reflect.Method
 
 class CrashHooker : InitHooker() {
 
-    override fun initHook(lpparam: XC_LoadPackage.LoadPackageParam?) {
+    override fun initHook(lpparam: XC_LoadPackage.LoadPackageParam) {
 
-        lpparam?.classLoader?.let { init(it) }
+        lpparam.classLoader?.let { init(it) }
 
     }
 

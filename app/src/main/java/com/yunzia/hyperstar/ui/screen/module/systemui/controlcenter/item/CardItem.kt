@@ -105,7 +105,7 @@ fun CardItem(
             ) {
 
                 Text(
-                    text = name[it] + "66666666666666666666",
+                    text = name[it],
                     modifier = Modifier.padding(horizontal = 20.dp).basicMarquee(),
                     fontSize = 16.sp,
                     maxLines = 1,

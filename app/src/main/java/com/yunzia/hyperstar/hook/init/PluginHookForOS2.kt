@@ -73,7 +73,7 @@ class PluginHookForOS2 : InitHooker() {
 
     override fun initResources() {
 
-        if (resparam.packageName != plugin) return
+        if (resparam!!.packageName != plugin) return
 
         initResource(qsControlCenterColor)
         initResource(powerMenuHook)

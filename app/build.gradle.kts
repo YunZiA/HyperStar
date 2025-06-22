@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+    id("com.google.devtools.ksp")
     id ("kotlin-parcelize")
 }
 
@@ -171,6 +172,10 @@ android {
 
 }
 dependencies {
+    implementation(project(":annotations"))
+    ksp(libs.androidx.room.compiler)
+    ksp(project(":processor"))
+    implementation(libs.kotlinpoet) // 用于生成代码
     implementation(libs.okhttp)
     implementation(libs.dexkit)
     implementation(libs.gson)

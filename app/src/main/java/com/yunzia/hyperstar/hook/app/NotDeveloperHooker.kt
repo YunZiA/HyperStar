@@ -1,4 +1,4 @@
-package xyz.xfqlittlefan.notdeveloper.xposed
+package com.yunzia.hyperstar.hook.app
 
 import android.content.ContentResolver
 import android.provider.Settings
@@ -12,6 +12,7 @@ import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam
 
 //From "https://github.com/xfqwdsj/IAmNotADeveloper/blob/main/app/src/main/kotlin/xyz/xfqlittlefan/notdeveloper/xposed/Hook.kt"
+
 class NotDeveloperHooker : InitHooker() {
     private val tag = "NotDeveloper"
 

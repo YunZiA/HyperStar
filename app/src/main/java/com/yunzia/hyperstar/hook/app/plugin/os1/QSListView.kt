@@ -267,7 +267,15 @@ class QSListView : Hooker() {
         if (tileColorForState != 0 || labelMode != 0){
             QSTileItemView.replaceHookMethod(
                 "updateTextAppearance"
-            ){
+            ){ this as FrameLayout
+                val label = this.findViewByIdNameAs<TextView>("tile_label")
+                label.apply {
+                    if (labelMode == 1){
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 8f)
+                    } else if (labelMode == 2){
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, labelSize)
+                    }
+                }
                 return@replaceHookMethod null
             }
 

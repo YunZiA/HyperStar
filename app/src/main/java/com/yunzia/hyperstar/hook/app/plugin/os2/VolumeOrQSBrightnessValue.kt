@@ -63,7 +63,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
                 val level = VolumeUtils.callStaticMethodAs<Int>("progressToLevel",sliderMaxValue,value)
 
                 topValue.visibility = View.VISIBLE
-                topValue.text = convertToPercentageProgress(level,sliderMaxValue/1000)
+                topValue.text = convertToPercentageProgress(level, sliderMaxValue / 1000)
             }
 
             val volumePanelViewController = findClass("com.android.systemui.miui.volume.VolumePanelViewController",classLoader)
@@ -266,11 +266,11 @@ class VolumeOrQSBrightnessValue : Hooker() {
                 val sizeBgX = this.getObjectFieldAs<Float>("sizeBgX") ?:return@afterHookMethod
                 starLog.log("${topValue.left} || ${topValue.right} **$sizeSliderX")
 
-                val left = (dpToPx(topValue.resources,50f).toInt() - icon.layoutParams.width)/2
+                val left = (dpToPx(topValue.resources, 50f).toInt() - icon.layoutParams.width) / 2
 
-                topValue.left = icon.left-left
-                topValue.right = icon.right+left
-                topValue.setTextSize(TypedValue.COMPLEX_UNIT_DIP,13f+2f*sizeBgX)
+                topValue.left = icon.left - left
+                topValue.right = icon.right + left
+                topValue.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13f + 2f * sizeBgX)
 
             }
 
@@ -278,7 +278,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
 
         if (toggleSliderValueColor != null && toggleSliderValueColor != "null"){
 
-            replaceColor("toggle_slider_top_text_color",plugin,toggleSliderValueColor.toColorInt())
+            replaceColor("toggle_slider_top_text_color", plugin, toggleSliderValueColor.toColorInt())
         }
 
 
@@ -288,6 +288,12 @@ class VolumeOrQSBrightnessValue : Hooker() {
             "miui.systemui.controlcenter.panel.main.recyclerview.ToggleSliderViewHolder",
             classLoader
         ).apply {
+            afterHookMethod("updateSize") {
+                val item = this.getObjectFieldAs<View>("itemView")
+                val topValue = item.findViewByIdName("top_text") as TextView
+                topValue.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
+                topValue.setTextSize(TypedValue.COMPLEX_UNIT_DIP,13f)
+            }
             afterHookMethod(
                 "updateBlendBlur"
             ){

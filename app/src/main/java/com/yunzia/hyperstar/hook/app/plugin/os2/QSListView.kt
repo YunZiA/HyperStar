@@ -566,7 +566,8 @@ class QSListView : Hooker() {
             QSTileItemView.replaceHookMethod(
                 "changeExpand"
             ) { this as FrameLayout
-                val isDetailTile = this.getBooleanField("isDetailTile")
+                val icon = this.getObjectField("icon")
+                val isDetailTile = icon.getBooleanField("isDetailTile")
                 val res = this.resources
                 val label = this.findViewByIdName("tile_label") as TextView
                 val isShowLabel = this.callMethod("getShowLabel") as Boolean
@@ -580,12 +581,12 @@ class QSListView : Hooker() {
                     }else{
                         when (labelMode) {
                             2 -> {
-                                y = dpToPx(res,listLabelTop)
+                                y = dpToPx(res, listLabelTop)
                                 space += labelHeight
                                 space = (space * listLabelSpacingY).toInt()
                             }
                             1 -> {
-                                y = -4f
+                                y = - 4f
                             }
                             else -> {
                                 return@replaceHookMethod null
@@ -609,7 +610,16 @@ class QSListView : Hooker() {
         if (tileColorForState != 0 || labelMode != 0){
             QSTileItemView.replaceHookMethod(
                 "updateTextAppearance"
-            ) {
+            ) { this as FrameLayout
+                val label = this.findViewByIdNameAs<TextView>("tile_label")
+                label.apply {
+                    if (labelMode == 1){
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9f)
+                    } else if (labelMode == 2){
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
+                    }
+                }
+
                 return@replaceHookMethod null
             }
 
@@ -633,7 +643,7 @@ class QSListView : Hooker() {
                 val mode = this.getObjectFieldAs<Enum<*>>("mode")
                 val Companion = QSItemView.getStaticObjectField("Companion")
                 val sta = this.getObjectField("state")
-                val copy :Any
+                val copy: Any
 
                 if (mode.ordinal == 0){
                     if (sta == null) return@beforeHookMethod
@@ -696,7 +706,7 @@ class QSListView : Hooker() {
             QSTileItemIconView.apply {
                 replaceHookMethod(
                     "getCornerRadius"
-                ){
+                ) {
                     val pluginContext = getObjectFieldAs<Context>( "pluginContext")
                     return@replaceHookMethod dpToPx(
                         pluginContext.resources,
@@ -706,7 +716,7 @@ class QSListView : Hooker() {
                 beforeHookMethod(
                     "setDisabledBg",
                     Drawable::class.java
-                ){
+                ) {
                     val drawable = it.args[0] as Drawable
                     if (drawable is GradientDrawable){
                         val pluginContext = this.getObjectFieldAs<Context>( "pluginContext")

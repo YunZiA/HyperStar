@@ -23,3 +23,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "HyperStar"
 include(":app")
+include(":annotations")
+include(":processor")
+include(":hhook")

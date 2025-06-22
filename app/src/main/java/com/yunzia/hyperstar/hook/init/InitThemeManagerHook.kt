@@ -1,6 +1,6 @@
 package com.yunzia.hyperstar.hook.init
 
-import com.yunzia.hyperstar.hook.base.Init
+import com.yunzia.annotations.Init
 import com.yunzia.hyperstar.hook.base.InitHooker
 import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.utils.XSPUtils

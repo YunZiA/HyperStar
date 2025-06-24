@@ -312,5 +312,6 @@
     <string name="import_success">导入成功！</string>
     <string name="low_device_qc_background_color">低端机通控背景色</string>
     <string name="notification_expansion_overlay_color_on_low_end_devices">低端机通知中心通知展开叠加色</string>
+    <string name="enable_title_follow_animation">启用标题跟随动画</string>
 
 </resources>

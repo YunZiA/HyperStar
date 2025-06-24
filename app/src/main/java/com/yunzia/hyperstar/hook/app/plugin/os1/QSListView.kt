@@ -48,6 +48,7 @@ class QSListView : Hooker() {
     override fun initHook(classLoader: ClassLoader?) {
         super.initHook(classLoader)
         startMethodsHook()
+        titleFollowAnimation()
         qsTileRadius()
         fixTileIcon()
     }
@@ -95,6 +96,28 @@ class QSListView : Hooker() {
         }
     }
 
+    private fun titleFollowAnimation(){
+
+        if (!XSPUtils.getBoolean("title_follow_anim",false)) return
+
+        val QSItemViewHolder = findClass("miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder", classLoader)
+        for (method in QSItemViewHolder!!.getDeclaredMethods()) {
+            if (
+                method.name == "getTarget" &&
+                method.isBridge &&
+                method.isSynthetic
+            ) {
+                starLog.logD("Found bridge & synthetic method: $method")
+                method.replace {
+                    val itemView = this.getObjectField("itemView")
+                    return@replace itemView
+                }
+
+            }
+        }
+    }
+
+
     private fun startMethodsHook() {
 
         val QSItemViewHolder = findClass("miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder", classLoader)
@@ -102,7 +125,6 @@ class QSListView : Hooker() {
         val QSTileItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemView", classLoader)
 
         val MainPanelModeController = findClass("miui.systemui.controlcenter.panel.main.MainPanelModeController\$MainPanelMode",classLoader)
-
 
         QSTileItemView.apply {
             if (clickClose) {

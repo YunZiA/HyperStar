@@ -11,6 +11,7 @@ import android.widget.ImageView
 import androidx.core.graphics.drawable.toDrawable
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.afterHookAllConstructors
 import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import com.yunzia.hyperstar.hook.tool.starLog
@@ -132,6 +133,19 @@ class QSMediaCoverBackground: Hooker() {
 
             }
             if (!defaultBackground) {
+                afterHookAllConstructors {
+                    val itemView = this.getObjectFieldAs<View>("itemView")
+                    val _cornerRadius = this.getFloatField("_cornerRadius")
+                    itemView.outlineProvider = object : ViewOutlineProvider(){
+                        override fun getOutline(view: View?, outline: Outline?) {
+                            if (view == null) return
+                            outline?.setRoundRect(0,0,view.width,view.height,_cornerRadius)
+                        }
+
+                    }
+                    itemView.clipToOutline = true
+
+                }
                 afterHookMethod("updateSize") {
                     val itemView = this.getObjectFieldAs<View>("itemView")
                     val _cornerRadius = this.getFloatField("_cornerRadius")

@@ -148,6 +148,19 @@ class QSMediaCoverBackground: Hooker() {
             val HapticFeedback = findClass("miui.systemui.util.HapticFeedback",classLoader)
 
             MediaPlayerViewHolder.apply {
+                afterHookAllConstructors {
+                    val itemView = this.getObjectFieldAs<View>("itemView")
+                    val _cornerRadius = this.getFloatField("_cornerRadius")
+                    itemView.outlineProvider = object : ViewOutlineProvider(){
+                        override fun getOutline(view: View?, outline: Outline?) {
+                            if (view == null) return
+                            outline?.setRoundRect(0,0,view.width,view.height,_cornerRadius)
+                        }
+
+                    }
+                    itemView.clipToOutline = true
+
+                }
                 afterHookMethod("updateSize") {
                     val itemView = this.getObjectFieldAs<View>("itemView")
                     val _cornerRadius = this.getFloatField("_cornerRadius")

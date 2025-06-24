@@ -286,6 +286,7 @@ abstract class HookerHelper {
         return this.findViewByIdName(name) as T
     }
 
+
     fun Class<*>?.findMethodExactIfExists(
         methodName: String,
         vararg parameterTypes: Any?

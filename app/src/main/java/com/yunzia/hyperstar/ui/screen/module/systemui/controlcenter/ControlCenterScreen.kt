@@ -206,6 +206,11 @@ fun ControlCenterScreen(
             }
 
             XSuperSwitch(
+                title = stringResource(R.string.enable_title_follow_animation),
+                key = "title_follow_anim"
+            )
+
+            XSuperSwitch(
                 title = stringResource(R.string.list_tile_label_marquee_title),
                 key = "list_tile_label_marquee"
             )

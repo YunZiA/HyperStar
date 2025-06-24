@@ -311,4 +311,5 @@
     <string name="import_success">Import successful!</string>
     <string name="low_device_qc_background_color">Notification Panel and Control Panel background color for low-end devices</string>
     <string name="notification_expansion_overlay_color_on_low_end_devices">Notification expansion overlay color on low-end devices</string>
+    <string name="enable_title_follow_animation">Enable Title Follow Animation</string>
 </resources>

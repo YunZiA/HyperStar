@@ -51,6 +51,7 @@ class QSListView : Hooker() {
         super.initHook(classLoader)
         startMethodsHook()
         qsTileRadius()
+        titleFollowAnimation()
         fixTileIcon()
         fixBrightnessIcon()
     }
@@ -106,6 +107,27 @@ class QSListView : Hooker() {
         }
     }
 
+    private fun titleFollowAnimation(){
+
+        if (!XSPUtils.getBoolean("title_follow_anim", false)) return
+
+        val QSItemViewHolder = findClass("miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder", classLoader)
+        for (method in QSItemViewHolder!!.getDeclaredMethods()) {
+            if (
+                method.name == "getTarget" &&
+                method.isBridge &&
+                method.isSynthetic
+            ) {
+                starLog.logD("Found bridge & synthetic method: $method")
+                method.replace {
+                    val itemView = this.getObjectField("itemView")
+                    return@replace itemView
+                }
+
+            }
+        }
+    }
+
     private fun startMethodsHook() {
 
         val QSItemViewHolder = findClass("miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder", classLoader)
@@ -117,191 +139,6 @@ class QSListView : Hooker() {
         val AnimValue = findClass("miui.systemui.controlcenter.panel.detail.DetailPanelAnimator\$AnimValue", classLoader)
         val DetailPanelAnimator = findClass("miui.systemui.controlcenter.panel.detail.DetailPanelAnimator", classLoader)
 
-
-//        XposedHelpers.findAndHookMethod(QSItemViewHolder,"getTarget",object :XC_MethodReplacement(){
-//
-//            override fun replaceHookedMethod(param: MethodHookParam?): Any {
-//                val thisObj = param?.thisObject
-//                val itemView = XposedHelpers.getObjectField(thisObj,"itemView")
-//
-//                return itemView
-//
-//            }
-//
-//        })
-//        XposedHelpers.findAndHookMethod(DetailPanelAnimator,"frameCallback",object :XC_MethodReplacement(){
-//
-//            override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-//                val thisObj = param?.thisObject
-//                val fromView = XposedHelpers.getObjectField(thisObj,"fromView") ?: return null
-//                val animValue = XposedHelpers.getObjectField(thisObj,"animValue") ?: return null
-//                val wA = XposedHelpers.callMethod(animValue,"getWidthA") as Int
-//                val wB = XposedHelpers.callMethod(animValue,"getWidthB") as Int
-//                val sX = XposedHelpers.getFloatField(thisObj,"sizeX")
-//                val hA = XposedHelpers.callMethod(animValue,"getHeightA") as Int
-//                val hB = XposedHelpers.callMethod(animValue,"getHeightB") as Int
-//                val sY = XposedHelpers.getFloatField(thisObj,"sizeY")
-//                val widthA: Float = wA + ((wB - wA) * sX)
-//                val heightA: Float =hA + ((hB - hA) * sY)
-//                val getToCenterX =  XposedHelpers.callMethod(animValue,"getToCenterX") as Float
-//                val getFromCenterX =  XposedHelpers.callMethod(animValue,"getFromCenterX") as Float
-//                val positionX = XposedHelpers.getFloatField(thisObj,"positionX")
-//                val getToCenterY =  XposedHelpers.callMethod(animValue,"getToCenterY") as Float
-//                val getFromCenterY =  XposedHelpers.callMethod(animValue,"getFromCenterY") as Float
-//                val positionY = XposedHelpers.getFloatField(thisObj,"positionY")
-//                val getScreenLeftA =  XposedHelpers.callMethod(animValue,"getScreenLeftA") as Int
-//                val getLeftA =  XposedHelpers.callMethod(animValue,"getLeftA") as Int
-//                val getScreenTopA =  XposedHelpers.callMethod(animValue,"getScreenTopA") as Int
-//                val getTopA =  XposedHelpers.callMethod(animValue,"getTopA") as Int
-//                val getScreenLeftB =  XposedHelpers.callMethod(animValue,"getScreenLeftB") as Int
-//                val getLeftB =  XposedHelpers.callMethod(animValue,"getLeftB") as Int
-//                val getScreenTopB =  XposedHelpers.callMethod(animValue,"getScreenTopB") as Int
-//                val getTopB =  XposedHelpers.callMethod(animValue,"getTopB") as Int
-//                val f = 2f
-//                val toCenterX: Float =
-//                    (((getToCenterX - getFromCenterX) * positionX) + getFromCenterX) - (widthA / f)
-//                val toCenterY: Float =
-//                    (((getToCenterY - getFromCenterY) * positionY) + getFromCenterY) - (heightA / f)
-//                val screenLeftA: Float =
-//                    (toCenterX - getScreenLeftA) + getLeftA
-//                val screenTopA: Float =
-//                    (toCenterY - getScreenTopA) + getTopA
-//                val screenLeftB: Float =
-//                    (toCenterX - getScreenLeftB) + getLeftB
-//                val screenTopB: Float =
-//                    (toCenterY - getScreenTopB) + getTopB
-//
-//                val target = XposedHelpers.callMethod(fromView,"getTarget") as View
-//                val parent = target.parent as ViewGroup
-//                val label = parent.findViewByIdName("tile_label")
-//                parent?.setLeftTopRightBottom(screenLeftA.toInt(), screenTopA.toInt(),(screenLeftA + widthA).toInt(),(screenTopA + heightA).toInt());
-//                return  null
-//                //label?.setLeftTopRightBottom(target.left,target.top,target.right,target.bottom)
-//            }
-//        })
-
-//        XposedHelpers.findAndHookMethod(DetailPanelAnimator,"frameCallback",object :XC_MethodHook(){
-//            override fun afterHookedMethod(param: MethodHookParam?) {
-//                super.afterHookedMethod(param)
-//                val thisObj = param?.thisObject
-//                val fromView = XposedHelpers.getObjectField(thisObj,"fromView") ?: return
-//                val animValue = XposedHelpers.getObjectField(thisObj,"animValue") ?: return
-//                val wA = XposedHelpers.callMethod(animValue,"getWidthA") as Int
-//                val wB = XposedHelpers.callMethod(animValue,"getWidthB") as Int
-//                val sX = XposedHelpers.getFloatField(thisObj,"sizeX")
-//                val hA = XposedHelpers.callMethod(animValue,"getHeightA") as Int
-//                val hB = XposedHelpers.callMethod(animValue,"getHeightB") as Int
-//                val sY = XposedHelpers.getFloatField(thisObj,"sizeY")
-//                val widthA: Float = wA + ((wB - wA) * sX)
-//                val heightA: Float =hA + ((hB - hA) * sY)
-//                val getToCenterX =  XposedHelpers.callMethod(animValue,"getToCenterX") as Float
-//                val getFromCenterX =  XposedHelpers.callMethod(animValue,"getFromCenterX") as Float
-//                val positionX = XposedHelpers.getFloatField(thisObj,"positionX")
-//                val getToCenterY =  XposedHelpers.callMethod(animValue,"getToCenterY") as Float
-//                val getFromCenterY =  XposedHelpers.callMethod(animValue,"getFromCenterY") as Float
-//                val positionY = XposedHelpers.getFloatField(thisObj,"positionY")
-//                val getScreenLeftA =  XposedHelpers.callMethod(animValue,"getScreenLeftA") as Int
-//                val getLeftA =  XposedHelpers.callMethod(animValue,"getLeftA") as Int
-//                val getScreenTopA =  XposedHelpers.callMethod(animValue,"getScreenTopA") as Int
-//                val getTopA =  XposedHelpers.callMethod(animValue,"getTopA") as Int
-//                val getScreenLeftB =  XposedHelpers.callMethod(animValue,"getScreenLeftB") as Int
-//                val getLeftB =  XposedHelpers.callMethod(animValue,"getLeftB") as Int
-//                val getScreenTopB =  XposedHelpers.callMethod(animValue,"getScreenTopB") as Int
-//                val getTopB =  XposedHelpers.callMethod(animValue,"getTopB") as Int
-//                val f = 2f
-//                val toCenterX: Float =
-//                    (((getToCenterX - getFromCenterX) * positionX) + getFromCenterX) - (widthA / f)
-//                val toCenterY: Float =
-//                    (((getToCenterY - getFromCenterY) * positionY) + getFromCenterY) - (heightA / f)
-//                val screenLeftA: Float =
-//                    (toCenterX - getScreenLeftA) + getLeftA
-//                val screenTopA: Float =
-//                    (toCenterY - getScreenTopA) + getTopA
-//                val screenLeftB: Float =
-//                    (toCenterX - getScreenLeftB) + getLeftB
-//                val screenTopB: Float =
-//                    (toCenterY - getScreenTopB) + getTopB
-//
-//                val target = XposedHelpers.callMethod(fromView,"getTarget") as View
-//                val parent = target.parent as ViewGroup
-//                val label = parent.findViewByIdName("tile_label")
-//                label?.translationY = screenTopA
-//                label?.translationX = screenLeftA
-//                //label?.setLeftTopRightBottom(screenLeftA.toInt(), screenTopA.toInt(),(screenLeftA + widthA).toInt(),(screenTopA + heightA).toInt());
-//
-//                //label?.setLeftTopRightBottom(target.left,target.top,target.right,target.bottom)
-//
-//
-//            }
-//        })
-
-//        XposedHelpers.findAndHookMethod(DetailPanelAnimator,"calculateViewValues",object :XC_MethodHook() {
-//
-//            override fun afterHookedMethod(param: MethodHookParam?) {
-//                super.afterHookedMethod(param)
-//                val thisObj = param?.thisObject
-//                val fromView = XposedHelpers.getObjectField(thisObj, "fromView") ?: return
-//
-//                val target = XposedHelpers.callMethod(fromView, "getTarget") as View
-//                val parent = target.parent as View
-//                val label = parent.findViewByIdName("tile_label")
-//                val commonUtils = XposedHelpers.getStaticObjectField(CommonUtils,"INSTANCE")
-//                val iArr = IntArray(2)
-//                XposedHelpers.callMethod(commonUtils,"getLocationInWindowWithoutTransform",label,iArr)
-//
-//            }
-//
-//        })
-
-//        XposedHelpers.findAndHookMethod(DetailPanelAnimator,"calculateViewValues",object :XC_MethodReplacement(){
-//
-//            override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-//                val thisObj = param?.thisObject
-//                val fromView = XposedHelpers.getObjectField(thisObj,"fromView") ?: return null
-//                val toView = XposedHelpers.callMethod(thisObj,"getToView")
-//
-//                val target = XposedHelpers.callMethod(fromView,"getTarget") as View
-//                val parent = target.parent as View
-//                val frame = XposedHelpers.callMethod(toView,"getFrame") as View
-//                val iArr = IntArray(2)
-//                val commonUtils = XposedHelpers.getStaticObjectField(CommonUtils,"INSTANCE")
-//                XposedHelpers.callMethod(commonUtils,"getLocationInWindowWithoutTransform",parent,iArr)
-//                val iArr2 = IntArray(2)
-//                XposedHelpers.callMethod(commonUtils,"getLocationInWindowWithoutTransform",frame,iArr2)
-//                var z = false
-//
-//                val animValue = XposedHelpers.newInstance(AnimValue,
-//                    iArr[0],
-//                    iArr[1],
-//                    parent.left,
-//                    parent.top,
-//                    parent.width,
-//                    parent.height,
-//                    iArr2[0],
-//                    iArr2[1],
-//                    frame.left,
-//                    frame.top,
-//                    frame.width,
-//                    frame.height,
-//                    XposedHelpers.callMethod(fromView,"getCornerRadius"),
-//                    XposedHelpers.callMethod(toView,"getCornerRadius")
-//                )
-//                val animValue2 = XposedHelpers.getObjectField(thisObj,"lastAnimValue")
-//                if (animValue2 != null) {
-//                    if (animValue2 != null && XposedHelpers.callMethod(animValue,"getScreenTopA")  == XposedHelpers.callMethod(animValue2,"getScreenTopA")) {
-//                        z = true
-//                    }
-//                    if (z && !(XposedHelpers.callMethod(thisObj,"isOrientationChanged") as Boolean) && !(XposedHelpers.callMethod(thisObj,"isFoldStateChanged") as Boolean)) {
-//
-//                        XposedHelpers.setObjectField(thisObj,"animValue",XposedHelpers.getObjectField(thisObj,"lastAnimValue"))
-//                        return null
-//                    }
-//                }
-//                XposedHelpers.setObjectField(thisObj,"animValue",animValue)
-//                XposedHelpers.setObjectField(thisObj,"lastAnimValue",animValue)
-//                return null
-//            }
-//        })
 
 
         //进入编辑调用
@@ -426,7 +263,7 @@ class QSListView : Hooker() {
 
         }
 
-        if (labelMarquee || labelMode!=0 ){
+        if (labelMarquee || labelMode != 0 ){
 
             val MainPanelController = findClass("miui.systemui.controlcenter.panel.main.MainPanelController",classLoader)
 
@@ -608,25 +445,29 @@ class QSListView : Hooker() {
         }
 
         if (tileColorForState != 0 || labelMode != 0){
-            QSTileItemView.replaceHookMethod(
-                "updateTextAppearance"
-            ) { this as FrameLayout
-                val label = this.findViewByIdNameAs<TextView>("tile_label")
-                label.apply {
-                    if (labelMode == 1){
-                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9f)
-                    } else if (labelMode == 2){
-                        setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
+            QSTileItemView.apply {
+                replaceHookMethod(
+                    "updateTextAppearance"
+                ) { this as FrameLayout
+                    val icon = this.getObjectField("icon")
+                    val isDetailTile = icon.getBooleanField("isDetailTile")
+                    if (isDetailTile) return@replaceHookMethod null
+                    val label = this.findViewByIdNameAs<TextView>("tile_label")
+                    label.apply {
+                        if (labelMode == 1){
+                            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9f)
+                        } else if (labelMode == 2){
+                            setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
+                        }
                     }
+
+                    return@replaceHookMethod null
                 }
-
-                return@replaceHookMethod null
+                findMethodExactIfExists("updateTextSizeForKDDI")?.replace {
+                    return@replace null
+                }
             }
 
-            val updateTextSizeForKDDI = QSTileItemView.findMethodExactIfExists("updateTextSizeForKDDI")
-            updateTextSizeForKDDI?.replace{
-                return@replace null
-            }
         }
 
         if (tileColorForState != 0){

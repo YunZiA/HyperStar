@@ -8,6 +8,8 @@ object PagerList {
 
     const val HOME = "${MAIN}/home"
 
+    const val SCREENSHOT = "${MAIN}/screenshot"
+
     const val BARRAGE = "${MAIN}/barrage"
 
     const val UPDATER = "${MAIN}/updater"

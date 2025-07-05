@@ -128,7 +128,7 @@ abstract class HookerHelper {
     fun MethodHookParam.callSuperMethod(): Any? {
         val thisObj = this.thisObject
         val parameterTypes = this.args.map { it?.javaClass }.toTypedArray()
-        val superClass = this.thisObject.javaClass.superclass
+        val superClass = thisObj.javaClass.superclass
         val superMethod: Method = XposedHelpers.findMethodBestMatch(superClass,this.method.name,*parameterTypes)
         //MethodHandles.privateLookupIn(superClass,MethodHandles.lookup()).findSpecial(superClass,this.method.name,*parameterTypes,this.javaClass)
         val methodHandle = MethodHandles.lookup().unreflectSpecial(superMethod, thisObj.javaClass)
@@ -294,7 +294,7 @@ abstract class HookerHelper {
         return XposedHelpers.findMethodExactIfExists(this,methodName,*parameterTypes)
     }
 
-    fun Class<*>?.method(
+    fun Class<*>?.findMethod(
         methodName: String,
         vararg parameterTypes: Any?
     ){
@@ -306,10 +306,27 @@ abstract class HookerHelper {
         val m = XposedHelpers.findMethodExact(
             this,
             methodName,
-            XposedHelpers.getParameterTypes(this?.getClassLoader(), *parameterTypes)
+            XposedHelpers.getParameterTypes(this?.classLoader, *parameterTypes)
         )
 
 
+    }
+
+    fun Class<*>?.findMethodExt(
+        methodName: String,
+        ext: Method.()->Boolean = { true }
+    ): Method? {
+        this ?: return null
+
+        for (method in declaredMethods) {
+            if (
+                method.name == methodName && method.ext()
+            ) {
+                return method
+            }
+        }
+        starLog.logE("找不到符合条件的方法：$methodName, ext = $ext")
+        return null
     }
 
     fun Class<*>?.afterHookMethod(
@@ -325,9 +342,10 @@ abstract class HookerHelper {
 
     }
 
-    fun Method.replace(
+    fun Method?.replace(
         methodHook: Any?.(param:MethodHookParam) -> Any?,
     ){
+        this?: return
         XposedBridge.hookMethod(this, object : XC_MethodReplacement() {
             override fun replaceHookedMethod(param: MethodHookParam): Any? {
                 return param.thisObject.methodHook(param)

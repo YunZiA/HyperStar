@@ -112,19 +112,12 @@ class QSListView : Hooker() {
         if (!XSPUtils.getBoolean("title_follow_anim", false)) return
 
         val QSItemViewHolder = findClass("miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder", classLoader)
-        for (method in QSItemViewHolder!!.getDeclaredMethods()) {
-            if (
-                method.name == "getTarget" &&
-                method.isBridge &&
-                method.isSynthetic
-            ) {
-                starLog.logD("Found bridge & synthetic method: $method")
-                method.replace {
-                    val itemView = this.getObjectField("itemView")
-                    return@replace itemView
-                }
-
-            }
+        QSItemViewHolder.findMethodExt(
+            "getTarget",
+            { isBridge && isSynthetic }
+        ).replace {
+            val itemView = this.getObjectField("itemView")
+            return@replace itemView
         }
     }
 

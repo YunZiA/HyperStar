@@ -5,6 +5,7 @@
         <item>com.miui.home</item>
         <item>com.android.thememanager</item>
         <item>com.xiaomi.barrage</item>
+        <item>com.miui.screenshot</item>
     </string-array>
 
     <integer-array name="my_card_stroke_gradient_colors_light">

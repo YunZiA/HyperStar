@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.utils
 
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import androidx.compose.runtime.Composable
@@ -43,8 +44,11 @@ fun loadAppInfo(packageName: String, content: Context = LocalContext.current): M
         try {
 
             val info = pm.getPackageInfo(packageName, PackageManager.GET_META_DATA)
+            val applicationInfo = pm.getApplicationInfo(packageName, 0)
+
             appInfo.value = AppInfo(
                 info.applicationInfo?.loadIcon(pm),
+                pm.getApplicationLabel(info.applicationInfo!!).toString(),
                 info.versionName,
                 info.longVersionCode
             )
@@ -77,9 +81,10 @@ fun rememberWindowSize(): State<DpSize> {
 
 
 data class AppInfo(
-    val appIcon:Drawable?,
-    val versionName:String?,
-    val versionCode:Long
+    val appIcon: Drawable?,
+    val appName: String,
+    val versionName: String?,
+    val versionCode: Long
 )
 
 

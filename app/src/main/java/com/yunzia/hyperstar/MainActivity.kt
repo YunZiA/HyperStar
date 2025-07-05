@@ -45,6 +45,7 @@ class MainActivity : BaseActivity() {
 
     val themeManager: MutableState<AppInfo?> = mutableStateOf(null)
     val barrageManager: MutableState<AppInfo?> = mutableStateOf(null)
+    val miuiScreenshot: MutableState<AppInfo?> = mutableStateOf(null)
     val downloadModel: UpdaterDownloadViewModel by viewModels()
 
     @Composable
@@ -125,6 +126,7 @@ class MainActivity : BaseActivity() {
             try {
                 themeManager.value = packageManager.getAppInfo("com.android.thememanager")
                 barrageManager.value = packageManager.getAppInfo("com.xiaomi.barrage")
+                miuiScreenshot.value = packageManager.getAppInfo("com.miui.screenshot")
             } catch (e: PackageManager.NameNotFoundException) {
                 Log.e(TAG, "Package not found: ${e.message}")
             }
@@ -223,6 +225,7 @@ private fun PackageManager.getAppInfo(packageName: String): AppInfo {
     val packageInfo = getPackageInfo(packageName, PackageManager.GET_META_DATA)
     return AppInfo(
         appIcon = packageInfo.applicationInfo?.loadIcon(this),
+        appName = this.getApplicationLabel(packageInfo.applicationInfo!!).toString(),
         versionName = packageInfo.versionName,
         versionCode = packageInfo.longVersionCode
     )

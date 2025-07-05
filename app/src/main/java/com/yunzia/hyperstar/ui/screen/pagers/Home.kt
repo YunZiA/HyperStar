@@ -282,6 +282,15 @@ fun Home(
                     }
 
                 }
+                activity.miuiScreenshot.value?.let {
+                    SuperNavHostArrow(
+                        leftIcon = rememberDrawablePainter(it.appIcon),
+                        title = it.appName,
+                        navController = navController,
+                        route = PagerList.SCREENSHOT
+
+                    )
+                }
                 SuperNavHostArrow(
                     leftIcon = R.drawable.not_developer,
                     title = stringResource(R.string.not_developer),

@@ -86,8 +86,7 @@ fun SuperDialog(
 
     DialogLayout(
         visible = show,
-    )
-    {
+    ) {
         Box(
             modifier =
                 Modifier.then(if (navigationBarsPadding) Modifier.navigationBarsPadding() else Modifier)

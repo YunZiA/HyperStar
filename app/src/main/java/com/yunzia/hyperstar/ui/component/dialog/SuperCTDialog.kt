@@ -65,7 +65,6 @@ fun SuperCTDialog(
         onDismissRequest?.invoke()
     }
 
-
     DialogLayout(
         visible = show,
         content = {

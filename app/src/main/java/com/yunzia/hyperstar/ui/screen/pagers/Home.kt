@@ -6,9 +6,12 @@ import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,12 +20,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,11 +43,14 @@ import com.yunzia.hyperstar.SystemUIList
 import com.yunzia.hyperstar.ui.component.Classes
 import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.component.classes
+import com.yunzia.hyperstar.ui.component.dialog.SuperBottomSheetDialog
 import com.yunzia.hyperstar.ui.component.firstClasses
 import com.yunzia.hyperstar.ui.component.modifier.blur
+import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
+import com.yunzia.hyperstar.ui.component.topbar.TopBar
 import com.yunzia.hyperstar.ui.screen.pagers.dialog.checkApplication
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
@@ -49,15 +58,20 @@ import com.yunzia.hyperstar.utils.Helper.isRoot
 import com.yunzia.hyperstar.utils.appIcon
 import com.yunzia.hyperstar.utils.isOS2Settings
 import dev.chrisbanes.haze.HazeState
+import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Scaffold
+import top.yukonga.miuix.kmp.basic.SmallTopAppBar
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.basic.ArrowRight
+import top.yukonga.miuix.kmp.icon.icons.useful.Cancel
 import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
@@ -258,7 +272,7 @@ fun Home(
                 }
 
 
-                activity.themeManager.value?.let {
+                activity.appInfo["com.android.thememanager"]?.let {
                     if(it.versionCode >= 7180){
                         SuperNavHostArrow(
                             leftIcon = rememberDrawablePainter(it.appIcon),
@@ -270,7 +284,7 @@ fun Home(
                     }
 
                 }
-                activity.barrageManager.value?.let {
+                activity.appInfo["com.xiaomi.barrage"]?.let {
                     if (it.versionName!!.startsWith("3")){
                         SuperNavHostArrow(
                             leftIcon = rememberDrawablePainter(it.appIcon),
@@ -282,14 +296,16 @@ fun Home(
                     }
 
                 }
-                activity.miuiScreenshot.value?.let {
-                    SuperNavHostArrow(
-                        leftIcon = rememberDrawablePainter(it.appIcon),
-                        title = it.appName,
-                        navController = navController,
-                        route = PagerList.SCREENSHOT
+                if (isOS2Settings()){
+                    activity.appInfo["com.miui.screenshot"]?.let {
+                        SuperNavHostArrow(
+                            leftIcon = rememberDrawablePainter(it.appIcon),
+                            title = it.appName,
+                            navController = navController,
+                            route = PagerList.SCREENSHOT
 
-                    )
+                        )
+                    }
                 }
                 SuperNavHostArrow(
                     leftIcon = R.drawable.not_developer,
@@ -301,9 +317,74 @@ fun Home(
 
             }
 
+            if (activity.appNo.isNotEmpty()){
+
+                item {
+                    val show = remember { mutableStateOf(false) }
+                    Card(
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                            .padding(top = 12.dp)
+                            .bounceAnim(cornerSize = CardDefaults.CornerRadius)
+                            .clickable {
+                                show.value = true
+                            }
+                    ) {
+                        Text(
+                            text = "列表中没有您想要找的应用？",
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(vertical = 16.dp)
+                                .padding(start = 24.dp, end = 8.dp),
+                            fontWeight  = FontWeight.Bold,
+                            fontSize = 17.sp,
+                            color = colorScheme.primary,
+                        )
+                    }
+                    SuperBottomSheetDialog(
+                        show = show,
+                        onDismissRequest = {
+                            show.value = false
+                        },
+                    ) {
+                        TopBar(
+                            title = "未显示的应用功能入口",
+                            leftIcon = {
+                                IconButton(
+                                    modifier = Modifier,
+                                    onClick = {
+                                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                                        show.value = false
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector =  MiuixIcons.Useful.Cancel,
+                                        contentDescription = "back",
+                                        tint = colorScheme.onBackground
+                                    )
+                                }
+                            }
+                        )
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)
+                        ) {
+                            activity.appNo.forEach { (s, throwable) ->
+                                classes(s) {
+                                    Text(throwable.toString())
+                                }
+                            }
+
+
+                        }
+
+
+
+                    }
+                }
+            }
+
 
 
         }
+
 
 
 

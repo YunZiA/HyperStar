@@ -20,7 +20,7 @@ import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.FloatingActionButton
 import com.yunzia.hyperstar.ui.component.MTextField
-import com.yunzia.hyperstar.ui.component.TopButton
+import com.yunzia.hyperstar.ui.component.topbar.TopButton
 import com.yunzia.hyperstar.ui.component.XScaffold
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnim

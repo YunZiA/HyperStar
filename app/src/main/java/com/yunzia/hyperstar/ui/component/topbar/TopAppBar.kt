@@ -1,4 +1,4 @@
-package com.yunzia.hyperstar.ui.component
+package com.yunzia.hyperstar.ui.component.topbar
 
 import android.view.HapticFeedbackConstants
 import androidx.activity.ComponentActivity

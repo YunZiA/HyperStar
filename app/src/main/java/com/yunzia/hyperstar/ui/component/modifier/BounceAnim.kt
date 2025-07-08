@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.ui.component.enums.EventState
 import com.yunzia.hyperstar.utils.PreferencesUtil
@@ -49,6 +50,33 @@ fun Modifier.bounceAnim(
             }
                 .bounceClick(eventState, enabled)
                 .clip(RoundedCornerShape(8.dp))
+
+        }else{
+            finishedListener?.invoke(1f)
+            this
+
+        }
+    }else{
+        this
+    }
+
+
+}
+fun Modifier.bounceAnim(
+    enabled: Boolean = true,
+    cornerSize: Dp = 8.dp,
+    finishedListener:((Float) -> Unit)? = null
+) = composed {
+    val updatedOnClick by rememberUpdatedState(finishedListener)
+    val enable = PreferencesUtil.getBoolean("bounce_anim_enable",true)
+    val eventState = remember { mutableStateOf(EventState.Idle) }
+    if (enabled){
+        if (enable){
+            this.bounceScale(eventState) {
+                finishedListener?.invoke(it)
+            }
+                .bounceClick(eventState, enabled)
+                .clip(RoundedCornerShape(cornerSize))
 
         }else{
             finishedListener?.invoke(1f)

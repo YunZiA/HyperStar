@@ -31,7 +31,7 @@ import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.InputField
-import com.yunzia.hyperstar.ui.component.ModuleNavTopAppBar
+import com.yunzia.hyperstar.ui.component.topbar.ModuleNavTopAppBar
 import com.yunzia.hyperstar.ui.component.XScaffold
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.showBlur

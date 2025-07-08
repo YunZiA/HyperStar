@@ -26,6 +26,8 @@ import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.SPUtils
 import com.yunzia.hyperstar.viewmodel.UpdaterDownloadViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -42,6 +44,9 @@ class MainActivity : BaseActivity() {
 
     var isRecreate: Boolean = false
     var isGranted = mutableStateOf(false)
+
+    val appInfo =  mutableMapOf<String, AppInfo?>()
+    val appNo = mutableMapOf<String, String?>()
 
     val themeManager: MutableState<AppInfo?> = mutableStateOf(null)
     val barrageManager: MutableState<AppInfo?> = mutableStateOf(null)
@@ -123,13 +128,33 @@ class MainActivity : BaseActivity() {
 
         // Load theme and barrage manager info
         LaunchedEffect(Unit) {
-            try {
-                themeManager.value = packageManager.getAppInfo("com.android.thememanager")
-                barrageManager.value = packageManager.getAppInfo("com.xiaomi.barrage")
-                miuiScreenshot.value = packageManager.getAppInfo("com.miui.screenshot")
-            } catch (e: PackageManager.NameNotFoundException) {
-                Log.e(TAG, "Package not found: ${e.message}")
-            }
+            appInfo.putAll(
+                coroutineScope {
+                    listOf(
+                        "com.android.thememanager",
+                        "com.xiaomi.barrage",
+                        "com.miui.screenshot"
+                    ).associateWith { packageName ->
+                        async {
+                            try {
+                                val packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA)
+                                AppInfo(
+                                    appIcon = packageInfo.applicationInfo?.loadIcon(packageManager),
+                                    appName = packageManager.getApplicationLabel(packageInfo.applicationInfo!!).toString(),
+                                    versionName = packageInfo.versionName,
+                                    versionCode = packageInfo.longVersionCode
+                                )
+                            } catch (e: PackageManager.NameNotFoundException) {
+                                Log.w("ggc", "Package not found: $packageName")
+                                appNo[packageName] = e.message
+                                null
+                            }
+                        }
+                    }
+                }.mapValues { (_, deferred) -> deferred.await() }
+
+
+            )
         }
 
         // Fetch new app version and name
@@ -221,6 +246,29 @@ class MainActivity : BaseActivity() {
 /**
  * Extension function to get app info by package name.
  */
+private suspend fun PackageManager.getApplicationInfos(
+    vararg packageNames: String
+): Map<String, AppInfo?> {
+    return coroutineScope {
+        packageNames.associateWith { packageName ->
+            async {
+                try {
+                    val packageInfo = this@getApplicationInfos.getPackageInfo(packageName, PackageManager.GET_META_DATA)
+                    AppInfo(
+                        appIcon = packageInfo.applicationInfo?.loadIcon(this@getApplicationInfos),
+                        appName = this@getApplicationInfos.getApplicationLabel(packageInfo.applicationInfo!!).toString(),
+                        versionName = packageInfo.versionName,
+                        versionCode = packageInfo.longVersionCode
+                    )
+                    null
+                } catch (e: PackageManager.NameNotFoundException) {
+                    Log.w("ggc", "Package not found: $packageName")
+                    null
+                }
+            }
+        }.mapValues { it.value.await() }
+    }
+}
 private fun PackageManager.getAppInfo(packageName: String): AppInfo {
     val packageInfo = getPackageInfo(packageName, PackageManager.GET_META_DATA)
     return AppInfo(

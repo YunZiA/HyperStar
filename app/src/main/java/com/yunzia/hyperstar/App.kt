@@ -56,7 +56,7 @@ import com.yunzia.hyperstar.ui.component.nav.pagersJson
 import com.yunzia.hyperstar.ui.screen.module.NotDeveloperScreen
 import com.yunzia.hyperstar.ui.screen.module.barrage.BarrageScreen
 import com.yunzia.hyperstar.ui.screen.module.home.HomeScreen
-import com.yunzia.hyperstar.ui.screen.module.screenshot.screenshotScreen
+import com.yunzia.hyperstar.ui.screen.module.screenshot.ScreenshotScreen
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.ControlCenterColorScreen
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.ControlCenterListScreen
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.ControlCenterScreen
@@ -297,7 +297,7 @@ fun NavGraphBuilder.pagerContent(
 
     composable(PagerList.HOME) { HomeScreen(navController,parentRoute) }
 
-    composable(PagerList.SCREENSHOT) { screenshotScreen(navController,parentRoute) }
+    composable(PagerList.SCREENSHOT) { ScreenshotScreen(navController,parentRoute) }
 
     composable(PagerList.BARRAGE) { BarrageScreen(navController,parentRoute) }
 

@@ -13,13 +13,13 @@ import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
 
 @Composable
-fun screenshotScreen(
+fun ScreenshotScreen(
     navController: NavController,
     currentStartDestination: MutableState<String>
 ) {
     val activity = LocalActivity.current as MainActivity
     ModuleNavPagers(
-        activityTitle = activity.miuiScreenshot.value!!.appName,
+        activityTitle = activity.appInfo["com.miui.screenshot"]!!.appName,
         parentRoute = currentStartDestination,
         navController = navController,
         endClick = {

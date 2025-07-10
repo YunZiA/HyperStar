@@ -10,6 +10,8 @@ import androidx.core.view.isVisible
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.base.getDimensionPixelSize
+import com.yunzia.hyperstar.hook.base.replaceHookMethod
+import com.yunzia.hyperstar.hook.util.plugin.Util
 import com.yunzia.hyperstar.utils.XSPUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +25,6 @@ class VolumeView: Hooker() {
 
     val isPressExpandVolume = XSPUtils.getBoolean("is_press_expand_volume",false)
 
-    val isHideStandardView = XSPUtils.getBoolean("is_hide_StandardView",false)
 
     val VolumeOffsetTopCollapsedP = XSPUtils.getFloat("volume_offset_top_collapsed_p",-1f)
     val VolumeOffsetTopCollapsedL = XSPUtils.getFloat("volume_offset_top_collapsed_l",-1f)
@@ -44,7 +45,6 @@ class VolumeView: Hooker() {
         super.initHook(classLoader)
         startCollpasedColumn()
         startCollpasedColumnPress()
-        startCollpasedFootButton()
 
     }
 
@@ -443,59 +443,6 @@ class VolumeView: Hooker() {
             }
         }
 
-
-    }
-
-    private fun startCollpasedFootButton() {
-
-        if (!isHideStandardView) return
-
-        findClass(
-            "com.android.systemui.miui.volume.MiuiRingerModeLayout\$RingerButtonHelper",
-            classLoader
-        ).apply {
-            afterHookMethod(
-                "updateState"
-            ) {
-                val mIcon = this.getObjectFieldAs<View>("mIcon")
-                val mStandardView = this.getObjectFieldAs<View>("mStandardView")
-                if (this.getBooleanField("mExpanded")) {
-                    mIcon.visibility = View.VISIBLE
-                    mStandardView.visibility = View.VISIBLE
-                } else {
-                    mIcon.visibility = View.GONE
-                    mStandardView.visibility = View.GONE
-                }
-            }
-            afterHookMethod(
-                "onExpanded",
-                Boolean::class.java,
-                Boolean::class.java
-            ){
-
-                val z1 = it.args[0] as Boolean
-                val z2 = it.args[1] as Boolean
-                val mStandardView = this.getObjectFieldAs<View>("mStandardView")
-
-                mStandardView.visibility = if (this.getBooleanField("mExpanded") != z1 || z2){
-                    View.GONE
-                }else{
-                    View.VISIBLE
-                }
-            }
-        }
-
-
-        findClass("com.android.systemui.miui.volume.TimerItem",
-            classLoader
-        ).afterHookMethod(
-            "updateExpanded",
-            Boolean::class.java
-        ){
-
-            this.getObjectFieldAs<View>("mCountDownProgressBar").visibility = View.GONE
-
-        }
 
     }
 

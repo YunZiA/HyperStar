@@ -2,6 +2,7 @@ package com.yunzia.hyperstar.hook.init
 
 import android.content.Context
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.hook.app.plugin.HideVolumeCollpasedFootButton
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTile
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTileList
 import com.yunzia.hyperstar.hook.app.plugin.QSControlCenterList
@@ -156,6 +157,7 @@ class PluginHookForOS1() : InitHooker() {
         initSecHooker(VolumeColumnProgressRadius())
         initSecHooker(powerMenuHook)
         initSecHooker(VolumeView())
+        initSecHooker(HideVolumeCollpasedFootButton())
         initSecHooker(deviceCenterRow)
         initSecHooker(QSMiplayDetailVolumeBar())
     }

@@ -43,6 +43,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat.finishAffinity
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -101,6 +102,26 @@ import top.yukonga.miuix.kmp.basic.VerticalDivider
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.getWindowSize
+
+@SuppressLint("RestrictedApi")
+fun printBackStackDetailed(navController: NavController) {
+    val backStack = navController.currentBackStack.value
+    println("Detailed Backstack contents:")
+    for (entry in backStack) {
+        val destination = entry.destination
+        val id = destination.id
+        val route = destination.route ?: "N/A"
+        val label = destination.label?.toString() ?: "N/A"
+
+        println("""
+            Destination:
+              ID: $id
+              Route: $route
+              Label: $label
+              Arguments: ${destination.arguments}
+        """.trimIndent())
+    }
+}
 
 @SuppressLint("SourceLockedOrientationActivity", "UnusedBoxWithConstraintsScope",
     "LocalContextConfigurationRead"

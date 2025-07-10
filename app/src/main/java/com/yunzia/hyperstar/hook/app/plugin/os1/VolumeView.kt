@@ -16,7 +16,6 @@ class VolumeView: Hooker() {
 
     val isPressExpandVolume = XSPUtils.getBoolean("is_press_expand_volume",false)
 
-    val isHideStandardView = XSPUtils.getBoolean("is_hide_StandardView",false)
 
     val VolumeOffsetTopCollapsedP = XSPUtils.getFloat("volume_offset_top_collapsed_p",-1f)
     val VolumeOffsetTopCollapsedL = XSPUtils.getFloat("volume_offset_top_collapsed_l",-1f)
@@ -35,10 +34,7 @@ class VolumeView: Hooker() {
 
     override fun initHook(classLoader: ClassLoader?) {
         super.initHook(classLoader)
-
         startCollpasedColumn()
-        startCollpasedFootButton()
-
     }
 
     private fun startCollpasedColumn() {
@@ -294,63 +290,5 @@ class VolumeView: Hooker() {
         }
 
     }
-
-
-    private fun startCollpasedFootButton() {
-
-        if (!isHideStandardView) return
-
-        findClass(
-            "com.android.systemui.miui.volume.MiuiRingerModeLayout\$RingerButtonHelper",
-            classLoader
-        ).apply {
-            afterHookMethod(
-                "updateState"
-            ){
-                val mIcon = this.getObjectFieldAs<View>("mIcon")
-                val mStandardView = this.getObjectFieldAs<View>("mStandardView")
-                val mExpanded = this.getBooleanField("mExpanded")
-                if (mExpanded){
-                    mIcon.visibility = View.VISIBLE
-                    mStandardView.visibility = View.VISIBLE
-                }else{
-                    mIcon.visibility = View.GONE
-                    mStandardView.visibility = View.GONE
-
-                }
-
-            }
-            afterHookMethod(
-                "onExpanded",
-                Boolean::class.java
-            ){
-                val z1 = it.args[0] as Boolean
-                val mExpanded = this.getBooleanField("mExpanded")
-
-                this.getObjectFieldAs<View>(
-                    "mStandardView"
-                ).visibility = if (mExpanded != z1){
-                    View.GONE
-                }else{
-                    View.VISIBLE
-                }
-
-            }
-        }
-
-        findClass(
-            "com.android.systemui.miui.volume.TimerItem",
-            classLoader
-        ).afterHookMethod(
-            "updateExpanded",
-            Boolean::class.java
-        ){
-            this.getObjectFieldAs<View>("mCountDownProgressBar").visibility = View.GONE
-        }
-
-
-    }
-
-
 
 }

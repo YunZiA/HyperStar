@@ -17,7 +17,7 @@ fun NavController.backParentPager(parentRoute: String){
 fun NavController.nav(
     route: String
 ){
-    val currentRoute = this.currentDestination?.route
+    val currentRoute = this.currentDestination?.route ?: return
     if (currentRoute == route){
         Log.d("NavHostController", "nav repeat: $currentRoute")
         return

@@ -1,20 +1,11 @@
-package com.yunzia.hyperstar.hook.app.plugin.os1
+package com.yunzia.hyperstar.hook.app.plugin
 
-import android.content.Context
 import android.content.res.Configuration
-import android.view.View
-import android.view.ViewGroup
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.base.getDimensionPixelSize
-import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import com.yunzia.hyperstar.utils.XSPUtils
-import yunzia.utils.DensityUtil.Companion.dpToPx
+import yunzia.utils.DensityUtil
 
-
-class VolumeView: Hooker() {
-
-    val isPressExpandVolume = XSPUtils.getBoolean("is_press_expand_volume",false)
+class VolumeBarLayoutParams: Hooker() {
 
     val VolumeOffsetTopCollapsedP = XSPUtils.getFloat("volume_offset_top_collapsed_p",-1f)
     val VolumeOffsetTopCollapsedL = XSPUtils.getFloat("volume_offset_top_collapsed_l",-1f)
@@ -43,10 +34,10 @@ class VolumeView: Hooker() {
         ) {
             if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 if (ShadowHeightNoFooterP == -1f) return@replaceDimen null
-                dpToPx(displayMetrics,ShadowHeightNoFooterP)
+                DensityUtil.Companion.dpToPx(displayMetrics, ShadowHeightNoFooterP)
             } else {
                 if (ShadowHeightNoFooterL == -1f) return@replaceDimen null
-                dpToPx(displayMetrics,ShadowHeightNoFooterL)
+                DensityUtil.Companion.dpToPx(displayMetrics, ShadowHeightNoFooterL)
             }
         }
         replaceDimen(
@@ -54,10 +45,10 @@ class VolumeView: Hooker() {
         ) {
             if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 if (ShadowHeightP == -1f) return@replaceDimen null
-                dpToPx(displayMetrics,ShadowHeightP)
+                DensityUtil.Companion.dpToPx(displayMetrics, ShadowHeightP)
             } else {
                 if (ShadowHeightL == -1f) return@replaceDimen null
-                dpToPx(displayMetrics,ShadowHeightL)
+                DensityUtil.Companion.dpToPx(displayMetrics, ShadowHeightL)
             }
         }
 
@@ -66,10 +57,10 @@ class VolumeView: Hooker() {
         ){
             if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 if (VolumeOffsetTopCollapsedP == -1f) return@replaceDimen null
-                dpToPx(displayMetrics,VolumeOffsetTopCollapsedP)
+                DensityUtil.Companion.dpToPx(displayMetrics, VolumeOffsetTopCollapsedP)
             } else {
                 if (VolumeOffsetTopCollapsedL == -1f) return@replaceDimen null
-                dpToPx(displayMetrics,VolumeOffsetTopCollapsedL)
+                DensityUtil.Companion.dpToPx(displayMetrics, VolumeOffsetTopCollapsedL)
             }
         }
 
@@ -79,10 +70,10 @@ class VolumeView: Hooker() {
         ){
             if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 if (ShadowMarginTopP == -1f) return@replaceDimen null
-                dpToPx(displayMetrics,ShadowMarginTopP)
+                DensityUtil.Companion.dpToPx(displayMetrics, ShadowMarginTopP)
             } else {
                 if (ShadowMarginTopL == -1f) return@replaceDimen null
-                dpToPx(displayMetrics,ShadowMarginTopL)
+                DensityUtil.Companion.dpToPx(displayMetrics, ShadowMarginTopL)
             }
         }
 
@@ -92,15 +83,12 @@ class VolumeView: Hooker() {
         ){
             if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 if (VolumeHeightCollapsedP == -1f) return@replaceDimen null
-                dpToPx(displayMetrics,VolumeHeightCollapsedP)
+                DensityUtil.Companion.dpToPx(displayMetrics, VolumeHeightCollapsedP)
             } else {
                 if (VolumeHeightCollapsedL == -1f) return@replaceDimen null
-                dpToPx(displayMetrics,VolumeHeightCollapsedL)
+                DensityUtil.Companion.dpToPx(displayMetrics, VolumeHeightCollapsedL)
             }
         }
-
-
-
 
     }
 

@@ -10,6 +10,7 @@ import com.yunzia.hyperstar.hook.app.plugin.QSMediaDefaultApp
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaNoPlayTitle
 import com.yunzia.hyperstar.hook.app.plugin.QSMiplayDetailVolumeBar
 import com.yunzia.hyperstar.hook.app.plugin.QSToggleSliderRadius
+import com.yunzia.hyperstar.hook.app.plugin.QSVolumeMute
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurWidgetManager
 import com.yunzia.hyperstar.hook.app.plugin.os2.DeviceCenterRow
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSControlCenterColor
@@ -103,6 +104,7 @@ class PluginHookForOS2 : InitHooker() {
         initSecHooker(QSListView())
         initSecHooker(VolumeOrQSBrightnessValue())
         initSecHooker(QSCardTileList())
+        initSecHooker(QSVolumeMute())
         initSecHooker(QSCardTile())
         initSecHooker(QSToggleSliderRadius())
         initSecHooker(QSHeaderMessage())

@@ -10,6 +10,7 @@ import com.yunzia.hyperstar.hook.app.plugin.QSMediaDefaultApp
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaNoPlayTitle
 import com.yunzia.hyperstar.hook.app.plugin.QSMiplayDetailVolumeBar
 import com.yunzia.hyperstar.hook.app.plugin.QSToggleSliderRadius
+import com.yunzia.hyperstar.hook.app.plugin.QSVolumeMute
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurWidgetManager
 import com.yunzia.hyperstar.hook.app.plugin.os1.DeviceCenterRow
 import com.yunzia.hyperstar.hook.app.plugin.os1.PadVolume
@@ -144,6 +145,7 @@ class PluginHookForOS1() : InitHooker() {
         initSecHooker(VolumeOrQSBrightnessValue())
         initSecHooker(QSCardTileList())
         initSecHooker(QSCardTile())
+        initSecHooker(QSVolumeMute())
         initSecHooker(QSToggleSliderRadius())
         initSecHooker(QSHeaderMessage())
         initSecHooker(QSHeaderView())

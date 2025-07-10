@@ -159,7 +159,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
                         val topText = root.findViewByIdName("top_text") as TextView
                         topText.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
                         val mLayoutParams = (topText.layoutParams as FrameLayout.LayoutParams).apply {
-                            width = dpToPx(root.resources,40f).toInt()
+                            width = dpToPx(root.resources,50f).toInt()
                         }
                         topText.layoutParams = mLayoutParams
                         starLog.log("toggle_slider_item_view ${topText.layoutParams}")
@@ -311,10 +311,15 @@ class VolumeOrQSBrightnessValue : Hooker() {
                 }
                 //Color.WHITE Color.parseColor("#959595")
                 topValue.setTextColor(Color.WHITE)
-                val inMirror =  this.getObjectFieldAs<Boolean>("inMirror")
+                val inMirror = this.getObjectFieldAs<Boolean>("inMirror")
                 if (inMirror){
-                    val mirrorBlendBackground = this.getObjectFieldAs<View>("mirrorBlendBackground")
-                    miBlurCompat.chooseBackgroundBlurContainerCompat(topValue,mirrorBlendBackground)
+                    miBlurCompat.chooseBackgroundBlurContainerCompat(
+                        topValue,
+                        with(this) {
+                            getObjectFieldOrNullAs<View>("mirrorBlendBackground")
+                                ?: getObjectFieldOrNullAs<View>("mirrorBlurProvider")
+                        }
+                    )
                 }else{
                     miBlurCompat.chooseBackgroundBlurContainerCompat(topValue,null)
                 }

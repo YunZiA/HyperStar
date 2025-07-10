@@ -151,6 +151,10 @@ abstract class HookerHelper {
     fun <T> Any?.getObjectFieldAs(fieldName: String): T {
         return this.getObjectField(fieldName) as T
     }
+    fun <T> Any?.getObjectFieldOrNullAs(fieldName: String) = runCatchingOrNull {
+        this.getObjectField(fieldName) as T
+    }
+
 
     fun Class<*>?.getStaticObjectField(fieldName: String): Any? =  XposedHelpers.getStaticObjectField(this, fieldName)
 
@@ -428,6 +432,13 @@ abstract class HookerHelper {
     }
 
 
+}
+
+inline fun <T, R> T.runCatchingOrNull(func: T.() -> R?) = try {
+    func()
+} catch (e: Throwable) {
+    starLog.logD(e.toString())
+    null
 }
 
 

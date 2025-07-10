@@ -428,7 +428,7 @@ class VolumeView: Hooker() {
                                 }
                             }
                         }
-                        MotionEvent.ACTION_UP->{
+                        MotionEvent.ACTION_UP -> {
                             mVolumeView.stopScaleAnimation()
                             longPressJob?.cancel()
 

@@ -314,5 +314,6 @@
     <string name="notification_expansion_overlay_color_on_low_end_devices">低端机通知中心通知展开叠加色</string>
     <string name="enable_title_follow_animation">启用标题跟随动画</string>
     <string name="enable_clipboard_write_on_screenshot">启用截图写入剪贴板</string>
+    <string name="status_shadow_height_when_button_hidden">按钮隐藏状态的阴影长度</string>
 
 </resources>

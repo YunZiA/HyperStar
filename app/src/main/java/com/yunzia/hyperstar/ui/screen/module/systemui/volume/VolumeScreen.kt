@@ -89,6 +89,9 @@ fun VolumeScreen(
                 stringResource(R.string.title_volume_shadow_height_collapsed),"volume_shadow_height_collapsed",300f
             )
             OrientationDimBarFolder(
+                stringResource(R.string.status_shadow_height_when_button_hidden),"volume_shadow_height_collapsed_no_footer",300f
+            )
+            OrientationDimBarFolder(
                 stringResource(R.string.title_volume_shadow_margin_top_collapsed),"volume_shadow_margin_top_collapsed",450f
             )
 

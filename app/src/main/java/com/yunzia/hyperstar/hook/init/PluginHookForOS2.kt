@@ -13,7 +13,9 @@ import com.yunzia.hyperstar.hook.app.plugin.QSMiplayDetailVolumeBar
 import com.yunzia.hyperstar.hook.app.plugin.QSToggleSliderRadius
 import com.yunzia.hyperstar.hook.app.plugin.QSVolumeMute
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurWidgetManager
+import com.yunzia.hyperstar.hook.app.plugin.VolumeBarLayoutParams
 import com.yunzia.hyperstar.hook.app.plugin.os2.DeviceCenterRow
+import com.yunzia.hyperstar.hook.app.plugin.os2.LongPressVolumeBarToExpand
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSControlCenterColor
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSEditButton
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSHeaderMessage
@@ -26,7 +28,6 @@ import com.yunzia.hyperstar.hook.app.plugin.os2.QSMiplayAppIconRadius
 import com.yunzia.hyperstar.hook.app.plugin.os2.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeOrQSBrightnessValue
-import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeView
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenuHook
 import com.yunzia.hyperstar.hook.base.InitHooker
 import com.yunzia.hyperstar.hook.base.findClass
@@ -113,7 +114,8 @@ class PluginHookForOS2 : InitHooker() {
         initSecHooker(QSControlCenterList())
         initSecHooker(VolumeColumnProgressRadius())
         initSecHooker(powerMenuHook)
-        initSecHooker(VolumeView())
+        initSecHooker(VolumeBarLayoutParams())
+        initSecHooker(LongPressVolumeBarToExpand())
         initSecHooker(HideVolumeCollpasedFootButton())
         initSecHooker(deviceCenterRow)
         initSecHooker(QSMiplayDetailVolumeBar())

@@ -28,7 +28,7 @@ import com.yunzia.hyperstar.hook.app.plugin.os1.QSMiplayAppIconRadius
 import com.yunzia.hyperstar.hook.app.plugin.os1.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeOrQSBrightnessValue
-import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeView
+import com.yunzia.hyperstar.hook.app.plugin.VolumeBarLayoutParams
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenuHook
 import com.yunzia.hyperstar.hook.base.InitHooker
 import com.yunzia.hyperstar.hook.base.MethodHook
@@ -156,7 +156,7 @@ class PluginHookForOS1() : InitHooker() {
         initSecHooker(QSControlCenterList())
         initSecHooker(VolumeColumnProgressRadius())
         initSecHooker(powerMenuHook)
-        initSecHooker(VolumeView())
+        initSecHooker(VolumeBarLayoutParams())
         initSecHooker(HideVolumeCollpasedFootButton())
         initSecHooker(deviceCenterRow)
         initSecHooker(QSMiplayDetailVolumeBar())

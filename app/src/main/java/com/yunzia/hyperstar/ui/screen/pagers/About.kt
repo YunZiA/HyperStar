@@ -1,8 +1,12 @@
 package com.yunzia.hyperstar.ui.screen.pagers
 
 import android.annotation.SuppressLint
+import android.graphics.Typeface
 import android.util.Log
+import android.util.TypedValue
 import android.view.HapticFeedbackConstants
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -50,7 +54,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.integerArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -89,22 +92,47 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
+import yunzia.utils.MiBlurUtilsKt.addMiBackgroundBlendColor
+import yunzia.utils.MiBlurUtilsKt.clearMiBackgroundBlendColor
+import yunzia.utils.MiBlurUtilsKt.setMiBackgroundBlurMode
+import yunzia.utils.MiBlurUtilsKt.setMiBackgroundBlurRadius
+import yunzia.utils.MiBlurUtilsKt.setMiViewBlurMode
+import yunzia.utils.MiuiBlurUtils
+import yunzia.utils.MiuiBlurUtils.setPassWindowBlurEnabled
+import yunzia.utils.MiuiBlurUtils.setViewBlurMode
 
 
 private fun getColorList(
     colorMode: Int
-):  List<Color>{
+):  List<Int>{
     return if (colorMode == 2) {
         listOf(
-            Color("#D0A279ED".toColorInt()),
-            Color("#D0E3BCB1".toColorInt())
+            "#e6a1a1a1".toColorInt(),
+            "#4de6e6e6".toColorInt(),
+            "#1af500".toColorInt()
         )
     } else {
         listOf(
-            Color("#D03017A9".toColorInt()),
-            Color("#D0733D24".toColorInt())
+            "#cc4a4a4a".toColorInt(),
+            "#4f4f4f".toColorInt(),
+            "#1af200".toColorInt()
         )
     }
+}
+
+private fun getModeList(
+    colorMode: Int
+):  List<Int>{
+    return listOf(
+        if (colorMode == 2) {
+            18
+        } else {
+            19
+        },
+        100,
+        106
+    )
+
 }
 
 fun extractOnlyNumbers(input: String): String {
@@ -235,7 +263,7 @@ fun ThirdPage(
             if(activity.newAppVersion.value == "") return@LaunchedEffect
             val currentVersion = extractOnlyNumbers(currentVer)
             val newVersion = extractOnlyNumbers(activity.newAppVersion.value)
-            Log.d("ggc", "ThirdPage: currentVersion = $currentVersion newVersion = $newVersion",)
+            Log.d("ggc", "ThirdPage: currentVersion = $currentVersion newVersion = $newVersion")
 
             // 比较版本号
             isNeedUpdate.value = currentVersion < newVersion
@@ -282,69 +310,78 @@ fun ThirdPage(
                 }
         }
 
+        val density = LocalDensity.current.density
 
+        AndroidView(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(389.dp), // Occupy the max size in the Compose UI tree
+            factory = { context ->
+                BgEffectView(context, colorsMode)
+            }
+        ) {
+            it.updateMode(colorsMode)
+            it.alpha = bgAlpha.floatValue
+
+        }
+
+        Column(
+            modifier = Modifier
+                .padding(top = paddingTop.value)
+                .fillMaxWidth()
+                .height(420.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            val mix = remember(colorsMode) {  derivedStateOf { getColorList(colorsMode) } }
+            val mixMode = remember(colorsMode) {  derivedStateOf { getModeList(colorsMode) } }
+            AndroidView(
+                modifier = Modifier
+                    .alpha(mainAlpha.floatValue * bgAlpha.floatValue)
+                    .scale(mainScale.floatValue), // Occupy the max size in the Compose UI tree
+                factory = { context ->
+                    TextView(context).apply {
+                        text = "HyperStar " + currentVer.substring(0,3)
+                        setTextSize(TypedValue.COMPLEX_UNIT_SP,42f)
+                        typeface = Typeface.create(null,570,false)
+                    }
+
+                }
+            ) { view ->
+                with(mix.value) {
+                    view.apply {
+                        clearMiBackgroundBlendColor()
+                        setMiBackgroundBlurMode(1)
+                        setMiViewBlurMode(3)
+                        setMiBackgroundBlurRadius((density * 50f + 0.5f).toInt())
+                    }
+                    forEachIndexed { index, color ->
+                        view.addMiBackgroundBlendColor(color, mixMode.value[index])
+                    }
+                }
+
+            }
+
+            Text(
+                text = stringResource(R.string.xposed_desc),
+                fontSize = 14.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .scale(secScale.floatValue)
+                    .alpha(secAlpha.floatValue)
+                    .padding(top = 20.dp),
+                fontWeight = FontWeight.Medium,
+                color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
+                textAlign = TextAlign.Center
+            )
+        }
 
         Box(
             Modifier
                 .blur(hazeState)
                 .clip(RoundedCornerShape(0.dp))
         ) {
-            AndroidView(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(430.dp), // Occupy the max size in the Compose UI tree
-                factory = { context ->
-                    BgEffectView(context, colorsMode)
 
-                }
-            ) {
-                it.updateMode(colorsMode)
-                it.alpha = bgAlpha.floatValue
-
-            }
-
-
-            Column(
-                modifier = Modifier
-                    .padding(top = paddingTop.value)
-                    .fillMaxWidth()
-                    .height(420.dp)
-                    .blur(
-                        blurRadius.value,
-                        edgeTreatment = BlurredEdgeTreatment.Unbounded
-                    ),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-
-
-                Text(
-                    text = "HyperStar " + currentVer.substring(0,3),
-                    fontSize = 39.sp,
-                    fontWeight = FontWeight(560),
-                    modifier = Modifier
-                        .alpha(mainAlpha.floatValue * bgAlpha.floatValue)
-                        .scale(mainScale.floatValue),
-                    style = TextStyle(
-                        brush = Brush.horizontalGradient(
-                            colors = getColorList(colorMode = colorsMode)
-                        )
-                    )
-                )
-
-                Text(
-                    text = stringResource(R.string.xposed_desc),
-                    fontSize = 14.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .scale(secScale.floatValue)
-                        .alpha(secAlpha.floatValue)
-                        .padding(top = 20.dp),
-                    fontWeight = FontWeight.Medium,
-                    color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
-                    textAlign = TextAlign.Center
-                )
-            }
 
             LazyColumn(
                 modifier = Modifier
@@ -456,7 +493,11 @@ fun ThirdPage(
 
             }
         }
+
+
     }
+
+
 
 
 }

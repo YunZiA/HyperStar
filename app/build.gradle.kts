@@ -173,6 +173,7 @@ android {
 }
 dependencies {
     implementation(project(":annotations"))
+    implementation(project(":liquidglass"))
     ksp(libs.androidx.room.compiler)
     ksp(project(":processor"))
     implementation(libs.kotlinpoet) // 用于生成代码

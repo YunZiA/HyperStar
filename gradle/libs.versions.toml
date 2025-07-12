@@ -1,5 +1,5 @@
 [versions]
-accompanistDrawablepainter = "0.37.0"
+accompanistDrawablepainter = "0.37.3"
 accompanistSystemuicontroller = "0.36.0"
 api = "82"
 agp = "8.9.3"
@@ -31,6 +31,9 @@ kotlinx-serialization-json = "1.8.0"
 roomCompiler = "2.7.2"
 jetbrainsKotlinJvm = "2.1.20"
 symbolProcessingApi = "2.1.21-2.0.1"
+appcompat = "1.6.1"
+material = "1.10.0"
+compose = "1.9.0-beta02"
 
 [libraries]
 accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanistDrawablepainter" }
@@ -69,6 +72,8 @@ androidx-cardview = { group = "androidx.cardview", name = "cardview", version.re
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "symbolProcessingApi" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -76,4 +81,5 @@ jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 

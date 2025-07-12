@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/annotations" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/hhook" />
+            <option value="$PROJECT_DIR$/liquidglass" />
             <option value="$PROJECT_DIR$/processor" />
           </set>
         </option>

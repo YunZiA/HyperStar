@@ -50,6 +50,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.kyant.liquidglass.GlassMaterial
+import com.kyant.liquidglass.InnerRefraction
+import com.kyant.liquidglass.LiquidGlassStyle
+import com.kyant.liquidglass.LocalLiquidGlassProviderState
+import com.kyant.liquidglass.RefractionValue
+import com.kyant.liquidglass.liquidGlass
+import com.kyant.liquidglass.liquidGlassProvider
 import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.ui.component.XScaffold
 import com.yunzia.hyperstar.ui.component.nav.PagersModel
@@ -101,6 +108,7 @@ import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.VerticalDivider
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
 @SuppressLint("RestrictedApi")
@@ -131,7 +139,10 @@ fun App(){
 
     val context = LocalContext.current
     val activity = LocalActivity.current as BaseActivity
-    XScaffold {
+    val providerState = LocalLiquidGlassProviderState.current
+    XScaffold(
+        modifier = Modifier.liquidGlassProvider(providerState)
+    ) {
         val isUpdate = remember { mutableStateOf(false) }
 
         if (!isModuleActive()){
@@ -185,7 +196,7 @@ fun App(){
             enter = fadeIn(animationSpec = tween(300, easing = easing)) + scaleIn(animationSpec = tween(300, easing = easing),initialScale = 0.9f),
             exit = fadeOut()+scaleOut()
         ) {
-            BoxWithConstraints {
+            BoxWithConstraints{
                 //FirstDialog(navController)
                 Log.d("ggc", "App:  $maxWidth")
 
@@ -242,16 +253,6 @@ fun App(){
                     }
                 }
 
-                AnimatedVisibility(
-                    activity.showFPSMonitor.value
-                ) {
-                    FPSMonitor(
-                        modifier = Modifier
-                            .statusBarsPadding()
-                            .padding(horizontal = 28.dp)
-                    )
-
-                }
             }
 
         }
@@ -268,6 +269,28 @@ fun App(){
             WelcomeScreen(welcome,welcomeState)
         }
 
+
+    }
+    AnimatedVisibility(
+        activity.showFPSMonitor.value
+    ) {
+        FPSMonitor(
+            modifier = Modifier
+                .liquidGlass(
+                    LiquidGlassStyle(
+                        SmoothRoundedCornerShape(20.dp),
+                        innerRefraction = InnerRefraction(
+                            height = RefractionValue(8.dp),
+                            amount = RefractionValue.Full
+                        ),
+                        material = GlassMaterial(
+                            blurRadius = 0.dp,
+                            whitePoint = 0.1f,
+                            chromaMultiplier = 1.5f
+                        )
+                    )
+                )
+        )
 
     }
 

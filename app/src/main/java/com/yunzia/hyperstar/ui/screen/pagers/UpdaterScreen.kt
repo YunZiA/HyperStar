@@ -229,7 +229,7 @@ fun UpdaterScreen(
                 .blur(hazeState),
             beyondViewportPageCount = PagerDefaults.BeyondViewportPageCount+1,
             state = pagerState,
-            userScrollEnabled = uiState.value.isScrollEnabled,
+            userScrollEnabled = isNeedUpdate.value && uiState.value.isScrollEnabled,
         ) { page ->
 
             when (page) {

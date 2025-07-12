@@ -77,6 +77,7 @@ If you would like to contribute translations to the HyperStar project, please fe
 - [「XposedBridge」 by rovo89](https://github.com/rovo89/XposedBridge)
 - [「miuix-kotlin-multiplatform」 by YuKongA](https://github.com/miuix-kotlin-multiplatform/miuix)
 - [「Haze」 by Chris Banes](https://github.com/chrisbanes/haze)
+- [「AndroidLiquidGlass」 by Kyant](https://github.com/Kyant0/AndroidLiquidGlass)
 
 ##### GNU Affero General Public License v3
 

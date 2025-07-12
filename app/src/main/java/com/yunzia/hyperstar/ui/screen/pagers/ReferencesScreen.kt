@@ -64,6 +64,13 @@ fun ReferencesScreen(
                 navController = navController,
                 url = "https://github.com/square/okhttp"
             )
+
+            SuperIntentArrow(
+                title = "AndroidLiquidGlass",
+                summary = "Kyant",
+                navController = navController,
+                url = "https://github.com/Kyant0/AndroidLiquidGlass"
+            )
         }
         classes(title = "AGPL-3.0") {
 

@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -45,8 +46,8 @@ class MainActivity : BaseActivity() {
     var isRecreate: Boolean = false
     var isGranted = mutableStateOf(false)
 
-    val appInfo =  mutableMapOf<String, AppInfo?>()
-    val appNo = mutableMapOf<String, String?>()
+    val appInfo = mutableStateMapOf<String, AppInfo?>()
+    val appNo = mutableStateMapOf<String, String?>()
 
     val themeManager: MutableState<AppInfo?> = mutableStateOf(null)
     val barrageManager: MutableState<AppInfo?> = mutableStateOf(null)

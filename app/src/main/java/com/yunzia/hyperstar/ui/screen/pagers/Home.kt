@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.ui.screen.pagers
 
 import android.content.Intent
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
@@ -34,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.wear.compose.material.Icon
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
@@ -52,6 +54,7 @@ import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
 import com.yunzia.hyperstar.ui.component.topbar.TopBar
 import com.yunzia.hyperstar.ui.screen.pagers.dialog.checkApplication
+import com.yunzia.hyperstar.utils.AppInfo
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.Helper.isRoot
@@ -128,7 +131,9 @@ fun Home(
 
 
         LazyColumn(
-            modifier = Modifier.height(getWindowSize().height.dp).blur(hazeState)
+            modifier = Modifier
+                .height(getWindowSize().height.dp)
+                .blur(hazeState)
                 .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
             contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = contentPadding.calculateBottomPadding()+14.dp),
         ) {
@@ -153,7 +158,8 @@ fun Home(
                                         val result =
                                             Helper.rootShell("am start -c 'org.lsposed.manager.LAUNCH_MANAGER' 'com.android.shell/.BugreportWarningActivity'")
                                         if (result != "0") {
-                                            Toast.makeText(activity, result, Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(activity, result, Toast.LENGTH_SHORT)
+                                                .show()
                                         }
                                     }
                                 },
@@ -232,78 +238,48 @@ fun Home(
             firstClasses(
                 title = R.string.basics
             ){
-                with(activity.appInfo["com.android.systemui"]){
-                    AnimatedVisibility(
-                        visible = this != null,
-                        enter = expandVertically()
-                    ) {
-                        SuperNavHostArrow(
-                            leftIcon = rememberDrawablePainter(this@with!!.appIcon),
-                            title = stringResource(R.string.systemui),
-                            navController = navController,
-                            route = PagerList.SYSTEMUI
+                AppArrow(
+                    appInfo = activity.appInfo,
+                    title = stringResource(R.string.systemui),
+                    packageName = "com.android.systemui",
+                    navController = navController,
+                    route = PagerList.SYSTEMUI
+                )
 
-                        )
-                    }
+                AppArrow(
+                    visible = { isOS2Settings() },
+                    appInfo = activity.appInfo,
+                    title = stringResource(R.string.hyper_home),
+                    packageName = "com.miui.home",
+                    navController = navController,
+                    route = PagerList.HOME
+                )
 
-                }
-                if (isOS2Settings()){
-                    SuperNavHostArrow(
-                        leftIcon = rememberDrawablePainter(appIcon("com.miui.home").value),
-                        title = stringResource(R.string.hyper_home),
-                        navController = navController,
-                        route = PagerList.HOME
+                AppArrow(
+                    visible = { it.versionCode >= 7180 },
+                    appInfo = activity.appInfo,
+                    title = stringResource(R.string.thememanager),
+                    packageName = "com.android.thememanager",
+                    navController = navController,
+                    route = PagerList.THEMEMANAGER
+                )
 
-                    )
+                AppArrow(
+                    visible = { it.versionName!!.startsWith("3") },
+                    appInfo = activity.appInfo,
+                    packageName = "com.xiaomi.barrage",
+                    navController = navController,
+                    route = PagerList.BARRAGE
+                )
 
-                }
+                AppArrow(
+                    visible = { isOS2Settings() },
+                    appInfo = activity.appInfo,
+                    packageName = "com.miui.screenshot",
+                    navController = navController,
+                    route = PagerList.SCREENSHOT
+                )
 
-
-                with(activity.appInfo["com.android.thememanager"]){
-                    AnimatedVisibility(
-                        visible = this != null && this.versionCode >= 7180,
-                        enter = expandVertically()
-                    ) {
-                        SuperNavHostArrow(
-                            leftIcon = rememberDrawablePainter(this@with!!.appIcon),
-                            title = stringResource(R.string.thememanager),
-                            navController = navController,
-                            route = PagerList.THEMEMANAGER
-
-                        )
-                    }
-
-                }
-                with(activity.appInfo["com.xiaomi.barrage"]){
-                    AnimatedVisibility(
-                        visible = this != null && this.versionName!!.startsWith("3"),
-                        enter = expandVertically()
-                    ) {
-                        SuperNavHostArrow(
-                            leftIcon = rememberDrawablePainter(this@with!!.appIcon),
-                            title = stringResource(R.string.barrage),
-                            navController = navController,
-                            route = PagerList.BARRAGE
-
-                        )
-                    }
-
-                }
-                with(activity.appInfo["com.miui.screenshot"]){
-                    AnimatedVisibility(
-                        visible = isOS2Settings() && this != null,
-                        enter = expandVertically()
-                    ) {
-                        SuperNavHostArrow(
-                            leftIcon = rememberDrawablePainter(this@with!!.appIcon),
-                            title = this@with.appName,
-                            navController = navController,
-                            route = PagerList.SCREENSHOT
-
-                        )
-                    }
-
-                }
             }
             classes (
                 title = R.string.other_settings
@@ -324,7 +300,8 @@ fun Home(
                 item {
                     val show = remember { mutableStateOf(false) }
                     Card(
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
                             .padding(top = 12.dp)
                             .bounceAnim(cornerSize = CardDefaults.CornerRadius)
                             .clickable {
@@ -333,7 +310,8 @@ fun Home(
                     ) {
                         Text(
                             text = "列表中没有您想要找的应用？",
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
                                 .padding(vertical = 16.dp)
                                 .padding(start = 24.dp, end = 8.dp),
                             fontWeight  = FontWeight.Bold,
@@ -366,7 +344,9 @@ fun Home(
                             }
                         )
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 16.dp)
                         ) {
                             activity.appNo.forEach { (s, throwable) ->
                                 classes(s) {
@@ -394,6 +374,35 @@ fun Home(
 
 
 
+}
+
+
+@Composable
+fun AppArrow(
+    visible: (AppInfo)-> Boolean = { true },
+    appInfo: MutableMap<String, AppInfo?>,
+    packageName: String,
+    title: String? = null,
+    navController: NavHostController,
+    route: String
+){
+    with(appInfo[packageName]){
+        Log.d("ggc", "AppArrow: ${this@with != null} &&")
+        AnimatedVisibility(
+            visible = this != null && visible(this@with),
+            enter = expandVertically()
+        ) {
+            Log.d("ggc", "AppArrow: ${this@with != null && visible(this@with)}")
+            SuperNavHostArrow(
+                leftIcon = rememberDrawablePainter(this@with!!.appIcon),
+                title = title?:this@with.appName,
+                navController = navController,
+                route = route
+
+            )
+        }
+
+    }
 }
 
 

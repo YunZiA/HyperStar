@@ -268,29 +268,8 @@ fun App(){
 
 
     }
-    AnimatedVisibility(
-        activity.showFPSMonitor.value,
 
-    ) {
-        FPSMonitor(
-            modifier = Modifier
-                .liquidGlass(
-                    LiquidGlassStyle(
-                        SmoothRoundedCornerShape(20.dp),
-                        innerRefraction = InnerRefraction(
-                            height = RefractionValue(8.dp),
-                            amount = RefractionValue.Full
-                        ),
-                        material = GlassMaterial(
-                            blurRadius = 0.dp,
-                            whitePoint = 0.1f,
-                            chromaMultiplier = 1.5f
-                        )
-                    )
-                )
-        )
-
-    }
+    FPSMonitor(activity.showFPSMonitor.value)
 
 }
 

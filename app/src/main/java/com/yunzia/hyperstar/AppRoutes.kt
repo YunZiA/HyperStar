@@ -6,6 +6,8 @@ object PagerList {
     //主页
     const val MAIN = "root"
 
+    const val SYSTEMUI = "${MAIN}/systemui"
+
     const val HOME = "${MAIN}/home"
 
     const val SCREENSHOT = "${MAIN}/screenshot"
@@ -13,7 +15,6 @@ object PagerList {
     const val BARRAGE = "${MAIN}/barrage"
 
     const val UPDATER = "${MAIN}/updater"
-
 
     const val CURRENTLOG = "${UPDATER}/currentlog"
 
@@ -38,22 +39,11 @@ object PagerList {
     const val NOTDEVELOP = "${MAIN}/notdeveloper"
 }
 
-object SystemUIList {
-    //控制中心
-    const val CONTROL_CENTER = "${PagerList.MAIN}/control_center"
-
-    //音量条
-    const val VOLUME_DIALOG = "${PagerList.MAIN}/volumeDialog"
-    //系统界面更多
-    const val MORE = "${PagerList.MAIN}/systemUI_more"
-}
-
-
 object SystemUIMoreList {
 
-    const val POWERMENU = "${SystemUIList.MORE}/powermenu"
+    const val POWERMENU = "${PagerList.SYSTEMUI}/powermenu"
 
-    const val NOTIFICATIONOFIM = "${SystemUIList.MORE}/notificationofim"
+    const val NOTIFICATIONOFIM = "${PagerList.SYSTEMUI}/notificationofim"
 
     const val NOTIFICATION_APP_DETAIL = "$NOTIFICATIONOFIM/notificationoappdetail"
 }
@@ -65,20 +55,18 @@ object FunList {
 }
 
 object ControlCenterList{
-    //控制中心
-    const val CONTROL_CENTER = "${SystemUIList.CONTROL_CENTER}/controlCenter"
     //颜色编辑
-    const val COLOR_EDIT = "${SystemUIList.CONTROL_CENTER}/colorEdit"
+    const val COLOR_EDIT = "${PagerList.SYSTEMUI}/colorEdit"
     //颜色编辑
-    const val LAYOUT_ARRANGEMENT = "${SystemUIList.CONTROL_CENTER}/layoutArrangement"
+    const val LAYOUT_ARRANGEMENT = "${PagerList.SYSTEMUI}/layoutArrangement"
     //妙播
-    const val MEDIA = "${SystemUIList.CONTROL_CENTER}/media"
+    const val MEDIA = "${PagerList.SYSTEMUI}/media"
     //妙播应用选择
     const val MEDIA_APP = "${MEDIA}/mediaApp"
     //卡片磁贴列表
-    const val CARD_LIST = "${SystemUIList.CONTROL_CENTER}/cardList"
+    const val CARD_LIST = "${PagerList.SYSTEMUI}/cardList"
     //普通磁贴布局
-    const val TILE_LAYOUT = "${SystemUIList.CONTROL_CENTER}/tileLayout"
+    const val TILE_LAYOUT = "${PagerList.SYSTEMUI}/tileLayout"
 
 }
 

@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -65,9 +64,9 @@ import com.yunzia.hyperstar.ui.screen.module.NotDeveloperScreen
 import com.yunzia.hyperstar.ui.screen.module.barrage.BarrageScreen
 import com.yunzia.hyperstar.ui.screen.module.home.HomeScreen
 import com.yunzia.hyperstar.ui.screen.module.screenshot.ScreenshotScreen
+import com.yunzia.hyperstar.ui.screen.module.systemui.SystemUIScreen
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.ControlCenterColorScreen
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.ControlCenterListScreen
-import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.ControlCenterScreen
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.card.QSCardColorScreen
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.card.QSCardListScreen
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.devicecenter.DeviceCenterColorScreen
@@ -76,12 +75,10 @@ import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.list.QsListV
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.media.MediaSettingsScreen
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.media.app.MediaAppSettingsPager
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.slider.ToggleSliderColorsScreen
-import com.yunzia.hyperstar.ui.screen.module.systemui.other.SystemUIOtherScreen
 import com.yunzia.hyperstar.ui.screen.module.systemui.other.notification.NotificationAppDetail
 import com.yunzia.hyperstar.ui.screen.module.systemui.other.notification.NotificationOfImScreen
 import com.yunzia.hyperstar.ui.screen.module.systemui.other.powermenu.PowerMenuStyleScreen
 import com.yunzia.hyperstar.ui.screen.module.systemui.other.powermenu.SelectFunScreen
-import com.yunzia.hyperstar.ui.screen.module.systemui.volume.VolumeScreen
 import com.yunzia.hyperstar.ui.screen.module.thememanager.ThemeManagerScreen
 import com.yunzia.hyperstar.ui.screen.pagers.CurrentVersionLogScreen
 import com.yunzia.hyperstar.ui.screen.pagers.DonationPage
@@ -272,7 +269,8 @@ fun App(){
 
     }
     AnimatedVisibility(
-        activity.showFPSMonitor.value
+        activity.showFPSMonitor.value,
+
     ) {
         FPSMonitor(
             modifier = Modifier
@@ -301,9 +299,6 @@ fun NavGraphBuilder.pagerContent(
     parentRoute: MutableState<String>
 
 ){
-
-    composable(SystemUIList.CONTROL_CENTER,) { ControlCenterScreen(navController,parentRoute) }
-
     composable(ControlCenterList.COLOR_EDIT) { ControlCenterColorScreen(navController,parentRoute) }
 
     composable(ControlCenterList.LAYOUT_ARRANGEMENT) { ControlCenterListScreen(navController,parentRoute) }
@@ -325,11 +320,14 @@ fun NavGraphBuilder.pagerContent(
     composable(CenterColorList.LIST_COLOR) { QSListColorScreen(navController,parentRoute) }
 
     composable(PagerList.GO_ROOT){ GoRootPager(navController,parentRoute) }
+
     composable(PagerList.NOTDEVELOP){ NotDeveloperScreen(navController,parentRoute) }
 
     composable(PagerList.LANGUAGE){ LanguagePager(navController,parentRoute) }
 
     composable(PagerList.TRANSLATOR) { TranslatorScreen(navController,parentRoute) }
+
+    composable(PagerList.SYSTEMUI) { SystemUIScreen(navController,parentRoute) }
 
     composable(PagerList.DONATION) { DonationPage(navController,parentRoute)  }
 
@@ -349,13 +347,7 @@ fun NavGraphBuilder.pagerContent(
 
     composable(PagerList.UPDATER) { UpdaterScreen(navController,parentRoute) }
 
-    composable(SystemUIList.VOLUME_DIALOG) { VolumeScreen(navController,parentRoute) }
-
-    composable(SystemUIList.MORE) { SystemUIOtherScreen(navController,parentRoute) }
-
     composable(SystemUIMoreList.POWERMENU){ PowerMenuStyleScreen(navController,parentRoute) }
-
-
 
     composable(SystemUIMoreList.NOTIFICATIONOFIM){
         NotificationOfImScreen(navController,parentRoute)

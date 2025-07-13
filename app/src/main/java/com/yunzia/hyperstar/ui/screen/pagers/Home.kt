@@ -4,6 +4,8 @@ import android.content.Intent
 import android.view.HapticFeedbackConstants
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -28,7 +30,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,7 +40,6 @@ import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.SystemUIList
 import com.yunzia.hyperstar.ui.component.Classes
 import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.component.classes
@@ -230,36 +230,23 @@ fun Home(
             }
 
             firstClasses(
-                title = R.string.systemui
+                title = R.string.basics
             ){
+                with(activity.appInfo["com.android.systemui"]){
+                    AnimatedVisibility(
+                        visible = this != null,
+                        enter = expandVertically()
+                    ) {
+                        SuperNavHostArrow(
+                            leftIcon = rememberDrawablePainter(this@with!!.appIcon),
+                            title = stringResource(R.string.systemui),
+                            navController = navController,
+                            route = PagerList.SYSTEMUI
 
-                SuperNavHostArrow(
-                    leftIcon = R.drawable.icon_controlcenter,
-                    title = stringResource(R.string.control_center),
-                    navController = navController,
-                    route = SystemUIList.CONTROL_CENTER
+                        )
+                    }
 
-                )
-                SuperNavHostArrow(
-                    leftIcon = R.drawable.ic_sound_settings,
-                    title = stringResource(R.string.sound_settings),
-                    navController = navController,
-                    route = SystemUIList.VOLUME_DIALOG
-
-                )
-                SuperNavHostArrow(
-                    leftIcon = R.drawable.ic_other_advanced_settings,
-                    title = stringResource(R.string.more),
-                    navController = navController,
-                    route = SystemUIList.MORE
-
-                )
-
-
-            }
-            classes (
-                title = R.string.other_settings
-            ){
+                }
                 if (isOS2Settings()){
                     SuperNavHostArrow(
                         leftIcon = rememberDrawablePainter(appIcon("com.miui.home").value),
@@ -272,10 +259,13 @@ fun Home(
                 }
 
 
-                activity.appInfo["com.android.thememanager"]?.let {
-                    if(it.versionCode >= 7180){
+                with(activity.appInfo["com.android.thememanager"]){
+                    AnimatedVisibility(
+                        visible = this != null && this.versionCode >= 7180,
+                        enter = expandVertically()
+                    ) {
                         SuperNavHostArrow(
-                            leftIcon = rememberDrawablePainter(it.appIcon),
+                            leftIcon = rememberDrawablePainter(this@with!!.appIcon),
                             title = stringResource(R.string.thememanager),
                             navController = navController,
                             route = PagerList.THEMEMANAGER
@@ -284,10 +274,13 @@ fun Home(
                     }
 
                 }
-                activity.appInfo["com.xiaomi.barrage"]?.let {
-                    if (it.versionName!!.startsWith("3")){
+                with(activity.appInfo["com.xiaomi.barrage"]){
+                    AnimatedVisibility(
+                        visible = this != null && this.versionName!!.startsWith("3"),
+                        enter = expandVertically()
+                    ) {
                         SuperNavHostArrow(
-                            leftIcon = rememberDrawablePainter(it.appIcon),
+                            leftIcon = rememberDrawablePainter(this@with!!.appIcon),
                             title = stringResource(R.string.barrage),
                             navController = navController,
                             route = PagerList.BARRAGE
@@ -296,17 +289,26 @@ fun Home(
                     }
 
                 }
-                if (isOS2Settings()){
-                    activity.appInfo["com.miui.screenshot"]?.let {
+                with(activity.appInfo["com.miui.screenshot"]){
+                    AnimatedVisibility(
+                        visible = isOS2Settings() && this != null,
+                        enter = expandVertically()
+                    ) {
                         SuperNavHostArrow(
-                            leftIcon = rememberDrawablePainter(it.appIcon),
-                            title = it.appName,
+                            leftIcon = rememberDrawablePainter(this@with!!.appIcon),
+                            title = this@with.appName,
                             navController = navController,
                             route = PagerList.SCREENSHOT
 
                         )
                     }
+
                 }
+            }
+            classes (
+                title = R.string.other_settings
+            ){
+
                 SuperNavHostArrow(
                     leftIcon = R.drawable.not_developer,
                     title = stringResource(R.string.not_developer),

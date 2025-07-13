@@ -130,11 +130,7 @@ class MainActivity : BaseActivity() {
         LaunchedEffect(Unit) {
             appInfo.putAll(
                 coroutineScope {
-                    listOf(
-                        "com.android.thememanager",
-                        "com.xiaomi.barrage",
-                        "com.miui.screenshot"
-                    ).associateWith { packageName ->
+                    this@MainActivity.resources.getStringArray(R.array.module_scope).associateWith { packageName ->
                         async {
                             try {
                                 val packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA)

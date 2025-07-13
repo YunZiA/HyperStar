@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.yunzia.hyperstar.ui.component.dialog.SuperNotificationUtil.Companion.SuperNotificationHost
+import com.yunzia.hyperstar.ui.component.dialog.SuperNotificationUtil.SuperNotificationHost
 import top.yukonga.miuix.kmp.basic.FabPosition
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -22,8 +22,8 @@ fun XScaffold(
     floatingPagerButton: @Composable () -> Unit = {},
     snackbarHost: @Composable () -> Unit = {},
     popupHost: @Composable () -> Unit = {
-        SuperNotificationHost()
         MiuixPopupHost()
+        SuperNotificationHost()
         },
     containerColor: Color = MiuixTheme.colorScheme.background,
     contentWindowInsets: WindowInsets = WindowInsets.statusBars,

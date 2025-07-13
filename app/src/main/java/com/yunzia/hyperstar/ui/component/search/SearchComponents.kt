@@ -3,13 +3,11 @@ package com.yunzia.hyperstar.ui.component.search
 import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
@@ -34,6 +32,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
@@ -42,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -118,24 +118,17 @@ class SearchStatus(val label: String) {
     fun TopAppBarAnim(
         modifier: Modifier = Modifier,
         visible: Boolean = shouldCollapsed(),
-        content: @Composable() AnimatedVisibilityScope.() -> Unit
+        content: @Composable() () -> Unit
     ) {
-        AnimatedVisibility(
-            visible = visible,
-            modifier = modifier,
-            enter = fadeIn(
-                animationSpec = spring(
-                    stiffness = Spring.StiffnessLow
-                )
-            ),
-            exit = fadeOut(
-                animationSpec = spring(
-                    stiffness = Spring.StiffnessMedium
-                )
-            ),
-            label = "TopAppBarAnim"
+        val topAppBarAlpha = animateFloatAsState(
+            if (visible) 1f else 0f,
+            animationSpec = tween(if (visible) 550 else 0,easing = FastOutSlowInEasing),
+
+        )
+        Box(
+            modifier = modifier.alpha(topAppBarAlpha.value),
         ) {
-            this.content()
+            content()
         }
     }
 
@@ -154,15 +147,23 @@ fun SearchStatus.SearchBox(
     val searchStatus = this
     val density = LocalDensity.current
 
+    val collapseBarScale = animateFloatAsState(if (searchStatus.shouldCollapsed()) 1f else 0f)
+
+    val offsetY = remember { mutableIntStateOf(0) }
+
     Column(modifier = modifier) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
                 .alpha(if (searchStatus.isCollapsed()) 1f else 0f)
+                //.scale(scaleX = 1f, scaleY = collapseBarScale.value)
                 .onGloballyPositioned {
-                    with(density) {
-                        searchStatus.offsetY = it.positionInWindow().y.toDp()
+                    it.positionInWindow().y.apply {
+                        offsetY.intValue = (this@apply * 0.9).toInt()
+                        with(density) {
+                            searchStatus.offsetY = this@apply.toDp()
+                        }
                     }
                 }
                 .pointerInput(Unit) {
@@ -170,11 +171,21 @@ fun SearchStatus.SearchBox(
                 }
         ) {
             collapseBar(searchStatus)
+
         }
         AnimatedVisibility(
+            modifier = Modifier,
             visible = searchStatus.shouldCollapsed(),
-            enter = fadeIn() + slideInVertically { -it / 6 },
-            exit = fadeOut() + slideOutVertically { -it / 7 }
+            enter = fadeIn(tween(300, easing = LinearOutSlowInEasing)) + slideInVertically(
+                tween(300, easing = LinearOutSlowInEasing)
+            ) {
+                - offsetY.intValue
+              },
+            exit = fadeOut(tween(300, easing = LinearOutSlowInEasing)) + slideOutVertically(
+                tween(300, easing = LinearOutSlowInEasing)
+            ) {
+                - offsetY.intValue
+            }
         ) {
             content()
         }
@@ -203,13 +214,13 @@ fun SearchStatus.SearchPager(
     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
     val topPadding by animateDpAsState(
         if (searchStatus.shouldExpand()) systemBarsPadding else searchStatus.offsetY,
-        animationSpec = tween(250, easing = LinearOutSlowInEasing)
+        animationSpec = tween(300, easing = LinearOutSlowInEasing)
     ) {
         searchStatus.onAnimationComplete()
     }
     val backgroundAlpha by animateFloatAsState(
         if (searchStatus.shouldExpand()) 1f else 0f,
-        animationSpec = tween(250, easing = FastOutLinearInEasing)
+        animationSpec = tween(200, easing = FastOutSlowInEasing)
     )
 
     Column(

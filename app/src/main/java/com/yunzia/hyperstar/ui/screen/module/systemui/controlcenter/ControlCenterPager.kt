@@ -1,7 +1,9 @@
 package com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -17,24 +19,21 @@ import com.yunzia.hyperstar.ui.component.XSuperDropdown
 import com.yunzia.hyperstar.ui.component.XSuperSwitch
 import com.yunzia.hyperstar.ui.component.classes
 import com.yunzia.hyperstar.ui.component.firstClasses
-import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
-import com.yunzia.hyperstar.utils.Helper
+import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.utils.isOS2Settings
+import top.yukonga.miuix.kmp.basic.ScrollBehavior
 
 
 @Composable
-fun ControlCenterScreen(
+fun ControlCenterPager(
     navController: NavHostController,
-    currentStartDestination: MutableState<String>
+    scrollBehavior: ScrollBehavior,
+    paddingValue: PaddingValues
 ) {
-    ModuleNavPagers(
-        activityTitle = stringResource(R.string.control_center),
-        navController = navController,
-        parentRoute = currentStartDestination,
-        endClick = {
-            Helper.rootShell("killall com.android.systemui")
-        },
-    ){
+    LazyColumn(
+        modifier = Modifier.nestedOverScrollVertical(scrollBehavior.nestedScrollConnection),
+        contentPadding = PaddingValues(top = 6.dp, bottom = paddingValue.calculateBottomPadding() + 28.dp)
+    ) {
         firstClasses(
             title = R.string.basics,
         ){

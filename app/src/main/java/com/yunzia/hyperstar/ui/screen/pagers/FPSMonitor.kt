@@ -1,7 +1,12 @@
 package com.yunzia.hyperstar.ui.screen.pagers
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -12,12 +17,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameMillis
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -33,11 +41,11 @@ fun FPSMonitor(modifier: Modifier = Modifier) {
     var totalFrameTime by remember { mutableStateOf(0L) }
     var offset by remember { mutableStateOf(Offset.Zero) }
 
+
     Box(
         modifier = Modifier
             .statusBarsPadding()
-            .padding(top = 128.dp)
-            .padding(horizontal = 28.dp)
+            .padding(top = 100.dp,start = 28.dp)
             .offset {
                 IntOffset(offset.x.roundToInt(), offset.y.roundToInt())
             }
@@ -51,16 +59,25 @@ fun FPSMonitor(modifier: Modifier = Modifier) {
                         offset += dragAmount
                     }
                 )
-            }.then(modifier),
+            }.then(modifier)
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioHighBouncy,
+                    stiffness = 30f,
+                )
+            ),
+        contentAlignment = Alignment.Center,
     ) {
 
         Text(
             text = "FPS: $fps",
             fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
             modifier = Modifier.padding(20.dp),
             color = if (fps < 57) Color.Red else Color.Green
         )
     }
+
 
 
     LaunchedEffect(Unit) {

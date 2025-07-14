@@ -265,6 +265,13 @@ fun Home(
                 )
 
                 AppArrow(
+                    appInfo = activity.appInfo,
+                    packageName = "com.android.mms",
+                    navController = navController,
+                    route = PagerList.MMS
+                )
+
+                AppArrow(
                     visible = { it.versionName!!.startsWith("3") },
                     appInfo = activity.appInfo,
                     packageName = "com.xiaomi.barrage",

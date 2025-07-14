@@ -11,6 +11,9 @@ public class starLog {
     public static void log(String msg) {
         XposedBridge.log(HOOK_TAG+"{ " + msg + " }");
     }
+    public static void log(String tag, String msg) {
+        XposedBridge.log(HOOK_TAG+"[I][" + tag + "]: " + msg);
+    }
 
     public static void logI(String msg) {
         XposedBridge.log(HOOK_TAG+" [I]: " + msg);

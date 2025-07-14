@@ -4,6 +4,7 @@
         <item>com.android.systemui</item>
         <item>com.miui.home</item>
         <item>com.android.thememanager</item>
+        <item>com.android.mms</item>
         <item>com.xiaomi.barrage</item>
         <item>com.miui.screenshot</item>
     </string-array>

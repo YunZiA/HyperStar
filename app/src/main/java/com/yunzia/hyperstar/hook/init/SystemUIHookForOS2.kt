@@ -37,11 +37,11 @@ class SystemUIHookForOS2 : InitHooker() {
     }
 
     override fun initHook() {
-        initHooker(NavigationBarBackground())
-        initHooker(LowDeviceBackgroundColor())
-        initHooker(NotificationForLm())
-        initHooker(qsHeaderView)
-        initHooker(pluginHookForOS2)
+        NavigationBarBackground().initHooker()
+        LowDeviceBackgroundColor().initHooker()
+        NotificationForLm().initHooker()
+        qsHeaderView.initHooker()
+        pluginHookForOS2.initHooker()
 
         //initHooker(test);
 

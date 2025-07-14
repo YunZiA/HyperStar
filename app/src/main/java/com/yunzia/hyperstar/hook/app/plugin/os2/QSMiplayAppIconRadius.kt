@@ -1,10 +1,7 @@
 package com.yunzia.hyperstar.hook.app.plugin.os2
 
-import android.content.res.XModuleResources
-import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import yunzia.utils.DensityUtil.Companion.dpToPx
 
 class QSMiplayAppIconRadius: Hooker() {

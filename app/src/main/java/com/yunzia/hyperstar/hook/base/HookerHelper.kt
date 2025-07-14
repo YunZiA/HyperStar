@@ -431,7 +431,6 @@ abstract class HookerHelper {
         }
     }
 
-
 }
 
 inline fun <T, R> T.runCatchingOrNull(func: T.() -> R?) = try {

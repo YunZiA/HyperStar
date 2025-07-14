@@ -22,6 +22,8 @@ object PagerList {
 
     const val THEMEMANAGER = "${MAIN}/thememanager"
 
+    const val MMS = "${MAIN}/mms"
+
     const val LANGUAGE = "${MAIN}/language"
 
     const val GO_ROOT = "${MAIN}/go_root"

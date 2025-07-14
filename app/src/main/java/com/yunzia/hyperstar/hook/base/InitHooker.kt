@@ -8,6 +8,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam
 
 abstract class InitHooker: HookerHelper() {
 
+    val className = lazy { this.javaClass.simpleName }
     var plugin: String = "miui.systemui.plugin"
     var resparam: InitPackageResourcesParam? = null
     var lpparam: LoadPackageParam? = null
@@ -29,7 +30,7 @@ abstract class InitHooker: HookerHelper() {
         this.lpparam = lpparam
 
         if (lpparam.packageName == init!!.packageName) {
-            starLog.log("Loaded app: " + lpparam.packageName)
+            starLog.log(className.value,"Loaded app: " + lpparam.packageName)
             this.classLoader = lpparam.classLoader
             initHook()
         }
@@ -57,19 +58,20 @@ abstract class InitHooker: HookerHelper() {
         hooker.initResources(resparam, modRes)
     }
 
-    fun initHooker(hooker: Hooker) {
+    fun Hooker.initHooker() {
         try {
-            hooker.initHook(classLoader)
+            mPackageName = this@InitHooker.mPackageName
+            initHook(this@InitHooker.classLoader)
         } catch (e: Exception) {
-            starLog.log(e.message)
+            starLog.logE(className.value, e.message)
         }
     }
 
-    fun initHooker(initHooker: InitHooker) {
+    fun InitHooker.initHooker() {
         try {
-            initHooker.initHook(classLoader)
+            initHook(this@InitHooker.classLoader)
         } catch (e: Exception) {
-            starLog.log(e.message)
+            starLog.logE(className.value,e.message)
         }
     }
 
@@ -79,9 +81,17 @@ abstract class InitHooker: HookerHelper() {
 
     fun initSecHooker(hooker: Hooker) {
         try {
-            hooker.initHook(secClassLoader)
+            hooker.apply {
+                initHook(secClassLoader)
+                mPackageName = this@InitHooker.mPackageName
+            }
         } catch (e: Exception) {
             starLog.log(e.message)
         }
+    }
+
+    fun logD(msg: String){
+        starLog.logD(className.value, mPackageName, msg)
+
     }
 }

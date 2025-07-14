@@ -15,9 +15,9 @@ class SystemUIHookForOS1 : InitHooker() {
     }
 
     override fun initHook() {
-        initHooker(pluginHookForOS1)
-        initHooker(NavigationBarBackground())
-        initHooker(LowDeviceBackgroundColor())
+        pluginHookForOS1.initHooker()
+        NavigationBarBackground().initHooker()
+        LowDeviceBackgroundColor().initHooker()
 
         doTestHook()
     }

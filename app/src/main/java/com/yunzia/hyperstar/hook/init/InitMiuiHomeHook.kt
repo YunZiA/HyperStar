@@ -8,7 +8,7 @@ import com.yunzia.hyperstar.hook.base.InitHooker
 class InitMiuiHomeHook : InitHooker() {
 
     override fun initHook() {
-        initHooker(RemoveNoBlurDevice())
+        RemoveNoBlurDevice().initHooker()
     }
 
 }

@@ -10,7 +10,7 @@ import com.yunzia.hyperstar.hook.base.InitHooker
 class InitMiuiScreenshot : InitHooker() {
 
     override fun initHook() {
-        initHooker(EnableClipboardWriteOnScreenshot())
+        EnableClipboardWriteOnScreenshot().initHooker()
     }
 
 }

@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.hook.app.systemui.os2
 
-import android.content.res.TypedArray
 import android.content.res.XModuleResources
 import android.os.Bundle
 import android.view.Gravity

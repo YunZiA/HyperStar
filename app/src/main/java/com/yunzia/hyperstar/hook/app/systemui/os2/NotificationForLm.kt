@@ -13,8 +13,6 @@ import com.yunzia.hyperstar.utils.XSPUtils
 
 class NotificationForLm:Hooker() {
 
-
-
     override fun initHook(classLoader: ClassLoader?) {
         super.initHook(classLoader)
 

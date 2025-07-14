@@ -315,4 +315,5 @@
     <string name="enable_title_follow_animation">Enable Title Follow Animation</string>
     <string name="enable_clipboard_write_on_screenshot">Enable Clipboard Write on Screenshot</string>
     <string name="status_shadow_height_when_button_hidden">Shadow Height When Button is Hidden</string>
+    <string name="auto_copy_verification_code_to_clipboard">Auto Copy Verification Code</string>
 </resources>

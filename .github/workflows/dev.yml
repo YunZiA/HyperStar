@@ -49,7 +49,7 @@ jobs:
       - name: Upload android artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APK_NAME }}
+          name: ${{ env.APK_NAME }}.apk
           path: ./app/build/outputs/apk/dev/*.apk
           compression-level: 0  # 禁用压缩
       - name: Configure Git

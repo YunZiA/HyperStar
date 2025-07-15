@@ -49,9 +49,8 @@ jobs:
       - name: Upload android artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APK_NAME }}.apk
+          name: ${{ env.APK_NAME }}
           path: ./app/build/outputs/apk/dev/*.apk
-          compression-level: 0  # 禁用压缩
       - name: Configure Git
         run: |
           git config --global user.name "dongdong-gc"  # 替换为你的 Gitee 用户名

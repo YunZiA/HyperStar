@@ -32,6 +32,7 @@ import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.EnableItemDr
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.EnableItemSlider
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.ItemState
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
@@ -131,7 +132,7 @@ fun CardItem(
 
         Card(
             Modifier.padding(bottom = 10.dp),
-            color = colorScheme.secondaryContainer
+            colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
         ) {
 
             EnableItemDropdown(
@@ -140,7 +141,7 @@ fun CardItem(
             )
         }
         Card(
-            color = colorScheme.secondaryContainer
+            colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
         ) {
             EnableItemSlider(
                 key = "cards_span_size",

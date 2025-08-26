@@ -6,8 +6,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.ColorPickerTool
-import com.yunzia.hyperstar.ui.component.classes
-import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
 
@@ -25,7 +24,7 @@ fun DeviceCenterColorScreen(
         },
     ) {
 
-        firstClasses(
+        itemGroup(
             title = "空设备状态"
         ) {
             ColorPickerTool(
@@ -38,7 +37,7 @@ fun DeviceCenterColorScreen(
             )
 
         }
-        classes(
+        this.itemGroup(
             title = "设备项"
         ) {
             ColorPickerTool(

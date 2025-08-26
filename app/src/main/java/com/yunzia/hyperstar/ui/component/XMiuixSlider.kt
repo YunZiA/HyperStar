@@ -61,10 +61,11 @@ import com.yunzia.hyperstar.ui.component.modifier.bounceScale
 import com.yunzia.hyperstar.ui.component.tool.FilterFloat
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.SPUtils
+import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.Slider
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 
 enum class Status{
@@ -96,7 +97,7 @@ fun XMiuixSlider(
     val effect = PreferencesUtil.getBoolean("is_progress_effect", false)
     val dialog = remember { mutableStateOf(false) }
     @Suppress("NAME_SHADOWING")
-    val paddingValues = remember { paddingValues } ?: remember { PaddingValues(24.dp, 15.dp) }
+    val paddingValues = remember { paddingValues } ?: remember { BasicComponentDefaults.InsideMargin }
 
     val titleColor = if (enabled) colorScheme.onSurface else colorScheme.disabledOnSecondaryVariant
     val valueColor = if (enabled) colorScheme.onSurfaceVariantSummary else colorScheme.disabledOnSecondaryVariant
@@ -111,7 +112,7 @@ fun XMiuixSlider(
         modifier = Modifier
             .height(IntrinsicSize.Max)
             .fillMaxWidth()
-            .bounceScale(eventState).clip(SmoothRoundedCornerShape(8.dp,0.5f))
+            .bounceScale(eventState).clip(G2RoundedCornerShape(8.dp))
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = { offset ->
@@ -293,7 +294,7 @@ fun XSuperSliders(
     title : String,
     key : String,
     unit : String = "",
-    insideMargin: DpSize? = null,
+    insideMargin: PaddingValues? = null,
     minValue: Float = 0f,
     maxValue: Float = 1f,
     defValue: Float = 0.5f,
@@ -307,7 +308,7 @@ fun XSuperSliders(
     val dialog = remember { mutableStateOf(false) }
 
     @Suppress("NAME_SHADOWING")
-    val insideMargin = remember { insideMargin } ?: remember { DpSize(24.dp, 15.dp) }
+    val insideMargin = remember { insideMargin } ?: remember { BasicComponentDefaults.InsideMargin }
     val titleColor = if (enabled) colorScheme.onSurface else colorScheme.disabledOnSecondaryVariant
     val valueColor =
         if (enabled) colorScheme.onSurfaceVariantSummary else colorScheme.disabledOnSecondaryVariant
@@ -318,12 +319,14 @@ fun XSuperSliders(
     val enable = PreferencesUtil.getBoolean("bounce_anim_enable",true)
     val eventState = remember { mutableStateOf(EventState.Idle) }
 
+    val layoutDirection = LocalLayoutDirection.current
+
 
     Column(
         modifier = Modifier
             .height(IntrinsicSize.Max)
             .fillMaxWidth()
-            .bounceScale(eventState).clip(SmoothRoundedCornerShape(8.dp,0.5f))
+            .bounceScale(eventState).clip(G2RoundedCornerShape(8.dp))
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = { offset ->
@@ -347,7 +350,7 @@ fun XSuperSliders(
                 }
             }
             .indication(interactionSource, LocalIndication.current)
-            .padding(vertical = insideMargin.height)
+            .padding(insideMargin)
 
     ) {
 
@@ -357,7 +360,7 @@ fun XSuperSliders(
             modifier = Modifier
                 .wrapContentHeight()
                 .fillMaxWidth()
-                .padding(horizontal = insideMargin.width)
+                //.padding(start = insideMargin.calculateStartPadding(layoutDirection), end = insideMargin.calculateEndPadding(layoutDirection))
                 .bounceClick(eventState, (enable && !click.value && enabled))
                 .pointerInput(Unit) {
                     awaitPointerEventScope {
@@ -403,7 +406,7 @@ fun XSuperSliders(
             //dragShow = true,
             decimalPlaces = decimalPlaces,
             modifier = Modifier
-                .padding(horizontal = insideMargin.width)
+                //.padding(start = insideMargin.calculateStartPadding(layoutDirection), end = insideMargin.calculateEndPadding(layoutDirection))
                 .padding(top = 10.dp),
             enabled = enabled
         )

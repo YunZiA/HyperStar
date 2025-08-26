@@ -47,7 +47,6 @@ fun SuperStringArrow(
     SuperArrow(
         modifier = Modifier.bounceAnim(),
         title = title,
-        insideMargin = PaddingValues(24.dp, 16.dp),
         summary = summary,
         rightText = if (mString.value == "null") stringResource(R.string.default_value) else mString.value,
         onClick = {

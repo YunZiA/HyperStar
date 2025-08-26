@@ -7,8 +7,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.XSuperSwitch
-import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
 
@@ -26,8 +27,9 @@ fun ScreenshotScreen(
             Helper.rootShell("killall com.miui.screenshot")
         },
     ){
-        firstClasses(
-            title = R.string.basics
+        itemGroup(
+            title = R.string.basics,
+            position = SuperGroupPosition.FIRST
         ) {
             XSuperSwitch(
                 title = stringResource(R.string.enable_clipboard_write_on_screenshot),

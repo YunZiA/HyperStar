@@ -9,9 +9,9 @@ import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.ColorPickerTool
 import com.yunzia.hyperstar.ui.component.ItemAnim
+import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.XSuperDropdown
-import com.yunzia.hyperstar.ui.component.classes
-import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.SPUtils
@@ -34,7 +34,10 @@ fun QSListColorScreen(
         },
     ) {
 
-        firstClasses(R.string.general) {
+        itemGroup(
+            R.string.general,
+            position = SuperGroupPosition.FIRST
+        ) {
 
             XSuperDropdown(
                 title = stringResource(R.string.title_color_in_state),
@@ -54,7 +57,7 @@ fun QSListColorScreen(
 
         }
 
-        classes(
+        itemGroup(
             title = R.string.close_state_color
         ) {
             ColorPickerTool(
@@ -73,7 +76,7 @@ fun QSListColorScreen(
 
         }
 
-        classes(
+        itemGroup(
             title = R.string.enable_state_color
         ){
             ColorPickerTool(
@@ -99,7 +102,7 @@ fun QSListColorScreen(
             }
         }
 
-        classes(
+        itemGroup(
             title = R.string.restricted_state_color
         ){
             ColorPickerTool(
@@ -121,8 +124,9 @@ fun QSListColorScreen(
             }
         }
 
-        classes(
-            title = R.string.unavailable_state_color
+        itemGroup(
+            title = R.string.unavailable_state_color,
+            position = SuperGroupPosition.LAST
         ){
             ColorPickerTool(
                 title = stringResource(R.string.background),

@@ -5,10 +5,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.XMiuixSlider
 import com.yunzia.hyperstar.ui.component.XSuperDropdown
-import com.yunzia.hyperstar.ui.component.classes
-import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
 
@@ -26,7 +26,9 @@ fun QsListViewScreen(
             Helper.rootShell("killall com.android.systemui")
         }
     ){
-        firstClasses{
+        itemGroup(
+            position = SuperGroupPosition.FIRST
+        ){
 
             XSuperDropdown(
                 title = stringResource(R.string.wordless_mode),
@@ -37,7 +39,7 @@ fun QsListViewScreen(
 
         }
 
-        classes(
+        itemGroup(
             title = R.string.title_style
         ){
             XMiuixSlider(
@@ -60,7 +62,7 @@ fun QsListViewScreen(
             )
 
         }
-        classes(
+        itemGroup(
             title = R.string.vertical_spacing
         ){
             XMiuixSlider(
@@ -84,8 +86,9 @@ fun QsListViewScreen(
         }
 
 
-        classes(
-            title = R.string.margin_top
+        itemGroup(
+            title = R.string.margin_top,
+            position = SuperGroupPosition.FIRST
         ){
             XMiuixSlider(
                 title = stringResource(R.string.icon),

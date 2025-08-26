@@ -29,6 +29,7 @@ import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
 import com.yunzia.hyperstar.ui.component.nav.PagersModel
 import com.yunzia.hyperstar.ui.component.nav.nav
 import com.yunzia.hyperstar.utils.SPUtils
+import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.SuperArrow
 import top.yukonga.miuix.kmp.extra.SuperDialog
@@ -62,7 +63,6 @@ fun BaseArrow(
             }
         } }else{ null },
         title = title,
-        insideMargin = PaddingValues(24.dp, 16.dp),
         summary = summary,
         onClick = {
             click.value = true
@@ -98,7 +98,6 @@ fun SuperIntentArrow(
             }
         } }else{ null },
         title = title,
-        insideMargin = PaddingValues(24.dp, 16.dp),
         summary = summary,
         onClick = {
 
@@ -114,7 +113,7 @@ fun SuperNavHostArrow(
     summary : String ? = null,
     rightText: String? = null,
     navController : NavHostController,
-    insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp),
+    insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     route: String,
 ) {
 
@@ -132,7 +131,7 @@ fun SuperNavHostArrow(
                 Image(
                     painter = painterResource(leftIcon),
                     contentDescription = title,
-                    modifier = Modifier.size(35.dp)
+                    modifier = Modifier.size(30.dp)
                 )
                 Spacer(Modifier.width(16.dp))
             }
@@ -158,7 +157,6 @@ fun SuperNavHostArrow(
     route: String,
 ) {
 
-
     val click = remember { mutableStateOf(false) }
     SuperArrow(
         modifier = Modifier.bounceAnim{
@@ -172,13 +170,12 @@ fun SuperNavHostArrow(
                 Image(
                     painter = leftIcon,
                     contentDescription = title,
-                    modifier = Modifier.size(35.dp)
+                    modifier = Modifier.size(30.dp)
                 )
                 Spacer(Modifier.width(16.dp))
             }
         },
         title = title,
-        insideMargin = PaddingValues(24.dp, 16.dp),
         summary = summary,
         rightText = rightText,
         onClick = {
@@ -222,14 +219,13 @@ fun SuperArgNavHostArrow(
                 Image(
                     painter = painterResource(leftIcon),
                     contentDescription = title,
-                    modifier = Modifier.size(35.dp)
+                    modifier = Modifier.size(30.dp)
                 )
                 Spacer(Modifier.width(16.dp))
             }
         } }else{ null },
         title = title,
         rightText = style,
-        insideMargin = PaddingValues(24.dp, 16.dp),
         summary = summary,
         onClick = {
             click.value = true
@@ -263,7 +259,6 @@ fun SuperActivityArrow(
             }
         } }else{ null },
         title = title,
-        insideMargin = PaddingValues(24.dp, 16.dp),
         summary = summary,
         onClick = {
             // 启动新的Activity
@@ -303,7 +298,6 @@ fun SuperWarnDialogArrow(
             }
         } }else{ null },
         title = title,
-        insideMargin = PaddingValues(24.dp, 16.dp),
         summary = summary,
         onClick = {
             click.value = true

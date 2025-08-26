@@ -6,8 +6,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.ColorPickerTool
-import com.yunzia.hyperstar.ui.component.classes
-import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
 
@@ -24,7 +23,7 @@ fun QSCardColorScreen(
             Helper.rootShell("killall com.android.systemui")
         },
     ) {
-        firstClasses(
+        itemGroup(
             title = R.string.close_state_color
         ) {
 
@@ -42,7 +41,7 @@ fun QSCardColorScreen(
             )
 
         }
-        classes(
+        this.itemGroup(
             title = R.string.enable_state_color
         ) {
             ColorPickerTool(
@@ -64,7 +63,7 @@ fun QSCardColorScreen(
 
 
         }
-        classes(
+        this.itemGroup(
             title = R.string.restricted_state_color,
         ) {
             ColorPickerTool(
@@ -86,7 +85,7 @@ fun QSCardColorScreen(
 
 
         }
-        classes(
+        this.itemGroup(
             title = R.string.unavailable_state_color
         ) {
             ColorPickerTool(

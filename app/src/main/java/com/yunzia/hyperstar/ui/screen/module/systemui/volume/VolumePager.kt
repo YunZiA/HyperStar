@@ -9,12 +9,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.ContentFolder
+import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.XMiuixSuperSliderSwitch
 import com.yunzia.hyperstar.ui.component.XSuperDropdown
 import com.yunzia.hyperstar.ui.component.XSuperSliders
 import com.yunzia.hyperstar.ui.component.XSuperSwitch
-import com.yunzia.hyperstar.ui.component.classes
-import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.utils.isOS2Settings
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
@@ -27,12 +27,13 @@ fun VolumePager(
 ) {
     LazyColumn(
         modifier = Modifier.nestedOverScrollVertical(scrollBehavior.nestedScrollConnection),
-        contentPadding = PaddingValues(top = 6.dp, bottom = paddingValue.calculateBottomPadding() + 28.dp)
+        contentPadding = PaddingValues(bottom = paddingValue.calculateBottomPadding())
     ) {
 
-        firstClasses(
-            title = R.string.basics
-        ) {
+        itemGroup(
+            title = R.string.basics,
+            position = SuperGroupPosition.FIRST
+        ){
             XSuperDropdown(
                 title = stringResource(R.string.is_super_blur_volume_title),
                 key = "is_super_blur_volume",
@@ -65,7 +66,10 @@ fun VolumePager(
                 decimalPlaces = 1
             )
         }
-        classes(title = R.string.sidebar_mode){
+        itemGroup(
+            title = R.string.sidebar_mode,
+            position = SuperGroupPosition.FIRST
+        ){
 
 
             if (isOS2Settings()){

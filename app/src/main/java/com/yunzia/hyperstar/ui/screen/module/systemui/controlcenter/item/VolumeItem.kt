@@ -26,6 +26,7 @@ import com.yunzia.hyperstar.ui.component.dialog.MSuperDialog
 import com.yunzia.hyperstar.ui.component.modifier.elevation
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.EnableItemDropdown
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import yunzia.ui.Card
@@ -48,7 +49,7 @@ fun VolumeItem(
     ) {
 
         Card(
-            color = colorScheme.secondaryContainer
+            colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
         ) {
             EnableItemDropdown(
                 key = "volume_land_rightOrLeft",

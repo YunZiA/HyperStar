@@ -4,23 +4,21 @@ import android.graphics.RenderEffect
 import android.graphics.Shader
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.CacheDrawModifierNode
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.GraphicsLayerScope
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.isSpecified
+import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.Measurable
@@ -31,20 +29,33 @@ import androidx.compose.ui.node.DelegatingNode
 import androidx.compose.ui.node.GlobalPositionAwareModifierNode
 import androidx.compose.ui.node.LayoutModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
+import androidx.compose.ui.node.invalidateLayer
+import androidx.compose.ui.node.requireGraphicsContext
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.unit.Constraints
-import kotlin.math.ceil
-import kotlin.math.min
+import androidx.compose.ui.unit.isSpecified
 
-@Composable
 fun Modifier.liquidGlass(
-    style: LiquidGlassStyle,
-    providerState: LiquidGlassProviderState = LocalLiquidGlassProviderState.current
+    state: LiquidGlassProviderState,
+    style: () -> LiquidGlassStyle
 ): Modifier =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         this then LiquidGlassElement(
-            style = style,
-            providerState = providerState
+            state = state,
+            style = style
+        )
+    } else {
+        this
+    }
+
+fun Modifier.liquidGlass(
+    state: LiquidGlassProviderState,
+    style: LiquidGlassStyle
+): Modifier =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        this then LiquidGlassElement(
+            state = state,
+            style = { style }
         )
     } else {
         this
@@ -52,51 +63,51 @@ fun Modifier.liquidGlass(
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private class LiquidGlassElement(
-    val style: LiquidGlassStyle,
-    val providerState: LiquidGlassProviderState
+    val state: LiquidGlassProviderState,
+    val style: () -> LiquidGlassStyle
 ) : ModifierNodeElement<LiquidGlassModifierNode>() {
 
     override fun create(): LiquidGlassModifierNode {
         return LiquidGlassModifierNode(
-            style = style,
-            providerState = providerState
+            state = state,
+            style = style
         )
     }
 
     override fun update(node: LiquidGlassModifierNode) {
         node.update(
-            style = style,
-            providerState = providerState
+            state = state,
+            style = style
         )
     }
 
     override fun InspectorInfo.inspectableProperties() {
         name = "liquidGlass"
+        properties["state"] = state
         properties["style"] = style
-        properties["providerState"] = providerState
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is LiquidGlassElement) return false
 
+        if (state != other.state) return false
         if (style != other.style) return false
-        if (providerState != other.providerState) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = style.hashCode()
-        result = 31 * result + providerState.hashCode()
+        var result = state.hashCode()
+        result = 31 * result + style.hashCode()
         return result
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 internal class LiquidGlassModifierNode(
-    var style: LiquidGlassStyle,
-    var providerState: LiquidGlassProviderState
+    var state: LiquidGlassProviderState,
+    var style: () -> LiquidGlassStyle
 ) : LayoutModifierNode, GlobalPositionAwareModifierNode, DelegatingNode() {
 
     override val shouldAutoInvalidate: Boolean = false
@@ -104,16 +115,21 @@ internal class LiquidGlassModifierNode(
     private val shadersCache = LiquidGlassShadersCache()
     private var rect: Rect? by mutableStateOf(null)
 
+    private var graphicsLayer: GraphicsLayer? = null
+    private var borderGraphicsLayer: GraphicsLayer? = null
+
     private val drawWithCacheModifierNode =
         delegate(
             CacheDrawModifierNode {
+                val style = style()
+
                 val contentBlurRadiusPx = style.material.blurRadius.toPx()
                 val contentRenderEffect =
                     if (contentBlurRadiusPx > 0f) {
                         RenderEffect.createBlurEffect(
                             contentBlurRadiusPx,
                             contentBlurRadiusPx,
-                            Shader.TileMode.DECAL
+                            Shader.TileMode.CLAMP
                         )
                     } else {
                         RenderEffect.createOffsetEffect(0f, 0f)
@@ -229,86 +245,112 @@ internal class LiquidGlassModifierNode(
                         RenderEffect.createChainEffect(
                             materialRenderEffect,
                             refractionWithBleedRenderEffect
-                        ).asComposeRenderEffect()
+                        )
                     } else {
-                        refractionWithBleedRenderEffect.asComposeRenderEffect()
+                        refractionWithBleedRenderEffect
                     }
 
-                val graphicsLayer = obtainGraphicsLayer()
-                graphicsLayer.renderEffect = renderEffect
+                graphicsLayer?.renderEffect = renderEffect.asComposeRenderEffect()
 
-                val strokeWidthPx = ceil(min(style.border.width.toPx(), size.minDimension / 2))
-                val halfStroke = strokeWidthPx / 2
-                val borderTopLeft = Offset(halfStroke, halfStroke)
-                val borderSize = Size(size.width - strokeWidthPx, size.height - strokeWidthPx)
-                val border =
-                    if (strokeWidthPx > 0f) {
-                        val borderBrush = style.border.createBrush(this, borderSize, cornerRadiusPx)
-                        if (borderBrush != null) {
-                            val borderOutline = style.shape.createOutline(borderSize, layoutDirection, this)
-                            Pair(borderOutline, borderBrush)
-                        } else {
-                            null
+                val borderWidth = style.border.width
+                val borderColor = style.border.color
+                if (borderWidth.isSpecified && borderColor.isSpecified) {
+                    borderGraphicsLayer?.let { layer ->
+                        val borderOutline = style.shape.createOutline(size, layoutDirection, this)
+                        val borderRenderEffect = style.border.createRenderEffect(this, size, cornerRadiusPx)
+
+                        layer.renderEffect = borderRenderEffect?.asComposeRenderEffect()
+                        layer.blendMode = style.border.blendMode
+                        layer.record {
+                            drawOutline(
+                                outline = borderOutline,
+                                brush = SolidColor(borderColor),
+                                style = Stroke(borderWidth.toPx())
+                            )
                         }
-                    } else {
-                        null
                     }
-                val stroke = Stroke(strokeWidthPx)
+                }
 
                 onDrawBehind {
                     val rect = rect ?: return@onDrawBehind
-                    graphicsLayer.record {
-                        translate(-rect.left, -rect.top) {
-                            drawLayer(providerState.graphicsLayer)
+                    graphicsLayer?.let { layer ->
+                        layer.record {
+                            translate(-rect.left, -rect.top) {
+                                drawLayer(state.graphicsLayer)
+                            }
                         }
+                        drawLayer(layer)
                     }
-                    drawLayer(graphicsLayer)
 
                     if (style.material.tint.isSpecified) {
-                        drawRect(style.material.tint)
+                        drawRect(
+                            color = style.material.tint,
+                            blendMode = style.material.blendMode
+                        )
                     }
 
-                    if (border != null) {
-                        val (borderOutline, borderBrush) = border
-
-                        translate(borderTopLeft.x, borderTopLeft.y) {
-                            drawOutline(
-                                outline = borderOutline,
-                                brush = borderBrush,
-                                style = stroke,
-                                blendMode = BlendMode.Plus
-                            )
-                        }
+                    borderGraphicsLayer?.let { layer ->
+                        drawLayer(layer)
                     }
                 }
             }
         )
 
-    val layerBlock: GraphicsLayerScope.() -> Unit = {
+    private val layerBlock: GraphicsLayerScope.() -> Unit = {
         compositingStrategy = CompositingStrategy.Offscreen
         clip = true
-        shape = style.shape
+        shape = style().shape
     }
 
     override fun MeasureScope.measure(measurable: Measurable, constraints: Constraints): MeasureResult {
         val placeable = measurable.measure(constraints)
+
         return layout(placeable.width, placeable.height) {
             placeable.placeWithLayer(0, 0, layerBlock = layerBlock)
         }
     }
 
     override fun onGloballyPositioned(coordinates: LayoutCoordinates) {
-        rect = providerState.rect?.let {
+        rect = state.rect?.let {
             coordinates.boundsInRoot().translate(-it.topLeft)
         }
     }
 
+    override fun onAttach() {
+        val graphicsContext = requireGraphicsContext()
+        graphicsLayer =
+            graphicsContext.createGraphicsLayer().apply {
+                compositingStrategy = androidx.compose.ui.graphics.layer.CompositingStrategy.Offscreen
+            }
+        borderGraphicsLayer =
+            graphicsContext.createGraphicsLayer().apply {
+                compositingStrategy = androidx.compose.ui.graphics.layer.CompositingStrategy.Offscreen
+            }
+    }
+
+    override fun onDetach() {
+        val graphicsContext = requireGraphicsContext()
+        graphicsLayer?.let { layer ->
+            graphicsContext.releaseGraphicsLayer(layer)
+            graphicsLayer = null
+        }
+        borderGraphicsLayer?.let { layer ->
+            graphicsContext.releaseGraphicsLayer(layer)
+            borderGraphicsLayer = null
+        }
+    }
+
     fun update(
-        style: LiquidGlassStyle,
-        providerState: LiquidGlassProviderState
+        state: LiquidGlassProviderState,
+        style: () -> LiquidGlassStyle
     ) {
-        this.style = style
-        this.providerState = providerState
-        drawWithCacheModifierNode.invalidateDrawCache()
+        if (this.state != state ||
+            this.style != style
+        ) {
+            this.state = state
+            this.style = style
+            drawWithCacheModifierNode.invalidateDrawCache()
+            invalidateLayer()
+        }
     }
 }

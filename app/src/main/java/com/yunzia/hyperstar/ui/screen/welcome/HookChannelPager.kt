@@ -48,7 +48,7 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.CheckboxLocation
 import top.yukonga.miuix.kmp.extra.SuperCheckbox
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 @Composable
 fun HookChannelPager(
@@ -155,7 +155,7 @@ private fun LazyListScope.channelItem(
                         SPUtils.setInt("is_Hook_Channel", selectedItem.intValue)
                     }
                 }
-                .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
+                .clip(G2RoundedCornerShape(CardDefaults.CornerRadius))
                 .background(if (isSelected) colorScheme.tertiaryContainer else colorScheme.surfaceVariant),
             checkboxLocation = CheckboxLocation.Right,
             insideMargin = PaddingValues(20.dp),

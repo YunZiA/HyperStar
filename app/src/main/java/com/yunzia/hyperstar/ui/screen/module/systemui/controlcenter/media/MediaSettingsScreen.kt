@@ -14,14 +14,14 @@ import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.ControlCenterList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.SuperContentDropdown
+import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.component.SuperStringArrow
 import com.yunzia.hyperstar.ui.component.SwitchContentFolder
 import com.yunzia.hyperstar.ui.component.XMiuixSuperSliderSwitch
 import com.yunzia.hyperstar.ui.component.XSuperDropdown
 import com.yunzia.hyperstar.ui.component.XSuperSwitch
-import com.yunzia.hyperstar.ui.component.classes
-import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
 
@@ -39,8 +39,9 @@ fun MediaSettingsScreen(
             Helper.rootShell("killall com.android.systemui")
         },
     ){
-        firstClasses(
-            title = R.string.base_settings
+        itemGroup(
+            title = R.string.base_settings,
+            position = SuperGroupPosition.FIRST
         ){
             SuperNavHostArrow(
                 title = stringResource(R.string.media_default_app_settings),
@@ -53,9 +54,8 @@ fun MediaSettingsScreen(
             )
 
         }
-        classes(
-            title = R.string.mipalyer_normal,
-            top = 12.dp,
+        itemGroup(
+            title = R.string.mipalyer_normal
         ){
             SwitchContentFolder(
                 switchTitle = stringResource(R.string.is_hide_cover_title),
@@ -134,9 +134,9 @@ fun MediaSettingsScreen(
 
         }
 
-        classes(
+        itemGroup(
             title = R.string.miplayer_expand,
-            top = 12.dp,
+            position = SuperGroupPosition.LAST
         ){
             XSuperSwitch(
                 title = stringResource(R.string.title_qs_detail_app_icon_radius),

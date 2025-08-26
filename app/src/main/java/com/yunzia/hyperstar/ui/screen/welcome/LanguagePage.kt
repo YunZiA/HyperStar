@@ -44,7 +44,7 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.CheckboxLocation
 import top.yukonga.miuix.kmp.extra.SuperCheckbox
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 @Composable
 fun LanguagePage(
@@ -146,7 +146,7 @@ private fun LanguageItem(
             .padding(horizontal = 28.dp)
             .padding(vertical = 5.dp)
             .bounceAnimN {}
-            .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
+            .clip(G2RoundedCornerShape(CardDefaults.CornerRadius))
             .background(if (isSelected.value) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
         ,
         checkboxLocation = CheckboxLocation.Right,

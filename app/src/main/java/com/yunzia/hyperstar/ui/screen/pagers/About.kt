@@ -5,7 +5,6 @@ import android.graphics.Typeface
 import android.util.Log
 import android.util.TypedValue
 import android.view.HapticFeedbackConstants
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -36,9 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
@@ -70,8 +67,7 @@ import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.ui.component.Button
 import com.yunzia.hyperstar.ui.component.SuperIntentArrow
 import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
-import com.yunzia.hyperstar.ui.component.classes
-import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
@@ -90,16 +86,13 @@ import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import yunzia.utils.MiBlurUtilsKt.addMiBackgroundBlendColor
 import yunzia.utils.MiBlurUtilsKt.clearMiBackgroundBlendColor
 import yunzia.utils.MiBlurUtilsKt.setMiBackgroundBlurMode
 import yunzia.utils.MiBlurUtilsKt.setMiBackgroundBlurRadius
 import yunzia.utils.MiBlurUtilsKt.setMiViewBlurMode
-import yunzia.utils.MiuiBlurUtils
-import yunzia.utils.MiuiBlurUtils.setPassWindowBlurEnabled
-import yunzia.utils.MiuiBlurUtils.setViewBlurMode
 
 
 private fun getColorList(
@@ -391,7 +384,7 @@ fun ThirdPage(
                 state = scroll,
                 contentPadding = PaddingValues(
                     top = padding.calculateTopPadding(),
-                    bottom = contentPadding.calculateBottomPadding() + 16.dp
+                    bottom = contentPadding.calculateBottomPadding()
                 ),
             ) {
 
@@ -408,9 +401,7 @@ fun ThirdPage(
                     )
                 }
 
-                firstClasses(
-                    title = R.string.developer_title
-                ) {
+                itemGroup{
                     SuperIntentArrow(
                         leftIcon = R.drawable.dd,
                         title = "东东说他舍不得",
@@ -428,7 +419,7 @@ fun ThirdPage(
 
                 }
 
-                classes(
+                this.itemGroup(
                     title = R.string.discussion_title
                 ) {
                     SuperIntentArrow(
@@ -449,7 +440,7 @@ fun ThirdPage(
 
                 }
 
-                classes(
+                this.itemGroup(
                     title = R.string.others
                 ) {
                     SuperNavHostArrow(
@@ -561,7 +552,7 @@ fun UpdaterButton(
             }
             .shadow(
                 elevation = 1.5.dp,
-                shape = SmoothRoundedCornerShape(16.dp),
+                shape = G2RoundedCornerShape(16.dp),
                 clip = true,
                 ambientColor = shadowColor,
                 spotColor = shadowColor

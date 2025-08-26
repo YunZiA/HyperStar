@@ -31,11 +31,14 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.ui.component.SuperGroup
+import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.XSuperSwitch
-import com.yunzia.hyperstar.ui.component.classes
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.NavPager
+import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 @SuppressLint("StringFormatMatches")
 @Composable
@@ -76,18 +79,15 @@ fun NotDeveloperScreen(
     ) {
 
         item {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .clip(SmoothRoundedCornerShape(21.dp, 0.5f))
-                    .background(Color(0x2A0D84FF))
-                ,
-                verticalArrangement = Arrangement.Center,
-            ) {
+            SuperGroup(
+                modifier = Modifier.fillMaxWidth(),
+                position = SuperGroupPosition.FIRST,
+                cardColor = CardDefaults.defaultColors(Color(0x2A0D84FF))
+            ){
+
                 Text(
                     text = stringResource(R.string.nodevelop_info),
-                    modifier = Modifier.padding(vertical = 16.dp, horizontal = 24.dp),
+                    modifier = Modifier.padding(16.dp),
                     color = Color(0xFF0D84FF),
                     fontWeight = FontWeight.Normal,
                     fontSize = 15.sp
@@ -95,11 +95,11 @@ fun NotDeveloperScreen(
             }
         }
 
-        classes {
+        itemGroup {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 18.dp, horizontal = 24.dp),
+                    .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ){
                 Image(
@@ -118,17 +118,19 @@ fun NotDeveloperScreen(
 
             }
         }
-        classes {
+        itemGroup {
             Text(
                 text.value,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 18.dp, horizontal = 24.dp),
+                    .padding(16.dp),
                 fontWeight = FontWeight.Medium,
                 lineHeight = 1.6.em,
             )
         }
-        classes {
+        itemGroup(
+            position = SuperGroupPosition.LAST
+        ) {
             XSuperSwitch(
                 title = stringResource(R.string.title_development_settings_enabled),
                 key = "development_settings_enabled",

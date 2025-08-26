@@ -51,9 +51,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.topbar.TopButton
-import com.yunzia.hyperstar.ui.component.classes
-import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.modifier.elevation
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
@@ -183,9 +183,10 @@ fun QSCardListScreen(
         },
     ){
 
-            firstClasses(
+            itemGroup(
                 title = R.string.card_list_header_title,
-                summary = R.string.card_list_header_sub_title
+                position = SuperGroupPosition.FIRST
+                //summary = R.string.card_list_header_sub_title
             ) {
                 DraggableGrid(
                     modifier = Modifier
@@ -240,64 +241,64 @@ fun QSCardListScreen(
                 }
             }
 
-            classes (
-                title = R.string.card_list_no_add_title
+        this.itemGroup(
+            title = R.string.card_list_no_add_title
+        ) {
+            LazyVerticalGrid(
+                modifier = Modifier
+                    //.height(getHeight(itemList.size,94.dp , 24.dp))
+                    .heightIn(0.dp,1270.dp),
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(24.dp,12.dp),
+                userScrollEnabled = false,
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                LazyVerticalGrid(
-                    modifier = Modifier
-                        //.height(getHeight(itemList.size,94.dp , 24.dp))
-                        .heightIn(0.dp,1270.dp),
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(24.dp,12.dp),
-                    userScrollEnabled = false,
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    itemsIndexed(itemList, key = { index, item ->
-                        item.id
-                    }) { index, item ->
+                itemsIndexed(itemList, key = { index, item ->
+                    item.id
+                }) { index, item ->
 
-                        CardItem(R.drawable.ic_qs_tile_mark_add, item) {
-                            view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                            val mutableList = items.toMutableList().apply {
-                                add(itemList[index])  // 交换位置
-                            }
-                            items = mutableList
-                            val lastList = itemList.toMutableList().apply {
-                                removeAt(index)  // 交换位置
-                            }
-
-                            itemList = lastList
-
+                    CardItem(R.drawable.ic_qs_tile_mark_add, item) {
+                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                        val mutableList = items.toMutableList().apply {
+                            add(itemList[index])  // 交换位置
                         }
-                    }
-                }
-                AnimatedVisibility(
-                    visible = (itemList.isEmpty()),
-                    enter = fadeIn() + expandVertically(),
-                    exit = fadeOut() + shrinkVertically()
+                        items = mutableList
+                        val lastList = itemList.toMutableList().apply {
+                            removeAt(index)  // 交换位置
+                        }
 
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 20.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        Text(
-                            text = stringResource(R.string.empty_list_description),
-                            fontSize = 15.sp,
-                            textAlign = TextAlign.Center,
-                            color = colorScheme.onBackgroundVariant,
-                            fontWeight = FontWeight.Medium
-                        )
+                        itemList = lastList
 
                     }
-
                 }
             }
+            AnimatedVisibility(
+                visible = (itemList.isEmpty()),
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 20.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        text = stringResource(R.string.empty_list_description),
+                        fontSize = 15.sp,
+                        textAlign = TextAlign.Center,
+                        color = colorScheme.onBackgroundVariant,
+                        fontWeight = FontWeight.Medium
+                    )
+
+                }
+
+            }
+        }
 
 
 

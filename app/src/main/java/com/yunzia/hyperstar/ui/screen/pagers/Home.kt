@@ -7,10 +7,9 @@ import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,18 +34,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.wear.compose.material.Icon
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.component.Classes
+import com.yunzia.hyperstar.ui.component.SuperGroup
+import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
-import com.yunzia.hyperstar.ui.component.classes
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.dialog.SuperBottomSheetDialog
-import com.yunzia.hyperstar.ui.component.firstClasses
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN
@@ -58,7 +56,6 @@ import com.yunzia.hyperstar.utils.AppInfo
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.Helper.isRoot
-import com.yunzia.hyperstar.utils.appIcon
 import com.yunzia.hyperstar.utils.isOS2Settings
 import dev.chrisbanes.haze.HazeState
 import top.yukonga.miuix.kmp.basic.Card
@@ -66,7 +63,6 @@ import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Scaffold
-import top.yukonga.miuix.kmp.basic.SmallTopAppBar
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
@@ -74,7 +70,6 @@ import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.basic.ArrowRight
 import top.yukonga.miuix.kmp.icon.icons.useful.Cancel
 import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
-import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
@@ -135,7 +130,7 @@ fun Home(
                 .height(getWindowSize().height.dp)
                 .blur(hazeState)
                 .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
-            contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = contentPadding.calculateBottomPadding()+14.dp),
+            contentPadding = PaddingValues(top = padding.calculateTopPadding(), bottom = contentPadding.calculateBottomPadding()),
         ) {
 
             item{
@@ -145,8 +140,9 @@ fun Home(
                         setClassName("org.lsposed.manager","org.lsposed.manager.ui.activity.MainActivity")
                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     }
-                    Classes(
-                        modifier = Modifier.bounceAnimN()
+                    SuperGroup(
+                        modifier = Modifier.bounceAnimN(),
+                        position = SuperGroupPosition.FIRST
                     ){
                         Row(
                             modifier = Modifier
@@ -194,7 +190,7 @@ fun Home(
 
                 }
                 if (!isRoot()){
-                    Classes(
+                    SuperGroup(
                         modifier = Modifier.bounceAnimN()
                     ){
                         Row(
@@ -217,7 +213,6 @@ fun Home(
                                 fontSize = 15.sp
                             )
 
-
                             Image(
                                 modifier = Modifier
                                     .padding(end = 24.dp)
@@ -235,7 +230,7 @@ fun Home(
                 }
             }
 
-            firstClasses(
+            itemGroup(
                 title = R.string.basics
             ){
                 AppArrow(
@@ -288,7 +283,7 @@ fun Home(
                 )
 
             }
-            classes (
+            itemGroup(
                 title = R.string.other_settings
             ){
 
@@ -301,7 +296,6 @@ fun Home(
                 )
 
             }
-
             if (activity.appNo.isNotEmpty()){
 
                 item {
@@ -356,7 +350,7 @@ fun Home(
                                 .padding(horizontal = 16.dp)
                         ) {
                             activity.appNo.forEach { (s, throwable) ->
-                                classes(s) {
+                                this.itemGroup(s) {
                                     Text(throwable.toString())
                                 }
                             }
@@ -397,7 +391,7 @@ fun AppArrow(
         Log.d("ggc", "AppArrow: ${this@with != null} &&")
         AnimatedVisibility(
             visible = this != null && visible(this@with),
-            enter = expandVertically()
+            enter = expandVertically() + fadeIn()
         ) {
             Log.d("ggc", "AppArrow: ${this@with != null && visible(this@with)}")
             SuperNavHostArrow(
@@ -405,7 +399,6 @@ fun AppArrow(
                 title = title?:this@with.appName,
                 navController = navController,
                 route = route
-
             )
         }
 

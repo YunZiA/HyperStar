@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
+import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.basic.ArrowRight
@@ -39,9 +40,9 @@ fun ContentFolder(
 ) {
 
     val showContent = remember { mutableStateOf(false) }
-    val insideMargin = remember { DpSize(24.dp, 14.dp) }
+    val insideMargin = remember { BasicComponentDefaults.InsideMargin }
     val paddingModifier = remember(insideMargin) {
-        Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
+        Modifier.padding(insideMargin)
     }
     val rotating = animateFloatAsState(if (showContent.value ) 90f else -90f, label = "")
     Row(

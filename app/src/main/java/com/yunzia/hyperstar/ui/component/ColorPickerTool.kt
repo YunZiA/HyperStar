@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,6 +36,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -51,6 +53,7 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
 import com.yunzia.hyperstar.utils.SPUtils
 import kotlinx.coroutines.launch
+import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import yunzia.colorpicker.ColorPickerDialog
@@ -79,10 +82,11 @@ fun ColorPickerTool(
 
 ) {
 
-    val insideMargin = remember { DpSize(24.dp, 12.dp) }
+    val insideMargin = remember { BasicComponentDefaults.InsideMargin }
     val view = LocalView.current
+    val layoutDirection = LocalLayoutDirection.current
     val swappableState = rememberSwipeableState(Status.CLOSE)
-    val squareSize = 103.dp+insideMargin.width
+    val squareSize = 103.dp+insideMargin.calculateEndPadding(layoutDirection)
     val sizePx = with(LocalDensity.current) { -squareSize.toPx() }
     val anchors = mapOf(0f to Status.CLOSE, sizePx to Status.OPEN)
     val scope = rememberCoroutineScope()
@@ -90,7 +94,7 @@ fun ColorPickerTool(
     val showDialog = remember { mutableStateOf(false) }
     val color = remember {  mutableStateOf(getDefaultColor(dfColor,key)) }
     val paddingModifier = remember(insideMargin) {
-        Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
+        Modifier.padding(insideMargin)
     }
     val titleColor = animateColorAsState(
         if (swappableState.targetValue == Status.CLOSE) colorScheme.onSurface else colorScheme.disabledOnSecondaryVariant,

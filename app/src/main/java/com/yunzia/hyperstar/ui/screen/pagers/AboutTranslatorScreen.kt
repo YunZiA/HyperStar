@@ -6,8 +6,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.SuperIntentArrow
-import com.yunzia.hyperstar.ui.component.classes
-import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.NavPager
 
 @Composable
@@ -20,7 +19,7 @@ fun TranslatorScreen(
         navController = navController,
         parentRoute = currentStartDestination,
     ) {
-        firstClasses(
+        itemGroup(
             title = "English"
         ) {
             SuperIntentArrow(
@@ -36,7 +35,7 @@ fun TranslatorScreen(
                 url = "https://t.me/Minggg07"
             )
         }
-        classes(
+        this.itemGroup(
             title = "Русский"
         ) {
             SuperIntentArrow(
@@ -46,7 +45,7 @@ fun TranslatorScreen(
                 url = "https://t.me/Osean22"
             )
         }
-        classes(
+        this.itemGroup(
             title = "tiếng việt"
         ) {
             SuperIntentArrow(
@@ -56,7 +55,7 @@ fun TranslatorScreen(
                 url = "https://t.me/Minggg07"
             )
         }
-        classes(
+        this.itemGroup(
             title = "Español (México)"
         ) {
             SuperIntentArrow(
@@ -66,7 +65,7 @@ fun TranslatorScreen(
                 url = "https://t.me/jj24_0"
             )
         }
-        classes(
+        this.itemGroup(
             title = "Português (Brasil)"
         ) {
             SuperIntentArrow(

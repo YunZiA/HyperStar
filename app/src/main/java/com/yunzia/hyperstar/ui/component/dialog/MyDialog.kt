@@ -44,8 +44,8 @@ import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.useful.Cancel
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.DialogLayout
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
 
@@ -116,7 +116,7 @@ fun MSuperDialog(
                     .align(contentAlignment)
                     .background(
                         color = color,
-                        shape = SmoothRoundedCornerShape(25.dp, 0.8f)
+                        shape = G2RoundedCornerShape(25.dp)
                     )
                     .padding(24.dp),
             ) {

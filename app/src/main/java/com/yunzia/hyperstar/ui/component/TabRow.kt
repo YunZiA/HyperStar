@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 @Composable
 fun TabRow(
@@ -41,7 +41,7 @@ fun TabRow(
     onTabSelected: ((Int) -> Unit)? = null,
 ) {
     val currentOnTabSelected by rememberUpdatedState(onTabSelected)
-    val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
+    val shape = remember(cornerRadius) { G2RoundedCornerShape(cornerRadius) }
 
     Row(
         modifier = modifier

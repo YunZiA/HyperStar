@@ -30,8 +30,8 @@ import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.DialogLayout
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getRoundedCorner
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
@@ -112,12 +112,12 @@ fun SuperXDialog(
                     }
                     .align(contentAlignment.invoke().value)
                     .graphicsLayer(
-                        shape = SmoothRoundedCornerShape(bottomCornerRadius,1f),
+                        shape = G2RoundedCornerShape(bottomCornerRadius),
                         clip = false
                     )
                     .background(
                         color = backgroundColor,
-                        shape = SmoothRoundedCornerShape(bottomCornerRadius,1f)
+                        shape = G2RoundedCornerShape(bottomCornerRadius)
                     )
                     .padding(
                         horizontal = insideMargin.width,

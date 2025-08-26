@@ -49,7 +49,7 @@ import com.yunzia.hyperstar.ui.component.MTextField
 import com.yunzia.hyperstar.ui.component.dialog.SuperDialog
 import com.yunzia.hyperstar.ui.component.tool.FilterColorHex
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 
 @Composable
@@ -105,11 +105,11 @@ fun ColorPickerDialog(
                 Image(
                     modifier = Modifier
                         .size(60.dp)
-                        .clip(SmoothRoundedCornerShape(10.dp,0.8f))
+                        .clip(G2RoundedCornerShape(10.dp))
                         .border(
                             2.dp,
                             if (color.value.toColor() == colorScheme.surfaceVariant) colorScheme.secondaryContainer else Color.Transparent,
-                            SmoothRoundedCornerShape(10.dp,0.8f)
+                            G2RoundedCornerShape(10.dp)
                         ),
                     imageVector = ImageVector.vectorResource(R.drawable.transparent),
                     colorFilter = ColorFilter.tint(
@@ -137,7 +137,7 @@ fun ColorPickerDialog(
                                     doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
                                 },
                                 //contentPadding = PaddingValues(10.dp,16.dp),
-                                shape = SmoothRoundedCornerShape(12.dp,0.8f),
+                                shape = G2RoundedCornerShape(12.dp),
                                 colors = buttonColors(
                                     backgroundColor = Color.Transparent,
                                     contentColor = Color.Transparent,

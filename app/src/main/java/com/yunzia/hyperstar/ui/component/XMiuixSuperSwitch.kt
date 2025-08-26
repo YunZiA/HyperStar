@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.SPUtils
+import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 
 @Composable
 fun XSuperSwitch(
@@ -19,7 +20,7 @@ fun XSuperSwitch(
     summary: String? = null,
     key: String,
     enabled: Boolean? = true,
-    insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp)
+    insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin
 ) {
     val state: MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) }
     SuperSwitch(
@@ -44,7 +45,7 @@ fun XSuperSwitch(
     summary: String? = null,
     key: String,
     enabled: Boolean? = true,
-    insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp),
+    insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     onStateChanged : (Boolean) -> Unit = {}
 ) {
     val state: MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) }
@@ -72,7 +73,7 @@ fun XSuperSwitch(
     key: String,
     enabled: Boolean? = true,
     state: MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) },
-    insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp)
+    insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin
 ) {
 
     SuperSwitch(
@@ -104,7 +105,6 @@ fun PMiuixSuperSwitch(
         modifier = Modifier,
         title = title,
         checked = MiuixSuperSwitchState,
-        insideMargin = PaddingValues(24.dp, 16.dp),
         onCheckedChange = {
             MiuixSuperSwitchState = it
             PreferencesUtil.putBoolean(key,MiuixSuperSwitchState)
@@ -126,7 +126,6 @@ fun PMiuixSuperSwitch(
         modifier = Modifier,
         title = title,
         checked = checked,
-        insideMargin = PaddingValues(24.dp, 16.dp),
         onCheckedChange = {
             updatedOnCheckedChange?.invoke(it)
         },

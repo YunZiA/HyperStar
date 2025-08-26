@@ -24,6 +24,7 @@ import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.ControlCente
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.EnableItemSlider
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.ItemState
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -69,7 +70,7 @@ fun EditItem(
     ) {
 
         Card(
-            color = colorScheme.secondaryContainer
+            colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
         ){
             EnableItemSlider(
                 key = "edit_span_size",

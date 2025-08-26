@@ -7,7 +7,7 @@ import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.ui.component.XSuperSwitch
-import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.utils.Helper
 
 
@@ -24,7 +24,7 @@ fun BetaHomePager(
             Helper.rootShell("killall com.miui.home")
         },
     ){
-        firstClasses(
+        itemGroup(
             title = R.string.unlock
         ) {
             XSuperSwitch(

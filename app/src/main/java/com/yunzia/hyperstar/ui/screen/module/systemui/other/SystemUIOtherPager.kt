@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.ui.screen.module.systemui.other
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -10,10 +11,10 @@ import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.SystemUIMoreList
 import com.yunzia.hyperstar.ui.component.ColorPickerTool
+import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.component.XSuperSwitch
-import com.yunzia.hyperstar.ui.component.classes
-import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.utils.isOS2Settings
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
@@ -25,12 +26,13 @@ fun SystemUIOtherPager(
     paddingValue: PaddingValues
 ) {
     LazyColumn(
-        modifier = Modifier.nestedOverScrollVertical(scrollBehavior.nestedScrollConnection),
-        contentPadding = PaddingValues(top = 6.dp, bottom = paddingValue.calculateBottomPadding() + 28.dp)
+        modifier = Modifier.fillMaxSize().nestedOverScrollVertical(scrollBehavior.nestedScrollConnection),
+        contentPadding = PaddingValues(bottom = paddingValue.calculateBottomPadding())
     ) {
 
-        firstClasses(
+        itemGroup(
             title = R.string.status_bar,
+            position = SuperGroupPosition.FIRST
         ) {
             XSuperSwitch(
                 title = stringResource(R.string.transparent_statusBar_background),
@@ -38,7 +40,7 @@ fun SystemUIOtherPager(
                 key = "is_transparent_statusBar_background"
             )
         }
-        classes(
+        itemGroup(
             title = R.string.navigation_bar,
         ) {
             XSuperSwitch(
@@ -48,7 +50,7 @@ fun SystemUIOtherPager(
             )
         }
         if (isOS2Settings()){
-            classes(
+            itemGroup(
                 title = R.string.classic_noy_type
             ) {
                 SuperNavHostArrow(
@@ -60,8 +62,8 @@ fun SystemUIOtherPager(
 
             }
         }
-        classes(
-            title = R.string.power_menu,
+        itemGroup(
+            title = R.string.power_menu
         ) {
             XSuperSwitch(
                 title = stringResource(R.string.is_power_menu_nav_show_title),
@@ -74,8 +76,9 @@ fun SystemUIOtherPager(
 
             )
         }
-        classes(
+        itemGroup(
             title = R.string.other_settings,
+            position = SuperGroupPosition.LAST
         ) {
             ColorPickerTool(
                 title = stringResource(R.string.low_device_qc_background_color),
@@ -87,7 +90,6 @@ fun SystemUIOtherPager(
                     key = "low_device_not_second_background_color"
                 )
             }
-
 
 
         }

@@ -93,7 +93,7 @@ import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import java.io.File
 import java.net.URLEncoder
 
@@ -519,7 +519,7 @@ private fun ChannelDialog(
             modifier = Modifier
                 .padding(top = 8.dp, bottom = 18.dp)
                 .fillMaxWidth()
-                .clip(SmoothRoundedCornerShape(12.dp, 0.5f))
+                .clip(G2RoundedCornerShape(12.dp))
                 .background(colorScheme.secondaryContainer)
         ) {
 

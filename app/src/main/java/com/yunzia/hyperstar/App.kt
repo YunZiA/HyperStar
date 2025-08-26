@@ -16,6 +16,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
@@ -37,29 +38,31 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.kyant.liquidglass.GlassMaterial
-import com.kyant.liquidglass.InnerRefraction
-import com.kyant.liquidglass.LiquidGlassStyle
-import com.kyant.liquidglass.LocalLiquidGlassProviderState
-import com.kyant.liquidglass.RefractionValue
-import com.kyant.liquidglass.liquidGlass
+import androidx.savedstate.SavedState
 import com.kyant.liquidglass.liquidGlassProvider
+import com.kyant.liquidglass.rememberLiquidGlassProviderState
 import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.ui.component.XScaffold
+import com.yunzia.hyperstar.ui.component.helper.getSystemCornerRadius
 import com.yunzia.hyperstar.ui.component.nav.PagersModel
+import com.yunzia.hyperstar.ui.component.nav.composable
 import com.yunzia.hyperstar.ui.component.nav.pagersJson
+import com.yunzia.hyperstar.ui.component.navigation.MiuixNavHost
+import com.yunzia.hyperstar.ui.component.navigation.miuixComposable
+import com.yunzia.hyperstar.ui.component.navigation.rememberMiuixNavController
 import com.yunzia.hyperstar.ui.screen.module.NotDeveloperScreen
 import com.yunzia.hyperstar.ui.screen.module.barrage.BarrageScreen
 import com.yunzia.hyperstar.ui.screen.module.home.HomeScreen
@@ -106,7 +109,6 @@ import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.VerticalDivider
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
 @SuppressLint("RestrictedApi")
@@ -137,10 +139,13 @@ fun App(){
 
     val context = LocalContext.current
     val activity = LocalActivity.current as BaseActivity
-    val providerState = LocalLiquidGlassProviderState.current
+    val providerState = rememberLiquidGlassProviderState(
+        backgroundColor = Color.White
+    )
     XScaffold(
         modifier = Modifier.liquidGlassProvider(providerState)
     ) {
+
         val isUpdate = remember { mutableStateOf(false) }
 
         if (!isModuleActive()){
@@ -159,7 +164,7 @@ fun App(){
         val welcome = remember { mutableStateOf(PreferencesUtil.getBoolean("is_first_use",true)) }
         //val welcome = remember { mutableStateOf(true )}
         val easing  = CubicBezierEasing(.42f,0f,0.26f,.85f)
-        val navController = rememberNavController()
+        val navController = rememberMiuixNavController()
         val layoutType = remember { mutableIntStateOf(1) }
         val coroutineScope = rememberCoroutineScope()
 
@@ -270,7 +275,7 @@ fun App(){
 
     }
 
-    FPSMonitor(activity.showFPSMonitor.value)
+    FPSMonitor(activity.showFPSMonitor.value,providerState)
 
 }
 
@@ -279,74 +284,74 @@ fun NavGraphBuilder.pagerContent(
     parentRoute: MutableState<String>
 
 ){
-    composable(ControlCenterList.COLOR_EDIT) { ControlCenterColorScreen(navController,parentRoute) }
+    miuixComposable(ControlCenterList.COLOR_EDIT) { ControlCenterColorScreen(navController,parentRoute) }
 
-    composable(ControlCenterList.LAYOUT_ARRANGEMENT) { ControlCenterListScreen(navController,parentRoute) }
+    miuixComposable(ControlCenterList.LAYOUT_ARRANGEMENT) { ControlCenterListScreen(navController,parentRoute) }
 
-    composable(ControlCenterList.MEDIA) { MediaSettingsScreen(navController,parentRoute) }
+    miuixComposable(ControlCenterList.MEDIA) { MediaSettingsScreen(navController,parentRoute) }
 
-    composable(ControlCenterList.CARD_LIST) { QSCardListScreen(navController,parentRoute) }
+    miuixComposable(ControlCenterList.CARD_LIST) { QSCardListScreen(navController,parentRoute) }
 
-    composable(ControlCenterList.TILE_LAYOUT) { QsListViewScreen(navController,parentRoute) }
+    miuixComposable(ControlCenterList.TILE_LAYOUT) { QsListViewScreen(navController,parentRoute) }
 
-    composable(ControlCenterList.MEDIA_APP) { MediaAppSettingsPager(navController,parentRoute) }
+    miuixComposable(ControlCenterList.MEDIA_APP) { MediaAppSettingsPager(navController,parentRoute) }
 
-    composable(CenterColorList.CARD_TILE) { QSCardColorScreen(navController,parentRoute) }
+    miuixComposable(CenterColorList.CARD_TILE) { QSCardColorScreen(navController,parentRoute) }
 
-    composable(CenterColorList.TOGGLE_SLIDER) { ToggleSliderColorsScreen(navController,parentRoute) }
+    miuixComposable(CenterColorList.TOGGLE_SLIDER) { ToggleSliderColorsScreen(navController,parentRoute) }
 
-    composable(CenterColorList.DEVICE_CENTER) { DeviceCenterColorScreen(navController,parentRoute) }
+    miuixComposable(CenterColorList.DEVICE_CENTER) { DeviceCenterColorScreen(navController,parentRoute) }
 
-    composable(CenterColorList.LIST_COLOR) { QSListColorScreen(navController,parentRoute) }
+    miuixComposable(CenterColorList.LIST_COLOR) { QSListColorScreen(navController,parentRoute) }
 
-    composable(PagerList.GO_ROOT){ GoRootPager(navController,parentRoute) }
+    miuixComposable(PagerList.GO_ROOT){ GoRootPager(navController,parentRoute) }
 
-    composable(PagerList.NOTDEVELOP){ NotDeveloperScreen(navController,parentRoute) }
+    miuixComposable(PagerList.NOTDEVELOP){ NotDeveloperScreen(navController,parentRoute) }
 
-    composable(PagerList.LANGUAGE){ LanguagePager(navController,parentRoute) }
+    miuixComposable(PagerList.LANGUAGE){ LanguagePager(navController,parentRoute) }
 
-    composable(PagerList.TRANSLATOR) { TranslatorScreen(navController,parentRoute) }
+    miuixComposable(PagerList.TRANSLATOR) { TranslatorScreen(navController,parentRoute) }
 
-    composable(PagerList.SYSTEMUI) { SystemUIScreen(navController,parentRoute) }
+    miuixComposable(PagerList.SYSTEMUI) { SystemUIScreen(navController,parentRoute) }
 
-    composable(PagerList.DONATION) { DonationPage(navController,parentRoute)  }
+    miuixComposable(PagerList.DONATION) { DonationPage(navController,parentRoute)  }
 
-    composable(PagerList.SHOW){ SettingsShowScreen(navController,parentRoute) }
+    miuixComposable(PagerList.SHOW){ SettingsShowScreen(navController,parentRoute) }
 
-    composable(PagerList.MESSAGE) { NeedMessageScreen(navController,parentRoute)  }
+    miuixComposable(PagerList.MESSAGE) { NeedMessageScreen(navController,parentRoute)  }
 
-    composable(PagerList.REFERENCES) { ReferencesScreen(navController,parentRoute)  }
+    miuixComposable(PagerList.REFERENCES) { ReferencesScreen(navController,parentRoute)  }
 
-    composable(PagerList.HOME) { HomeScreen(navController,parentRoute) }
+    miuixComposable(PagerList.HOME) { HomeScreen(navController,parentRoute) }
 
-    composable(PagerList.SCREENSHOT) { ScreenshotScreen(navController,parentRoute) }
+    miuixComposable(PagerList.SCREENSHOT) { ScreenshotScreen(navController,parentRoute) }
 
-    composable(PagerList.MMS) { MMSScreen(navController,parentRoute) }
+    miuixComposable(PagerList.MMS) { MMSScreen(navController,parentRoute) }
 
-    composable(PagerList.BARRAGE) { BarrageScreen(navController,parentRoute) }
+    miuixComposable(PagerList.BARRAGE) { BarrageScreen(navController,parentRoute) }
 
-    composable(PagerList.THEMEMANAGER) { ThemeManagerScreen(navController,parentRoute) }
+    miuixComposable(PagerList.THEMEMANAGER) { ThemeManagerScreen(navController,parentRoute) }
 
-    composable(PagerList.UPDATER) { UpdaterScreen(navController,parentRoute) }
+    miuixComposable(PagerList.UPDATER) { UpdaterScreen(navController,parentRoute) }
 
-    composable(SystemUIMoreList.POWERMENU){ PowerMenuStyleScreen(navController,parentRoute) }
+    miuixComposable(SystemUIMoreList.POWERMENU){ PowerMenuStyleScreen(navController,parentRoute) }
 
-    composable(SystemUIMoreList.NOTIFICATIONOFIM){
+    miuixComposable(SystemUIMoreList.NOTIFICATIONOFIM){
         NotificationOfImScreen(navController,parentRoute)
     }
 
-    composable(SystemUIMoreList.NOTIFICATION_APP_DETAIL) { NotificationAppDetail(navController,parentRoute) }
+    miuixComposable(SystemUIMoreList.NOTIFICATION_APP_DETAIL) { NotificationAppDetail(navController,parentRoute) }
 
-    composable(PagerList.CURRENTLOG) {
+    miuixComposable(PagerList.CURRENTLOG) {
         CurrentVersionLogScreen(navController,parentRoute)
     }
 
-    composable(PagerList.LOGHISTORY) {
+    miuixComposable(PagerList.LOGHISTORY) {
         LogHistoryScreen(navController,parentRoute)
 
     }
 
-    composable(
+    miuixComposable(
         FunList.SELECT_LIST+"?{pagersJson}",
         listOf(
             navArgument("pagersJson") {
@@ -365,40 +370,33 @@ fun OneLayout(
 ){
     val windowWidth = getWindowSize().width
 
+    navController.addOnDestinationChangedListener(
+        object : NavController.OnDestinationChangedListener{
+            override fun onDestinationChanged(
+                controller: NavController,
+                destination: NavDestination,
+                arguments: SavedState?
+            ) {
+                Log.d("ggcnav", "onDestinationChanged: $destination")
+            }
 
+        }
+    )
+
+
+
+    val sysCorner = getSystemCornerRadius()
     //val easing = CubicBezierEasing(0.12f, 0.38f, 0.2f, 1f)
     val easing = FastOutSlowInEasing
-    NavHost(
-        modifier = Modifier.fillMaxSize(),
+    MiuixNavHost(
+        modifier = Modifier
+            .fillMaxSize().background(Color.Black.copy(alpha = 0.55f)),
+            //.clip(shape = SmoothRoundedCornerShape(24.dp)),
         navController = navController,
         startDestination = PagerList.MAIN,
-        enterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { windowWidth },
-                animationSpec = tween(durationMillis = 500, easing = easing)
-            )
-        },
-        exitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -windowWidth / 5 },
-                animationSpec = tween(durationMillis = 500, easing = easing)
-            )
-        },
-        popEnterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { -windowWidth / 5 },
-                animationSpec = tween(durationMillis = 500, easing = easing)
-            )
-        },
-        popExitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { windowWidth },
-                animationSpec = tween(durationMillis = 500, easing = easing)
-            )
-        },
+        cornerRadius = getSystemCornerRadius(),
         builder = {
-
-            composable(PagerList.MAIN) { MainPager(navController,initialPage) }
+            miuixComposable(PagerList.MAIN) { MainPager(navController,initialPage) }
             pagerContent(
                 navController,
                 parentRoute
@@ -437,26 +435,37 @@ fun TwoLayout(
                 .width(0.75.dp),
             color = dividerLineColor
         )
-        NavHost(
+        MiuixNavHost(
             modifier = Modifier
-                .weight(1f)
-                .clip(RoundedCornerShape(0.dp)),
+                .weight(1f),
             navController = navController,
             startDestination = PagerList.MAIN,
             enterTransition = {
                 slideInHorizontally(
-                    initialOffsetX = { windowWidth },
+                    initialOffsetX = { it },
                     animationSpec = tween(durationMillis = 500, easing = easing)
-                ) + fadeIn(
-                    animationSpec = tween(durationMillis = 200)
                 )
             },
             exitTransition = {
                 slideOutHorizontally(
-                    targetOffsetX = { windowWidth / 5 },
+                    targetOffsetX = { -it / 4 },
                     animationSpec = tween(durationMillis = 500, easing = easing)
                 ) + fadeOut(
-                    animationSpec = tween(durationMillis = 500)
+                    targetAlpha = 0.55f,animationSpec = tween(500,0,easing)
+                )
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { -it / 4 },
+                    animationSpec = tween(durationMillis = 500, easing = easing)
+                ) + fadeIn(
+                    initialAlpha = 0.55f,animationSpec = tween(500,0,easing)
+                )
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(durationMillis = 500, easing = easing)
                 )
             },
             builder = {
@@ -498,7 +507,7 @@ fun ExpandLayout(
                 .width(0.75.dp),
             color = dividerLineColor
         )
-        NavHost(
+        MiuixNavHost(
             modifier = Modifier
                 .weight(1f)
                 .clip(RoundedCornerShape(0.dp)),
@@ -506,18 +515,30 @@ fun ExpandLayout(
             startDestination = PagerList.MAIN,
             enterTransition = {
                 slideInHorizontally(
-                    initialOffsetX = { windowWidth },
+                    initialOffsetX = { it },
                     animationSpec = tween(durationMillis = 500, easing = easing)
-                ) + fadeIn(
-                    animationSpec = tween(durationMillis = 200)
                 )
             },
             exitTransition = {
                 slideOutHorizontally(
-                    targetOffsetX = { windowWidth / 5 },
+                    targetOffsetX = { -it / 4 },
                     animationSpec = tween(durationMillis = 500, easing = easing)
                 ) + fadeOut(
-                    animationSpec = tween(durationMillis = 500)
+                    targetAlpha = 0.55f,animationSpec = tween(500,0,easing)
+                )
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { -it / 4 },
+                    animationSpec = tween(durationMillis = 500, easing = easing)
+                ) + fadeIn(
+                    initialAlpha = 0.55f,animationSpec = tween(500,0,easing)
+                )
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(durationMillis = 500, easing = easing)
                 )
             },
             builder = {

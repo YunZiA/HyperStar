@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -49,7 +50,8 @@ import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
 import kotlinx.coroutines.delay
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.CapsuleShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 @Composable
 fun FloatingPagerButton(
@@ -164,7 +166,7 @@ fun FloatingPagerButton(
                         alpha = if (alpha >= 0.2f) alpha else 0f,
                         scaleX = width/this@BoxWithConstraints.maxWidth,
                         scaleY = height/this@BoxWithConstraints.maxHeight,
-                        shape = SmoothRoundedCornerShape(if (complete.value) 0.dp else radius, 1f),
+                        shape = G2RoundedCornerShape(if (complete.value) 0.dp else radius),
                         clip = true,
                         transformOrigin = TransformOrigin(1f, 1f)
                     )
@@ -183,7 +185,7 @@ fun FloatingPagerButton(
 
                 Surface(
                     modifier = Modifier.semantics { role = Role.Button },
-                    shape = SmoothRoundedCornerShape(if (complete.value) 0.dp else radius, 1f),
+                    shape = G2RoundedCornerShape(if (complete.value) 0.dp else radius),
                     color = containerColor,
                     shadowElevation = if (expand.value) 0.dp else shadowElevation,
                     enabled = !expand.value,

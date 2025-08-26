@@ -8,10 +8,10 @@ import com.yunzia.hyperstar.CenterColorList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.ColorPickerTool
 import com.yunzia.hyperstar.ui.component.ContentFolder
+import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.component.XMiuixContentDropdown
-import com.yunzia.hyperstar.ui.component.classes
-import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
 
@@ -29,8 +29,9 @@ fun ControlCenterColorScreen(
         },
     ) {
 
-        firstClasses(
-            title = R.string.control_center_background_color
+        itemGroup(
+            title = R.string.control_center_background_color,
+            position = SuperGroupPosition.FIRST
         ){
 
             ColorPickerTool(
@@ -52,7 +53,7 @@ fun ControlCenterColorScreen(
 
         }
 
-        classes(
+        itemGroup(
             title = R.string.card_tile
         ){
 
@@ -63,7 +64,7 @@ fun ControlCenterColorScreen(
             )
         }
 
-        classes(
+        itemGroup(
             title = R.string.media
         ){
             ContentFolder(stringResource(R.string.color_edit)){
@@ -95,7 +96,7 @@ fun ControlCenterColorScreen(
             }
         }
 
-        classes(
+        itemGroup(
             title = R.string.volume_or_brightness
         ){
             SuperNavHostArrow(
@@ -105,7 +106,7 @@ fun ControlCenterColorScreen(
             )
 
         }
-        classes(
+        itemGroup(
             title = R.string.device_control
         ){
             ColorPickerTool(
@@ -118,7 +119,7 @@ fun ControlCenterColorScreen(
             )
 
         }
-        classes(
+        itemGroup(
             title = R.string.device_center
         ){
             SuperNavHostArrow(
@@ -128,7 +129,7 @@ fun ControlCenterColorScreen(
             )
 
         }
-        classes(
+        itemGroup(
             title = R.string.tile
         ){
             SuperNavHostArrow(
@@ -137,8 +138,9 @@ fun ControlCenterColorScreen(
                 route = CenterColorList.LIST_COLOR
             )
         }
-        classes(
-            title = R.string.edit
+        itemGroup(
+            title = R.string.edit,
+            position = SuperGroupPosition.LAST
         ){
 
             XMiuixContentDropdown(

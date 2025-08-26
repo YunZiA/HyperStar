@@ -3,19 +3,13 @@ package com.yunzia.hyperstar.ui.screen.pagers
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandIn
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideIn
-import androidx.compose.animation.slideOut
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -35,16 +29,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.kyant.liquidglass.GlassMaterial
 import com.kyant.liquidglass.InnerRefraction
+import com.kyant.liquidglass.LiquidGlassProviderState
 import com.kyant.liquidglass.LiquidGlassStyle
 import com.kyant.liquidglass.RefractionValue
 import com.kyant.liquidglass.liquidGlass
@@ -55,7 +48,7 @@ import kotlin.math.roundToInt
 
 // This is a simple FPS monitor that displays the current frames per second.
 @Composable
-fun FPSMonitor(visible: Boolean) {
+fun FPSMonitor(visible: Boolean, providerState: LiquidGlassProviderState) {
     var fps by remember { mutableStateOf(0) }
     var lastFrameTime by remember { mutableStateOf(0L) }
     var frameCount by remember { mutableStateOf(0) }
@@ -101,6 +94,7 @@ fun FPSMonitor(visible: Boolean) {
                     }
                 )
             }.liquidGlass(
+                providerState,
                 LiquidGlassStyle(
                     RoundedCornerShape(26.dp),
                     innerRefraction = InnerRefraction(

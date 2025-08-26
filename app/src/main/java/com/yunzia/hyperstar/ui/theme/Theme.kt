@@ -12,7 +12,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import com.kyant.liquidglass.LocalLiquidGlassProviderState
 import com.kyant.liquidglass.rememberLiquidGlassProviderState
 import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.utils.LanguageHelper.Companion.getIndexLanguage
@@ -53,14 +52,12 @@ fun BaseActivity.HyperStarTheme(
             lightColorScheme()
         }
     ){
-        val providerState = rememberLiquidGlassProviderState()
         val context = LocalContext.current
         val newContext = context.createConfigurationContext(Configuration(context.resources.configuration).apply {
             setLocale(getIndexLanguage(language.intValue))
         })
         CompositionLocalProvider(
-            LocalConfiguration provides newContext.resources.configuration,
-                    LocalLiquidGlassProviderState provides providerState
+            LocalConfiguration provides newContext.resources.configuration
         ) {
             content()
         }

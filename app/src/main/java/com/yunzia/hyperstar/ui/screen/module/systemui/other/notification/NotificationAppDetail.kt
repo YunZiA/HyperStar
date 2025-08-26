@@ -34,7 +34,7 @@ import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
 @Composable
@@ -131,7 +131,7 @@ fun LazyListScope.idItem(
                 .padding(horizontal = 16.dp)
                 .background(
                     colorScheme.onSecondary,
-                    SmoothRoundedCornerShape(16.dp,0.5f)
+                    G2RoundedCornerShape(16.dp)
                 )
 
         ) {

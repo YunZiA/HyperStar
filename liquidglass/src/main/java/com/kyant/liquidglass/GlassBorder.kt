@@ -1,14 +1,14 @@
 package com.kyant.liquidglass
 
+import android.graphics.RenderEffect
 import android.graphics.RuntimeShader
+import android.graphics.Shader
 import android.os.Build
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ShaderBrush
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -17,76 +17,88 @@ import kotlin.math.PI
 @Immutable
 sealed interface GlassBorder {
 
-    val color: Color
-        get() = Color.Unspecified
-
     val width: Dp
-        get() = Dp.Hairline
+
+    val color: Color
+
+    val blendMode: BlendMode
 
     @Stable
-    fun createBrush(density: Density, size: Size, cornerRadius: Float): Brush? {
+    fun createRenderEffect(density: Density, size: Size, cornerRadius: Float): RenderEffect? {
         return null
     }
 
     @Immutable
-    data object None : GlassBorder
+    data object None : GlassBorder {
 
-    @Immutable
-    data class Solid(
-        override val color: Color = Color.White.copy(alpha = 0.6f),
-        override val width: Dp = 1.dp
-    ) : GlassBorder {
+        override val width: Dp = Dp.Unspecified
 
-        override fun createBrush(density: Density, size: Size, cornerRadius: Float): Brush {
-            return SolidColor(color)
-        }
+        override val color: Color = Color.Unspecified
+
+        override val blendMode: BlendMode = BlendMode.SrcOver
     }
 
     @Immutable
-    data class Light(
-        override val color: Color = Color.White.copy(alpha = 0.6f),
-        override val width: Dp = 1.dp,
+    data class Solid(
+        override val width: Dp = 2.dp,
+        override val color: Color = Color.White,
+        override val blendMode: BlendMode = BlendMode.Overlay
+    ) : GlassBorder
+
+    @Immutable
+    data class Highlight(
+        override val width: Dp = 2.dp,
+        override val color: Color = Color.White,
+        override val blendMode: BlendMode = BlendMode.Overlay,
         val angle: Float = 45f,
-        val decay: Float = 2f
+        val decay: Float = 1.5f
     ) : GlassBorder {
 
-        override fun createBrush(density: Density, size: Size, cornerRadius: Float): Brush {
-            val widthPx = with(density) { width.toPx() }
+        private var highlightShaderCache: RuntimeShader? = null
+
+        override fun createRenderEffect(density: Density, size: Size, cornerRadius: Float): RenderEffect? {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                ShaderBrush(
-                    RuntimeShader(
-                        """// This file belongs to Kyant. You must not use it without permission.
-        ${LiquidGlassShaders.sdRectangleShaderUtils}
-        
-        half4 main(float2 coord) {
-            float cornerRadius = $cornerRadius;
-            float2 size = float2(${size.width}, ${size.height});
-            float2 halfSize = size * 0.5;
-            float2 centeredCoord = coord - halfSize;
-            
-            float2 grad = gradSdRoundedRectangle(centeredCoord, halfSize, cornerRadius);
-            float2 topLightNormal = float2(-cos(${angle / 180.0 * PI}), -sin(${angle / 180.0 * PI}));
-            float topLightFraction = dot(topLightNormal, grad);
-            float bottomLightFraction = -topLightFraction;
-            float fraction = pow(max(topLightFraction, bottomLightFraction), $decay);
-            
-            float sd = sdRoundedRectangle(centeredCoord, halfSize, cornerRadius);
-            sd = min(sd, 0.0);
-            fraction = fraction * (1.0 - sqrt(-sd / $widthPx));
-            
-            return half4(${color.red}, ${color.green}, ${color.blue}, 1.0) * ${color.alpha} * fraction;
-        }"""
+                val blurRenderEffect =
+                    cachedBlurRenderEffect
+                        ?: RenderEffect.createBlurEffect(
+                            with(density) { 0.5f.dp.toPx() },
+                            with(density) { 0.5f.dp.toPx() },
+                            Shader.TileMode.DECAL
+                        ).also { cachedBlurRenderEffect = it }
+
+                val highlightShader = highlightShaderCache
+                    ?: RuntimeShader(LiquidGlassShaders.highlightShaderString)
+                        .also { highlightShaderCache = it }
+
+                val highlightRenderEffect =
+                    RenderEffect.createRuntimeShaderEffect(
+                        highlightShader.apply {
+                            setFloatUniform("size", size.width, size.height)
+                            setFloatUniform("cornerRadius", cornerRadius)
+                            setFloatUniform("angle", angle * PI.toFloat() / 180f)
+                            setFloatUniform("decay", decay)
+                        },
+                        "image"
                     )
+
+                RenderEffect.createChainEffect(
+                    highlightRenderEffect,
+                    blurRenderEffect
                 )
             } else {
-                SolidColor(color)
+                null
             }
+        }
+
+        private companion object {
+
+            var cachedBlurRenderEffect: RenderEffect? = null
         }
     }
 
     companion object {
 
         @Stable
-        val Default: Light = Light()
+        val Default: Highlight = Highlight()
     }
 }

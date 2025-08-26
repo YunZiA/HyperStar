@@ -47,7 +47,7 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.BackHandler
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 @Composable
 fun SearchModuleNavPager(
@@ -99,7 +99,7 @@ fun SearchModuleNavPager(
         searchStatus.SearchBox(
             modifier = Modifier
                 .blur(hazeState)
-                .padding(top = padding.calculateTopPadding() + 14.dp)
+                .padding(top = padding.calculateTopPadding() + 12.dp)
                 .fillMaxSize(),
         ){
             contents(topAppBarScrollBehavior, padding)
@@ -186,10 +186,10 @@ fun SearchBarFake(
 
     Row(
         modifier = Modifier.fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 12.dp)
             .background(
                 color = colorScheme.surfaceContainerHigh,
-                shape = SmoothRoundedCornerShape(50.dp)
+                shape = G2RoundedCornerShape(50.dp)
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {

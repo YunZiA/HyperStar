@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
 import com.yunzia.hyperstar.utils.SPUtils
+import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.extra.DropDownMode
 import top.yukonga.miuix.kmp.extra.SuperDropdown
 
@@ -28,7 +29,7 @@ fun XSuperDropdown(
     dfOpt : Int = 0,
     title : String,
     enabled: Boolean = true,
-    insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp),
+    insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     summary : String ?= null,
     selectedIndex : MutableIntState = remember { mutableIntStateOf(SPUtils.getInt(key,dfOpt)) }
 ) {
@@ -57,7 +58,7 @@ fun XSuperDialogDropdown(
     dfOpt : Int = 0,
     title : String,
     enabled: Boolean = true,
-    insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp),
+    insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     summary : String ?= null,
     selectedIndex : MutableIntState = remember { mutableIntStateOf(SPUtils.getInt(key,dfOpt)) }
 ) {
@@ -88,7 +89,7 @@ fun XMiuixContentDropdown(
     key : String,
     showOption : Int,
     summary : String ?= null,
-    insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp),
+    insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     content: @Composable (() -> Unit),
 ) {
 
@@ -130,7 +131,7 @@ fun XMiuixContentDropdown(
     showOption : Int,
     showOptions : Int,
     summary : String ?= null,
-    insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp),
+    insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     contents: @Composable (() -> Unit),
     content: @Composable (() -> Unit),
 ) {
@@ -182,7 +183,7 @@ fun SuperContentDropdown(
     option: Int,
     key : String,
     summary : String ?= null,
-    insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp),
+    insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     content: @Composable ((MutableState<Int>) -> Unit),
 ) {
 
@@ -222,7 +223,7 @@ fun PMiuixSuperDropdown(
     option: Int,
     summary : String ?= null,
     selectedIndex: Int,
-    insideMargin: PaddingValues = PaddingValues(24.dp, 16.dp),
+    insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     onSelectedIndexChange: (Int) -> Unit
 ) {
 

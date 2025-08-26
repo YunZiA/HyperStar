@@ -5,9 +5,9 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.SuperIntentArrow
-import com.yunzia.hyperstar.ui.component.classes
-import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.NavPager
 
 @Composable
@@ -20,8 +20,9 @@ fun ReferencesScreen(
         navController = navController,
         parentRoute = currentStartDestination,
     ) {
-        firstClasses(
-            title = "Apache-2.0"
+        itemGroup(
+            title = "Apache-2.0",
+            position = SuperGroupPosition.FIRST
         ) {
             SuperIntentArrow(
                 title = "miuix-kotlin-multiplatform",
@@ -72,7 +73,7 @@ fun ReferencesScreen(
                 url = "https://github.com/Kyant0/AndroidLiquidGlass"
             )
         }
-        classes(title = "AGPL-3.0") {
+        itemGroup(title = "AGPL-3.0") {
 
             SuperIntentArrow(
                 title = "HyperCeiler",
@@ -82,7 +83,10 @@ fun ReferencesScreen(
             )
 
         }
-        classes(title = "No License") {
+        itemGroup(
+            title = "No License",
+            position = SuperGroupPosition.LAST
+        ) {
 
             SuperIntentArrow(
                 title = "IAmNotADeveloper",

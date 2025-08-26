@@ -47,10 +47,9 @@ import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.component.SuperSpinner
 import com.yunzia.hyperstar.ui.component.SuperWarnDialogArrow
 import com.yunzia.hyperstar.ui.component.XSuperDropdown
-import com.yunzia.hyperstar.ui.component.classes
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.dialog.SuperCTDialogDefaults
 import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
-import com.yunzia.hyperstar.ui.component.firstClasses
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
@@ -71,7 +70,7 @@ import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 @Composable
 fun Settings(
@@ -160,7 +159,7 @@ fun Settings(
                 bottom = contentPadding.calculateBottomPadding() + 14.dp
             ),
         ) {
-            firstClasses(
+            itemGroup(
                 title = R.string.show_title
             ) {
                 PMiuixSuperSwitch(
@@ -194,7 +193,7 @@ fun Settings(
 
             }
 
-            classes(
+            this.itemGroup(
                 title = context.getString(R.string.backup_restore)
             ) {
 
@@ -222,7 +221,7 @@ fun Settings(
 
             }
 
-            classes(
+            this.itemGroup(
                 title = context.getString(R.string.err_find)
             ) {
 
@@ -286,7 +285,7 @@ fun ErrorDialog(
                     .wrapContentHeight()
                     .background(
                         colorScheme.secondaryContainer,
-                        SmoothRoundedCornerShape(12.dp, 0.5f)
+                        G2RoundedCornerShape(12.dp)
                     )
                     .padding(12.dp)
             ) {

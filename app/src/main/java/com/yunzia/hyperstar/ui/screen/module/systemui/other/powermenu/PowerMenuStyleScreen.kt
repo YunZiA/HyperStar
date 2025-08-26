@@ -60,8 +60,9 @@ import androidx.core.graphics.ColorUtils
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.FunList
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.component.Classes
 import com.yunzia.hyperstar.ui.component.SuperArgNavHostArrow
+import com.yunzia.hyperstar.ui.component.SuperGroup
+import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.topbar.TopButton
 import com.yunzia.hyperstar.ui.component.helper.getSystemCornerRadius
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
@@ -69,7 +70,7 @@ import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.SPUtils
 import com.yunzia.hyperstar.utils.rememberWindowSize
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import kotlin.math.absoluteValue
 
 @Composable
@@ -258,7 +259,8 @@ fun PowerMenuStyleScreen(
                 }
                 2->{
 
-                    Classes(
+                    SuperGroup(
+                        position = SuperGroupPosition.LAST
                     ){
                         SuperArgNavHostArrow(
                             title = stringResource(R.string.button)+0,
@@ -316,7 +318,6 @@ fun PowerMenuStyleScreen(
                             key = "power_menu_style_b_7",
                             rightDo = { getFunTitle(funTypes,funTitles,it) }
                         )
-
 
                     }
 
@@ -382,7 +383,7 @@ fun AnimPager(
             .border(
                 3.dp,
                 Color(0xff3988FF).copy(alpha = selectAlpha),
-                SmoothRoundedCornerShape(roundedCorner, 1F)
+                G2RoundedCornerShape(roundedCorner)
             )
             .width(width.value),
         contentAlignment = Alignment.Center,
@@ -390,7 +391,7 @@ fun AnimPager(
         BoxWithConstraints(
             Modifier
                 .padding(6.dp)
-                .clip(SmoothRoundedCornerShape(roundedCorner / 5 * 4, 1F))
+                .clip(G2RoundedCornerShape(roundedCorner / 5 * 4))
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(Color(0xFF5470CB), Color(0xFF62B1D0)),

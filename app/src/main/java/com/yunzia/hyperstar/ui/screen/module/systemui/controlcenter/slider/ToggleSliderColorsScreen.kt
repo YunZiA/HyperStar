@@ -7,8 +7,8 @@ import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.ColorPickerTool
 import com.yunzia.hyperstar.ui.component.ContentFolder
-import com.yunzia.hyperstar.ui.component.classes
-import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.SuperGroupPosition
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
 
@@ -25,8 +25,9 @@ fun ToggleSliderColorsScreen(
             Helper.rootShell("killall com.android.systemui")
         },
     ) {
-        firstClasses(
-            title = R.string.advanced_textures
+        itemGroup(
+            title = R.string.advanced_textures,
+            position = SuperGroupPosition.FIRST
         ) {
 
             ContentFolder(stringResource(R.string.progress_bar)){
@@ -66,8 +67,9 @@ fun ToggleSliderColorsScreen(
 
 
         }
-        classes(
-            title = R.string.disabled_advanced_textures
+        itemGroup(
+            title = R.string.disabled_advanced_textures,
+            position = SuperGroupPosition.LAST
         ) {
             ColorPickerTool(
                 title = stringResource(R.string.progress_bar),

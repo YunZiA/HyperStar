@@ -3,8 +3,10 @@ package com.kyant.liquidglass
 import android.graphics.RuntimeShader
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.Stable
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@Stable
 internal class LiquidGlassShadersCache() {
 
     private var _materialShader: RuntimeShader? = null

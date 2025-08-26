@@ -1,7 +1,10 @@
 package com.yunzia.hyperstar.ui.screen.module.systemui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,6 +15,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
@@ -23,6 +27,7 @@ import com.yunzia.hyperstar.ui.screen.module.systemui.other.SystemUIOtherPager
 import com.yunzia.hyperstar.ui.screen.module.systemui.volume.VolumePager
 import com.yunzia.hyperstar.utils.Helper
 import kotlinx.coroutines.launch
+import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
 @Composable
@@ -50,13 +55,13 @@ fun SystemUIScreen(
 
         Column(
             modifier = Modifier
-                .padding(top = paddingValue.calculateTopPadding())
+                .padding(top = paddingValue.calculateTopPadding() + 12.dp)
         ) {
 
             TabRow(
                 tabs = tabs,
                 selectedTabIndex = pagerState.targetPage,
-                modifier = Modifier.padding(horizontal = 18.dp).padding(top = 14.dp)
+                modifier = Modifier.padding(horizontal = 12.dp).padding(bottom = 6.dp)
             ) {
                 coroutineScope.launch {
                     pagerState.animateScrollToPage(it)
@@ -64,7 +69,9 @@ fun SystemUIScreen(
             }
             HorizontalPager(
                 state = pagerState,
-                contentPadding = PaddingValues(top = 6.dp),
+                key = {
+                    tabs[it]
+                },
                 beyondViewportPageCount = 1,
                 userScrollEnabled = false
             ) {

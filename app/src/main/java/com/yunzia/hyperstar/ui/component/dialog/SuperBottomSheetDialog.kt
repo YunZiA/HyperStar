@@ -45,8 +45,8 @@ import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.DialogLayout
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
 
@@ -146,7 +146,7 @@ fun SuperBottomSheetDialog(
                     .offset { IntOffset(0, (screenHeight - heightAnim.value).toInt()) }
                     .height(with(density) { fullHeight.toDp() })
                     .clip(
-                        SmoothRoundedCornerShape(
+                        G2RoundedCornerShape(
                             topStart = CornerSize(25.dp),
                             topEnd = CornerSize(25.dp),
                             bottomEnd = CornerSize(0.dp),

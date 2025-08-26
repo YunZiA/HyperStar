@@ -294,7 +294,7 @@ fun ControlCenterListScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 12.dp).padding(top = 12.dp),
                 insideMargin =  PaddingValues(0.dp,14.dp),
                 cornerRadius = 21.dp
             ) {

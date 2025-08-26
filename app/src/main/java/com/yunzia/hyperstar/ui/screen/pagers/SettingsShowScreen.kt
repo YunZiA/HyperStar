@@ -10,8 +10,7 @@ import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.PMiuixSuperDropdown
 import com.yunzia.hyperstar.ui.component.PMiuixSuperSwitch
-import com.yunzia.hyperstar.ui.component.classes
-import com.yunzia.hyperstar.ui.component.firstClasses
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.NavPager
 import com.yunzia.hyperstar.utils.PreferencesUtil
 
@@ -32,7 +31,7 @@ fun SettingsShowScreen(
         parentRoute = currentStartDestination,
     ) {
 
-        firstClasses(
+        itemGroup(
             title = R.string.global
         ) {
             PMiuixSuperSwitch(
@@ -45,7 +44,7 @@ fun SettingsShowScreen(
             )
 
         }
-        classes(
+        this.itemGroup(
             title = R.string.main_page_title
         ){
             PMiuixSuperDropdown(
@@ -65,13 +64,13 @@ fun SettingsShowScreen(
                     PreferencesUtil.putBoolean("page_user_scroll",activity.enablePageUserScroll.value)
                 }
             )
-//            PMiuixSuperSwitch(
-//                title = stringResource(R.string.page_user_scroll_title),
-//                key = "page_user_scroll",
-//            )
+    //            PMiuixSuperSwitch(
+    //                title = stringResource(R.string.page_user_scroll_title),
+    //                key = "page_user_scroll",
+    //            )
 
         }
-        classes(
+        this.itemGroup(
             title = R.string.setting_item
         ) {
             PMiuixSuperSwitch(

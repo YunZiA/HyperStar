@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -31,7 +32,8 @@ import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.CapsuleShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 
 @Composable
@@ -82,7 +84,7 @@ fun Button(
         },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = SmoothRoundedCornerShape(cornerRadius,1f),
+        shape = G2RoundedCornerShape(cornerRadius),
         color = colors
     ) {
         Row(
@@ -117,7 +119,7 @@ fun TextButton(
         },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = SmoothRoundedCornerShape(cornerRadius),
+        shape = G2RoundedCornerShape(cornerRadius),
         color = colors
     ) {
         Row(
@@ -148,14 +150,15 @@ fun BaseButton(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable () -> Unit
 ) {
+    val capsuleShape  = G2RoundedCornerShape(cornerRadius)
 
     val hapticFeedback = LocalHapticFeedback.current
 
     Surface(
         enabled = enabled,
-        modifier = modifier.clip(SmoothRoundedCornerShape(cornerRadius,0.5f)).semantics { role = Role.Button },
+        modifier = modifier.clip(capsuleShape).semantics { role = Role.Button },
         //interactionSource = interactionSource,
-        shape = SmoothRoundedCornerShape(cornerRadius,0.8f),
+        shape = capsuleShape,
         color = color,
         onClick = {
             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -196,8 +199,7 @@ fun BaseButton(
         },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = SmoothRoundedCornerShape(cornerRadius,1f),
-                //SquircleShape(cornerRadius,CornerSmoothing.High),
+        shape = G2RoundedCornerShape(cornerRadius),
         color = color
     ) {
         Row(

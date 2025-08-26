@@ -59,7 +59,7 @@ import com.yunzia.hyperstar.utils.isPad
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 @Composable
 fun ActivePage(
@@ -103,7 +103,7 @@ fun ActivePage(
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .widthIn(max=480.dp)
+            .widthIn(max = 480.dp)
             .padding(vertical = 26.dp)
             .statusBarsPadding()
             .navigationBarsPadding(),
@@ -140,9 +140,9 @@ fun ActivePage(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 12.dp)
                 .padding(top = 15.dp, bottom = 6.dp)
-                .clip(SmoothRoundedCornerShape(21.dp, 0.5f))
+                .clip(G2RoundedCornerShape(21.dp))
                 .background(colorScheme.surface)
             ,
             verticalAlignment = Alignment.CenterVertically,
@@ -178,9 +178,9 @@ fun ActivePage(
                             )
                         }
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = 12.dp)
                         .padding(top = 8.dp),
-                    insideMargin = PaddingValues(24.dp,24.dp),
+                    insideMargin = PaddingValues(16.dp),
                     cornerRadius = 21.dp
                 ) {
                     Box(

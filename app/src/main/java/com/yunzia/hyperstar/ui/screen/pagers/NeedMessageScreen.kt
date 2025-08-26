@@ -43,7 +43,7 @@ import com.yunzia.hyperstar.utils.isPad
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 @Composable
 fun NeedMessageScreen(
@@ -85,15 +85,15 @@ fun NeedMessageScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .clip(SmoothRoundedCornerShape(21.dp, 0.5f))
+                    .padding(12.dp)
+                    .clip(G2RoundedCornerShape(21.dp))
                     .background(Color(0x2A0D84FF))
                     ,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = stringResource(R.string.debug_message_header_text),
-                    modifier = Modifier.padding( vertical = 16.dp, horizontal = 24.dp),
+                    modifier = Modifier.padding( 16.dp),
                     color = Color(0xFF0D84FF),
                     fontWeight = FontWeight.Normal,
                     fontSize = 15.sp
@@ -119,9 +119,9 @@ fun NeedMessageScreen(
                         )
                     }
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 12.dp),
-                insideMargin = PaddingValues(24.dp,24.dp),
+                    .padding(horizontal = 12.dp)
+                    .padding(bottom = 12.dp),
+                insideMargin = PaddingValues(16.dp),
                 cornerRadius = 21.dp
             ) {
                 Box(

@@ -49,7 +49,7 @@ import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 @Composable
 fun NotificationOfImAddPage(
@@ -197,7 +197,7 @@ private fun AppNotifItem(
             .padding(horizontal = 16.dp)
             .padding(top = 10.dp)
             .bounceAnimN()
-            .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
+            .clip(G2RoundedCornerShape(CardDefaults.CornerRadius))
             .background(
                 if (isSelected) colorScheme.tertiaryContainer
                 else colorScheme.surfaceVariant

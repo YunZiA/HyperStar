@@ -41,7 +41,7 @@ import com.yunzia.hyperstar.utils.SPUtils
 import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
 
@@ -89,7 +89,7 @@ fun SelectFunScreen(
         LazyColumn(
             modifier = Modifier.height(getWindowSize().height.dp)
                 .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
-            contentPadding = PaddingValues(top = padding.calculateTopPadding() + 14.dp, bottom = padding.calculateBottomPadding()+28.dp),
+            contentPadding = PaddingValues(top = padding.calculateTopPadding() + 12.dp, bottom = padding.calculateBottomPadding()),
         ) {
 
             funTypes.forEachIndexed { index, type ->
@@ -126,7 +126,7 @@ fun FunItem(
             .padding(horizontal = 28.dp)
             .padding(top = 10.dp)
             .scale(scale)
-            .clip(SmoothRoundedCornerShape(16.dp))
+            .clip(G2RoundedCornerShape(16.dp))
             .background(if (isSelect) colorScheme.tertiaryContainer  else colorScheme.surfaceVariant)
             .clickable {
                 selectFun.value = if (isSelect) "" else type

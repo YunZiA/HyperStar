@@ -71,6 +71,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.HorizontalDivider
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -395,7 +396,7 @@ private fun AppItem(
             .padding(horizontal = 28.dp)
             .padding(top = 10.dp)
             .bounceScale(eventState),
-        color = colorScheme.surfaceVariant
+        colors = CardDefaults.defaultColors(colorScheme.surfaceVariant)
     ) {
 
         Row(

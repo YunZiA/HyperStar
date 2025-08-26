@@ -25,6 +25,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -50,7 +51,7 @@ import top.yukonga.miuix.kmp.basic.ListPopupDefaults
 import top.yukonga.miuix.kmp.basic.PopupPositionProvider
 import top.yukonga.miuix.kmp.extra.DropdownImpl
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -141,7 +142,7 @@ fun NotificationOfImScreen(
                     .fillMaxSize()
                     .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
                 contentPadding = PaddingValues(
-                    bottom = padding.calculateBottomPadding() + 28.dp
+                    bottom = padding.calculateBottomPadding()
                 )
             ) {
                 selectedApps.forEach { app ->
@@ -179,7 +180,7 @@ private fun AppNotifItem(
         BasicComponent(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 12.dp)
                 .padding(top = 10.dp)
                 .bounceAnimN()
                 .pointerInput(Unit) {
@@ -189,14 +190,13 @@ private fun AppNotifItem(
                         }
                     )
                 }
-                .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
+                .clip(G2RoundedCornerShape(CardDefaults.CornerRadius))
                 .background(
                     if (shouldDelete.value)
                         colorScheme.tertiaryContainer
                     else
                         colorScheme.surfaceVariant
                 ),
-            insideMargin = PaddingValues(17.dp),
             title = notificationInfo.appName,
             titleColor = titleColor(false),
             summary = notificationInfo.packageName,

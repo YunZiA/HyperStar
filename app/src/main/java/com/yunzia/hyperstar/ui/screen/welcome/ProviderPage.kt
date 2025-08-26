@@ -49,6 +49,7 @@ import com.yunzia.hyperstar.utils.JBUtil
 import com.yunzia.hyperstar.utils.JBUtil.openFile
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
@@ -115,10 +116,10 @@ fun ProviderPage(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 28.dp)
+                        .padding(horizontal = 12.dp)
                         .padding(top = 10.dp)
                         .bounceScale(eventState),
-                    color = colorScheme.surfaceVariant
+                    colors = CardDefaults.defaultColors(colorScheme.surfaceVariant)
                 ) {
 
                     Row(

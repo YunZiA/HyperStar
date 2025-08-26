@@ -44,7 +44,7 @@ import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import kotlin.collections.forEachIndexed
 
 @SuppressLint("MutableCollectionMutableState")
@@ -159,12 +159,11 @@ fun AppItem(
     BasicComponent(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 12.dp)
             .padding(top = 10.dp)
             .bounceAnimN()
-            .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
+            .clip(G2RoundedCornerShape(CardDefaults.CornerRadius))
             .background(if (isSelected) colorScheme.tertiaryContainer else colorScheme.surfaceVariant),
-        insideMargin = PaddingValues(16.dp),
         title = app.label,
         titleColor = titleColor(isSelected),
         summary = app.packageName,

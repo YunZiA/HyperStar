@@ -85,7 +85,6 @@ fun SuperSpinner(
         summary = summary,
         summaryColor = summaryColor,
         leftAction = leftAction,
-        insideMargin = PaddingValues(24.dp, 16.dp),
         enabled = enabled,
         showValue = showValue,
         //onSelectedIndexChange = onSelectedIndexChange

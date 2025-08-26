@@ -26,7 +26,7 @@ data class InnerRefraction(
             InnerRefraction(
                 height = RefractionValue(8.dp),
                 amount = RefractionValue((-16).dp),
-                eccentricFactor = 0.25f
+                eccentricFactor = 1f
             )
     }
 }

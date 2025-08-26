@@ -34,7 +34,7 @@ import com.yunzia.hyperstar.ui.component.Button
 import com.yunzia.hyperstar.ui.component.PMiuixSuperDropdown
 import com.yunzia.hyperstar.ui.component.PMiuixSuperSwitch
 import com.yunzia.hyperstar.ui.component.XSuperDropdown
-import com.yunzia.hyperstar.ui.component.classes
+import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.utils.PreferencesUtil
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Text
@@ -70,15 +70,17 @@ fun BaseSettingPage(pagerState: PagerState) {
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold
         )
-        LazyColumn(modifier = Modifier
+        LazyColumn(
+            modifier = Modifier
             .weight(1f)
             .padding(bottom = 10.dp)
-            .padding(horizontal = 4.dp)) {
+            .padding(horizontal = 4.dp)
+        ) {
 
             item{
                 Spacer(modifier = Modifier.height(10.dp))
             }
-            classes(
+            itemGroup(
                 title = R.string.show_title
             ){
                 PMiuixSuperSwitch(
@@ -103,7 +105,7 @@ fun BaseSettingPage(pagerState: PagerState) {
 
 
             }
-            classes(
+            itemGroup(
                 title = R.string.err_find
             ){
                 XSuperDropdown(

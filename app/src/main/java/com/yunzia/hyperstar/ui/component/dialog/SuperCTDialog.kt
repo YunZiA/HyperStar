@@ -29,8 +29,8 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.DialogLayout
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getRoundedCorner
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
@@ -93,12 +93,12 @@ fun SuperCTDialog(
                         }
                         .align(contentAlignment.invoke().value)
                         .graphicsLayer(
-                            shape = SmoothRoundedCornerShape(bottomCornerRadius,0.5f),
+                            shape = G2RoundedCornerShape(bottomCornerRadius),
                             clip = false
                         )
                         .background(
                             color = backgroundColor,
-                            shape = SmoothRoundedCornerShape(bottomCornerRadius,0.5f)
+                            shape = G2RoundedCornerShape(bottomCornerRadius)
                         )
                         .padding(
                             horizontal = insideMargin.width,

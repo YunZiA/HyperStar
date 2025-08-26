@@ -48,13 +48,13 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseArrow
-import com.yunzia.hyperstar.ui.component.Classes
+import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.pager.NavPager
-import com.yunzia.hyperstar.ui.component.classes
+import com.yunzia.hyperstar.ui.component.itemGroup
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import yunzia.utils.AppUtils
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -114,17 +114,19 @@ fun DonationPage(
         navController = navController,
         parentRoute = currentStartDestination,
     ) {
-        item{
-            Classes{
-                Text(
-                    text = tipsList[tipIndex.intValue],
-                    fontSize = 15.sp,
-                    color = colorScheme.onBackgroundVariant,
-                    modifier = Modifier
-                        .padding(24.dp, 16.dp)
-                        .alpha(animatedTextAlpha.value))
+        itemGroup(
+            position = SuperGroupPosition.FIRST
+        ){
+            Text(
+                text = tipsList[tipIndex.intValue],
+                fontSize = 15.sp,
+                color = colorScheme.onBackgroundVariant,
+                modifier = Modifier
+                    .padding(24.dp, 16.dp)
+                    .alpha(animatedTextAlpha.value)
+            )
 
-            }
+
         }
         donationClass(
             mContext,R.drawable.donate_alipay,R.drawable.alipay_icon,R.string.alipay
@@ -209,7 +211,7 @@ private fun LazyListScope.donationClass(
     content: @Composable (() -> Unit),
 ){
 
-    classes{
+    itemGroup {
 
         Row(
             modifier = Modifier.padding(top = 16.dp, start = 16.dp, bottom = 8.dp),
@@ -259,7 +261,7 @@ private fun SaveImage(
     modifier: Modifier = Modifier,
 ){
 
-    val shape = SmoothRoundedCornerShape(10.dp, 0.5f)
+    val shape = G2RoundedCornerShape(10.dp)
 
     val hapticFeedback = LocalHapticFeedback.current
     Image(

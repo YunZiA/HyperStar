@@ -56,7 +56,6 @@
             android:name="xposedminversion"
             android:value="93" />
 
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.yunzia.hyperstar.fileprovider"

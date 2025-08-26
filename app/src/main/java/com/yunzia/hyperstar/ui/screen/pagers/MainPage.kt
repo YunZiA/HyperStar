@@ -66,7 +66,7 @@ import top.yukonga.miuix.kmp.extra.CheckboxLocation
 import top.yukonga.miuix.kmp.extra.DropdownImpl
 import top.yukonga.miuix.kmp.extra.SuperCheckbox
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
 @Composable
@@ -227,7 +227,7 @@ fun NavigationBarForStart(
                         BoxWithConstraints(
                             Modifier
                                 .padding(bottom = 5.dp)
-                                .background(bgColor, SmoothRoundedCornerShape(8.dp, 0.5f))
+                                .background(bgColor, G2RoundedCornerShape(8.dp))
                                 .pointerInput(Unit) {
                                     detectTapGestures(
                                         onTap = {
@@ -341,7 +341,7 @@ fun  RebootDialog(
             modifier = Modifier
                 .padding(top = 8.dp, bottom = 18.dp)
                 .fillMaxWidth()
-                .clip(SmoothRoundedCornerShape(16.dp, 1f))
+                .clip(G2RoundedCornerShape(16.dp))
                 .background(colorScheme.secondaryContainer)
         ) {
             Item(

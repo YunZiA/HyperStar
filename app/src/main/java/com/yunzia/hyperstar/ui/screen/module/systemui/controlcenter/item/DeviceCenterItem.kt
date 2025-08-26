@@ -23,6 +23,7 @@ import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.EnableItemDr
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.EnableItemSlider
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.ItemState
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
@@ -68,7 +69,7 @@ fun DeviceCenterItem(
 
         Card(
             Modifier.padding(bottom = 10.dp),
-            color = colorScheme.secondaryContainer
+            colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
         ) {
             EnableItemDropdown(
                 key = "deviceCenter_land_rightOrLeft"
@@ -77,7 +78,7 @@ fun DeviceCenterItem(
         }
 
         Card(
-            color = colorScheme.secondaryContainer
+            colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
         ) {
             EnableItemSlider(
                 key = "deviceCenter_span_size",

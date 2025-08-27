@@ -99,18 +99,19 @@ class VolumeOrQSBrightnessValue : Hooker() {
                     val mState = this.getObjectField("mState")?:return@afterHookMethod
                     val states = mState.getObjectFieldAs<SparseArray<*>>("states")
                     val stream = volumeColumn.getObjectFieldAs<Int>("stream")
-                    val streamState = states.get(volumeColumn.getObjectFieldAs<Int>("stream"))
+                    val streamState = states.get(stream)
                     val mActiveStream = this.getObjectFieldAs<Int>("mActiveStream")
 
                     if (streamState != null){
 
                         val maxLevel = streamState.getObjectFieldAs<Int>("levelMax")
                         val level = streamState.getObjectFieldAs<Int>("level")
+                        val value = convertToPercentageProgress(level,maxLevel)
 
-                        volumeColumn.getObjectFieldAs<TextView>("superVolume").text = convertToPercentageProgress(level,maxLevel)
+                        volumeColumn.getObjectFieldAs<TextView>("superVolume").text = value
 
                         if (stream == mActiveStream){
-                            this.getObjectFieldAs<TextView>("mSuperVolume").text = convertToPercentageProgress(level,maxLevel)
+                            this.getObjectFieldAs<TextView>("mSuperVolume").text = value
 
                         }
 
@@ -134,9 +135,17 @@ class VolumeOrQSBrightnessValue : Hooker() {
                     }else{
                         "miui_seekbar_icon_blend_colors_expanded_cc"
                     }
-                    volumeColumn.getObjectFieldAs<TextView>("superVolume").setTextColor(Color.WHITE)
                     val colorArray = mContext.resources.getIntArrayBy(colorArrayName,plugin)
-                    util.setMiViewBlurAndBlendColor(volumeColumn.getObjectFieldAs<TextView>("superVolume"),mExpanded,mContext,3,colorArray,false)
+                    volumeColumn.getObjectFieldAs<TextView>("superVolume").apply {
+                        setTextColor(Color.WHITE)
+                        util.setMiViewBlurAndBlendColor(
+                            this,
+                            mExpanded,mContext,
+                            3,
+                            colorArray,false
+                        )
+                    }
+
 
                 }
             }

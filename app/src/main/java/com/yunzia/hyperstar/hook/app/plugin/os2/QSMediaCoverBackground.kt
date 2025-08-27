@@ -85,15 +85,7 @@ class QSMediaCoverBackground: Hooker() {
                     }
 
                     if (isHideCover){
-                        if (isTitleCenter){
-                            cover.visibility = View.GONE
-
-                        }else{
-                            cover.visibility = View.INVISIBLE
-
-                        }
-
-
+                        cover.visibility = if (isTitleCenter) View.GONE else View.INVISIBLE
                     }
                     if (defaultBackground) return
 

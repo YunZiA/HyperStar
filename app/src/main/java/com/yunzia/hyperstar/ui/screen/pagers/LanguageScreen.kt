@@ -73,22 +73,22 @@ private fun LanguageItem(
     onCheckedChange: (Boolean) -> Unit
 ){
 
-        SuperCheckbox(
-            title = language,
-            titleColor =  titleColor(isSelected.value),
-            checked = isSelected.value,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 28.dp)
-                .padding(top = 10.dp)
-                .bounceAnimN {}
-                .clip(G2RoundedCornerShape(CardDefaults.CornerRadius))
-                .background(if (isSelected.value) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
-            ,
-            checkboxLocation = CheckboxLocation.Right,
-            insideMargin = PaddingValues(20.dp),
-            onCheckedChange = { onCheckedChange(it) }
-        )
+    SuperCheckbox(
+        title = language,
+        titleColor =  titleColor(isSelected.value),
+        checked = isSelected.value,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
+            .padding(top = 10.dp)
+            .bounceAnimN {}
+            .clip(G2RoundedCornerShape(CardDefaults.CornerRadius))
+            .background(if (isSelected.value) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
+        ,
+        checkboxLocation = CheckboxLocation.Right,
+        insideMargin = PaddingValues(20.dp),
+        onCheckedChange = { onCheckedChange(it) }
+    )
 
 
 

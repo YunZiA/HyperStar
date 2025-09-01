@@ -94,7 +94,7 @@ fun WelcomeEnterPager(pagerState: PagerState) {
                     ) {
                         append("Star "+ currentVer.substring(0,3))
                     } },
-                fontSize = 39.sp,
+                fontSize = 45.sp,
                 fontWeight = FontWeight(560),
                 modifier = Modifier
             )

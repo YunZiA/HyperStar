@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -80,6 +81,116 @@ fun AutoSizeText(
 @Composable
 fun AutoSizeText(
     text: String,
+    modifier: Modifier = Modifier,
+    color: Color = MiuixTheme.colorScheme.onBackground,
+    fontSize: MutableState<TextUnit>,
+    fontStyle: FontStyle? = null,
+    fontWeight: FontWeight? = null,
+    fontFamily: FontFamily? = null,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    textDecoration: TextDecoration? = null,
+    textAlign: TextAlign? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    overflow: TextOverflow = TextOverflow.Clip,
+    maxLines: Int = Int.MAX_VALUE,
+    minLines: Int = 1,
+    onTextLayout: ((TextLayoutResult) -> Unit)? = null,
+    style: TextStyle = MiuixTheme.textStyles.main,
+) {
+
+    var readyToDraw by remember { mutableStateOf(false) }
+
+    Text(
+        text = text,
+        modifier = modifier.drawWithContent {
+            if (readyToDraw) {
+                drawContent()
+            }
+        },
+        color = color,
+        fontSize = fontSize.value,
+        style = style,
+        fontStyle = fontStyle,
+        fontWeight = fontWeight,
+        fontFamily = fontFamily,
+        letterSpacing = letterSpacing,
+        textDecoration = textDecoration,
+        textAlign = textAlign,
+        lineHeight = lineHeight,
+        overflow = overflow,
+        maxLines = maxLines,
+        minLines = minLines,
+        softWrap = false,
+        onTextLayout = { textLayoutResult ->
+            if (textLayoutResult.didOverflowWidth) {
+                fontSize.value *= 0.9
+            } else {
+                readyToDraw = true
+            }
+            onTextLayout?.let { it(textLayoutResult) }
+        }
+    )
+}
+
+@Composable
+fun AutoSizeText(
+    text: AnnotatedString,
+    modifier: Modifier = Modifier,
+    color: Color = MiuixTheme.colorScheme.onBackground,
+    fontSize: TextUnit = 16.sp,
+    fontStyle: FontStyle? = null,
+    fontWeight: FontWeight? = null,
+    fontFamily: FontFamily? = null,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    textDecoration: TextDecoration? = null,
+    textAlign: TextAlign? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    overflow: TextOverflow = TextOverflow.Clip,
+    maxLines: Int = Int.MAX_VALUE,
+    minLines: Int = 1,
+    onTextLayout: ((TextLayoutResult) -> Unit)? = null,
+    style: TextStyle = MiuixTheme.textStyles.main,
+) {
+
+    var autoFontSize by remember { mutableStateOf(fontSize) }
+    var readyToDraw by remember { mutableStateOf(false) }
+
+    Text(
+        text = text,
+        modifier = modifier.drawWithContent {
+            if (readyToDraw) {
+                drawContent()
+            }
+        },
+        color = color,
+        fontSize = autoFontSize,
+        style = style,
+        fontStyle = fontStyle,
+        fontWeight = fontWeight,
+        fontFamily = fontFamily,
+        letterSpacing = letterSpacing,
+        textDecoration = textDecoration,
+        textAlign = textAlign,
+        lineHeight = lineHeight,
+        overflow = overflow,
+        maxLines = maxLines,
+        minLines = minLines,
+        softWrap = false,
+        onTextLayout = { textLayoutResult ->
+            if (textLayoutResult.didOverflowWidth) {
+                autoFontSize *= 0.9
+            } else {
+                readyToDraw = true
+            }
+            onTextLayout?.let { it(textLayoutResult) }
+        }
+    )
+}
+
+
+@Composable
+fun AutoSizeText(
+    text: AnnotatedString,
     modifier: Modifier = Modifier,
     color: Color = MiuixTheme.colorScheme.onBackground,
     fontSize: MutableState<TextUnit>,

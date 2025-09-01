@@ -20,6 +20,7 @@ import com.yunzia.hyperstar.ui.component.XSuperDropdown
 import com.yunzia.hyperstar.ui.component.XSuperSwitch
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
+import com.yunzia.hyperstar.utils.getSettingChannel
 import com.yunzia.hyperstar.utils.isOS2Settings
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 
@@ -67,7 +68,7 @@ fun ControlCenterPager(
         ){
 
 
-            if (!isOS2Settings()){
+            if (getSettingChannel() == 1){
                 XSuperSwitch(
                     title = stringResource(R.string.close_qs_clock_anim_title),
                     key = "close_qs_clock_anim"
@@ -81,20 +82,22 @@ fun ControlCenterPager(
                 key = "is_use_chaos_header"
             )
 
-            SwitchContentFolder(
-                switchTitle = stringResource(R.string.close_header_show_message_title),
-                switchKey = "close_header_show_message",
-                contrary = true
-            ){
-                XMiuixSlider(
-                    title = stringResource(R.string.header_show_message_millis_title),
-                    key = "header_show_message_millis",
-                    defValue = 1f,
-                    maxValue = 5f,
-                    minValue = 0.1f,
-                    unit = "s",
-                    decimalPlaces = 2,
-                )
+            if (getSettingChannel() == 2) {
+                SwitchContentFolder(
+                    switchTitle = stringResource(R.string.close_header_show_message_title),
+                    switchKey = "close_header_show_message",
+                    contrary = true
+                ) {
+                    XMiuixSlider(
+                        title = stringResource(R.string.header_show_message_millis_title),
+                        key = "header_show_message_millis",
+                        defValue = 1f,
+                        maxValue = 5f,
+                        minValue = 0.1f,
+                        unit = "s",
+                        decimalPlaces = 2,
+                    )
+                }
             }
         }
         itemGroup(
@@ -173,7 +176,14 @@ fun ControlCenterPager(
                 key = "qs_list_tile_radius",
                 minValue = 0f,
                 maxValue = 36f,
-                progress = 20f,
+                progress = when (getSettingChannel()){
+                    1, 2 -> {
+                        20f
+                    }
+                    else -> {
+                        24f
+                    }
+                },
                 unit = "dp",
                 decimalPlaces = 1
             )

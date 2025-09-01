@@ -84,6 +84,7 @@ fun LanguagePage(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
+                .padding(horizontal = 2.dp)
                 .padding(bottom = 10.dp)
         ) {
 
@@ -143,7 +144,7 @@ private fun LanguageItem(
         checked = isSelected.value,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 28.dp)
+            .padding(horizontal = 12.dp)
             .padding(vertical = 5.dp)
             .bounceAnimN {}
             .clip(G2RoundedCornerShape(CardDefaults.CornerRadius))

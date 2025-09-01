@@ -107,6 +107,7 @@ fun ProviderPage(
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
+                .padding(horizontal = 2.dp)
                 .padding(bottom = 10.dp)
         ) {
 
@@ -136,8 +137,8 @@ fun ProviderPage(
                     ) {
                         Box(
                             modifier = Modifier
-                                .padding(start = 16.dp, end = 12.dp)
-                                .padding(vertical = 16.dp)
+                                .padding(start = 12.dp, end = 12.dp)
+                                .padding(vertical = 12.dp)
                         ){
                             Image(
                                 modifier = Modifier.size(40.dp),
@@ -158,8 +159,8 @@ fun ProviderPage(
                         Image(
                             modifier = Modifier
                                 .width(40.dp)
-                                .padding(vertical = 16.dp)
-                                .padding(end = 16.dp),
+                                .padding(vertical = 12.dp)
+                                .padding(end = 12.dp),
                             imageVector = ImageVector.vectorResource(R.drawable.arrow_right),
                             //MiuixIcons.ArrowRight,
                             contentDescription = null,

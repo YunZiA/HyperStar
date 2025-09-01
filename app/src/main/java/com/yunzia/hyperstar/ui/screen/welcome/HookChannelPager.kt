@@ -90,8 +90,8 @@ fun HookChannelPager(
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
+                .padding(horizontal = 2.dp)
                 .padding(bottom = 10.dp)
-                .padding(horizontal = 4.dp)
         ) {
 
             item{
@@ -150,8 +150,8 @@ private fun LazyListScope.channelItem(
             checked = isSelected,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 28.dp)
-                .padding(vertical = 5.dp)
+                .padding(horizontal = 12.dp)
+                .padding(top = 10.dp)
                 .bounceAnimN {
                     Log.d("ggc", "channelItem: $isSelected")
                     if (isSelected) {

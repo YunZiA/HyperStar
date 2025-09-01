@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.ui.screen.pagers
 
 import android.net.Uri
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -20,6 +21,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -59,14 +61,20 @@ import com.yunzia.hyperstar.utils.JBUtil.clear
 import com.yunzia.hyperstar.utils.JBUtil.openFile
 import com.yunzia.hyperstar.utils.JBUtil.saveFile
 import com.yunzia.hyperstar.utils.PreferencesUtil
+import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.utils.getHookChannel
+import com.yunzia.hyperstar.utils.getSettingChannel
 import com.yunzia.hyperstar.utils.isOS2
 import dev.chrisbanes.haze.HazeState
+import top.yukonga.miuix.kmp.basic.BasicComponentColors
+import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
+import top.yukonga.miuix.kmp.extra.SpinnerEntry
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -225,11 +233,11 @@ fun Settings(
                 title = context.getString(R.string.err_find)
             ) {
 
-                SuperSpinner(
+                ChannelSpinner(
                     title = stringResource(R.string.hook_channel),
                     items = stringArrayResource(R.array.hook_channel_items),
                     key = "is_Hook_Channel",
-                    defIndex = if (isOS2()) 1 else 0,
+                    defIndex = getSettingChannel(),
                 ) {
                     activity.updateUI()
                 }
@@ -253,6 +261,56 @@ fun Settings(
         }
     }
 
+}
+
+
+@Composable
+fun ChannelSpinner(
+    title: String,
+    items: Array<String>,
+    key : String,
+    defIndex:Int,
+    dialogButtonString: String = stringResource(R.string.cancel),
+    modifier: Modifier = Modifier,
+    popupModifier: Modifier = Modifier,
+    titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
+    summary: String? = null,
+    summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
+    leftAction: @Composable (() -> Unit)? = null,
+    enabled: Boolean = true,
+    showValue: Boolean = true,
+    onSelectedIndexChange: ((Int) -> Unit)?=null,
+) {
+
+    val spinnerItems = mutableListOf<SpinnerEntry>()
+    val selected = remember { mutableIntStateOf(SPUtils.getInt(key,defIndex))}
+
+    for (item in items){
+        spinnerItems.add(SpinnerEntry(title = item))
+    }
+
+    SuperSpinner(
+        title = title,
+        items = spinnerItems,
+        selectedIndex = selected.intValue - 1,
+        dialogButtonString = dialogButtonString,
+        modifier = modifier,
+        popupModifier = popupModifier,
+        titleColor = titleColor,
+        summary = summary,
+        summaryColor = summaryColor,
+        leftAction = leftAction,
+        enabled = enabled,
+        showValue = showValue,
+        //onSelectedIndexChange = onSelectedIndexChange
+    ){
+        selected.intValue = it + 1
+
+        Log.d("ggc", "$key: ${selected.intValue}")
+        SPUtils.setInt(key,selected.intValue)
+        onSelectedIndexChange?.invoke(it)
+
+    }
 }
 
 @Composable

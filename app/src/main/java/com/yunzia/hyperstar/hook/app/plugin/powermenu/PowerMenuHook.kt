@@ -12,9 +12,10 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.action.Action
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.base.MenuItem
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.menu.menuB
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.menu.menuA
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.os1.app.plugin.powermenu.menuA
+import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
@@ -49,6 +50,7 @@ class PowerMenuHook : Hooker() {
         icBootloader = resparam.res?.addResource(modRes,R.drawable.ic_bootloader)!!
         icRecovery = resparam.res?.addResource(modRes,R.drawable.ic_recovery)!!
         icAirplaneOn = resparam.res?.addResource(modRes,R.drawable.ic_airplane_on)!!
+        starLog.log("icAirplaneOn = $icAirplaneOn")
         icAirplaneOff = resparam.res?.addResource(modRes,R.drawable.ic_airplane_off)!!
         icSilentOn = resparam.res?.addResource(modRes,R.drawable.ic_silent_on)!!
         icSilentOff = resparam.res?.addResource(modRes,R.drawable.ic_silent_off)!!

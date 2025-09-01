@@ -1,4 +1,4 @@
-package com.yunzia.hyperstar.hook.os1.app.plugin.powermenu
+package com.yunzia.hyperstar.hook.app.plugin.powermenu.menu
 
 import android.animation.ValueAnimator
 import android.content.Context
@@ -11,7 +11,6 @@ import android.widget.FrameLayout
 import android.widget.GridView
 import android.widget.LinearLayout
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.base.MenuItem
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.menu.GridAdapter
 import com.yunzia.hyperstar.hook.base.getDimensionPixelOffset
 import de.robv.android.xposed.XposedHelpers
 import yunzia.utils.DensityUtil.Companion.dpToPx

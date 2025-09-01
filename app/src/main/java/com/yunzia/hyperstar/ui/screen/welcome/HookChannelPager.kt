@@ -40,7 +40,11 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.Button
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.screen.pagers.titleColor
+import com.yunzia.hyperstar.utils.OSVersion
 import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.utils.getHookChannel
+import com.yunzia.hyperstar.utils.getSettingChannel
+import com.yunzia.hyperstar.utils.isBetaOS
 import com.yunzia.hyperstar.utils.isOS2
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.CardDefaults
@@ -56,10 +60,10 @@ fun HookChannelPager(
 ) {
     val view = LocalView.current
     val coroutineScope = rememberCoroutineScope()
-    val hookChannel = remember { mutableIntStateOf(if (isOS2()) 1 else 0) }
+    val hookChannel = remember { mutableIntStateOf(getSettingChannel()) }
     val activity = LocalActivity.current as MainActivity
 
-    val languageList = stringArrayResource(R.array.hook_channel_items).toList()
+    val hookChannelItems = stringArrayResource(R.array.hook_channel_items).toList()
     Column (
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -93,9 +97,9 @@ fun HookChannelPager(
             item{
                 Spacer(modifier = Modifier.height(10.dp))
             }
-            languageList.forEachIndexed { index, s ->
+            hookChannelItems.forEachIndexed { index, s ->
                 channelItem(
-                    s,index,hookChannel
+                    s,index + 1,hookChannel
                 )
             }
 
@@ -141,7 +145,7 @@ private fun LazyListScope.channelItem(
 
     item(channel) {
         SuperCheckbox(
-            title = "Xiaomi HyperOS ${index+1}.0",
+            title = "Xiaomi HyperOS $index.0",
             titleColor = titleColor(isSelected),
             checked = isSelected,
             modifier = Modifier

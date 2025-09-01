@@ -68,6 +68,7 @@ import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.media.app.Ap
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.root
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import top.yukonga.miuix.kmp.basic.Card
@@ -130,12 +131,21 @@ fun RootPage(pagerState: PagerState) {
     val isLoading = remember { mutableStateOf(true) }
 
     val rootList = remember { mutableStateOf<ArrayList<AppInfo>?>(null) }
-    LaunchedEffect(pagerState.currentPage) {
+    LaunchedEffect(pagerState.targetPage) {
 
-        if (pagerState.currentPage == 1){
-            Helper.isRoot()
+        if (pagerState.targetPage == 1){
 
             coroutineScope.launch {
+                if (Helper.isRoot()){
+                    when ( pagerState.currentPage ) {
+                        0->{
+                            delay(200)
+                            pagerState.animateScrollToPage(2)
+                        }
+
+                    }
+                    return@launch
+                }
                 val result = withContext(Dispatchers.IO) {
                     getRootManagerInfo(mContext,root(mContext),noRoot)
                 }

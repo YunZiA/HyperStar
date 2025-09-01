@@ -1,6 +1,6 @@
 package com.yunzia.hyperstar;
 
-import static com.yunzia.hyperstar.utils.VersionKt.isHookChannel;
+import static com.yunzia.hyperstar.utils.VersionKt.getHookChannel;
 
 import android.content.res.XModuleResources;
 
@@ -12,6 +12,7 @@ import com.yunzia.hyperstar.hook.init.InitMiuiScreenshot;
 import com.yunzia.hyperstar.hook.init.InitThemeManagerHook;
 import com.yunzia.hyperstar.hook.init.SystemUIHookForOS1;
 import com.yunzia.hyperstar.hook.init.SystemUIHookForOS2;
+import com.yunzia.hyperstar.hook.init.SystemUIHookForOS3;
 import com.yunzia.hyperstar.hook.tool.starLog;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
@@ -24,10 +25,11 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class InitHook implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
 
+    private final SystemUIHookForOS3 systemUIHook0S3 = new SystemUIHookForOS3();
     private final SystemUIHookForOS2 systemUIHook0S2 = new SystemUIHookForOS2();
     private final SystemUIHookForOS1 systemUIHook0S1 = new SystemUIHookForOS1();
     private String mPath;
-    private final int isHookChannel = isHookChannel() + 1;
+    private final int isHookChannel = getHookChannel();
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
@@ -46,6 +48,9 @@ public class InitHook implements IXposedHookLoadPackage, IXposedHookInitPackageR
                 break;
             case 2:
                 systemUIHook0S2.initResources(resparam,modRes);
+                break;
+            case 3:
+                systemUIHook0S3.initResources(resparam,modRes);
                 break;
             default:
                 starLog.logE("Resource initialization failed! Because the HookChannel is OS"+isHookChannel);
@@ -69,12 +74,17 @@ public class InitHook implements IXposedHookLoadPackage, IXposedHookInitPackageR
                 break;
             case 2:
                 systemUIHook0S2.initHook(lpparam);
-                new InitMiuiHomeHook().initHook(lpparam);
-                new InitMiuiScreenshot().initHook(lpparam);
+                break;
+            case 3:
+                systemUIHook0S3.initHook(lpparam);
                 break;
             default:
                 starLog.logE("Hook initialization failed! Because the HookChannel is OS"+isHookChannel);
 
+        }
+        if(isHookChannel > 1){
+            new InitMiuiHomeHook().initHook(lpparam);
+            new InitMiuiScreenshot().initHook(lpparam);
         }
         new InitMMSHook().initHook(lpparam);
         new InitBarrageHook().initHook(lpparam);

@@ -45,16 +45,16 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.TextButton
 import com.yunzia.hyperstar.ui.screen.pagers.dialog.checkApplication
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
-import com.yunzia.hyperstar.utils.getAndroidVersion
-import com.yunzia.hyperstar.utils.getDeviceName
-import com.yunzia.hyperstar.utils.getMarketName
-import com.yunzia.hyperstar.utils.getOSVersion
-import com.yunzia.hyperstar.utils.getSystemVersionIncremental
+import com.yunzia.hyperstar.utils.OSVersion
+import com.yunzia.hyperstar.utils.androidVersion
+import com.yunzia.hyperstar.utils.deviceName
+import com.yunzia.hyperstar.utils.getSettingChannel
+import com.yunzia.hyperstar.utils.marketName
+import com.yunzia.hyperstar.utils.systemVersionIncremental
 import com.yunzia.hyperstar.utils.getVerName
 import com.yunzia.hyperstar.utils.getVersionCode
 import com.yunzia.hyperstar.utils.isBetaOS
 import com.yunzia.hyperstar.utils.isFold
-import com.yunzia.hyperstar.utils.isOS2Settings
 import com.yunzia.hyperstar.utils.isPad
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
@@ -83,17 +83,18 @@ fun ActivePage(
     val hapticFeedback = LocalHapticFeedback.current
     val debugInfo = "Debug Info of HyperStar\n\n" +
             "ModuleActive = ${isModuleActive()}\n" +
-            "HookChannel = ${if (isOS2Settings()) "OS2" else "OS1"}\n" +
+            "HookChannel =  OS${getSettingChannel()}\n" +
             "VersionCode = ${getVersionCode(mContext)}\n" +
             "VersionName = ${getVerName(mContext)}\n\n" +
-            "MarketName = ${getMarketName()}\n" +
-            "DeviceName = ${getDeviceName()}\n" +
+            "MarketName = $marketName\n" +
+            "DeviceName = $deviceName\n" +
             "isFold = ${isFold()}\n" +
             "isPad = ${isPad()}\n" +
-            "AndroidVersion = ${getAndroidVersion()}\n" +
-            "HyperOSVersion = ${getOSVersion()}\n" +
-            "IsBetaVersion = ${isBetaOS()}\n" +
-            "SystemVersion = ${getSystemVersionIncremental()}"
+            "AndroidVersion = $androidVersion\n" +
+            "HyperOSVersion = $OSVersion\n" +
+            "IsBetaVersion = $isBetaOS\n" +
+            "SystemVersion = $systemVersionIncremental"
+    
     val debugInfoString = buildAnnotatedString {
         withStyle(SpanStyle(color = colorScheme.onSurface)) {
             append(debugInfo)

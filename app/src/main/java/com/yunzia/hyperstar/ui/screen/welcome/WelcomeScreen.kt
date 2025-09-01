@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.utils.Helper
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -93,7 +95,12 @@ fun WelcomeScreen(
                         coroutineScope.launch {
                             val last = pagerState.settledPage - 1
                             Log.d("ggc", "WelcomePager: ${last}")
-                            pagerState.animateScrollToPage(last)
+                            if (pagerState.currentPage == 2 && Helper.isRoot()){
+                                pagerState.animateScrollToPage(0)
+                            }else{
+                                pagerState.animateScrollToPage(last)
+
+                            }
                         }
 
                     }

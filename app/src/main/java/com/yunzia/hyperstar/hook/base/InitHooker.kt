@@ -51,7 +51,11 @@ abstract class InitHooker: HookerHelper() {
 
 
     fun initResource(hooker: Hooker) {
-        hooker.initResources(resparam, modRes)
+        try {
+            hooker.initResources(resparam, modRes)
+        } catch (e: Exception) {
+            starLog.logE(hooker.className.value, e.message)
+        }
     }
 
     fun initResource(hooker: InitHooker) {

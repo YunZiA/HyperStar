@@ -544,6 +544,18 @@ fun findClass(className: String, classLoader: ClassLoader?): Class<*>? {
     return cc
 }
 
+
+fun ClassLoader?.findClassWithPrefix(vararg className: String): Class<*>? {
+    for (name in className) {
+        val clazz = XposedHelpers.findClassIfExists(name, this)
+        if (clazz != null) {
+            return clazz
+        }
+    }
+    starLog.logE("$className is not find")
+    return null
+}
+
 fun hookAllMethods(
     classLoader: ClassLoader?,
     className: String,

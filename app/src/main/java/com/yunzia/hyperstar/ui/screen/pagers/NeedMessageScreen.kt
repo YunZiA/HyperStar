@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.screen.pagers
 
+import android.content.ClipData
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -8,13 +9,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -29,16 +35,17 @@ import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.pager.NavPager
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
-import com.yunzia.hyperstar.utils.getAndroidVersion
-import com.yunzia.hyperstar.utils.getDeviceName
-import com.yunzia.hyperstar.utils.getMarketName
-import com.yunzia.hyperstar.utils.getOSVersion
-import com.yunzia.hyperstar.utils.getSystemVersionIncremental
+import com.yunzia.hyperstar.utils.OSVersion
+import com.yunzia.hyperstar.utils.androidVersion
+import com.yunzia.hyperstar.utils.deviceName
+import com.yunzia.hyperstar.utils.getHookChannel
+import com.yunzia.hyperstar.utils.getSettingChannel
+import com.yunzia.hyperstar.utils.marketName
+import com.yunzia.hyperstar.utils.systemVersionIncremental
 import com.yunzia.hyperstar.utils.getVerName
 import com.yunzia.hyperstar.utils.getVersionCode
 import com.yunzia.hyperstar.utils.isBetaOS
 import com.yunzia.hyperstar.utils.isFold
-import com.yunzia.hyperstar.utils.isOS2Settings
 import com.yunzia.hyperstar.utils.isPad
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
@@ -53,27 +60,38 @@ fun NeedMessageScreen(
     val context = LocalContext.current
     val debugInfo = "Debug Info of HyperStar\n\n" +
             "ModuleActive = ${isModuleActive()}\n" +
-            "HookChannel = ${if (isOS2Settings()) "OS2" else "OS1"}\n" +
+            "HookChannel =  OS${getSettingChannel()}\n" +
             "VersionCode = ${getVersionCode(context)}\n" +
             "VersionName = ${getVerName(context)}\n\n" +
-            "MarketName = ${getMarketName()}\n" +
-            "DeviceName = ${getDeviceName()}\n" +
+            "MarketName = $marketName\n" +
+            "DeviceName = $deviceName\n" +
             "isFold = ${isFold()}\n" +
             "isPad = ${isPad()}\n" +
-            "AndroidVersion = ${getAndroidVersion()}\n" +
-            "HyperOSVersion = ${getOSVersion()}\n" +
-            "IsBetaVersion = ${isBetaOS()}\n" +
-            "SystemVersion = ${getSystemVersionIncremental()}"
+            "AndroidVersion = $androidVersion\n" +
+            "HyperOSVersion = $OSVersion\n" +
+            "IsBetaVersion = $isBetaOS\n" +
+            "SystemVersion = $systemVersionIncremental"
 
 
-    val clipboardManager = LocalClipboardManager.current
+    val localClipboard = LocalClipboard.current
     val debugInfoString = buildAnnotatedString {
         withStyle(SpanStyle(color = colorScheme.onSurface)) {
             append(debugInfo)
         }
     }
 
+    val clipData by lazy { ClipData.newPlainText("text/plain", debugInfoString) }
+    val clipEntry by lazy { ClipEntry(clipData) }
+    val needCopy = remember { mutableStateOf(false) }
+
     val hapticFeedback = LocalHapticFeedback.current
+
+    LaunchedEffect(needCopy.value) {
+        if (!needCopy.value) return@LaunchedEffect
+        localClipboard.setClipEntry(clipEntry)
+        needCopy.value = false
+
+    }
 
     NavPager(
         activityTitle = stringResource(R.string.debug_message),
@@ -108,12 +126,11 @@ fun NeedMessageScreen(
                         detectTapGestures(
                             onLongPress = {
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                clipboardManager.setText(debugInfoString)
-
+                                needCopy.value = true
                             },
                             onDoubleTap = {
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                clipboardManager.setText(debugInfoString)
+                                needCopy.value = true
 
                             }
                         )

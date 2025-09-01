@@ -56,6 +56,7 @@ import com.yunzia.hyperstar.utils.AppInfo
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.Helper.isRoot
+import com.yunzia.hyperstar.utils.getSettingChannel
 import com.yunzia.hyperstar.utils.isOS2Settings
 import dev.chrisbanes.haze.HazeState
 import top.yukonga.miuix.kmp.basic.Card
@@ -242,7 +243,7 @@ fun Home(
                 )
 
                 AppArrow(
-                    visible = { isOS2Settings() },
+                    visible = { getSettingChannel() > 1 },
                     appInfo = activity.appInfo,
                     title = stringResource(R.string.hyper_home),
                     packageName = "com.miui.home",
@@ -275,7 +276,7 @@ fun Home(
                 )
 
                 AppArrow(
-                    visible = { isOS2Settings() },
+                    visible = { getSettingChannel() > 1 },
                     appInfo = activity.appInfo,
                     packageName = "com.miui.screenshot",
                     navController = navController,

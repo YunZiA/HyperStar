@@ -17,11 +17,6 @@
         <item>Estilo 2</item>
     </string-array>
 
-    <string-array name="hook_channel_items">
-        <item>OS1</item>
-        <item>OS2</item>
-    </string-array>
-
     <string-array name="media_background_style_entire">
         <item>Predeterminado</item>
         <item>Cover color</item>

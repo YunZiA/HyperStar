@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.screen.pagers
 
+import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -50,6 +51,7 @@ import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
 import com.yunzia.hyperstar.utils.Helper
+import com.yunzia.hyperstar.utils.getSettingChannel
 import com.yunzia.hyperstar.utils.isOS2Settings
 import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.launch
@@ -109,7 +111,8 @@ fun MainPager(
 
         AppHorizontalPager(
             modifier = Modifier
-                .height(getWindowSize().height.dp).padding(),
+                .height(getWindowSize().height.dp)
+                .padding(),
             contentPadding = PaddingValues(bottom = padding.calculateBottomPadding()) ,
             navController = navController,
             pagerState = pagerState,
@@ -153,7 +156,9 @@ fun MainPagerByThree(
     Row {
 
         NavigationBarForStart(
-            modifier = Modifier.weight(0.25f).widthIn(max = 130.dp),
+            modifier = Modifier
+                .weight(0.25f)
+                .widthIn(max = 130.dp),
             items = items,
             selected = currentPage,
             onClick = { index ->
@@ -174,7 +179,10 @@ fun MainPagerByThree(
 
         AppHorizontalPager(
             navController = navController,
-            modifier = Modifier.blur(hazeState).weight(1f).widthIn(min = 400.dp),
+            modifier = Modifier
+                .blur(hazeState)
+                .weight(1f)
+                .widthIn(min = 400.dp),
             pagerState = pagerState,
             hazeState = hazeState,
             showReboot = show
@@ -279,8 +287,9 @@ fun RebootPup(
     show: MutableState<Boolean>
 ) {
 
-    val os2 = isOS2Settings()
+    val os2 = getSettingChannel() > 1
     val optionSize = if (os2) 2 else 1
+    Log.d("ggc", "RebootPup: $os2")
 
 
     ListPopup(
@@ -326,7 +335,6 @@ fun RebootPup(
 fun  RebootDialog(
     show: MutableState<Boolean>
 ) {
-    val os2 = isOS2Settings()
     val rebootList = remember { mutableStateListOf<String>() }
     SuperXDialog(
         title = stringResource(R.string.fast_reboot),
@@ -355,7 +363,7 @@ fun  RebootDialog(
                 }
 
             }
-            if (os2){
+            if (getSettingChannel() > 1){
                 Item(
                     title = stringResource(id = R.string.home),
                     type = "com.miui.home"

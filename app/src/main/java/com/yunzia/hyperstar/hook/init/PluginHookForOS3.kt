@@ -111,7 +111,6 @@ class PluginHookForOS3 : InitHooker() {
         initSecHooker(QSVolumeMute())
         initSecHooker(QSCardAutoCollapse())
         initSecHooker(QSToggleSliderRadius())
-        initSecHooker(QSHeaderMessage())
         initSecHooker(QSEditButton())
         initSecHooker(QSControlCenterList())
         initSecHooker(VolumeColumnProgressRadius())

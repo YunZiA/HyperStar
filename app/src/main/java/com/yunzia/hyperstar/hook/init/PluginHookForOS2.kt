@@ -3,7 +3,7 @@ package com.yunzia.hyperstar.hook.init
 import android.content.Context
 import android.content.ContextWrapper
 import com.yunzia.hyperstar.hook.app.plugin.HideVolumeCollpasedFootButton
-import com.yunzia.hyperstar.hook.app.plugin.QSCardTile
+import com.yunzia.hyperstar.hook.app.plugin.QSCardAutoCollapse
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTileList
 import com.yunzia.hyperstar.hook.app.plugin.QSControlCenterList
 import com.yunzia.hyperstar.hook.app.plugin.QSEditText
@@ -28,6 +28,7 @@ import com.yunzia.hyperstar.hook.app.plugin.os2.QSMiplayAppIconRadius
 import com.yunzia.hyperstar.hook.app.plugin.os2.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeOrQSBrightnessValue
+import com.yunzia.hyperstar.hook.app.plugin.os2.QSTileAutoCollapse
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenuHook
 import com.yunzia.hyperstar.hook.base.InitHooker
 import com.yunzia.hyperstar.hook.base.findClass
@@ -103,11 +104,12 @@ class PluginHookForOS2 : InitHooker() {
         initSecHooker(QSMiplayAppIconRadius())
         initSecHooker(QSMediaView())
         initSecHooker(qsControlCenterColor)
+        initSecHooker(QSTileAutoCollapse())
         initSecHooker(QSListView())
         initSecHooker(VolumeOrQSBrightnessValue())
         initSecHooker(QSCardTileList())
         initSecHooker(QSVolumeMute())
-        initSecHooker(QSCardTile())
+        initSecHooker(QSCardAutoCollapse())
         initSecHooker(QSToggleSliderRadius())
         initSecHooker(QSHeaderMessage())
         initSecHooker(QSEditButton())

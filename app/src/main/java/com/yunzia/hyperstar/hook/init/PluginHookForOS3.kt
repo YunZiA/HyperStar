@@ -3,7 +3,7 @@ package com.yunzia.hyperstar.hook.init
 import android.content.Context
 import android.content.ContextWrapper
 import com.yunzia.hyperstar.hook.app.plugin.HideVolumeCollpasedFootButton
-import com.yunzia.hyperstar.hook.app.plugin.QSCardTile
+import com.yunzia.hyperstar.hook.app.plugin.QSCardAutoCollapse
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTileList
 import com.yunzia.hyperstar.hook.app.plugin.QSControlCenterList
 import com.yunzia.hyperstar.hook.app.plugin.QSEditText
@@ -20,14 +20,14 @@ import com.yunzia.hyperstar.hook.app.plugin.os2.QSControlCenterColor
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSEditButton
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSHeaderMessage
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSHeaderViewListener
-import com.yunzia.hyperstar.hook.app.plugin.os3.QSListView
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMediaCoverBackground
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMediaDeviceName
-import com.yunzia.hyperstar.hook.app.plugin.os2.QSMediaView
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMiplayAppIconRadius
 import com.yunzia.hyperstar.hook.app.plugin.os2.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeOrQSBrightnessValue
+import com.yunzia.hyperstar.hook.app.plugin.os3.QSListView
+import com.yunzia.hyperstar.hook.app.plugin.os3.QSTileAutoCollapse
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenuHook
 import com.yunzia.hyperstar.hook.base.InitHooker
 import com.yunzia.hyperstar.hook.base.findClass
@@ -102,13 +102,14 @@ class PluginHookForOS3 : InitHooker() {
         initSecHooker(QSMediaDeviceName())
         initSecHooker(QSMediaDefaultApp())
         initSecHooker(QSMiplayAppIconRadius())
-        initSecHooker(QSMediaView())
+        //initSecHooker(QSMediaView())
+        initSecHooker(QSTileAutoCollapse())
         initSecHooker(qsControlCenterColor)
         initSecHooker(QSListView())
         initSecHooker(VolumeOrQSBrightnessValue())
         initSecHooker(QSCardTileList())
         initSecHooker(QSVolumeMute())
-        initSecHooker(QSCardTile())
+        initSecHooker(QSCardAutoCollapse())
         initSecHooker(QSToggleSliderRadius())
         initSecHooker(QSHeaderMessage())
         initSecHooker(QSEditButton())
@@ -154,6 +155,8 @@ class PluginHookForOS3 : InitHooker() {
             }
         }
     }
+
+
 
 
 }

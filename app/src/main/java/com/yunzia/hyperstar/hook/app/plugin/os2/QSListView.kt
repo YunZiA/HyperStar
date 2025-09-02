@@ -30,7 +30,6 @@ import yunzia.utils.DensityUtil.Companion.dpToPx
 
 class QSListView : Hooker() {
 
-    private val clickClose = XSPUtils.getBoolean("list_tile_click_close",false)
     val labelMode: Int = XSPUtils.getInt("is_list_label_mode",0)
     val labelSize = XSPUtils.getFloat("list_label_size",13f)
     val isWordlessMode0: Int = XSPUtils.getInt("is_wordless_mode_0",0)
@@ -96,15 +95,6 @@ class QSListView : Hooker() {
 
         }
 
-    }
-
-    fun collapseStatusBar(context: Context) {
-        try {
-            val systemService = context.getSystemService("statusbar")
-            systemService.javaClass.getMethod("collapsePanels", *arrayOfNulls(0)).invoke(systemService, *arrayOfNulls(0))
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     private fun titleFollowAnimation(){
@@ -219,42 +209,6 @@ class QSListView : Hooker() {
 //                param.result = list.subList(0,1)
 //            }
 //        })
-
-        val MainPanelModeController = findClass("miui.systemui.controlcenter.panel.main.MainPanelController\$Mode",classLoader)
-
-        if (clickClose){
-            QSTileItemView.afterHookMethod(
-                "onFinishInflate\$lambda-0",
-                QSTileItemView,View::class.java
-            ){
-                val qSTileItemView = it.args[0] as FrameLayout
-                val lastTriggeredTime = qSTileItemView.getLongField("lastTriggeredTime")
-                val elapsedRealtime = SystemClock.elapsedRealtime()
-
-                if (elapsedRealtime > lastTriggeredTime + 200) {
-                    val clickAction = qSTileItemView.getObjectField("clickAction")
-                    if (clickAction == null) {
-                        starLog.logE("clickAction == null")
-                        return@afterHookMethod
-                    }
-
-                    val enumConstants: Array<out Any>? = MainPanelModeController?.enumConstants
-                    if (enumConstants == null) {
-                        starLog.logE("enumConstants == null")
-                        return@afterHookMethod
-                    }
-
-                    val mainPanelMode = qSTileItemView.getObjectField("mode")
-                    if (mainPanelMode != enumConstants[2]) {
-                        collapseStatusBar(qSTileItemView.context)
-                    } else {
-                        starLog.logE("mainPanelMode == edit")
-
-                    }
-                }
-            }
-
-        }
 
         if (labelMarquee || labelMode != 0 ){
 

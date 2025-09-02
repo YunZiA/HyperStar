@@ -7,9 +7,7 @@ import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.utils.XSPUtils
 
-class QSCardTile : Hooker() {
-
-
+class QSCardAutoCollapse : Hooker() {
 
     private val clickClose = XSPUtils.getBoolean("card_tile_click_close",false)
 
@@ -30,9 +28,7 @@ class QSCardTile : Hooker() {
 
     private fun startMethodsHook() {
 
-        if (!clickClose){
-            return
-        }
+        if (!clickClose) return
 
         findClass(
             "miui.systemui.controlcenter.qs.tileview.QSCardItemView\$onFinishInflate\$1",
@@ -41,7 +37,7 @@ class QSCardTile : Hooker() {
 
             val qsCardItemView = this.getObjectFieldAs<LinearLayout>("this$0")
 
-            val clickAction = qsCardItemView.getObjectField("clickAction") ?: return@afterHookMethod
+            qsCardItemView.getObjectField("clickAction") ?: return@afterHookMethod
 
             collapseStatusBar(qsCardItemView.context)
 

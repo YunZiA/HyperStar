@@ -3,7 +3,7 @@ package com.yunzia.hyperstar.hook.init
 import android.content.Context
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.app.plugin.HideVolumeCollpasedFootButton
-import com.yunzia.hyperstar.hook.app.plugin.QSCardTile
+import com.yunzia.hyperstar.hook.app.plugin.QSCardAutoCollapse
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTileList
 import com.yunzia.hyperstar.hook.app.plugin.QSControlCenterList
 import com.yunzia.hyperstar.hook.app.plugin.QSEditText
@@ -29,6 +29,7 @@ import com.yunzia.hyperstar.hook.app.plugin.os1.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeOrQSBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.VolumeBarLayoutParams
+import com.yunzia.hyperstar.hook.app.plugin.os1.QSTileAutoCollapse
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenuHook
 import com.yunzia.hyperstar.hook.base.InitHooker
 import com.yunzia.hyperstar.hook.base.MethodHook
@@ -130,8 +131,8 @@ class PluginHookForOS1() : InitHooker() {
     }
 
 
-    override fun initSecHook(classLoader: ClassLoader?) {
-        super.initSecHook(classLoader)
+    override fun initSecHook(secClassLoader: ClassLoader?) {
+        super.initSecHook(secClassLoader)
 
 
         initSecHooker(QSClockAnim())
@@ -142,10 +143,11 @@ class PluginHookForOS1() : InitHooker() {
         initSecHooker(QSMediaDefaultApp())
         initSecHooker(QSMediaView())
         initSecHooker(qsControlCenterColor)
+        initSecHooker(QSTileAutoCollapse())
         initSecHooker(QSListView())
         initSecHooker(VolumeOrQSBrightnessValue())
         initSecHooker(QSCardTileList())
-        initSecHooker(QSCardTile())
+        initSecHooker(QSCardAutoCollapse())
         initSecHooker(QSVolumeMute())
         initSecHooker(QSToggleSliderRadius())
         initSecHooker(QSHeaderMessage())

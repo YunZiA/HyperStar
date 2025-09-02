@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="log_level">
-        <item>Info</item>
-        <item>Debug</item>
-    </string-array>
 
     <string-array name="status">
         <item>Desligado</item>

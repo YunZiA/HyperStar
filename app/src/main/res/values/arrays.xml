@@ -33,6 +33,7 @@
     <string-array name="log_level">
         <item>Info</item>
         <item>Debug</item>
+        <item>Error</item>
     </string-array>
 
     <array name="mix_color">

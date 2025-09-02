@@ -5,7 +5,9 @@ import com.yunzia.hyperstar.utils.XSPUtils;
 import de.robv.android.xposed.XposedBridge;
 
 public class starLog {
-    private static  final Boolean show = XSPUtils.INSTANCE.getInt("log_level",0)==1;
+    private static final int level = XSPUtils.INSTANCE.getInt("log_level",0);
+    private static final boolean debug = level >= 1;
+    private static final boolean error = level >= 2;
     private static final String HOOK_TAG = "[HyperStar]";
 
     public static void log(String msg) {
@@ -60,49 +62,57 @@ public class starLog {
     }
 
     public static void logE(String tag, String msg) {
+        if (!error) return;
         XposedBridge.log(HOOK_TAG+"[E][" + tag + "]: " + msg);
     }
 
     public static void logE(String msg) {
+        if (!error) return;
         XposedBridge.log(HOOK_TAG+"[E]: " + msg);
     }
 
     public static void logE(String tag, Throwable log) {
+        if (!error) return;
         XposedBridge.log(HOOK_TAG+"[E][" + tag + "]: " + log);
     }
 
     public static void logE(String tag, String pkg, String msg) {
+        if (!error) return;
         XposedBridge.log(HOOK_TAG+"[E][" + pkg + "][" + tag + "]: " + msg);
     }
 
     public static void logE(String tag, String pkg, Throwable log) {
+        if (!error) return;
         XposedBridge.log(HOOK_TAG+"[E][" + pkg + "][" + tag + "]: " + log);
     }
 
     public static void logE(String tag, String pkg, Exception exp) {
+        if (!error) return;
         XposedBridge.log(HOOK_TAG+"[E][" + pkg + "][" + tag + "]: " + exp);
     }
 
     public static void logE(String tag, String pkg, String msg, Throwable log) {
+        if (!error) return;
         XposedBridge.log(HOOK_TAG+"[E][" + pkg + "][" + tag + "]: " + msg + ", by: " + log);
     }
 
     public static void logE(String tag, String pkg, String msg, Exception exp) {
+        if (!error) return;
         XposedBridge.log(HOOK_TAG+"[E]{" + pkg + "][" + tag + "]: " + msg + ", by: " + exp);
     }
 
     public static void logD(String msg) {
-        if (!show) return;
+        if (!debug) return;
         XposedBridge.log(HOOK_TAG+"[D]: " + msg);
     }
 
     public static void logD(String tag, String msg) {
-        if (!show) return;
+        if (!debug) return;
         XposedBridge.log(HOOK_TAG+"[D][" + tag + "]: " + msg);
     }
 
     public static void logD(String tag, String pkg, String msg) {
-        if (!show) return;
+        if (!debug) return;
         XposedBridge.log(HOOK_TAG+"[D][" + pkg + "][" + tag + "]: " + msg);
     }
 }

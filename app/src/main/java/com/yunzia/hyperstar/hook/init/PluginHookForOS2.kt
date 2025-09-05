@@ -15,6 +15,7 @@ import com.yunzia.hyperstar.hook.app.plugin.QSVolumeMute
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurWidgetManager
 import com.yunzia.hyperstar.hook.app.plugin.VolumeBarLayoutParams
 import com.yunzia.hyperstar.hook.app.plugin.os2.DeviceCenterRow
+import com.yunzia.hyperstar.hook.app.plugin.os2.FixTileIconSize
 import com.yunzia.hyperstar.hook.app.plugin.os2.LongPressVolumeBarToExpand
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSControlCenterColor
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSEditButton
@@ -105,6 +106,7 @@ class PluginHookForOS2 : InitHooker() {
         initSecHooker(QSMediaView())
         initSecHooker(qsControlCenterColor)
         initSecHooker(QSTileAutoCollapse())
+        initSecHooker(FixTileIconSize())
         initSecHooker(QSListView())
         initSecHooker(VolumeOrQSBrightnessValue())
         initSecHooker(QSCardTileList())

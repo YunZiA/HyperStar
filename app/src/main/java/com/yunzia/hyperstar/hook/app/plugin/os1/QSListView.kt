@@ -49,41 +49,6 @@ class QSListView : Hooker() {
         startMethodsHook()
         titleFollowAnimation()
         qsTileRadius()
-        fixTileIcon()
-    }
-
-    private fun fixTileIcon() {
-
-        val fix = XSPUtils.getBoolean("fix_list_tile_icon_scale",false)
-        if (!fix) return
-
-        findClass(
-            "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
-            classLoader
-        ).apply {
-            afterHookMethod(
-                "getProperIconSize",
-                Drawable::class.java
-            ){
-                val tileSize = this.getFloatField("tileSize").toInt()
-                //height = tileSize
-
-                val drawable = it.args[0] as Drawable
-
-                val isCustomTile = this.getBooleanField("isCustomTile")
-                if (isCustomTile) return@afterHookMethod
-
-                if(drawable !is AnimatedVectorDrawable) return@afterHookMethod
-
-                val customTileSize = this.getFloatField("customTileSize").toInt()
-                if (drawable.intrinsicHeight < customTileSize){
-                    it.result = customTileSize
-
-                }
-
-            }
-        }
-
     }
 
     private fun titleFollowAnimation(){

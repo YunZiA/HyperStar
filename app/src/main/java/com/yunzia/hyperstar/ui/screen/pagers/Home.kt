@@ -57,7 +57,6 @@ import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.Helper.isRoot
 import com.yunzia.hyperstar.utils.getSettingChannel
-import com.yunzia.hyperstar.utils.isOS2Settings
 import dev.chrisbanes.haze.HazeState
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults

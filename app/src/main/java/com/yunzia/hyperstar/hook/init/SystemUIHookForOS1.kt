@@ -2,7 +2,7 @@ package com.yunzia.hyperstar.hook.init
 
 import com.yunzia.annotations.Init
 import com.yunzia.hyperstar.hook.app.systemui.os1.LowDeviceBackgroundColor
-import com.yunzia.hyperstar.hook.app.systemui.os1.NavigationBarBackground
+import com.yunzia.hyperstar.hook.app.systemui.os1.SystemBarBackground
 import com.yunzia.hyperstar.hook.base.InitHooker
 
 @Init(packageName = "com.android.systemui")
@@ -16,7 +16,7 @@ class SystemUIHookForOS1 : InitHooker() {
 
     override fun initHook() {
         pluginHookForOS1.initHooker()
-        NavigationBarBackground().initHooker()
+        SystemBarBackground().initHooker()
         LowDeviceBackgroundColor().initHooker()
 
         doTestHook()

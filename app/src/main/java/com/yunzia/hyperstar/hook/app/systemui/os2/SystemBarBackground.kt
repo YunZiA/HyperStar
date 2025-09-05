@@ -6,7 +6,7 @@ import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.utils.XSPUtils
 
 
-class NavigationBarBackground : Hooker() {
+class SystemBarBackground : Hooker() {
 
     private val isTransparentNavigationBarBackground = XSPUtils.getBoolean("is_transparent_navigationBar_background",false)
     private val isTransparentStatusBarBackground = XSPUtils.getBoolean("is_transparent_statusBar_background",false)

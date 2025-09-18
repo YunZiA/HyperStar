@@ -30,6 +30,7 @@ import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeOrQSBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.VolumeBarLayoutParams
 import com.yunzia.hyperstar.hook.app.plugin.os1.FixTileIconSize
+import com.yunzia.hyperstar.hook.app.plugin.os1.QSListTileRadius
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSTileAutoCollapse
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenuHook
 import com.yunzia.hyperstar.hook.base.InitHooker
@@ -146,6 +147,7 @@ class PluginHookForOS1() : InitHooker() {
         initSecHooker(qsControlCenterColor)
         initSecHooker(QSTileAutoCollapse())
         initSecHooker(FixTileIconSize())
+        initSecHooker(QSListTileRadius())
         initSecHooker(QSListView())
         initSecHooker(VolumeOrQSBrightnessValue())
         initSecHooker(QSCardTileList())

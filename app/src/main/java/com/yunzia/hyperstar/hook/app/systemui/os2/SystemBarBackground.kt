@@ -22,10 +22,10 @@ class SystemBarBackground : Hooker() {
     private fun transparentStatusBarBackground() {
         if (!isTransparentStatusBarBackground) return
 
-        val BarTransitions = findClass(
-            "com.android.systemui.statusbar.phone.BarTransitions",
-            classLoader
-        )
+//        val BarTransitions = findClass(
+//            "com.android.systemui.statusbar.phone.BarTransitions",
+//            classLoader
+//        )
         findClass(
             "com.android.systemui.dagger.DaggerReferenceGlobalRootComponent\$StatusBarFragmentComponentImpl\$SwitchingProvider",
             classLoader

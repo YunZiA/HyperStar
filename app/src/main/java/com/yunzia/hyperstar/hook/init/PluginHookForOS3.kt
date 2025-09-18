@@ -27,6 +27,8 @@ import com.yunzia.hyperstar.hook.app.plugin.os2.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeOrQSBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.os3.FixTileIconSize
+import com.yunzia.hyperstar.hook.app.plugin.os3.QSListTileLabelMarquee
+import com.yunzia.hyperstar.hook.app.plugin.os3.QSListTileRadius
 import com.yunzia.hyperstar.hook.app.plugin.os3.QSListView
 import com.yunzia.hyperstar.hook.app.plugin.os3.QSTileAutoCollapse
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenuHook
@@ -104,9 +106,11 @@ class PluginHookForOS3 : InitHooker() {
         initSecHooker(QSMediaDefaultApp())
         initSecHooker(QSMiplayAppIconRadius())
         //initSecHooker(QSMediaView())
+        initSecHooker(QSListTileRadius())
         initSecHooker(FixTileIconSize())
         initSecHooker(QSTileAutoCollapse())
         initSecHooker(qsControlCenterColor)
+        initSecHooker(QSListTileLabelMarquee())
         initSecHooker(QSListView())
         initSecHooker(VolumeOrQSBrightnessValue())
         initSecHooker(QSCardTileList())

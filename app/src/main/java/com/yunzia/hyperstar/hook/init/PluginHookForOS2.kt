@@ -21,6 +21,7 @@ import com.yunzia.hyperstar.hook.app.plugin.os2.QSControlCenterColor
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSEditButton
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSHeaderMessage
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSHeaderViewListener
+import com.yunzia.hyperstar.hook.app.plugin.os2.QSListTileRadius
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSListView
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMediaCoverBackground
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMediaDeviceName
@@ -106,6 +107,7 @@ class PluginHookForOS2 : InitHooker() {
         initSecHooker(QSMediaView())
         initSecHooker(qsControlCenterColor)
         initSecHooker(QSTileAutoCollapse())
+        initSecHooker(QSListTileRadius())
         initSecHooker(FixTileIconSize())
         initSecHooker(QSListView())
         initSecHooker(VolumeOrQSBrightnessValue())

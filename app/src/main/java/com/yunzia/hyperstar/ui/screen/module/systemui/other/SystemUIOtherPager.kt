@@ -16,6 +16,7 @@ import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.component.XSuperSwitch
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
+import com.yunzia.hyperstar.utils.getSettingChannel
 import com.yunzia.hyperstar.utils.isOS2Settings
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 
@@ -49,7 +50,7 @@ fun SystemUIOtherPager(
                 key = "is_transparent_navigationBar_background"
             )
         }
-        if (isOS2Settings()){
+        if (getSettingChannel() >=2 ){
             itemGroup(
                 title = R.string.classic_noy_type
             ) {

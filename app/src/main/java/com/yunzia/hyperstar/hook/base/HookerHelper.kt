@@ -459,11 +459,18 @@ fun Class<*>?.afterHookConstructor(
     vararg parameterTypes: Any?,
     methodHook: Any?.(param:MethodHookParam) -> Unit
 ){
-    XposedHelpers.findAndHookConstructor(this, *parameterTypes, object :XC_MethodHook(){
-        override fun afterHookedMethod(param: MethodHookParam) {
-            param.thisObject.methodHook(param)
-        }
-    })
+    try {
+        XposedHelpers.findAndHookConstructor(this, *parameterTypes, object :XC_MethodHook(){
+            override fun afterHookedMethod(param: MethodHookParam) {
+                param.thisObject.methodHook(param)
+            }
+        })
+
+    }catch (e : Exception){
+
+        starLog.logE("${this?.simpleName}","${e.cause}")
+
+    }
 
 }
 
@@ -540,6 +547,9 @@ fun findClass(className: String, classLoader: ClassLoader?): Class<*>? {
     val cc = XposedHelpers.findClassIfExists(className, classLoader)
     if (cc == null) {
         starLog.logE("$className is not find")
+    }else{
+
+        starLog.logE("$className is finded")
     }
     return cc
 }

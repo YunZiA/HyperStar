@@ -39,9 +39,6 @@ class QSListView : Hooker() {
     private val tileColorForState = XSPUtils.getInt("qs_list_tile_color_for_state",0)
     val listSpacingY = XSPUtils.getFloat("list_spacing_y",100f)/100
     val listLabelSpacingY = XSPUtils.getFloat("list_label_spacing_y",100f)/100
-    val isQSListTileRadius = XSPUtils.getBoolean("is_qs_list_tile_radius",false)
-
-    val qsListTileRadius = XSPUtils.getFloat("qs_list_tile_radius",20f)
 
     val listIconTop = if (labelMode == 2) XSPUtils.getFloat("list_icon_top", 0f)/100 else 1/7f
     val listLabelTop = XSPUtils.getFloat("list_label_top", 0f)
@@ -465,52 +462,7 @@ class QSListView : Hooker() {
             classLoader
         )
         val ControlCenterWindowViewImpl = findClass("miui.systemui.controlcenter.windowview.ControlCenterWindowViewImpl",classLoader)
-        if (isQSListTileRadius){
 
-            QSTileItemIconView.apply {
-                replaceHookMethod(
-                    "getCornerRadius"
-                ) {
-                    val pluginContext = getObjectFieldAs<Context>( "pluginContext")
-                    return@replaceHookMethod dpToPx(
-                        pluginContext.resources,
-                        qsListTileRadius
-                    )
-                }
-                beforeHookMethod(
-                    "setDisabledBg",
-                    Drawable::class.java
-                ) {
-                    val drawable = it.args[0] as Drawable
-                    if (drawable is GradientDrawable){
-                        val pluginContext = this.getObjectFieldAs<Context>( "pluginContext")
-                        val mRadius = dpToPx(pluginContext.resources,qsListTileRadius)
-                        if (drawable.cornerRadius != mRadius){
-                            drawable.cornerRadius = mRadius
-                            it.args[0] = drawable
-                        }
-                    }
-
-                }
-                beforeHookMethod(
-                    "setEnabledBg",
-                    Drawable::class.java
-                ){
-                    val drawable = it.args?.get(0) as Drawable
-                    if (drawable is GradientDrawable){
-                        val pluginContext = this.getObjectFieldAs<Context>("pluginContext")
-                        val mRadius = dpToPx(pluginContext.resources,qsListTileRadius)
-                        if (drawable.cornerRadius != mRadius){
-                            drawable.cornerRadius = mRadius
-                            it.args[0] = drawable
-                        }
-                    }
-
-                }
-            }
-
-
-        }
         var isDetailTile = false
 
         var tileSize = 0
@@ -604,21 +556,6 @@ class QSListView : Hooker() {
 
         }
     }
-
-    private fun setRadius(
-        context: Context,
-        res : Resources,
-        name:String
-    ) {
-
-        val id: Int = res.getIdentifier(name, "drawable", plugin)
-        val drawable: Drawable = context.theme.getDrawable(id)
-        if (drawable is GradientDrawable) {
-            drawable.cornerRadius = dpToPx(res,qsListTileRadius)
-        }
-    }
-
-
 
 
 }

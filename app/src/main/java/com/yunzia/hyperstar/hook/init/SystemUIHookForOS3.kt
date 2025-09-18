@@ -11,6 +11,9 @@ import com.yunzia.hyperstar.hook.app.systemui.os2.NotificationForLm
 import com.yunzia.hyperstar.hook.app.systemui.os2.QSHeaderView
 import com.yunzia.hyperstar.hook.app.systemui.os2.Test
 import com.yunzia.hyperstar.hook.base.InitHooker
+import com.yunzia.hyperstar.hook.base.afterHookAllConstructors
+import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import java.lang.Boolean
 import java.lang.Float
 import kotlin.Exception
@@ -47,8 +50,7 @@ class SystemUIHookForOS3 : InitHooker() {
         //initHooker(test);
 
         //initHooker(addCatPaw);
-//
-//        doTestHook();
+
     }
 
 

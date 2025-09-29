@@ -144,6 +144,8 @@ abstract class HookerHelper {
     fun Any?.setLongField(fieldName: String,value: Long) = XposedHelpers.setLongField(this, fieldName, value)
     fun Any?.getLongField(fieldName: String) = XposedHelpers.getLongField(this, fieldName)
 
+    fun Any?.getStringField(fieldName: String) = XposedHelpers.getObjectField(this, fieldName) as String
+
     fun Any?.getBooleanField(fieldName: String) = XposedHelpers.getBooleanField(this, fieldName)
 
     fun Any?.setObjectField(fieldName: String,value: Any) = XposedHelpers.setObjectField(this, fieldName, value)
@@ -547,9 +549,6 @@ fun findClass(className: String, classLoader: ClassLoader?): Class<*>? {
     val cc = XposedHelpers.findClassIfExists(className, classLoader)
     if (cc == null) {
         starLog.logE("$className is not find")
-    }else{
-
-        starLog.logE("$className is finded")
     }
     return cc
 }

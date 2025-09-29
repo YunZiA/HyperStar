@@ -380,7 +380,6 @@ class QSListView : Hooker() {
                             setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
                         }
                     }
-
                     return@replaceHookMethod null
                 }
                 findMethodExactIfExists("updateTextSizeForKDDI")?.replace {

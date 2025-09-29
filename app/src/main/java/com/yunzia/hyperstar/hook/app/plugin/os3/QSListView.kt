@@ -1,13 +1,7 @@
 package com.yunzia.hyperstar.hook.app.plugin.os3
 
 import android.content.ContentResolver
-import android.content.Context
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.ColorFilter
-import android.graphics.Rect
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.LayerDrawable
 import android.provider.Settings
 import android.util.TypedValue
@@ -26,8 +20,6 @@ import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.hook.util.plugin.CommonUtils
 import com.yunzia.hyperstar.hook.util.plugin.ControlCenterUtils
 import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedHelpers
 import yunzia.utils.DensityUtil.Companion.dpToPx
 
 
@@ -38,7 +30,7 @@ class QSListView : Hooker() {
     val isWordlessMode0: Int = XSPUtils.getInt("is_wordless_mode_0",0)
     val isWordlessMode2: Int = XSPUtils.getInt("is_wordless_mode_2",0)
     val labelWidth = XSPUtils.getFloat("list_label_width",100f)/100f
-    private val tileColorForState = XSPUtils.getInt("qs_list_tile_color_for_state",0)
+    private val labelColorFollowTileState = XSPUtils.getInt("qs_list_tile_color_for_state",0)
     val listSpacingY = XSPUtils.getFloat("list_spacing_y",100f)/100
     val listLabelSpacingY = XSPUtils.getFloat("list_label_spacing_y",100f)/100
 
@@ -50,9 +42,8 @@ class QSListView : Hooker() {
         super.initHook(classLoader)
         setLabelLayoutAndSize()
         resetWordlessMode()
-        cc()
-        qsTileRadius()
-        //titleFollowAnimation()
+        labelColorFollowTileState()
+        resetIconBottom()
         //fixBrightnessIcon()
     }
 
@@ -73,20 +64,6 @@ class QSListView : Hooker() {
         }
     }
 
-    private fun titleFollowAnimation(){
-
-        if (!XSPUtils.getBoolean("title_follow_anim", false)) return
-
-        val QSItemViewHolder = findClass("miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder", classLoader)
-        QSItemViewHolder.findMethodExt(
-            "getIconFrame",
-            { isBridge && isSynthetic }
-        ).replace {
-            val itemView = this.getObjectField("itemView")
-            return@replace itemView
-        }
-    }
-
     private fun setLabelLayoutAndSize() {
 
         if (labelMode != 0){
@@ -102,33 +79,36 @@ class QSListView : Hooker() {
                 val binding = this.callMethod("getBinding")
                 val rootView = binding.getObjectFieldAs<ViewGroup>("rootView")
                 val label = binding.getObjectFieldAs<TextView>("tileLabel")
-                if (labelMode == 1) {
-                    val iconWith = getDimensionPixelSize(rootView.resources,"qs_tile_item_icon_size",plugin)/ 9 * 7
-                    val layoutParam = label.layoutParams.apply {
-                        width = iconWith
-                    }
-                    label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9f)
-                    rootView.apply {
-                        removeView(label)
-                        addView(label, 1,layoutParam)
-                    }
-                } else if (labelMode == 2) {
-                    val layoutParam = label.layoutParams
-                    rootView.apply {
-                        removeView(label)
-                        addView(label, 1)
-                        post {
-                            if (rootViewWidth == 0){
-                                rootViewWidth = rootView.width
-                                starLog.logD("TAG", "width = " + rootView.width)
-                            }else{
-                                starLog.logD("TAG", "rootViewWidth = " + rootView.width)
-                            }
-                            layoutParam.width = rootViewWidth * labelWidth.toInt()
-                            label.layoutParams = layoutParam
+                rootView.post {
+                    if (labelMode == 1) {
+                        val iconWith = getDimensionPixelSize(rootView.resources,"qs_tile_item_icon_size",plugin)/ 9 * 7
+                        val layoutParam = label.layoutParams.apply {
+                            width = iconWith
                         }
+                        label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9f)
+                        rootView.apply {
+                            removeView(label)
+                            addView(label, 1,layoutParam)
+                        }
+                    } else if (labelMode == 2) {
+                        val layoutParam = label.layoutParams
+                        rootView.apply {
+                            removeView(label)
+                            addView(label, 1)
+                            post {
+                                if (rootViewWidth == 0){
+                                    rootViewWidth = rootView.width
+                                    starLog.logD("TAG", "width = " + rootView.width)
+                                }else{
+                                    starLog.logD("TAG", "rootViewWidth = " + rootView.width)
+                                }
+                                layoutParam.width = rootViewWidth * labelWidth.toInt()
+                                label.layoutParams = layoutParam
+                            }
+                        }
+                        label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, labelSize)
                     }
-                    label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, labelSize)
+
                 }
 
             }
@@ -228,14 +208,14 @@ class QSListView : Hooker() {
 
         }
     }
-    fun cc(){
+    fun labelColorFollowTileState(){
         val QSItemView =
             findClass("miui.systemui.controlcenter.qs.tileview.QSItemView", classLoader)
         val QSTileItemView =
             findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemView", classLoader)
 
 
-        if (tileColorForState != 0 || labelMode != 0){
+        if (labelColorFollowTileState != 0 || labelMode != 0){
             QSTileItemView.apply {
                 replaceHookMethod("getLabelVisible"){
                     return@replaceHookMethod true
@@ -243,7 +223,7 @@ class QSListView : Hooker() {
                 replaceHookMethod(
                     "updateTextAppearance"
                 ) { this as FrameLayout
-                    val icon = this.getObjectField("icon")
+                    val icon = this.callMethod("getIcon")
                     val isDetailTile = icon.getBooleanField("isDetailTile")
                     if (isDetailTile) return@replaceHookMethod null
                     val label = this.findViewByIdNameAs<TextView>("tile_label")
@@ -265,86 +245,80 @@ class QSListView : Hooker() {
 
         }
 
-//        findClass(
-//            "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
-//            classLoader
-//        ).afterHookMethod(
-//            "drawableTint",
-//            "com.android.systemui.plugins.qs.QSTile\$State",
-//            Drawable::class.java,
-//        ){
-//            if ( labelMode == 0 || this.getBooleanField("isDetailTile")) return@afterHookMethod
-//            val drawable = it.args[1] as Drawable
-//            val tileSize = this.callMethod("getProperIconSize",drawable) as Int
-//            drawable.setBounds(0, 0, tileSize, tileSize);
-//            val insetDrawable = InsetDrawable(
-//                drawable,
-//                0,
-//                0,
-//                0,
-//                200//(tileSize * listIconTop).toInt()
-//            )
-//            starLog.logD("drawableTint = ${drawable.intrinsicHeight}")
-//            it.args[1] = insetDrawable
-//
-//        }
+        starLog.logD("tileState = ${labelColorFollowTileState}")
 
-        if (tileColorForState != 0){
+        if (labelColorFollowTileState != 0){
 
             val disableColor = XSPUtils.getString("list_title_off_color", "null")
             val enableColor = XSPUtils.getString("list_title_on_color", "null")
             val restrictedColor = XSPUtils.getString("list_title_restricted_color", "null")
             val unavailableColor = XSPUtils.getString("list_title_unavailable_color", "null")
 
-
-
-            QSTileItemView.beforeHookMethod(
+            QSTileItemView.afterHookMethod(
                 "onStateUpdated",
                 Boolean::class.java
             ) { this as FrameLayout
-                val mode = this.getObjectFieldAs<Enum<*>>("mode")
+                val binding = this.callMethod("getBinding")
                 val Companion = QSItemView.getStaticObjectField("Companion")
-                val sta = this.getObjectField("state")
-                var copy: Any? = null
-
-                if (mode.ordinal == 0){
-                    if (sta == null) return@beforeHookMethod
-                    copy = sta
-                }else{
-                    var customizeState = this.getObjectField("customizeState")
-                    if (customizeState == null){
-                        customizeState = sta
-                        if (customizeState == null){
-                            return@beforeHookMethod
-                        }
-                    }
-                    copy = customizeState.callMethod("copy")!!
-                    copy.setIntField("state",1)
-                    Companion.callMethod("setRestrictedCompat", copy,false)
-                }
-                val state:Int = copy.getIntField("state")
-                val states = Companion.callMethodAs<Boolean>("isRestrictedCompat",copy)!!
-                val label = this.findViewByIdNameAs<TextView>("tile_label")
                 val icon = this.callMethod("getIcon")
-                var off = icon.getIntField("iconColorOff")
-                var enable = icon.getIntField("iconColor")
-                var unavailable = icon.getIntField("iconColorUnavailable")
-                var restrict = icon.getIntField("iconColorRestrict")
-                if (tileColorForState == 2){
+                val state = icon.getObjectField("state")?:return@afterHookMethod
+                val states = state.getIntField("state")
+                val isRestrictedCompat = Companion.callMethodAs<Boolean>("isRestrictedCompat",state)!!
+                val label = binding.getObjectFieldAs<TextView>("tileLabel")
+                var off = icon.getIntField("defaultIconColorOff")
+                var enable = icon.getIntField("defaultIconColor")
+                var unavailable = icon.getIntField("defaultIconColorUnavailable")
+                var restrict = icon.getIntField("defaultIconColorRestrict")
+                if (labelColorFollowTileState == 2){
                     if (disableColor != "null")  off = Color.parseColor(disableColor)
                     if (enableColor != "null")  enable = Color.parseColor(enableColor)
                     if (restrictedColor != "null")  unavailable = Color.parseColor(restrictedColor)
                     if (unavailableColor != "null")  restrict = Color.parseColor(unavailableColor)
                 }
 
-                if (state == 0) {
-                    label.setTextColor(unavailable)
-                } else if (state == 1 && states) {
-                    label.setTextColor(restrict)
-                } else if (state != 2) {
-                    label.setTextColor(off)
-                } else {
-                    label.setTextColor(enable)
+                when(states) {
+                    0 -> {
+                        label.setTextColor(unavailable)
+                    }
+                    1 -> {
+                        if (isRestrictedCompat){
+                            label.setTextColor(restrict)
+                        }else{
+                            label.setTextColor(off)
+                        }
+                    }
+                    2 -> {
+                        val spec = state.getStringField("spec")
+                        when(spec) {
+                            "batterysaver" -> {
+                                label.setTextColor(icon.getIntField("powerSaferTileIconColor"))
+                            }
+                            "flashlight" -> {
+                                label.setTextColor(icon.getIntField("miuiFlashlightTileIconColor"))
+                            }
+                            "autobrightness" -> {
+                                label.setTextColor(icon.getIntField("autoBrightnessTileIconColor"))
+                            }
+                            "cell" -> {
+                                label.setTextColor(icon.getIntField("miuiCellularTileIconColor"))
+                            }
+                            "mute" -> {
+                                label.setTextColor(icon.getIntField("muteTileIconColor"))
+                            }
+                            "papermode" -> {
+                                label.setTextColor(icon.getIntField("paperModeTileIconColor"))
+                            }
+                            "quietmode" -> {
+                                label.setTextColor(icon.getIntField("quietModeTileIconColor"))
+                            }
+                            else -> {
+                                label.setTextColor(enable)
+                            }
+                        }
+                    }
+                    else -> {
+                        return@afterHookMethod
+                    }
                 }
 
             }
@@ -357,24 +331,13 @@ class QSListView : Hooker() {
     }
 
 
-    private fun qsTileRadius() {
+    private fun resetIconBottom() {
 
-        val controlCenterUtils = ControlCenterUtils(classLoader)
-        val QSTileItemIconView = findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemIconView", classLoader)
-        val ControlCenterWindowViewImpl = findClass("miui.systemui.controlcenter.windowview.ControlCenterWindowViewImpl",classLoader)
-
-        var isDetailTile = false
-
-        var tileSize = 0
-
-        QSTileItemIconView.apply {
-            beforeHookAllMethods("updateIcon"){
-                isDetailTile = this.getBooleanField("isDetailTile")
-                if ( labelMode != 0 ) {
-                    tileSize = this.getFloatField("tileSize").toInt()
-                }
-
-            }
+        if ( labelMode == 0 )  return
+        findClass(
+            "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
+            classLoader
+        ).apply {
             afterHookMethod(
                 "updateIconInternal",
                 "com.android.systemui.plugins.qs.QSTile\$State",
@@ -383,61 +346,34 @@ class QSListView : Hooker() {
                 Boolean::class.java,
                 Boolean::class.java
             ){
-                val context = this.callMethodAs<Context>("getContext")
-                //if (controlCenterUtils.getBackgroundBlurOpenedInDefaultTheme(context)) return@afterHookMethod
+                if (this.getBooleanField("isDetailTile")) return@afterHookMethod
                 val icon = this.getObjectFieldAs<ImageView>("icon")
                 val drawable = icon.drawable
-                if (drawable is LayerDrawable){
-                    val num = drawable.numberOfLayers - 1
-                    drawable.apply {
-                        if (listIconTop != 0f) {
-                            setLayerInsetBottom(
-                                num,
-                                (tileSize * listIconTop).toInt()
-                            )
+                if (drawable is LayerDrawable) {
+                    icon.post {
+                        starLog.logD("updateIconInternal","${drawable.numberOfLayers}")
+                        val num = drawable.numberOfLayers
+                        val last = num - 1
+                        val properIconSize = this@afterHookMethod.callMethodAs<Int>("getProperIconSize", drawable.getDrawable(last))
+                        val array = Array(num) { index -> drawable.getDrawable(index) }
+                        val imageDrawable = LayerDrawable(array)
+                        imageDrawable.apply {
+                            setLayerGravity(last, Gravity.CENTER)
+                            setLayerSize(last,properIconSize,properIconSize)
+                            if ( listIconTop != 0f){
+                                setLayerInsetBottom(
+                                    last,
+                                    (properIconSize * listIconTop).toInt()
+                                )
+                            }
                         }
+                        starLog.logD("updateIconInternal"," ${drawable.getLayerGravity(last)} + ${drawable.getLayerInsetBottom(last)}")
+                        icon.setImageDrawable(imageDrawable)
                     }
-                    starLog.logD("updateIconInternal + $num")
-                    icon.setImageDrawable(drawable)
-
                 }
-
             }
         }
 
-        if ( labelMode != 0 ) {
-            findClass(
-                "miui.systemui.util.DrawableUtils",
-                classLoader
-            ).replaceHookMethod(
-                "combine",
-                Drawable::class.java,
-                Drawable::class.java,
-                Int::class.java
-            ){
-                val args = it.args
-                val dra = args[0] as Drawable
-                val dra2 = args[1] as Drawable
-                val i = args[2] as Int
-
-                val icon = LayerDrawable(
-                    arrayOf(dra, dra2)
-                ).apply {
-                    setLayerGravity(1, i)
-                }
-                if (isDetailTile) return@replaceHookMethod icon
-
-                if (listIconTop != 0f) {
-                    icon.setLayerInsetBottom(
-                        1,
-                        200
-                    )
-                }
-                starLog.logD("DrawableUtils combine")
-                return@replaceHookMethod icon
-            }
-
-        }
     }
 
 

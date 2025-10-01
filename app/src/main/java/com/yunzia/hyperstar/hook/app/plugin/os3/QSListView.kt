@@ -217,9 +217,9 @@ class QSListView : Hooker() {
 
         if (labelColorFollowTileState != 0 || labelMode != 0){
             QSTileItemView.apply {
-                replaceHookMethod("getLabelVisible"){
-                    return@replaceHookMethod true
-                }
+//                replaceHookMethod("getLabelVisible"){
+//                    return@replaceHookMethod true
+//                }
                 replaceHookMethod(
                     "updateTextAppearance"
                 ) { this as FrameLayout

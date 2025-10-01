@@ -14,9 +14,9 @@ class QSLabelFollowExpandAnim : Hooker(){
             "miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder",
             classLoader
         ).apply {
-            replaceHookMethod("getItemFrame"){
-
-            }
+//            replaceHookMethod("getItemFrame"){
+//
+//            }
         }.findMethodExt(
             "getIconFrame",
             { isBridge && isSynthetic }

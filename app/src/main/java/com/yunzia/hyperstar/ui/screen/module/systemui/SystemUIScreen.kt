@@ -27,6 +27,7 @@ import com.yunzia.hyperstar.ui.screen.module.systemui.other.SystemUIOtherPager
 import com.yunzia.hyperstar.ui.screen.module.systemui.volume.VolumePager
 import com.yunzia.hyperstar.utils.Helper
 import kotlinx.coroutines.launch
+import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
@@ -61,7 +62,9 @@ fun SystemUIScreen(
             TabRow(
                 tabs = tabs,
                 selectedTabIndex = pagerState.targetPage,
-                modifier = Modifier.padding(horizontal = 12.dp).padding(bottom = 6.dp)
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .padding(bottom = 6.dp)
             ) {
                 coroutineScope.launch {
                     pagerState.animateScrollToPage(it)

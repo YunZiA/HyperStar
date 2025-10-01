@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.screen.module.systemui.other
 
+import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +27,7 @@ fun SystemUIOtherPager(
     scrollBehavior: ScrollBehavior,
     paddingValue: PaddingValues
 ) {
+    Log.d("SystemUIScreen", "SystemUIOtherPager: init")
     LazyColumn(
         modifier = Modifier.fillMaxSize().nestedOverScrollVertical(scrollBehavior.nestedScrollConnection),
         contentPadding = PaddingValues(bottom = paddingValue.calculateBottomPadding())
@@ -50,7 +52,7 @@ fun SystemUIOtherPager(
                 key = "is_transparent_navigationBar_background"
             )
         }
-        if (getSettingChannel() >=2 ){
+        if (getSettingChannel() >= 2 ){
             itemGroup(
                 title = R.string.classic_noy_type
             ) {

@@ -200,9 +200,7 @@ fun App(){
             exit = fadeOut()+scaleOut()
         ) {
             BoxWithConstraints{
-                //FirstDialog(navController)
                 Log.d("ggc", "App:  $maxWidth")
-
                 layoutType.intValue = if (isFold()) {
                     if (maxWidth > 480.dp && Settings.Global.getInt(
                             context.contentResolver,
@@ -263,12 +261,9 @@ fun App(){
             welcome.value,
             exit = fadeOut(animationSpec = tween(300, easing = easing))+ scaleOut(animationSpec = tween(300, easing = easing),targetScale = 0.9f)
         ) {
-
             if (!isFold() && !isPad()){
-
                 activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             }
-
             WelcomeScreen(welcome,welcomeState)
         }
 
@@ -384,6 +379,7 @@ fun OneLayout(
     )
 
 
+    Log.d("App", "OneLayout: init")
 
     val sysCorner = getSystemCornerRadius()
     //val easing = CubicBezierEasing(0.12f, 0.38f, 0.2f, 1f)

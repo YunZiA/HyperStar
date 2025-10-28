@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -28,31 +31,31 @@ abstract class BaseActivity : ComponentActivity() {
 
     private val mCallback = object : OnScopeEventListener {
         override fun onScopeRequestPrompted(packageName: String) {
-            runOnUiThread {
+            runCatching {
                 Toast.makeText(this@BaseActivity, "onScopeRequestPrompted: $packageName", Toast.LENGTH_SHORT).show()
             }
         }
 
         override fun onScopeRequestApproved(packageName: String) {
-            runOnUiThread {
+            runCatching {
                 Toast.makeText(this@BaseActivity, "onScopeRequestApproved: $packageName", Toast.LENGTH_SHORT).show()
             }
         }
 
         override fun onScopeRequestDenied(packageName: String) {
-            runOnUiThread {
+            runCatching {
                 Toast.makeText(this@BaseActivity, "onScopeRequestDenied: $packageName", Toast.LENGTH_SHORT).show()
             }
         }
 
         override fun onScopeRequestTimeout(packageName: String) {
-            runOnUiThread {
+            runCatching {
                 Toast.makeText(this@BaseActivity, "onScopeRequestTimeout: $packageName", Toast.LENGTH_SHORT).show()
             }
         }
 
         override fun onScopeRequestFailed(packageName: String, message: String) {
-            runOnUiThread {
+            runCatching {
                 Toast.makeText(this@BaseActivity, "onScopeRequestFailed: $packageName, $message", Toast.LENGTH_SHORT).show()
             }
         }
@@ -76,6 +79,52 @@ abstract class BaseActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        var serviceInfo = ""
+
+        XposedServiceHelper.registerListener(object : XposedServiceHelper.OnServiceListener {
+            override fun onServiceBind(service: XposedService) {
+                //Log.d("ggc", "onServiceBind: \n$service")
+                mService = service
+                serviceInfo += "Binder acquired"
+                serviceInfo += "\nAPI " + service.apiVersion
+                serviceInfo += "\nFramework " + service.frameworkName
+                serviceInfo += "\nFramework version " + service.frameworkVersion
+                serviceInfo += "\nFramework version code " + service.frameworkVersionCode
+                serviceInfo += "\nScope: " + service.scope
+                Log.d("ggc", "onServiceBind: \n$serviceInfo")
+
+//                binding.requestScope.setOnClickListener {
+//                    service.requestScope("com.android.settings", mCallback)
+//                }
+//                binding.randomPrefs.setOnClickListener {
+//                    val prefs = service.getRemotePreferences("test")
+//                    val old = prefs.getInt("test", -1)
+//                    val new = Random.nextInt()
+//                    Toast.makeText(this@BaseActivity, "$old -> $new", Toast.LENGTH_SHORT).show()
+//                    prefs.edit().putInt("test", new).apply()
+//                }
+//                binding.remoteFile.setOnClickListener {
+//                    service.openRemoteFile("test.txt").use { pfd ->
+//                        FileWriter(pfd.fileDescriptor).use {
+//                            it.append("Hello World!")
+//                        }
+//                    }
+//                }
+            }
+
+            override fun onServiceDied(service: XposedService) {
+                Log.d("ggc", "onServiceDied: \n$service")
+
+            }
+        })
+
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed({
+            if (mService == null) {
+                Log.d("BaseActivity", "onCreate: Binder is null")
+            }
+        }, 5000)
         enableEdgeToEdge()
         setContent {
             HyperStarTheme() {
@@ -83,6 +132,7 @@ abstract class BaseActivity : ComponentActivity() {
                 InitView()
             }
         }
+
 
 
     }

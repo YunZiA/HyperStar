@@ -1,0 +1,30 @@
+-- Merging decision tree log ---
+manifest
+ADDED from C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\service\src\main\AndroidManifest.xml:1:1-11:12
+INJECTED from C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\service\src\main\AndroidManifest.xml:1:1-11:12
+	package
+		INJECTED from C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\service\src\main\AndroidManifest.xml
+	xmlns:tools
+		ADDED from C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\service\src\main\AndroidManifest.xml:2:5-51
+	xmlns:android
+		ADDED from C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\service\src\main\AndroidManifest.xml:1:11-69
+application
+ADDED from C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\service\src\main\AndroidManifest.xml:4:5-10:19
+provider#io.github.libxposed.service.XposedProvider
+ADDED from C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\service\src\main\AndroidManifest.xml:5:9-9:54
+	android:authorities
+		ADDED from C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\service\src\main\AndroidManifest.xml:7:13-65
+	android:exported
+		ADDED from C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\service\src\main\AndroidManifest.xml:8:13-36
+	tools:ignore
+		ADDED from C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\service\src\main\AndroidManifest.xml:9:13-51
+	android:name
+		ADDED from C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\service\src\main\AndroidManifest.xml:6:13-43
+uses-sdk
+INJECTED from C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\service\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\service\src\main\AndroidManifest.xml
+INJECTED from C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\service\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\service\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\service\src\main\AndroidManifest.xml

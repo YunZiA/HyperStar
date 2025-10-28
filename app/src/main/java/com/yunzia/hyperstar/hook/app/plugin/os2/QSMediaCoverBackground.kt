@@ -11,6 +11,9 @@ import android.widget.ImageView
 import androidx.core.graphics.drawable.toDrawable
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.afterHookAllConstructors
+import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
@@ -60,75 +63,76 @@ class QSMediaCoverBackground: Hooker() {
         val MediaPlayerViewHolder  = findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",classLoader)
         val CommonUtils = findClass("miui.systemui.util.CommonUtils",classLoader)
 
+//        val controlCenterUtils = ControlCenterUtils(classLoader)
+//        val miBlurCompat = MiBlurCompat(classLoader)
+
         MediaPlayerViewHolder.afterHookMethod("updateMetaData",MediaPlayerMetaData!!){
 
             val mediaPlayerMetaData = it.args[0]
             val itemView : View = this.getObjectFieldAs<View>("itemView")
             val cover = itemView.findViewByIdNameAs<ImageView>("cover")
             val res = itemView.resources
+            cover.post(object : Runnable{
+                override fun run() {
 
-            if (mediaPlayerMetaData == null) {
-                if (!defaultBackground){
-                    val background = itemView.resources.getIdentifier("media_player_background","drawable",plugin)
-                    itemView.setBackgroundResource(background)
+                    if (mediaPlayerMetaData == null) {
+                        if (!defaultBackground){
+                            val background = itemView.resources.getIdentifier("media_player_background","drawable",plugin)
+                            itemView.setBackgroundResource(background)
 
+                        }
+                        return
+                    }
+
+                    if (isHideCover){
+                        cover.visibility = if (isTitleCenter) View.GONE else View.INVISIBLE
+                    }
+                    if (defaultBackground) return
+
+                    var art = mediaPlayerMetaData.callMethod("getArt")
+                    if (art == null){
+                        starLog.logE("art is null")
+                        return
+                    }
+
+                    if (art !is Bitmap){
+                        starLog.logE("mediaPlayerMetaData:art is not get!!!")
+                        this.callMethod("updateResources")
+                        return
+
+                    }
+
+                    art = when (mediaBackground) {
+                        1 -> {
+                            auto(art)
+                        }
+                        2 -> {
+                            BitmapUtils.doBitmap(art,isScale,scaleFactor,isBlur,blurRadius,isDim,-alpha)
+                        }
+                        else -> {
+                            return
+                        }
+                    }
+
+                    var artDrawable: Drawable = art.toDrawable(res)
+
+                    if (coverAnciently && mediaBackground == 2) {
+                        if (foreground == null){
+                            foreground = vintage?.let { res.getDrawable(it) }
+                        }
+                        artDrawable =  LayerDrawable(arrayOf(artDrawable, foreground))
+
+                    }
+                    itemView.background = artDrawable
+//                        if (coverAnciently ) {
+//                        val layerDrawable = LayerDrawable(arrayOf(artDrawable, foreground))
+//                        layerDrawable
+//                    } else {
+//                        artDrawable
+//                    }
                 }
-                return@afterHookMethod
-            }
 
-            if (isHideCover){
-                if (isTitleCenter){
-                    cover.visibility = View.GONE
-
-                }else{
-                    cover.visibility = View.INVISIBLE
-
-                }
-
-
-            }
-            if (defaultBackground) return@afterHookMethod
-
-
-
-            var art = mediaPlayerMetaData.callMethod("getArt")
-            if (art == null){
-                starLog.logE("art is null")
-                return@afterHookMethod
-            }
-
-            if (art !is Bitmap){
-                starLog.logE("mediaPlayerMetaData:art is not get!!!")
-                this.callMethod("updateResources")
-                return@afterHookMethod
-
-            }
-
-            art = when (mediaBackground) {
-                1 -> {
-                    auto(art)
-                }
-                2 -> {
-                    BitmapUtils.doBitmap(art,isScale,scaleFactor,isBlur,blurRadius,isDim,-alpha)
-                }
-                else -> {
-                    return@afterHookMethod
-                }
-            }
-
-            val artDrawable = art.toDrawable(res)
-
-            if (coverAnciently && foreground == null) {
-
-                foreground = vintage?.let { res.getDrawable(it) }
-
-            }
-            itemView.background = if (coverAnciently) {
-                val layerDrawable = LayerDrawable(arrayOf(artDrawable, foreground))
-                layerDrawable
-            } else {
-                artDrawable
-            }
+            })
 
         }
 
@@ -136,7 +140,20 @@ class QSMediaCoverBackground: Hooker() {
             val HapticFeedback = findClass("miui.systemui.util.HapticFeedback",classLoader)
 
             MediaPlayerViewHolder.apply {
-                afterHookConstructor(View::class.java,HapticFeedback!!){
+                afterHookAllConstructors {
+                    val itemView = this.getObjectFieldAs<View>("itemView")
+                    val _cornerRadius = this.getFloatField("_cornerRadius")
+                    itemView.outlineProvider = object : ViewOutlineProvider(){
+                        override fun getOutline(view: View?, outline: Outline?) {
+                            if (view == null) return
+                            outline?.setRoundRect(0,0,view.width,view.height,_cornerRadius)
+                        }
+
+                    }
+                    itemView.clipToOutline = true
+
+                }
+                afterHookMethod("updateSize") {
                     val itemView = this.getObjectFieldAs<View>("itemView")
                     val _cornerRadius = this.getFloatField("_cornerRadius")
                     itemView.outlineProvider = object : ViewOutlineProvider(){

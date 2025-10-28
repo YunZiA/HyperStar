@@ -16,8 +16,11 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.util.plugin.CommonUtils
+import com.yunzia.hyperstar.hook.base.afterHookConstructor
+import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.plugin.CommonUtils
 import com.yunzia.hyperstar.hook.util.startMarqueeOfFading
 import com.yunzia.hyperstar.utils.XSPUtils
 import yunzia.utils.DensityUtil.Companion.dpToPx
@@ -25,7 +28,6 @@ import yunzia.utils.DensityUtil.Companion.dpToPx
 
 class QSListView : Hooker() {
 
-    private val clickClose = XSPUtils.getBoolean("list_tile_click_close",false)
     val labelMode: Int = XSPUtils.getInt("is_list_label_mode",0)
     val isWordlessMode0: Int = XSPUtils.getInt("is_wordless_mode_0",0)
     val isWordlessMode2: Int = XSPUtils.getInt("is_wordless_mode_2",0)
@@ -35,9 +37,6 @@ class QSListView : Hooker() {
     private val tileColorForState = XSPUtils.getInt("qs_list_tile_color_for_state",0)
     val listSpacingY = XSPUtils.getFloat("list_spacing_y",100f)/100
     val listLabelSpacingY = XSPUtils.getFloat("list_label_spacing_y",100f)/100
-    val isQSListTileRadius = XSPUtils.getBoolean("is_qs_list_tile_radius",false)
-
-    val qsListTileRadius = XSPUtils.getFloat("qs_list_tile_radius",20f)
 
     val listIconTop = if (labelMode == 2) XSPUtils.getFloat("list_icon_top", 0f)/100 else 1/8f
     val listLabelTop = XSPUtils.getFloat("list_label_top", 0f)
@@ -45,100 +44,29 @@ class QSListView : Hooker() {
     override fun initHook(classLoader: ClassLoader?) {
         super.initHook(classLoader)
         startMethodsHook()
+        titleFollowAnimation()
         qsTileRadius()
-        fixTileIcon()
     }
 
-    private fun fixTileIcon() {
+    private fun titleFollowAnimation(){
 
-        val fix = XSPUtils.getBoolean("fix_list_tile_icon_scale",false)
-        if (!fix) return
+        if (!XSPUtils.getBoolean("title_follow_anim",false)) return
 
-        findClass(
-            "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
-            classLoader
-        ).apply {
-            afterHookMethod(
-                "getProperIconSize",
-                Drawable::class.java
-            ){
-                val tileSize = this.getFloatField("tileSize").toInt()
-                //height = tileSize
-
-                val drawable = it.args[0] as Drawable
-
-                val isCustomTile = this.getBooleanField("isCustomTile")
-                if (isCustomTile) return@afterHookMethod
-
-                if(drawable !is AnimatedVectorDrawable) return@afterHookMethod
-
-                val customTileSize = this.getFloatField("customTileSize").toInt()
-                if (drawable.intrinsicHeight < customTileSize){
-                    it.result = customTileSize
-
-                }
-
-            }
-        }
-
-    }
-
-    fun collapseStatusBar(context: Context) {
-        try {
-            val systemService = context.getSystemService("statusbar")
-            systemService.javaClass.getMethod("collapsePanels", *arrayOfNulls(0)).invoke(systemService, *arrayOfNulls(0))
-        } catch (e: Exception) {
-            e.printStackTrace()
+        val QSItemViewHolder = findClass("miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder", classLoader)
+        QSItemViewHolder.findMethodExt(
+            "getTarget",
+            { isBridge && isSynthetic }
+        ).replace {
+            return@replace this.getObjectField("itemView")
         }
     }
+
 
     private fun startMethodsHook() {
 
         val QSItemViewHolder = findClass("miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder", classLoader)
         val QSItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSItemView", classLoader)
         val QSTileItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemView", classLoader)
-
-        val MainPanelModeController = findClass("miui.systemui.controlcenter.panel.main.MainPanelModeController\$MainPanelMode",classLoader)
-
-
-        QSTileItemView.apply {
-            if (clickClose) {
-                beforeHookMethod(
-                    "onFinishInflate\$lambda-0",
-                    QSTileItemView,
-                    View::class.java
-                ){
-                    val qSTileItemView = it.args[0] as FrameLayout
-                    val lastTriggeredTime = qSTileItemView.getLongField("lastTriggeredTime")
-                    val elapsedRealtime = SystemClock.elapsedRealtime()
-
-                    if (elapsedRealtime > lastTriggeredTime + 200) {
-                        val clickAction = qSTileItemView.getObjectField("clickAction")
-                        if (clickAction == null){
-                            starLog.logE("clickAction == null")
-                            return@beforeHookMethod
-                        }
-
-                        val enumConstants: Array<out Any>? = MainPanelModeController?.getEnumConstants()
-                        if (enumConstants == null){
-                            starLog.logE("enumConstants == null")
-                            return@beforeHookMethod
-                        }
-                        val mainPanelMode = qSTileItemView.getObjectField("mode")
-                        if (mainPanelMode != enumConstants[2]) {
-                            val mContext = qSTileItemView.context
-                            collapseStatusBar(mContext)
-                        }else{
-                            starLog.logD("mainPanelMode == edit")
-
-                        }
-                    }
-
-                }
-
-            }
-
-        }
 
         if (labelMarquee || labelMode!=0 ){
 
@@ -187,10 +115,10 @@ class QSListView : Hooker() {
         }
 
 
-        val commonUtils = CommonUtils(classLoader)
 
         if ( labelMode != 0 ){
 
+            val commonUtils = CommonUtils(classLoader)
             findClass(
                 "miui.systemui.controlcenter.panel.main.qs.QSListController",
                 classLoader
@@ -264,7 +192,15 @@ class QSListView : Hooker() {
         if (tileColorForState != 0 || labelMode != 0){
             QSTileItemView.replaceHookMethod(
                 "updateTextAppearance"
-            ){
+            ){ this as FrameLayout
+                val label = this.findViewByIdNameAs<TextView>("tile_label")
+                label.apply {
+                    if (labelMode == 1){
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 8f)
+                    } else if (labelMode == 2){
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, labelSize)
+                    }
+                }
                 return@replaceHookMethod null
             }
 
@@ -353,43 +289,6 @@ class QSListView : Hooker() {
             classLoader
         ).apply {
 
-            if (isQSListTileRadius){
-
-                replaceHookMethod("getCornerRadius"){
-                    val pluginContext = getObjectFieldAs<Context>( "pluginContext")
-                    return@replaceHookMethod dpToPx(pluginContext.resources,qsListTileRadius)
-
-                }
-                beforeHookMethod("setDisabledBg", Drawable::class.java){
-                    val drawable = it.args.get(0) as Drawable
-                    if (drawable is GradientDrawable){
-                        val cc = drawable.cornerRadius
-                        val pluginContext = this.getObjectFieldAs<Context>( "pluginContext")
-                        val mRadius = dpToPx(pluginContext.resources,qsListTileRadius)
-                        if (cc != mRadius){
-                            drawable.cornerRadius = mRadius
-                            it.args[0] = drawable
-
-                        }
-                    }
-
-                }
-                beforeHookMethod("setEnabledBg", Drawable::class.java){
-                    val drawable = it.args?.get(0) as Drawable
-                    if (drawable is GradientDrawable){
-                        val cc = drawable.cornerRadius
-                        val pluginContext = this.getObjectFieldAs<Context>("pluginContext")
-                        val mRadius = dpToPx(pluginContext.resources,qsListTileRadius)
-                        if (cc != mRadius){
-                            drawable.cornerRadius = mRadius
-                            it.args[0] = drawable
-                        }
-                    }
-
-                }
-
-
-            }
             beforeHookAllMethods("updateIcon"){
                 if ( labelMode != 0 ) {
                     val tileSize = this.getFloatField("tileSize").toInt()

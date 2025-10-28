@@ -278,5 +278,43 @@
     <string name="setup_successful">设置成功！</string>
     <string name="enter_module">进入模块</string>
     <string name="title_volume_top_value_show">百分比进度值显示</string>
+    <string name="barrage">弹幕通知</string>
+    <string name="thememanager">主题壁纸</string>
+    <string name="unlock_ai_wallpaper">解锁AI壁纸入口</string>
+    <string name="disable_click_events">禁用弹幕通知点击事件</string>
+    <string name="empty">空空如也</string>
+    <string name="classic_noy_type">经典通知样式</string>
+    <string name="icon_stacking_whitelist">图标合并白名单</string>
+    <string name="application_selection">应用选择</string>
+    <string name="update_attention">
+        注意事项\n\n
+        • 软件更新后通常不会出现重大问题。如遇严重问题，请立即降级并将问题反馈给开发者，耐心等待修复版本发布\n\n
+        • 软件启动时会自动清理已下载的文件，确保不会占用您的存储空间\n\n
+        • 使用过程中如遇任何问题，欢迎在群组中寻求帮助或反馈问题"
+    </string>
+    <string name="app_update_title">应用更新</string>
+    <string name="download_update">下载更新</string>
+    <string name="update_available">发现新版本</string>
+    <string name="go_channel_discuss">进入群组讨论</string>
+    <string name="install_update">安装更新</string>
+    <string name="downloading">下载中</string>
+    <string name="checking_update">正在检查更新…</string>
+    <string name="download_failed">下载失败: %1$s</string>
+    <string name="UpdateFetchError">无法获取更新内容，请检查网络连接！</string>
+    <string name="update_has">有新版本</string>
+    <string name="no_updates_available">已经是最新版本</string>
+    <string name="manual_download_prompt">"\n• 如果下载未成功，请访问以下链接手动下载："</string>
+    <string name="update_history_log">历史更新日志</string>
+    <string name="current_version_log">当前版本更新日志</string>
+    <string name="no_log_found_current_version">未查询到您当前版本的日志</string>
+    <string name="get_new_log">查看完整日志</string>
+    <string name="new_version_update_content">新版本更新内容</string>
+    <string name="import_success">导入成功！</string>
+    <string name="low_device_qc_background_color">低端机通控背景色</string>
+    <string name="notification_expansion_overlay_color_on_low_end_devices">低端机通知中心通知展开叠加色</string>
+    <string name="enable_title_follow_animation">启用标题跟随动画</string>
+    <string name="enable_clipboard_write_on_screenshot">启用截图写入剪贴板</string>
+    <string name="status_shadow_height_when_button_hidden">按钮隐藏状态的阴影长度</string>
+    <string name="auto_copy_verification_code_to_clipboard">验证码自动写入剪贴板</string>
 
 </resources>

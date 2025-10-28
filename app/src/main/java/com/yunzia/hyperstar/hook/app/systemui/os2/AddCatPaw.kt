@@ -10,8 +10,11 @@ import android.widget.LinearLayout
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.base.getDimensionPixelOffset
 import com.yunzia.hyperstar.hook.tool.starLog
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
+
 
 class AddCatPaw:Hooker() {
 

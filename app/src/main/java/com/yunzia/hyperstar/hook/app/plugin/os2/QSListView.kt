@@ -18,8 +18,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.util.plugin.CommonUtils
+import com.yunzia.hyperstar.hook.base.afterHookConstructor
+import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.plugin.CommonUtils
 import com.yunzia.hyperstar.hook.util.startMarqueeOfFading
 import com.yunzia.hyperstar.utils.XSPUtils
 import yunzia.utils.DensityUtil.Companion.dpToPx
@@ -27,7 +30,6 @@ import yunzia.utils.DensityUtil.Companion.dpToPx
 
 class QSListView : Hooker() {
 
-    private val clickClose = XSPUtils.getBoolean("list_tile_click_close",false)
     val labelMode: Int = XSPUtils.getInt("is_list_label_mode",0)
     val labelSize = XSPUtils.getFloat("list_label_size",13f)
     val isWordlessMode0: Int = XSPUtils.getInt("is_wordless_mode_0",0)
@@ -37,9 +39,6 @@ class QSListView : Hooker() {
     private val tileColorForState = XSPUtils.getInt("qs_list_tile_color_for_state",0)
     val listSpacingY = XSPUtils.getFloat("list_spacing_y",100f)/100
     val listLabelSpacingY = XSPUtils.getFloat("list_label_spacing_y",100f)/100
-    val isQSListTileRadius = XSPUtils.getBoolean("is_qs_list_tile_radius",false)
-
-    val qsListTileRadius = XSPUtils.getFloat("qs_list_tile_radius",20f)
 
     val listIconTop = if (labelMode == 2) XSPUtils.getFloat("list_icon_top", 0f)/100 else 1/7f
     val listLabelTop = XSPUtils.getFloat("list_label_top", 0f)
@@ -48,7 +47,7 @@ class QSListView : Hooker() {
         super.initHook(classLoader)
         startMethodsHook()
         qsTileRadius()
-        fixTileIcon()
+        titleFollowAnimation()
         fixBrightnessIcon()
     }
 
@@ -69,37 +68,19 @@ class QSListView : Hooker() {
         }
     }
 
-    private fun fixTileIcon() {
 
-        val fix = XSPUtils.getBoolean("fix_list_tile_icon_scale",false)
-        if (!fix) return
 
-        findClass(
-            "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
-            classLoader
-        ).afterHookMethod(
-            "getProperIconSize",
-            Drawable::class.java
-        ){
-            val drawable = it.args[0] as Drawable
-            if(drawable !is AnimatedVectorDrawable) return@afterHookMethod
+    private fun titleFollowAnimation(){
 
-            val customTileSize = this.getFloatField("customTileSize").toInt()
-            if (drawable.intrinsicHeight < customTileSize){
-                it.result = customTileSize
+        if (!XSPUtils.getBoolean("title_follow_anim", false)) return
 
-            }
-
-        }
-
-    }
-
-    fun collapseStatusBar(context: Context) {
-        try {
-            val systemService = context.getSystemService("statusbar")
-            systemService.javaClass.getMethod("collapsePanels", *arrayOfNulls(0)).invoke(systemService, *arrayOfNulls(0))
-        } catch (e: Exception) {
-            e.printStackTrace()
+        val QSItemViewHolder = findClass("miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder", classLoader)
+        QSItemViewHolder.findMethodExt(
+            "getTarget",
+            { isBridge && isSynthetic }
+        ).replace {
+            val itemView = this.getObjectField("itemView")
+            return@replace itemView
         }
     }
 
@@ -108,199 +89,12 @@ class QSListView : Hooker() {
         val QSItemViewHolder = findClass("miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder", classLoader)
         val QSItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSItemView", classLoader)
         val QSTileItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemView", classLoader)
-        val QSListController = findClass("miui.systemui.controlcenter.panel.main.qs.QSListController",classLoader)
-        val WhenMappings = findClass("miui.systemui.controlcenter.panel.main.qs.QSListController\$WhenMappings",classLoader)
         val commonUtils = CommonUtils(classLoader)
+        val QSListController = findClass("miui.systemui.controlcenter.panel.main.qs.QSListController", classLoader)
+        val WhenMappings = findClass("miui.systemui.controlcenter.panel.main.qs.QSListController\$WhenMappings", classLoader)
+        val AnimValue = findClass("miui.systemui.controlcenter.panel.detail.DetailPanelAnimator\$AnimValue", classLoader)
+        val DetailPanelAnimator = findClass("miui.systemui.controlcenter.panel.detail.DetailPanelAnimator", classLoader)
 
-        val AnimValue = findClass("miui.systemui.controlcenter.panel.detail.DetailPanelAnimator\$AnimValue",classLoader)
-
-        val DetailPanelAnimator = findClass("miui.systemui.controlcenter.panel.detail.DetailPanelAnimator",classLoader)
-
-
-//        XposedHelpers.findAndHookMethod(QSItemViewHolder,"getTarget",object :XC_MethodReplacement(){
-//
-//            override fun replaceHookedMethod(param: MethodHookParam?): Any {
-//                val thisObj = param?.thisObject
-//                val itemView = XposedHelpers.getObjectField(thisObj,"itemView")
-//
-//                return itemView
-//
-//            }
-//
-//        })
-//        XposedHelpers.findAndHookMethod(DetailPanelAnimator,"frameCallback",object :XC_MethodReplacement(){
-//
-//            override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-//                val thisObj = param?.thisObject
-//                val fromView = XposedHelpers.getObjectField(thisObj,"fromView") ?: return null
-//                val animValue = XposedHelpers.getObjectField(thisObj,"animValue") ?: return null
-//                val wA = XposedHelpers.callMethod(animValue,"getWidthA") as Int
-//                val wB = XposedHelpers.callMethod(animValue,"getWidthB") as Int
-//                val sX = XposedHelpers.getFloatField(thisObj,"sizeX")
-//                val hA = XposedHelpers.callMethod(animValue,"getHeightA") as Int
-//                val hB = XposedHelpers.callMethod(animValue,"getHeightB") as Int
-//                val sY = XposedHelpers.getFloatField(thisObj,"sizeY")
-//                val widthA: Float = wA + ((wB - wA) * sX)
-//                val heightA: Float =hA + ((hB - hA) * sY)
-//                val getToCenterX =  XposedHelpers.callMethod(animValue,"getToCenterX") as Float
-//                val getFromCenterX =  XposedHelpers.callMethod(animValue,"getFromCenterX") as Float
-//                val positionX = XposedHelpers.getFloatField(thisObj,"positionX")
-//                val getToCenterY =  XposedHelpers.callMethod(animValue,"getToCenterY") as Float
-//                val getFromCenterY =  XposedHelpers.callMethod(animValue,"getFromCenterY") as Float
-//                val positionY = XposedHelpers.getFloatField(thisObj,"positionY")
-//                val getScreenLeftA =  XposedHelpers.callMethod(animValue,"getScreenLeftA") as Int
-//                val getLeftA =  XposedHelpers.callMethod(animValue,"getLeftA") as Int
-//                val getScreenTopA =  XposedHelpers.callMethod(animValue,"getScreenTopA") as Int
-//                val getTopA =  XposedHelpers.callMethod(animValue,"getTopA") as Int
-//                val getScreenLeftB =  XposedHelpers.callMethod(animValue,"getScreenLeftB") as Int
-//                val getLeftB =  XposedHelpers.callMethod(animValue,"getLeftB") as Int
-//                val getScreenTopB =  XposedHelpers.callMethod(animValue,"getScreenTopB") as Int
-//                val getTopB =  XposedHelpers.callMethod(animValue,"getTopB") as Int
-//                val f = 2f
-//                val toCenterX: Float =
-//                    (((getToCenterX - getFromCenterX) * positionX) + getFromCenterX) - (widthA / f)
-//                val toCenterY: Float =
-//                    (((getToCenterY - getFromCenterY) * positionY) + getFromCenterY) - (heightA / f)
-//                val screenLeftA: Float =
-//                    (toCenterX - getScreenLeftA) + getLeftA
-//                val screenTopA: Float =
-//                    (toCenterY - getScreenTopA) + getTopA
-//                val screenLeftB: Float =
-//                    (toCenterX - getScreenLeftB) + getLeftB
-//                val screenTopB: Float =
-//                    (toCenterY - getScreenTopB) + getTopB
-//
-//                val target = XposedHelpers.callMethod(fromView,"getTarget") as View
-//                val parent = target.parent as ViewGroup
-//                val label = parent.findViewByIdName("tile_label")
-//                parent?.setLeftTopRightBottom(screenLeftA.toInt(), screenTopA.toInt(),(screenLeftA + widthA).toInt(),(screenTopA + heightA).toInt());
-//                return  null
-//                //label?.setLeftTopRightBottom(target.left,target.top,target.right,target.bottom)
-//            }
-//        })
-
-//        XposedHelpers.findAndHookMethod(DetailPanelAnimator,"frameCallback",object :XC_MethodHook(){
-//            override fun afterHookedMethod(param: MethodHookParam?) {
-//                super.afterHookedMethod(param)
-//                val thisObj = param?.thisObject
-//                val fromView = XposedHelpers.getObjectField(thisObj,"fromView") ?: return
-//                val animValue = XposedHelpers.getObjectField(thisObj,"animValue") ?: return
-//                val wA = XposedHelpers.callMethod(animValue,"getWidthA") as Int
-//                val wB = XposedHelpers.callMethod(animValue,"getWidthB") as Int
-//                val sX = XposedHelpers.getFloatField(thisObj,"sizeX")
-//                val hA = XposedHelpers.callMethod(animValue,"getHeightA") as Int
-//                val hB = XposedHelpers.callMethod(animValue,"getHeightB") as Int
-//                val sY = XposedHelpers.getFloatField(thisObj,"sizeY")
-//                val widthA: Float = wA + ((wB - wA) * sX)
-//                val heightA: Float =hA + ((hB - hA) * sY)
-//                val getToCenterX =  XposedHelpers.callMethod(animValue,"getToCenterX") as Float
-//                val getFromCenterX =  XposedHelpers.callMethod(animValue,"getFromCenterX") as Float
-//                val positionX = XposedHelpers.getFloatField(thisObj,"positionX")
-//                val getToCenterY =  XposedHelpers.callMethod(animValue,"getToCenterY") as Float
-//                val getFromCenterY =  XposedHelpers.callMethod(animValue,"getFromCenterY") as Float
-//                val positionY = XposedHelpers.getFloatField(thisObj,"positionY")
-//                val getScreenLeftA =  XposedHelpers.callMethod(animValue,"getScreenLeftA") as Int
-//                val getLeftA =  XposedHelpers.callMethod(animValue,"getLeftA") as Int
-//                val getScreenTopA =  XposedHelpers.callMethod(animValue,"getScreenTopA") as Int
-//                val getTopA =  XposedHelpers.callMethod(animValue,"getTopA") as Int
-//                val getScreenLeftB =  XposedHelpers.callMethod(animValue,"getScreenLeftB") as Int
-//                val getLeftB =  XposedHelpers.callMethod(animValue,"getLeftB") as Int
-//                val getScreenTopB =  XposedHelpers.callMethod(animValue,"getScreenTopB") as Int
-//                val getTopB =  XposedHelpers.callMethod(animValue,"getTopB") as Int
-//                val f = 2f
-//                val toCenterX: Float =
-//                    (((getToCenterX - getFromCenterX) * positionX) + getFromCenterX) - (widthA / f)
-//                val toCenterY: Float =
-//                    (((getToCenterY - getFromCenterY) * positionY) + getFromCenterY) - (heightA / f)
-//                val screenLeftA: Float =
-//                    (toCenterX - getScreenLeftA) + getLeftA
-//                val screenTopA: Float =
-//                    (toCenterY - getScreenTopA) + getTopA
-//                val screenLeftB: Float =
-//                    (toCenterX - getScreenLeftB) + getLeftB
-//                val screenTopB: Float =
-//                    (toCenterY - getScreenTopB) + getTopB
-//
-//                val target = XposedHelpers.callMethod(fromView,"getTarget") as View
-//                val parent = target.parent as ViewGroup
-//                val label = parent.findViewByIdName("tile_label")
-//                label?.translationY = screenTopA
-//                label?.translationX = screenLeftA
-//                //label?.setLeftTopRightBottom(screenLeftA.toInt(), screenTopA.toInt(),(screenLeftA + widthA).toInt(),(screenTopA + heightA).toInt());
-//
-//                //label?.setLeftTopRightBottom(target.left,target.top,target.right,target.bottom)
-//
-//
-//            }
-//        })
-
-//        XposedHelpers.findAndHookMethod(DetailPanelAnimator,"calculateViewValues",object :XC_MethodHook() {
-//
-//            override fun afterHookedMethod(param: MethodHookParam?) {
-//                super.afterHookedMethod(param)
-//                val thisObj = param?.thisObject
-//                val fromView = XposedHelpers.getObjectField(thisObj, "fromView") ?: return
-//
-//                val target = XposedHelpers.callMethod(fromView, "getTarget") as View
-//                val parent = target.parent as View
-//                val label = parent.findViewByIdName("tile_label")
-//                val commonUtils = XposedHelpers.getStaticObjectField(CommonUtils,"INSTANCE")
-//                val iArr = IntArray(2)
-//                XposedHelpers.callMethod(commonUtils,"getLocationInWindowWithoutTransform",label,iArr)
-//
-//            }
-//
-//        })
-
-//        XposedHelpers.findAndHookMethod(DetailPanelAnimator,"calculateViewValues",object :XC_MethodReplacement(){
-//
-//            override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-//                val thisObj = param?.thisObject
-//                val fromView = XposedHelpers.getObjectField(thisObj,"fromView") ?: return null
-//                val toView = XposedHelpers.callMethod(thisObj,"getToView")
-//
-//                val target = XposedHelpers.callMethod(fromView,"getTarget") as View
-//                val parent = target.parent as View
-//                val frame = XposedHelpers.callMethod(toView,"getFrame") as View
-//                val iArr = IntArray(2)
-//                val commonUtils = XposedHelpers.getStaticObjectField(CommonUtils,"INSTANCE")
-//                XposedHelpers.callMethod(commonUtils,"getLocationInWindowWithoutTransform",parent,iArr)
-//                val iArr2 = IntArray(2)
-//                XposedHelpers.callMethod(commonUtils,"getLocationInWindowWithoutTransform",frame,iArr2)
-//                var z = false
-//
-//                val animValue = XposedHelpers.newInstance(AnimValue,
-//                    iArr[0],
-//                    iArr[1],
-//                    parent.left,
-//                    parent.top,
-//                    parent.width,
-//                    parent.height,
-//                    iArr2[0],
-//                    iArr2[1],
-//                    frame.left,
-//                    frame.top,
-//                    frame.width,
-//                    frame.height,
-//                    XposedHelpers.callMethod(fromView,"getCornerRadius"),
-//                    XposedHelpers.callMethod(toView,"getCornerRadius")
-//                )
-//                val animValue2 = XposedHelpers.getObjectField(thisObj,"lastAnimValue")
-//                if (animValue2 != null) {
-//                    if (animValue2 != null && XposedHelpers.callMethod(animValue,"getScreenTopA")  == XposedHelpers.callMethod(animValue2,"getScreenTopA")) {
-//                        z = true
-//                    }
-//                    if (z && !(XposedHelpers.callMethod(thisObj,"isOrientationChanged") as Boolean) && !(XposedHelpers.callMethod(thisObj,"isFoldStateChanged") as Boolean)) {
-//
-//                        XposedHelpers.setObjectField(thisObj,"animValue",XposedHelpers.getObjectField(thisObj,"lastAnimValue"))
-//                        return null
-//                    }
-//                }
-//                XposedHelpers.setObjectField(thisObj,"animValue",animValue)
-//                XposedHelpers.setObjectField(thisObj,"lastAnimValue",animValue)
-//                return null
-//            }
-//        })
 
 
         //进入编辑调用
@@ -389,43 +183,7 @@ class QSListView : Hooker() {
 //            }
 //        })
 
-        val MainPanelModeController = findClass("miui.systemui.controlcenter.panel.main.MainPanelController\$Mode",classLoader)
-
-        if (clickClose){
-            QSTileItemView.afterHookMethod(
-                "onFinishInflate\$lambda-0",
-                QSTileItemView,View::class.java
-            ){
-                val qSTileItemView = it.args[0] as FrameLayout
-                val lastTriggeredTime = qSTileItemView.getLongField("lastTriggeredTime")
-                val elapsedRealtime = SystemClock.elapsedRealtime()
-
-                if (elapsedRealtime > lastTriggeredTime + 200) {
-                    val clickAction = qSTileItemView.getObjectField("clickAction")
-                    if (clickAction == null) {
-                        starLog.logE("clickAction == null")
-                        return@afterHookMethod
-                    }
-
-                    val enumConstants: Array<out Any>? = MainPanelModeController?.enumConstants
-                    if (enumConstants == null) {
-                        starLog.logE("enumConstants == null")
-                        return@afterHookMethod
-                    }
-
-                    val mainPanelMode = qSTileItemView.getObjectField("mode")
-                    if (mainPanelMode != enumConstants[2]) {
-                        collapseStatusBar(qSTileItemView.context)
-                    } else {
-                        starLog.logE("mainPanelMode == edit")
-
-                    }
-                }
-            }
-
-        }
-
-        if (labelMarquee || labelMode!=0 ){
+        if (labelMarquee || labelMode != 0 ){
 
             val MainPanelController = findClass("miui.systemui.controlcenter.panel.main.MainPanelController",classLoader)
 
@@ -481,11 +239,12 @@ class QSListView : Hooker() {
         if ( labelMode != 0 ){
 
             findClass(
-                "miui.systemui.controlcenter.panel.main.qs.QSListController",
+                "miui.systemui.controlcenter.panel.main.qs.WordlessModeController",
                 classLoader
             ).beforeHookMethod(
-                "updateTextMode"
-            ){
+                "getSettings",
+                Int::class.java
+            ) {
                 val contentResolver = this.getObjectFieldAs<ContentResolver>("contentResolver")
                 when (labelMode) {
                     1 -> {
@@ -505,12 +264,67 @@ class QSListView : Hooker() {
                         return@beforeHookMethod
                     }
                 }
+            }
 
+            findClass(
+                "miui.systemui.controlcenter.panel.main.qs.QSListController",
+                classLoader
+            ).apply {
+                beforeHookMethod(
+                    "updateTextMode"
+                ){
+                    val contentResolver = this.getObjectFieldAs<ContentResolver>("contentResolver")
+                    when (labelMode) {
+                        1 -> {
+                            Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+                        }
+                        2 -> {
+                            when (isWordlessMode2) {
+                                2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
+                                1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+                            }
+                        }
+                        else -> {
+                            when (isWordlessMode0) {
+                                2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
+                                1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+                            }
+                            return@beforeHookMethod
+                        }
+                    }
+
+                }
+                beforeHookMethod(
+                    "updateTextMode",
+                    Boolean::class.java
+                ){
+                    val contentResolver = this.getObjectFieldAs<ContentResolver>("contentResolver")
+                    when (labelMode) {
+                        1 -> {
+                            Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+                        }
+                        2 -> {
+                            when (isWordlessMode2) {
+                                2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
+                                1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+                            }
+                        }
+                        else -> {
+                            when (isWordlessMode0) {
+                                2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
+                                1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
+                            }
+                            return@beforeHookMethod
+                        }
+                    }
+
+                }
             }
             QSTileItemView.replaceHookMethod(
                 "changeExpand"
             ) { this as FrameLayout
-                val isDetailTile = this.getBooleanField("isDetailTile")
+                val icon = this.getObjectField("icon")
+                val isDetailTile = icon.getBooleanField("isDetailTile")
                 val res = this.resources
                 val label = this.findViewByIdName("tile_label") as TextView
                 val isShowLabel = this.callMethod("getShowLabel") as Boolean
@@ -524,12 +338,12 @@ class QSListView : Hooker() {
                     }else{
                         when (labelMode) {
                             2 -> {
-                                y = dpToPx(res,listLabelTop)
+                                y = dpToPx(res, listLabelTop)
                                 space += labelHeight
-                                space = (space*listLabelSpacingY).toInt()
+                                space = (space * listLabelSpacingY).toInt()
                             }
                             1 -> {
-                                y = -4f
+                                y = - 4f
                             }
                             else -> {
                                 return@replaceHookMethod null
@@ -540,7 +354,7 @@ class QSListView : Hooker() {
                 }else{
                     y = labelHeight.toFloat()
                     if (!isDetailTile){
-                        space = (space*listSpacingY).toInt()
+                        space = (space * listSpacingY).toInt()
                     }
                 }
                 label.translationY = y
@@ -551,16 +365,28 @@ class QSListView : Hooker() {
         }
 
         if (tileColorForState != 0 || labelMode != 0){
-            QSTileItemView.replaceHookMethod(
-                "updateTextAppearance"
-            ) {
-                return@replaceHookMethod null
+            QSTileItemView.apply {
+                replaceHookMethod(
+                    "updateTextAppearance"
+                ) { this as FrameLayout
+                    val icon = this.getObjectField("icon")
+                    val isDetailTile = icon.getBooleanField("isDetailTile")
+                    if (isDetailTile) return@replaceHookMethod null
+                    val label = this.findViewByIdNameAs<TextView>("tile_label")
+                    label.apply {
+                        if (labelMode == 1){
+                            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9f)
+                        } else if (labelMode == 2){
+                            setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
+                        }
+                    }
+                    return@replaceHookMethod null
+                }
+                findMethodExactIfExists("updateTextSizeForKDDI")?.replace {
+                    return@replace null
+                }
             }
 
-            val updateTextSizeForKDDI = QSTileItemView.findMethodExactIfExists("updateTextSizeForKDDI")
-            updateTextSizeForKDDI?.replaceHookMethod{
-                return@replaceHookMethod null
-            }
         }
 
         if (tileColorForState != 0){
@@ -577,7 +403,7 @@ class QSListView : Hooker() {
                 val mode = this.getObjectFieldAs<Enum<*>>("mode")
                 val Companion = QSItemView.getStaticObjectField("Companion")
                 val sta = this.getObjectField("state")
-                val copy :Any
+                val copy: Any
 
                 if (mode.ordinal == 0){
                     if (sta == null) return@beforeHookMethod
@@ -635,52 +461,7 @@ class QSListView : Hooker() {
             classLoader
         )
         val ControlCenterWindowViewImpl = findClass("miui.systemui.controlcenter.windowview.ControlCenterWindowViewImpl",classLoader)
-        if (isQSListTileRadius){
 
-            QSTileItemIconView.apply {
-                replaceHookMethod(
-                    "getCornerRadius"
-                ){
-                    val pluginContext = getObjectFieldAs<Context>( "pluginContext")
-                    return@replaceHookMethod dpToPx(
-                        pluginContext.resources,
-                        qsListTileRadius
-                    )
-                }
-                beforeHookMethod(
-                    "setDisabledBg",
-                    Drawable::class.java
-                ){
-                    val drawable = it.args[0] as Drawable
-                    if (drawable is GradientDrawable){
-                        val pluginContext = this.getObjectFieldAs<Context>( "pluginContext")
-                        val mRadius = dpToPx(pluginContext.resources,qsListTileRadius)
-                        if (drawable.cornerRadius != mRadius){
-                            drawable.cornerRadius = mRadius
-                            it.args[0] = drawable
-                        }
-                    }
-
-                }
-                beforeHookMethod(
-                    "setEnabledBg",
-                    Drawable::class.java
-                ){
-                    val drawable = it.args?.get(0) as Drawable
-                    if (drawable is GradientDrawable){
-                        val pluginContext = this.getObjectFieldAs<Context>("pluginContext")
-                        val mRadius = dpToPx(pluginContext.resources,qsListTileRadius)
-                        if (drawable.cornerRadius != mRadius){
-                            drawable.cornerRadius = mRadius
-                            it.args[0] = drawable
-                        }
-                    }
-
-                }
-            }
-
-
-        }
         var isDetailTile = false
 
         var tileSize = 0
@@ -774,21 +555,6 @@ class QSListView : Hooker() {
 
         }
     }
-
-    private fun setRadius(
-        context: Context,
-        res : Resources,
-        name:String
-    ) {
-
-        val id: Int = res.getIdentifier(name, "drawable", plugin)
-        val drawable: Drawable = context.theme.getDrawable(id)
-        if (drawable is GradientDrawable) {
-            drawable.cornerRadius = dpToPx(res,qsListTileRadius)
-        }
-    }
-
-
 
 
 }

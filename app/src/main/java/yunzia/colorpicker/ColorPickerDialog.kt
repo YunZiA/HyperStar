@@ -6,7 +6,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,8 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -43,15 +40,16 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.wear.compose.material.Button
+import androidx.wear.compose.material.ButtonDefaults.buttonColors
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.base.BaseButton
-import com.yunzia.hyperstar.ui.base.MTextField
-import com.yunzia.hyperstar.ui.base.dialog.SuperDialog
-import com.yunzia.hyperstar.ui.base.tool.FilterColorHex
+import com.yunzia.hyperstar.ui.component.BaseButton
+import com.yunzia.hyperstar.ui.component.MTextField
+import com.yunzia.hyperstar.ui.component.dialog.SuperDialog
+import com.yunzia.hyperstar.ui.component.tool.FilterColorHex
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 
 @Composable
@@ -65,10 +63,11 @@ fun ColorPickerDialog(
     val focusManager = LocalFocusManager.current
     var hasFocus by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val color = rememberSaveable(fColor,stateSaver = HsvColor.Saver) {
-
+    val color = rememberSaveable(
+        fColor,
+        stateSaver = HsvColor.Saver
+    ) {
         mutableStateOf(HsvColor.from(fColor))
-
     }
     val filter = remember(key1 = color.value) { FilterColorHex(color.value.toHex()) }
 
@@ -90,7 +89,7 @@ fun ColorPickerDialog(
             if (doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)){
 
                 color.value = HsvColor.from(fColor)
-                dismissDialog(showDialog)
+                showDialog.value = false
             }
         },
     ) {
@@ -106,11 +105,11 @@ fun ColorPickerDialog(
                 Image(
                     modifier = Modifier
                         .size(60.dp)
-                        .clip(SmoothRoundedCornerShape(10.dp,0.8f))
+                        .clip(G2RoundedCornerShape(10.dp))
                         .border(
                             2.dp,
                             if (color.value.toColor() == colorScheme.surfaceVariant) colorScheme.secondaryContainer else Color.Transparent,
-                            SmoothRoundedCornerShape(10.dp,0.8f)
+                            G2RoundedCornerShape(10.dp)
                         ),
                     imageVector = ImageVector.vectorResource(R.drawable.transparent),
                     colorFilter = ColorFilter.tint(
@@ -133,13 +132,17 @@ fun ColorPickerDialog(
                     trailingIcon = {
                         if (hasFocus){
                             Button(
-                                modifier = Modifier.size(60.dp),
+                                modifier = Modifier.size(60.dp).padding(10.dp,16.dp),
                                 onClick = {
                                     doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
                                 },
-                                contentPadding = PaddingValues(10.dp,16.dp),
-                                shape = SmoothRoundedCornerShape(12.dp,0.8f),
-                                colors = ButtonColors(Color.Transparent, Color.Transparent,Color.Transparent,Color.Transparent)
+                                //contentPadding = PaddingValues(10.dp,16.dp),
+                                shape = G2RoundedCornerShape(12.dp),
+                                colors = buttonColors(
+                                    backgroundColor = Color.Transparent,
+                                    contentColor = Color.Transparent,
+                                    disabledContentColor = Color.Transparent
+                                )
                             ) {
                                 Icon(
                                     ImageVector.vectorResource(R.drawable.yes),
@@ -179,7 +182,7 @@ fun ColorPickerDialog(
                 text = stringResource(R.string.cancel),
                 cornerRadius = 15.dp,
                 onClick = {
-                    dismissDialog(showDialog)
+                    showDialog.value = false
                     color.value = HsvColor.from(fColor)
                 }
             )
@@ -192,7 +195,7 @@ fun ColorPickerDialog(
                 onClick = {
                     doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
                     onColorListener(color.value.toColor())
-                    dismissDialog(showDialog)
+                    showDialog.value = false
                 }
             )
         }

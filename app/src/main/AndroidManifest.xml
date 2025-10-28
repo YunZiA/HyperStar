@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.STATUS_BAR"
+        tools:ignore="ProtectedPermissions" />
+
 <!--    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS" />-->
     <uses-permission android:name="com.android.permission.GET_INSTALLED_APPS"/>
     <uses-permission
@@ -11,6 +14,8 @@
 
     <uses-permission android:name="android.permission.REBOOT"
         tools:ignore="ProtectedPermissions" />
+    <!--联网-->
+    <uses-permission android:name="android.permission.INTERNET" />
     <!--存储权限-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -50,6 +55,16 @@
 <!--        <meta-data-->
 <!--            android:name="xposedminversion"-->
 <!--            android:value="93" />-->
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.yunzia.hyperstar.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <activity
             android:name=".MainActivity"

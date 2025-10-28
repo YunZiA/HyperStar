@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.utils.XSPUtils
 
 class QSMediaDefaultApp : Hooker() {

@@ -11,7 +11,9 @@ public class Helper {
         return false;
     }
 
-    public static boolean isRoot = getRootPermission() == 0;
+    public static boolean isRoot() {
+        return getRootPermission() == 0;
+    }
 
     public static int getRootPermission(){
         Process process = null;

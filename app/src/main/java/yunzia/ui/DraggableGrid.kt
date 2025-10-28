@@ -1,6 +1,7 @@
 package yunzia.ui
 
 import android.annotation.SuppressLint
+import android.os.Parcelable
 import android.view.HapticFeedbackConstants
 import android.view.View
 import androidx.compose.animation.core.Animatable
@@ -10,7 +11,6 @@ import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
-import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,11 +23,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -45,6 +45,7 @@ import androidx.compose.ui.zIndex
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -129,12 +130,13 @@ fun DraggableGrids(
     }
 }
 
-open class Card(
-    val id : Int,
+@Parcelize
+data class Card(
+    val id: Int,
     val tag: String,
-    val type : Int,
-    val name : String,
-)
+    val type: Int,
+    val name: String
+) : Parcelable
 
 
 
@@ -206,26 +208,33 @@ fun rememberGridDragDropState(
     onMove: (Int, Int) -> Unit,
 ): GridDragDropState {
     val scope = rememberCoroutineScope()
-    val state = remember(gridState) {
+
+    // 保存拖拽相关状态
+    var savedDraggingIndex by rememberSaveable { mutableStateOf<Int?>(null) }
+    var savedPreviousIndex by rememberSaveable { mutableStateOf<Int?>(null) }
+
+    return remember(gridState) {
         GridDragDropState(
             state = gridState,
             onMove = onMove,
-            scope = scope
+            scope = scope,
+            initialDraggingIndex = savedDraggingIndex,
+            initialPreviousIndex = savedPreviousIndex,
+            onStateChange = { draggingIndex, previousIndex ->
+                savedDraggingIndex = draggingIndex
+                savedPreviousIndex = previousIndex
+            }
         )
     }
-    LaunchedEffect(state) {
-        while (true) {
-            val diff = state.scrollChannel.receive()
-            gridState.scrollBy(diff)
-        }
-    }
-    return state
 }
 
 class GridDragDropState internal constructor(
     private val state: LazyGridState,
     private val scope: CoroutineScope,
     private val onMove: (Int, Int) -> Unit,
+    initialDraggingIndex: Int? = null,
+    initialPreviousIndex: Int? = null,
+    private val onStateChange: (Int?, Int?) -> Unit
 ) {
 
     //事件通道，辅助LazyVertialGrid整体滑动
@@ -236,8 +245,8 @@ class GridDragDropState internal constructor(
     private var draggingItemInitialOffset by mutableStateOf(Offset.Zero)
 
     //当前被触摸的Item索引
-    var draggingItemIndex by mutableStateOf<Int?>(null)
-        private set
+    private var _draggingItemIndex = mutableStateOf(initialDraggingIndex)
+    val draggingItemIndex: Int? get() = _draggingItemIndex.value
 
     /**
      * 这里有2个原因
@@ -256,34 +265,39 @@ class GridDragDropState internal constructor(
                 it.index == draggingItemIndex
             }
     // touch cancel或者touch up 之后继续保存被拖拽的Item，辅助通过动画方式将其Item偏移到指定位置
-    internal var previousIndexOfDraggedItem by mutableStateOf<Int?>(null)
-        private set
+    private var _previousIndexOfDraggedItem = mutableStateOf(initialPreviousIndex)
+    val previousIndexOfDraggedItem: Int? get() = _previousIndexOfDraggedItem.value
+
     // 辅助 previousIndexOfDraggedItem 进行位置移动
     internal var previousItemOffset = Animatable(Offset.Zero, Offset.VectorConverter)
         private set
 
+    // 更新索引的方法
+    internal fun updateDraggingIndex(index: Int?) {
+        _draggingItemIndex.value = index
+    }
+
+    internal fun updatePreviousIndex(index: Int?) {
+        _previousIndexOfDraggedItem.value = index
+    }
+
+
     internal fun onDragStart(offset: Offset) {
         state.layoutInfo.visibleItemsInfo
             .firstOrNull { item ->
-                /**
-                 * 查找当前触摸的Item
-                 */
                 offset.x.toInt() in item.offset.x..item.offsetEnd.x &&
                         offset.y.toInt() in item.offset.y..item.offsetEnd.y
             }?.also {
-                draggingItemIndex = it.index  //当前被触摸Item索引
-                draggingItemInitialOffset = it.offset.toOffset()  //当前Item的在布局中的偏移位置
-
+                updateDraggingIndex(it.index)
+                draggingItemInitialOffset = it.offset.toOffset()
             }
     }
 
     internal fun onDragInterrupted() {
         if (draggingItemIndex != null) {
-            //touch up 或者 touch cancel后保存位置，辅助之前被拖拽的Item通过动画到指定的位置
-            previousIndexOfDraggedItem = draggingItemIndex
-            val startOffset = draggingItemOffset //目标位置
+            updatePreviousIndex(draggingItemIndex)
+            val startOffset = draggingItemOffset
             scope.launch {
-                //启动协程，进行偏移
                 previousItemOffset.snapTo(startOffset)
                 previousItemOffset.animateTo(
                     Offset.Zero,
@@ -292,73 +306,52 @@ class GridDragDropState internal constructor(
                         visibilityThreshold = Offset.VisibilityThreshold
                     )
                 )
-                //snapTo 和 animateTo是suspend函数，因此到这里是执行完成
-                previousIndexOfDraggedItem = null
+                updatePreviousIndex(null)
             }
         }
         draggingItemDraggedDelta = Offset.Zero
-        draggingItemIndex = null
+        updateDraggingIndex(null)
         draggingItemInitialOffset = Offset.Zero
     }
 
     internal fun onDrag(offset: Offset) {
         draggingItemDraggedDelta += offset
 
-        //是否检测到Item被拖拽，空白区域的拖拽无效
         val draggingItem = draggingItemLayoutInfo ?: return
 
-        //开始位置，类似传统View的left和top
         val startOffset = draggingItem.offset.toOffset() + draggingItemOffset
-        //结束位置，类似传统View的right和bottom
         val endOffset = startOffset + draggingItem.size.toSize()
-        //centerX和centerY
-        val middleOffset = startOffset + (endOffset - startOffset) / 2f  //运算符重载，计算出中心点
+        val middleOffset = startOffset + (endOffset - startOffset) / 2f
 
-        /**
-         * 查找相交的Item，这和RecyclerView的ItemTouchHelper有些区别，后者会先过滤相交
-         * 的Item，然后按中心点距离排序，距离越小越优先，排序之后进行打分，偏离的距离越远越优先，
-         * 因此，理论上ItemTouchHelper稳定性要高一些，而Compose的灵敏度更高
-         */
         val targetItem = state.layoutInfo.visibleItemsInfo.find { item ->
             middleOffset.x.toInt() in item.offset.x..item.offsetEnd.x &&
                     middleOffset.y.toInt() in item.offset.y..item.offsetEnd.y &&
                     draggingItem.index != item.index
         }
+
         if (targetItem != null) {
             val scrollToIndex = if (targetItem.index == state.firstVisibleItemIndex) {
-                draggingItem.index  //如果交换的Item是第一个位置展示，那么需要尝试滑动Grid
+                draggingItem.index
             } else if (draggingItem.index == state.firstVisibleItemIndex) {
-                targetItem.index  //如果被拖拽的Item是第一个位置展示，那么尝试滑动Grid
+                targetItem.index
             } else {
                 null
             }
             if (scrollToIndex != null) {
                 scope.launch {
-                    // this is needed to neutralize automatic keeping the first item first.
                     state.scrollToItem(scrollToIndex, state.firstVisibleItemScrollOffset)
-                    //回调到ViewModel层面，进行数据交换
                     onMove.invoke(draggingItem.index, targetItem.index)
                 }
             } else {
-                //回调到ViewModel层面，进行数据交换
                 onMove.invoke(draggingItem.index, targetItem.index)
             }
-            /**
-             * 这里不太好理解，这行代码的意思是被拖拽的Item索引已经变了
-             * 因此需要重新更新布局信息，而draggingItemIndex是mutableStateOf委托的，设置后会触发状态更新
-             */
-            draggingItemIndex = targetItem.index
+            updateDraggingIndex(targetItem.index)
         } else {
-            /**
-             *  尝试滑动布局
-             */
             val overscroll = when {
                 draggingItemDraggedDelta.y > 0 ->
                     (endOffset.y - state.layoutInfo.viewportEndOffset).coerceAtLeast(0f)
-
                 draggingItemDraggedDelta.y < 0 ->
                     (startOffset.y - state.layoutInfo.viewportStartOffset).coerceAtMost(0f)
-
                 else -> 0f
             }
             if (overscroll != 0f) {

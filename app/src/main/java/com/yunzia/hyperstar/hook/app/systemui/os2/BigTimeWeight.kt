@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.view.ViewGroup
 import android.widget.TextView
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.tool.starLog
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LayoutInflated

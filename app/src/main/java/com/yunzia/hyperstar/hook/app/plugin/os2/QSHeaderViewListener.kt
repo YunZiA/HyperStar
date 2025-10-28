@@ -6,6 +6,8 @@ import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.ViewGroup
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.afterHookAllConstructors
+import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 
@@ -28,7 +30,7 @@ class QSHeaderViewListener : Hooker() {
         val MainPanelHeaderController  = findClass("miui.systemui.controlcenter.panel.main.header.MainPanelHeaderController",classLoader)
 
         MainPanelHeaderController.afterHookAllConstructors {
-            this?: return@afterHookAllConstructors
+            this
             val context = this.callMethodAs<Context>("getContext")!!
             val controlCenterHeader = this.getObjectField("controlCenterHeader")
             val controlCenterHeaderView = controlCenterHeader.getObjectFieldAs<ViewGroup>("controlCenterHeaderView")

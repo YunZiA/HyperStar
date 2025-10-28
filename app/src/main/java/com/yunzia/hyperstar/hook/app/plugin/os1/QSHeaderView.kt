@@ -8,9 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.base.getDimensionPixelOffset
+import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.utils.XSPUtils
 
@@ -65,8 +67,6 @@ class QSHeaderView : Hooker() {
             "miui.systemui.controlcenter.panel.main.MainPanelModeController\$MainPanelMode",
             classLoader
         )
-
-
 
         findClass(
             "miui.systemui.controlcenter.panel.main.header.StatusHeaderController",
@@ -177,7 +177,7 @@ class QSHeaderView : Hooker() {
                 val y = it.args[0] as Float
                 val view = this.callMethodAs<ViewGroup>("getView")!!
 
-                view.findViewById<TextView>(viewId).apply {
+                view.findViewById<LinearLayout>(viewId).apply {
                     translationY = y
                 }
 

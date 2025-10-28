@@ -286,4 +286,42 @@ o(╥﹏╥)o</string>
     <string name="setup_successful">Setup successful!</string>
     <string name="enter_module">Enter Module</string>
     <string name="title_volume_top_value_show">Display percentage progress</string>
+    <string name="barrage">Bullet screen notification</string>
+    <string name="thememanager">Themes</string>
+    <string name="unlock_ai_wallpaper">Unlock the entrance to AI wallpapers</string>
+    <string name="disable_click_events">Disable click events</string>
+    <string name="empty">Empty</string>
+    <string name="classic_noy_type">Classic Notification Style</string>
+    <string name="icon_stacking_whitelist">Icon Stacking Whitelist</string>
+    <string name="application_selection">Application Selection</string>
+    <string name="update_attention">
+        Attention\n\n
+        • After a software update, major issues are unlikely to occur. If you encounter any critical problems, please downgrade immediately and report the issue to the developers. Kindly wait for the release of a fixed version.\n\n
+        • When the software starts, it will automatically clean up downloaded files to ensure they do not occupy your storage space.\n\n
+        • If you encounter any issues during use, feel free to seek help or provide feedback in the group.
+    </string>
+    <string name="app_update_title">App Update</string>
+    <string name="download_update">Download update</string>
+    <string name="update_available">An update is available</string>
+    <string name="go_channel_discuss">Join Group Discussion</string>
+    <string name="install_update">Install Update</string>
+    <string name="downloading">Downloading</string>
+    <string name="checking_update">Checking for Updates…</string>
+    <string name="download_failed">Download Failed: %1$s</string>
+    <string name="UpdateFetchError">Unable to fetch update details. Please check your network connection!</string>
+    <string name="update_has">Update</string>
+    <string name="no_updates_available">No updates available</string>
+    <string name="manual_download_prompt">"\n• If the download fails, please visit the following link to download manually: "</string>
+    <string name="update_history_log">Update History Log</string>
+    <string name="current_version_log">What\'s new</string>
+    <string name="no_log_found_current_version">No Log Available</string>
+    <string name="get_new_log">Learn what\'s new</string>
+    <string name="new_version_update_content">Updated content</string>
+    <string name="import_success">Import successful!</string>
+    <string name="low_device_qc_background_color">Notification Panel and Control Panel background color for low-end devices</string>
+    <string name="notification_expansion_overlay_color_on_low_end_devices">Notification expansion overlay color on low-end devices</string>
+    <string name="enable_title_follow_animation">Enable Title Follow Animation</string>
+    <string name="enable_clipboard_write_on_screenshot">Enable Clipboard Write on Screenshot</string>
+    <string name="status_shadow_height_when_button_hidden">Shadow Height When Button is Hidden</string>
+    <string name="auto_copy_verification_code_to_clipboard">Auto Copy Verification Code</string>
 </resources>

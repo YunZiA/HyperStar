@@ -3,7 +3,21 @@
     <string-array name="module_scope">
         <item>com.android.systemui</item>
         <item>com.miui.home</item>
+        <item>com.android.thememanager</item>
+        <item>com.android.mms</item>
+        <item>com.xiaomi.barrage</item>
+        <item>com.miui.screenshot</item>
     </string-array>
+
+    <integer-array name="my_card_stroke_gradient_colors_light">
+        <item>0x29ffffff</item>
+        <item>0xccffffff</item>
+    </integer-array>
+
+    <integer-array name="my_card_stroke_gradient_colors_dark">
+        <item>0x00ffffff</item>
+        <item>0x30ffffff</item>
+    </integer-array>
 
     <string-array name="language_list">
         <item>@string/follow_system</item>
@@ -11,13 +25,20 @@
         <item>简体中文</item>
         <item>Русский</item>
         <item>tiếng việt</item>
-        <item>Español</item>
+<!--        <item>Español</item>-->
+        <item>Español (México)</item>
+        <item>Português (Brasil)</item>
     </string-array>
 
     <string-array name="log_level">
         <item>Info</item>
         <item>Debug</item>
+        <item>Error</item>
     </string-array>
+
+    <array name="mix_color">
+
+    </array>
 
 
     <string-array name="status">
@@ -34,6 +55,7 @@
     <string-array name="hook_channel_items">
         <item>OS1</item>
         <item>OS2</item>
+        <item>OS3</item>
     </string-array>
 
     <string-array name="media_background_style_entire">

@@ -18,6 +18,10 @@ import android.widget.TextView
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.afterHookConstructor
+import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.base.getDimensionPixelSize
+import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LayoutInflated

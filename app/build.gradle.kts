@@ -84,7 +84,7 @@ android {
             if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
                 val config = project.android.defaultConfig
                 val appName = "HyperStar"
-                val versionName = "v"+config.versionName
+                val versionName = "v" + config.versionName
                 val buildType = this.name
 
                 this.outputFileName = "${appName}_${versionName}_${buildType}.apk"
@@ -100,14 +100,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-
         }
 
         debug {
             // 对于debug版本，可以不使用混和资源压缩
             isMinifyEnabled = false
             isShrinkResources = false
-
         }
         create("dev") {
             isMinifyEnabled = true
@@ -149,7 +147,7 @@ dependencies {
     compileOnly(project(":lsp:api"))
     // 系统UI控制库，实现沉浸式状态栏
     implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.okhttp)
 
     implementation(libs.gson)
     implementation(libs.androidx.navigation.compose)
@@ -164,7 +162,6 @@ dependencies {
     implementation(libs.androidx.profileinstaller)
     implementation (libs.androidx.constraintlayout.compose)
     implementation (libs.accompanist.drawablepainter)
-    implementation (libs.androidx.recyclerview)
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
@@ -180,7 +177,6 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

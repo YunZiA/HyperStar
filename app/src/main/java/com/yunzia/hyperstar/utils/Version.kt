@@ -7,16 +7,18 @@ import yunzia.utils.SystemProperties
 
 
 
-fun getAndroidVersion(): Int = Build.VERSION.SDK_INT
+val androidVersion by lazy { Build.VERSION.SDK_INT }
 
-fun getSystemVersionIncremental(): String = SystemProperties.get("ro.mi.os.version.incremental").ifEmpty { SystemProperties.get("ro.system.build.version.incremental") }
+val systemVersionIncremental by lazy { SystemProperties.get("ro.mi.os.version.incremental").ifEmpty { SystemProperties.get("ro.system.build.version.incremental") } }
 
-fun getDeviceName(): String = Build.DEVICE
-fun getMarketName(): String = SystemProperties.get("ro.product.marketname")
+val deviceName by lazy { Build.DEVICE }
+val marketName by lazy { SystemProperties.get("ro.product.marketname") }
 
-fun getOSVersion()= SystemProperties.getInt("ro.mi.os.version.code", 1)
+val OSVersion by lazy { SystemProperties.getInt("ro.mi.os.version.code", 1) }
 
-fun isBetaOS() = ReflectUtils.getStaticFieldValue(Build::class.java, "IS_DEV_VERSION", Boolean::class.java,false)
+val isBetaOS by lazy { ReflectUtils.getStaticFieldValue(Build::class.java, "IS_DEV_VERSION", Boolean::class.java,false) }
+
+//val isBetaOS = ReflectUtils.getStaticFieldValue(Build::class.java, "IS_DEV_VERSION", Boolean::class.java,false)
 
 fun isFold():Boolean {
     val local = PreferencesUtil.getInt("isFold", 0)
@@ -32,7 +34,7 @@ fun isFold():Boolean {
     }
 }
 
-fun isPad() :Boolean {
+fun isPad() : Boolean {
 
     val local = PreferencesUtil.getInt("isPad", 0)
     return when (local) {
@@ -47,17 +49,20 @@ fun isPad() :Boolean {
 }
 
 fun isOS2():Boolean{
-    if (isBetaOS()) return false
-    return getOSVersion() == 2
+    if (isBetaOS) return false
+    return OSVersion == 2
 }
 fun isOS2Settings():Boolean{
-    return SPUtils.getInt("is_Hook_Channel",if (isOS2()) 1 else 0) == 1
+    return getSettingChannel() == 2
 }
-fun isOS2Hook():Boolean{
-    return XSPUtils.getInt("is_Hook_Channel",if (isOS2()) 1 else 0) == 1
+
+fun getHookChannel():Int{
+    return XSPUtils.getInt("is_Hook_Channel",if (isBetaOS) 1 else OSVersion)
 }
-fun isHookChannel():Int{
-    return XSPUtils.getInt("is_Hook_Channel",if (isOS2()) 1 else 0)
+
+
+fun getSettingChannel():Int{
+    return SPUtils.getInt("is_Hook_Channel",if (isBetaOS) 1 else OSVersion)
 }
 
 

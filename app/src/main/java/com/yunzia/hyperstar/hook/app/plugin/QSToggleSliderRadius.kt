@@ -2,6 +2,7 @@ package com.yunzia.hyperstar.hook.app.plugin
 
 import android.content.res.Resources
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.utils.XSPUtils
 
 

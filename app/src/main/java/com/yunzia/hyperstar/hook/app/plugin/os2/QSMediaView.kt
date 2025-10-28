@@ -6,6 +6,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.view.marginTop
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.afterHookAllConstructors
+import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.util.startMarqueeOfFading
 import com.yunzia.hyperstar.utils.XSPUtils
 

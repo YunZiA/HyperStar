@@ -7,7 +7,6 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
 
 
 public class SPUtils {
@@ -33,6 +32,13 @@ public class SPUtils {
     public void init(Context context) {
         sp = context.getSharedPreferences("HyperStar_SP", Context.MODE_WORLD_READABLE);
 
+    }
+
+    public static void removeKey(String key) {
+        if(SPUtils.getInstance().sp == null){
+            return ;
+        }
+        SPUtils.getInstance().sp.edit().remove(key).apply();
     }
 
     /**

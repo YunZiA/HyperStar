@@ -20,6 +20,7 @@ import com.yunzia.hyperstar.hook.tool.starLog
 
 class BitmapUtils {
     companion object {
+
         fun doBitmap(
             bitmap: Bitmap,
             isScale:Boolean,
@@ -30,6 +31,10 @@ class BitmapUtils {
             alpha: Float
         ):Bitmap{
             val startTime = System.nanoTime()
+
+            val cacheKey = "${bitmap.hashCode()}_${isScale}_${scaleFactor}_${isBlur}_${blurRadius}_${isDim}_${alpha}"
+
+
             var processedBitmap = bitmap
 
             if (isScale) {
@@ -77,14 +82,14 @@ class BitmapUtils {
                 0.2f
             } else if (outHsl[2] < 0.2f){
                 0.25f
-            }else{
+            } else {
                 outHsl[2]
             }
             outHsl[1] = if (outHsl[1] < 0.45f){
                 0.5f
             } else if (outHsl[1] > 0.85f) {
                 0.5f
-            }else outHsl[1]
+            } else outHsl[1]
 
             //starLog.log("2 Hue: ${outHsl[0]}, Saturation: ${outHsl[1]}, Lightness: ${outHsl[2]}")
 
@@ -214,8 +219,6 @@ class BitmapUtils {
          }
 
         private fun blur(bitmap: Bitmap, radius: Float): Bitmap {
-
-
 
              //配置跟 bitmap 同样大小的 ImageReader
             val imageReader = ImageReader.newInstance(

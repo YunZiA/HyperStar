@@ -1,12 +1,7 @@
 package com.yunzia.hyperstar.utils
 
-import android.content.ContentUris
 import android.content.Context
-import android.database.Cursor
 import android.net.Uri
-import android.os.Environment
-import android.provider.DocumentsContract
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -16,14 +11,8 @@ import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import org.json.JSONException
 import java.io.BufferedReader
 import java.io.BufferedWriter
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.text.SimpleDateFormat
@@ -38,7 +27,7 @@ object JBUtil {
         activity: MainActivity,
         launcher: ManagedActivityResultLauncher<String, Uri?>
     ) {
-        if (activity.goManagerFileAccess()) {
+        if (activity.requestFileAccessPermission()) {
             launcher.launch("application/json")
         }
     }
@@ -47,7 +36,7 @@ object JBUtil {
         activity: MainActivity,
         launcher: ManagedActivityResultLauncher<String, Uri?>
     ) {
-        if (activity.goManagerFileAccess()) {
+        if (activity.requestFileAccessPermission()) {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
             launcher.launch("HyperStar_backup_${dateFormat.format(Date())}.json")
         }
@@ -181,8 +170,6 @@ object JBUtil {
 
             }
 
-
-            Toast.makeText(context, context.getString(R.string.restore_success),Toast.LENGTH_SHORT).show()
             return true
         } catch (e: JsonSyntaxException) {
             Toast.makeText(context,"文件错误！",Toast.LENGTH_SHORT).show()
@@ -204,7 +191,7 @@ object JBUtil {
         if ( b1 && b2 ){
             Toast.makeText(activity,
                 context.getString(R.string.clear_success),Toast.LENGTH_SHORT).show()
-            activity.recreate()
+            activity.updateUI()
         }else{
             if (b1 || b2) {
                 Toast.makeText(activity,

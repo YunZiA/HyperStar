@@ -3,6 +3,9 @@ package com.yunzia.hyperstar.hook.app.plugin.os2
 import android.content.Context
 import android.util.AttributeSet
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.afterHookConstructor
+import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.base.getDimensionPixelOffset
 import com.yunzia.hyperstar.utils.XSPUtils
 import yunzia.utils.DensityUtil
 

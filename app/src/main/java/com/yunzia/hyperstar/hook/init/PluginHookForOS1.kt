@@ -2,7 +2,8 @@ package com.yunzia.hyperstar.hook.init
 
 import android.content.Context
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.hook.app.plugin.QSCardTile
+import com.yunzia.hyperstar.hook.app.plugin.HideVolumeCollpasedFootButton
+import com.yunzia.hyperstar.hook.app.plugin.QSCardAutoCollapse
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTileList
 import com.yunzia.hyperstar.hook.app.plugin.QSControlCenterList
 import com.yunzia.hyperstar.hook.app.plugin.QSEditText
@@ -10,6 +11,7 @@ import com.yunzia.hyperstar.hook.app.plugin.QSMediaDefaultApp
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaNoPlayTitle
 import com.yunzia.hyperstar.hook.app.plugin.QSMiplayDetailVolumeBar
 import com.yunzia.hyperstar.hook.app.plugin.QSToggleSliderRadius
+import com.yunzia.hyperstar.hook.app.plugin.QSVolumeMute
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurWidgetManager
 import com.yunzia.hyperstar.hook.app.plugin.os1.DeviceCenterRow
 import com.yunzia.hyperstar.hook.app.plugin.os1.PadVolume
@@ -23,12 +25,17 @@ import com.yunzia.hyperstar.hook.app.plugin.os1.QSMediaCoverBackground
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSMediaDeviceName
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSMediaView
 import com.yunzia.hyperstar.hook.app.plugin.os1.QSMiplayAppIconRadius
+import com.yunzia.hyperstar.hook.app.plugin.os1.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeOrQSBrightnessValue
-import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeView
-import com.yunzia.hyperstar.hook.app.plugin.os1.SuperBlurVolumeManager
-import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenu
+import com.yunzia.hyperstar.hook.app.plugin.VolumeBarLayoutParams
+import com.yunzia.hyperstar.hook.app.plugin.os1.FixTileIconSize
+import com.yunzia.hyperstar.hook.app.plugin.os1.QSListTileRadius
+import com.yunzia.hyperstar.hook.app.plugin.os1.QSTileAutoCollapse
+import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenuHook
 import com.yunzia.hyperstar.hook.base.InitHooker
+import com.yunzia.hyperstar.hook.base.MethodHook
+import com.yunzia.hyperstar.hook.base.hookAllMethods
 import com.yunzia.hyperstar.hook.tool.starLog
 import de.robv.android.xposed.XC_MethodHook
 
@@ -38,7 +45,7 @@ class PluginHookForOS1() : InitHooker() {
     private val qsMediaCoverBackground: QSMediaCoverBackground = QSMediaCoverBackground()
     private val padVolume: PadVolume = PadVolume()
     private val qsControlCenterColor: QSControlCenterColor = QSControlCenterColor()
-    private val powerMenu: PowerMenu = PowerMenu()
+    private val powerMenuHook: PowerMenuHook = PowerMenuHook()
     private val deviceCenterRow: DeviceCenterRow = DeviceCenterRow()
 
 
@@ -49,20 +56,20 @@ class PluginHookForOS1() : InitHooker() {
     override fun initResources() {
         if (resparam!!.packageName != "miui.systemui.plugin") return
 
-        resparam.res.setReplacement(
+        resparam!!.res.setReplacement(
             "miui.systemui.plugin",
             "drawable",
             "ic_header_settings",
             modRes!!.fwd(R.drawable.ic_header_settings)
         )
-        resparam.res.setReplacement(
+        resparam!!.res.setReplacement(
             "miui.systemui.plugin",
             "drawable",
             "ic_controls_edit",
-            modRes.fwd(R.drawable.ic_controls_edit)
+            modRes!!.fwd(R.drawable.ic_controls_edit)
         )
 
-        initResource(powerMenu)
+        initResource(powerMenuHook)
         initResource(qsMediaCoverBackground)
         initResource(padVolume)
         initResource(qsControlCenterColor)
@@ -93,9 +100,11 @@ class PluginHookForOS1() : InitHooker() {
             }
         }
         )
-        hookAllMethods(classLoader,
+        hookAllMethods(
+            classLoader,
             "com.android.systemui.shared.plugins.PluginInstance\$Factory$\$ExternalSyntheticLambda0",
-            "get",object : MethodHook {
+            "get",
+            object : MethodHook {
             override fun before(param: XC_MethodHook.MethodHookParam) {
 
             }
@@ -124,8 +133,8 @@ class PluginHookForOS1() : InitHooker() {
     }
 
 
-    override fun initSecHook(classLoader: ClassLoader?) {
-        super.initSecHook(classLoader)
+    override fun initSecHook(secClassLoader: ClassLoader?) {
+        super.initSecHook(secClassLoader)
 
 
         initSecHooker(QSClockAnim())
@@ -136,10 +145,14 @@ class PluginHookForOS1() : InitHooker() {
         initSecHooker(QSMediaDefaultApp())
         initSecHooker(QSMediaView())
         initSecHooker(qsControlCenterColor)
+        initSecHooker(QSTileAutoCollapse())
+        initSecHooker(FixTileIconSize())
+        initSecHooker(QSListTileRadius())
         initSecHooker(QSListView())
         initSecHooker(VolumeOrQSBrightnessValue())
         initSecHooker(QSCardTileList())
-        initSecHooker(QSCardTile())
+        initSecHooker(QSCardAutoCollapse())
+        initSecHooker(QSVolumeMute())
         initSecHooker(QSToggleSliderRadius())
         initSecHooker(QSHeaderMessage())
         initSecHooker(QSHeaderView())
@@ -148,8 +161,9 @@ class PluginHookForOS1() : InitHooker() {
         initSecHooker(QSClockAnim())
         initSecHooker(QSControlCenterList())
         initSecHooker(VolumeColumnProgressRadius())
-        initSecHooker(powerMenu)
-        initSecHooker(VolumeView())
+        initSecHooker(powerMenuHook)
+        initSecHooker(VolumeBarLayoutParams())
+        initSecHooker(HideVolumeCollpasedFootButton())
         initSecHooker(deviceCenterRow)
         initSecHooker(QSMiplayDetailVolumeBar())
     }

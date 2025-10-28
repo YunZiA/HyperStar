@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="log_level">
-        <item>Info</item>
-        <item>Debug</item>
-    </string-array>
-
     <string-array name="status">
         <item>Off</item>
         <item>On</item>
@@ -15,11 +10,6 @@
         <item>Default</item>
         <item>Style 1</item>
         <item>Style 2</item>
-    </string-array>
-
-    <string-array name="hook_channel_items">
-        <item>OS1</item>
-        <item>OS2</item>
     </string-array>
 
     <string-array name="media_background_style_entire">

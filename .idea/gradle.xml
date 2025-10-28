@@ -11,9 +11,13 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/lsp" />
+            <option value="$PROJECT_DIR$/lsp/api" />
+            <option value="$PROJECT_DIR$/lsp/api/api" />
+            <option value="$PROJECT_DIR$/lsp/service" />
+            <option value="$PROJECT_DIR$/lsp/service/service" />
           </set>
         </option>
-        <option name="resolveExternalAnnotations" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

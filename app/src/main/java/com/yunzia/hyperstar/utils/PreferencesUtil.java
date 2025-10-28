@@ -46,6 +46,7 @@ public class PreferencesUtil {
     /*存储字符串*/
     public static boolean putString(String key, String value) {
         SharedPreferences.Editor editor = PreferencesUtil.getInstance().sp.edit();
+        Log.d("ggc","putString "+value);
         editor.putString(key, value);
         return editor.commit();
     }

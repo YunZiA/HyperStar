@@ -11,11 +11,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.get
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.base.afterHookAllConstructors
+import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.base.getDimensionPixelOffset
 import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.ConstraintSet
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import java.util.Locale
@@ -45,6 +48,7 @@ class QSHeaderView() : Hooker() {
         if (!is_use_chaos_header) return
 
         startMethodsHook()
+        //startMethodsHook1()
 
     }
 
@@ -93,6 +97,7 @@ class QSHeaderView() : Hooker() {
 
         val ControlCenterHeaderExpandController = findClass("com.android.systemui.controlcenter.shade.ControlCenterHeaderExpandController",classLoader)
         val Folme = findClass("miuix.animation.Folme",classLoader)
+        val IFolme = findClass("miuix.animation.IFolme",classLoader)
 
         findClass(
             "com.android.systemui.controlcenter.shade.ControlCenterHeaderExpandController\$controlCenterCallback\$1",
@@ -118,11 +123,67 @@ class QSHeaderView() : Hooker() {
                 val isVerticalMode =
                     MiuiConfigs.callStaticMethodAs<Boolean>("isVerticalMode", context)
                 if (isVerticalMode) {
-                    if (!z) {
-                        ControlCenterHeaderExpandController.callStaticMethod(
+                    val headers:View? = header
+
+                    val alphaNew  = ControlCenterHeaderExpandController.findMethodBestMatchIfExist(
+                        "startFolmeAnimationAlpha",
+                        View::class.java,
+                        IFolme!!,
+                        Float::class.java,
+                        Boolean::class.java
+                    )
+                    val alphaOld = ControlCenterHeaderExpandController.findMethodBestMatchIfExist(
                             "access\$startFolmeAnimationAlpha",
-                            controlCenterHeaderExpandController,
-                            header,
+                            ControlCenterHeaderExpandController,
+                            View::class.java,
+                            IFolme!!,
+                            Float::class.java,
+                            Boolean::class.java
+                        )
+
+                    val alpha = arrayOf(
+                        ControlCenterHeaderExpandController.findMethodBestMatchIfExist(
+                            "startFolmeAnimationAlpha",
+                            View::class.java,
+                            IFolme!!,
+                            Float::class.java,
+                            Boolean::class.java
+                        ),
+                        ControlCenterHeaderExpandController.findMethodBestMatchIfExist(
+                            "access\$startFolmeAnimationAlpha",
+                            ControlCenterHeaderExpandController,
+                            View::class.java,
+                            IFolme!!,
+                            Float::class.java,
+                            Boolean::class.java
+                        )
+                    )
+
+                    if (!z) {
+//                        ControlCenterHeaderExpandController.callStaticMethods(
+//                            "access\$startFolmeAnimationAlpha",
+//                            arrayOf(
+//                                ControlCenterHeaderExpandController!!,
+//                                View::class.java,
+//                                Folme!!,
+//                                Float::class.java,
+//                                Boolean::class.java
+//                            ),
+//                            controlCenterHeaderExpandController,
+//                            headers,
+//                            controlCenterCarrierViewFolme,
+//                            0f, z2
+//                        )
+                        alphaNew?.invoke(
+                            null,
+                            headers,
+                            controlCenterCarrierViewFolme,
+                            0f, z2
+                        )
+                        alphaOld?.invoke(
+                            null,
+                            ControlCenterHeaderExpandController,
+                            headers,
                             controlCenterCarrierViewFolme,
                             0f, z2
                         )
@@ -140,10 +201,30 @@ class QSHeaderView() : Hooker() {
 
                     } else {
 
-                        ControlCenterHeaderExpandController.callStaticMethod(
-                            "access\$startFolmeAnimationAlpha",
-                            controlCenterHeaderExpandController,
-                            header,
+//                        ControlCenterHeaderExpandController.callStaticMethods(
+//                            "access\$startFolmeAnimationAlpha",
+//                            arrayOf(
+//                                ControlCenterHeaderExpandController!!,
+//                                View::class.java,
+//                                Folme!!,
+//                                Float::class.java,
+//                                Boolean::class.java
+//                            ),
+//                            controlCenterHeaderExpandController,
+//                            headers,
+//                            controlCenterCarrierViewFolme,
+//                            1f, z2
+//                        )
+                        alphaNew?.invoke(
+                            null,
+                            headers,
+                            controlCenterCarrierViewFolme,
+                            1f, z2
+                        )
+                        alphaOld?.invoke(
+                            null,
+                            ControlCenterHeaderExpandController,
+                            headers,
                             controlCenterCarrierViewFolme,
                             1f, z2
                         )
@@ -245,33 +326,33 @@ class QSHeaderView() : Hooker() {
 
     }
 
-    private fun startMethodsHook1(classLoader: ClassLoader?) {
+    private fun startMethodsHook1() {
         val CommonUtils = findClass("miui.systemui.util.CommonUtils",classLoader)
         findClass(
-            "miui.systemui.controlcenter.panel.main.header.StatusHeaderController",
+            "com.android.systemui.controlcenter.shade.ControlCenterHeaderController",
             classLoader
-        ).replaceHookMethod(
+        ).afterHookMethod(
             "updateConstraint"
         ) {
 
-            val fakeStatusBarViewController  = this.getObjectField("fakeStatusBarViewController")
+            val fakeStatusBarViewController  = this.getObjectField("fakeStatusBarViewController")?:return@afterHookMethod
+
             val sysUIContext   = this.getObjectField("sysUIContext") as Context
             val parent = this.callMethod("getView") as ViewGroup
             val mContext = this.callMethod("getContext") as Context
+            val res = mContext.resources
 
-            if (fakeStatusBarViewController == null) {
-                return@replaceHookMethod null
-            }
+            val constraintSet = ConstraintSet(classLoader)
 
-            val constraintSet = ConstraintSet()
             //val header_status_bar_icon:Int = sysUIContext.resources.get("header_status_bar_icons", "id", "miui.systemui.plugin");
 
-            val header_carrier_vertical_mode_margin_bottom = mContext.resources.getIdentifier("header_carrier_vertical_mode_margin_bottom","dimen","miui.systemui.plugin")
+            val header_carrier_vertical_mode_margin_bottom = mContext.resources.getIdentifier("header_carrier_vertical_mode_margin_bottom","dimen",plugin)
 
-            val header_status_bar_icons:Int = mContext.resources.getIdentifier("header_status_bar_icons", "id", "miui.systemui.plugin");
-            val header_date:Int = mContext.resources.getIdentifier("header_date", "id", "miui.systemui.plugin");
-            val header_carrier_view:Int = mContext.resources.getIdentifier("header_carrier_view", "id", "miui.systemui.plugin");
-            val privacy_container:Int = mContext.resources.getIdentifier("privacy_container", "id", "miui.systemui.plugin");
+            val header_status_bar_icons: Int = res.getId("header_status_bar_icons", plugin)
+            val header_date: Int = res.getId("header_date",plugin)
+
+            val header_carrier_view:Int = res.getId("header_carrier_view", plugin)
+            val privacy_container:Int = res.getId("privacy_container", plugin)
             starLog.log(""+header_status_bar_icons+header_date+header_carrier_view+privacy_container)
             constraintSet.constrainWidth(header_status_bar_icons, -2)
             constraintSet.constrainHeight(header_status_bar_icons, -2)
@@ -279,12 +360,12 @@ class QSHeaderView() : Hooker() {
             constraintSet.constrainHeight(header_date, -2)
             constraintSet.constrainWidth(header_carrier_view, -2)
             constraintSet.constrainHeight(header_carrier_view, -2)
-            val header_privacy_container_height:Int = mContext.resources.getIdentifier("header_privacy_container_height", "dimen", "miui.systemui.plugin");
+            val header_privacy_container_height:Int = res.getIdentifier("header_privacy_container_height", "dimen", plugin)
 
             constraintSet.constrainWidth(privacy_container, -2)
             constraintSet.constrainHeight(
                 privacy_container,
-                mContext.resources.getDimensionPixelSize(header_privacy_container_height)
+                res.getDimensionPixelSize(header_privacy_container_height)
             )
 
             val INSTANCE = CommonUtils.getStaticObjectField("INSTANCE")
@@ -295,7 +376,7 @@ class QSHeaderView() : Hooker() {
                 constraintSet.connect(header_date, 3, header_status_bar_icons, 3);
                 constraintSet.connect(header_date, 4, header_status_bar_icons, 4);
                 constraintSet.createHorizontalChainRtl(0, 6, 0, 7, intArrayOf(header_date, header_status_bar_icons), null as FloatArray? , 1);
-                val dimensionPixelSize = mContext.resources.getDimensionPixelSize(header_carrier_vertical_mode_margin_bottom);
+                val dimensionPixelSize = res.getDimensionPixelSize(header_carrier_vertical_mode_margin_bottom);
                 constraintSet.connect(header_carrier_view, 4, header_status_bar_icons, 3, dimensionPixelSize);
                 constraintSet.connect(header_carrier_view, 7, 0, 7);
                 constraintSet.connect(privacy_container, 4, header_status_bar_icons, 3, dimensionPixelSize);
@@ -309,10 +390,9 @@ class QSHeaderView() : Hooker() {
                 constraintSet.connect(privacy_container, 7, 0, 7);
                 constraintSet.createHorizontalChainRtl(0, 6, privacy_container, 6,intArrayOf(header_carrier_view, header_status_bar_icons) , null as FloatArray? , 1);
             }
+            constraintSet.applyTo(parent)
 
-            constraintSet.callMethod("applyTo", parent )
-
-            return@replaceHookMethod null;
+            return@afterHookMethod
         }
 
     }
@@ -325,7 +405,7 @@ class QSHeaderView() : Hooker() {
 
         val size = (getDimensionPixelOffset(res,"shade_header_control_center_carrier_text_size",systemUI)/2*3).toInt()
         val bottom = (getDimensionPixelOffset(res,"shade_header_bottom_padding",systemUI)*2.85).toInt()
-            //dpToPx(res,21.4f).toInt()
+        //dpToPx(res,21.4f).toInt()
         val lp = ViewGroup.MarginLayoutParams(size, size).apply {
             bottomMargin = bottom
             //topMargin = 100

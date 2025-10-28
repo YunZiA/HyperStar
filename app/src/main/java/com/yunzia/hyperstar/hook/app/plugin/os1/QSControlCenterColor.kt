@@ -13,8 +13,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.util.plugin.ConfigUtils
+import com.yunzia.hyperstar.hook.base.afterHookConstructor
+import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.util.plugin.ConfigUtils
 import com.yunzia.hyperstar.utils.XSPUtils
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
@@ -41,7 +43,7 @@ class QSControlCenterColor : Hooker() {
         val deviceCenterDetailIconColor = XSPUtils.getString("device_center_detail_icon_color","null")
 
         if (deviceCenterDetailIconColor != "null"){
-            resparam.res.setReplacement(plugin, "drawable", "ic_device_center_detail_item", object : XResources.DrawableLoader(){
+            resparam?.res?.setReplacement(plugin, "drawable", "ic_device_center_detail_item", object : XResources.DrawableLoader(){
                 override fun newDrawable(res: XResources?, id: Int): Drawable {
                     val newDraw = res?.getDrawable(id) as Drawable
                     newDraw.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceCenterDetailIconColor),PorterDuff.Mode.SRC_IN)
@@ -53,7 +55,7 @@ class QSControlCenterColor : Hooker() {
         }
 
         if (deviceCenterItemBackgroundColor != "null"){
-            resparam.res.setReplacement(plugin, "drawable", "ic_device_center_item_background_default", object : XResources.DrawableLoader(){
+            resparam?.res?.setReplacement(plugin, "drawable", "ic_device_center_item_background_default", object : XResources.DrawableLoader(){
                 override fun newDrawable(res: XResources?, id: Int): Drawable {
                     val newDraw = res?.getDrawable(id) as Drawable
                     starLog.logD("${newDraw.alpha}")
@@ -280,7 +282,7 @@ class QSControlCenterColor : Hooker() {
 
         }else{
 
-            val res = resparam.res
+            val res = resparam!!.res
 
             val array = res.getIntArray(res.getIdentifier("control_center_list_items_blend_colors", "array", plugin))
             res.setReplacement(plugin,"array","control_center_edit_button_blend_colors",array)

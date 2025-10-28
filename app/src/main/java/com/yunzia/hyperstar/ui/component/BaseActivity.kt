@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -12,6 +13,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import io.github.libxposed.service.XposedService
+import io.github.libxposed.service.XposedService.OnScopeEventListener
+import io.github.libxposed.service.XposedServiceHelper
 import com.yunzia.hyperstar.ui.theme.HyperStarTheme
 import com.yunzia.hyperstar.utils.LanguageHelper
 import com.yunzia.hyperstar.utils.PreferencesUtil
@@ -25,31 +29,31 @@ abstract class BaseActivity : ComponentActivity() {
     private val mCallback = object : OnScopeEventListener {
         override fun onScopeRequestPrompted(packageName: String) {
             runOnUiThread {
-                Toast.makeText(this@MainActivity, "onScopeRequestPrompted: $packageName", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@BaseActivity, "onScopeRequestPrompted: $packageName", Toast.LENGTH_SHORT).show()
             }
         }
 
         override fun onScopeRequestApproved(packageName: String) {
             runOnUiThread {
-                Toast.makeText(this@MainActivity, "onScopeRequestApproved: $packageName", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@BaseActivity, "onScopeRequestApproved: $packageName", Toast.LENGTH_SHORT).show()
             }
         }
 
         override fun onScopeRequestDenied(packageName: String) {
             runOnUiThread {
-                Toast.makeText(this@MainActivity, "onScopeRequestDenied: $packageName", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@BaseActivity, "onScopeRequestDenied: $packageName", Toast.LENGTH_SHORT).show()
             }
         }
 
         override fun onScopeRequestTimeout(packageName: String) {
             runOnUiThread {
-                Toast.makeText(this@MainActivity, "onScopeRequestTimeout: $packageName", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@BaseActivity, "onScopeRequestTimeout: $packageName", Toast.LENGTH_SHORT).show()
             }
         }
 
         override fun onScopeRequestFailed(packageName: String, message: String) {
             runOnUiThread {
-                Toast.makeText(this@MainActivity, "onScopeRequestFailed: $packageName, $message", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@BaseActivity, "onScopeRequestFailed: $packageName, $message", Toast.LENGTH_SHORT).show()
             }
         }
     }

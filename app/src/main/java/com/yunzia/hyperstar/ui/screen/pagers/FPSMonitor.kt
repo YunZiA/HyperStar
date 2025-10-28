@@ -35,12 +35,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.kyant.liquidglass.GlassMaterial
-import com.kyant.liquidglass.InnerRefraction
-import com.kyant.liquidglass.LiquidGlassProviderState
-import com.kyant.liquidglass.LiquidGlassStyle
-import com.kyant.liquidglass.RefractionValue
-import com.kyant.liquidglass.liquidGlass
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import top.yukonga.miuix.kmp.basic.Text
@@ -48,7 +42,7 @@ import kotlin.math.roundToInt
 
 // This is a simple FPS monitor that displays the current frames per second.
 @Composable
-fun FPSMonitor(visible: Boolean, providerState: LiquidGlassProviderState) {
+fun FPSMonitor(visible: Boolean,) {
     var fps by remember { mutableStateOf(0) }
     var lastFrameTime by remember { mutableStateOf(0L) }
     var frameCount by remember { mutableStateOf(0) }
@@ -93,21 +87,7 @@ fun FPSMonitor(visible: Boolean, providerState: LiquidGlassProviderState) {
                         offset += dragAmount
                     }
                 )
-            }.liquidGlass(
-                providerState,
-                LiquidGlassStyle(
-                    RoundedCornerShape(26.dp),
-                    innerRefraction = InnerRefraction(
-                        height = RefractionValue(8.dp),
-                        amount = RefractionValue.Full
-                    ),
-                    material = GlassMaterial(
-                        blurRadius = 0.8.dp,
-                        whitePoint = 0.1f,
-                        chromaMultiplier = 1.5f
-                    )
-                )
-            ),
+            },
         enter = expandIn(
             animationSpec = spring(
                 dampingRatio = Spring.DampingRatioMediumBouncy,

@@ -12,7 +12,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import com.kyant.liquidglass.rememberLiquidGlassProviderState
 import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.utils.LanguageHelper.Companion.getIndexLanguage
 import top.yukonga.miuix.kmp.theme.MiuixTheme

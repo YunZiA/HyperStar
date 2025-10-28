@@ -1,12 +1,12 @@
 package com.yunzia.hyperstar.hook.base
 
 import android.content.res.XModuleResources
-import com.yunzia.annotations.Init
+//import com.yunzia.annotations.Init
 import com.yunzia.hyperstar.hook.tool.starLog
 import de.robv.android.xposed.callbacks.XC_InitPackageResources.InitPackageResourcesParam
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam
 
-abstract class InitHooker: HookerHelper() {
+abstract class InitHooker(): HookerHelper() {
 
     val className = lazy { this.javaClass.simpleName }
     var plugin: String = "miui.systemui.plugin"

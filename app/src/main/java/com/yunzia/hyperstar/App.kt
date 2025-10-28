@@ -52,8 +52,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.savedstate.SavedState
-import com.kyant.liquidglass.liquidGlassProvider
-import com.kyant.liquidglass.rememberLiquidGlassProviderState
 import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.ui.component.XScaffold
 import com.yunzia.hyperstar.ui.component.helper.getSystemCornerRadius
@@ -139,11 +137,9 @@ fun App(){
 
     val context = LocalContext.current
     val activity = LocalActivity.current as BaseActivity
-    val providerState = rememberLiquidGlassProviderState(
-        backgroundColor = Color.White
-    )
+
     XScaffold(
-        modifier = Modifier.liquidGlassProvider(providerState)
+        modifier = Modifier
     ) {
 
         val isUpdate = remember { mutableStateOf(false) }
@@ -270,7 +266,7 @@ fun App(){
 
     }
 
-    FPSMonitor(activity.showFPSMonitor.value,providerState)
+    FPSMonitor(activity.showFPSMonitor.value)
 
 }
 

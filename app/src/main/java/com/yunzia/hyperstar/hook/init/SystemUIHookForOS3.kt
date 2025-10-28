@@ -3,7 +3,7 @@ package com.yunzia.hyperstar.hook.init
 import android.graphics.Color
 import android.util.Log
 import android.view.View
-import com.yunzia.annotations.Init
+//import com.yunzia.annotations.Init
 import com.yunzia.hyperstar.hook.app.systemui.os2.AddCatPaw
 import com.yunzia.hyperstar.hook.app.systemui.os2.LowDeviceBackgroundColor
 import com.yunzia.hyperstar.hook.app.systemui.os3.SystemBarBackground
@@ -19,7 +19,7 @@ import java.lang.Float
 import kotlin.Exception
 import kotlin.Int
 
-@Init(packageName = "com.android.systemui")
+//@Init(packageName = "com.android.systemui")
 class SystemUIHookForOS3 : InitHooker() {
     private val pluginHookForOS3 = PluginHookForOS3()
     private val qsHeaderView = QSHeaderView()

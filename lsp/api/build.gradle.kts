@@ -14,19 +14,19 @@ android {
 
     defaultConfig {
         minSdk = 35
-        compileSdk = 35
+        compileSdk = 36
     }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-    buildTypes {
-        create("cc") {
-        }
-        create("dev") {
-        }
-    }
+//    buildTypes {
+//        create("cc") {
+//        }
+//        create("dev") {
+//        }
+//    }
 
     dependencies {
 

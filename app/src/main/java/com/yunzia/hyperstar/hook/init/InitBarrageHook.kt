@@ -1,12 +1,12 @@
 package com.yunzia.hyperstar.hook.init
 
-import com.yunzia.annotations.Init
+//import com.yunzia.annotations.Init
 import com.yunzia.hyperstar.hook.base.InitHooker
 import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import com.yunzia.hyperstar.utils.XSPUtils
 
-@Init(packageName = "com.xiaomi.barrage")
+//@Init(packageName = "com.xiaomi.barrage")
 class InitBarrageHook: InitHooker() {
 
     override fun initHook() {

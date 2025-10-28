@@ -64,12 +64,12 @@ android {
 
     }
     namespace = "com.yunzia.hyperstar"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.yunzia.hyperstar"
         minSdk = 33
-        targetSdk = 35
+        targetSdk = 36
         versionCode = getVersionCode()
         versionName = getVersionName()
 
@@ -168,7 +168,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.cardview)
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    //compileOnly (libs.android.xposed)
+    compileOnly (libs.android.xposed)
     implementation(libs.kyuubiran.ezxhelper)
     implementation(libs.androidx.foundation)
     implementation (libs.miuix)

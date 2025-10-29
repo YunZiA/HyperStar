@@ -24,16 +24,11 @@ object SPUtils : PrefUtils()  {
 
     fun getAllPreferences(sputils: ArrayList<SP>) {
         val allEntries = pref?.all ?: return
-        Log.d("SPUtils", "Key: $allEntries")
-
-        val type = "SPUtils"
-
         allEntries.entries.stream()
             .filter { entry -> entry.key != "is_Hook_Channel" }
             .forEach { entry ->
                 val key = entry.key
                 var value = entry.value ?: return@forEach
-
                 val sp_type: Int = when (value) {
                     is String -> SP.type_string
                     is Int -> SP.type_int
@@ -46,7 +41,7 @@ object SPUtils : PrefUtils()  {
                     }
                 }
 
-                sputils.add(SP(type, key, sp_type, value))
+                sputils.add(SP(TAG, key, sp_type, value))
             }
     }
 

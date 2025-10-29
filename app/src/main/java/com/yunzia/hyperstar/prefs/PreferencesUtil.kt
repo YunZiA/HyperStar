@@ -9,8 +9,6 @@ import java.util.*
 
 object PreferencesUtil : PrefUtils() {
     private const val PREFERENCE_NAME = "HyperStar_pr"
-    private const val TAG = "ggc"
-
     private var sp: SharedPreferences? = null
 
     /**
@@ -19,12 +17,12 @@ object PreferencesUtil : PrefUtils() {
      */
     fun init(context: Context?) {
         if (context == null){
-            Log.d(TAG, "PreferencesUtil init: context is null")
+            Log.d(TAG, "init: context is null")
             return
 
         }
         pref = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
-        Log.d(TAG, "PreferencesUtil initialized")
+        Log.d(TAG, "initialized")
     }
 
     // === 获取所有配置项 ===

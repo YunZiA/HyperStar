@@ -5,6 +5,7 @@ import androidx.core.content.edit
 
 abstract class PrefUtils {
     var pref: SharedPreferences? = null
+    val TAG = this.javaClass.simpleName
     // === 字符串操作 ===
     fun putString(key: String, value: String) = pref?.edit { putString(key, value) }
     fun getString(key: String, defaultValue: String): String = pref?.getString(key, defaultValue) ?: defaultValue

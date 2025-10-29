@@ -8,7 +8,6 @@ import com.yunzia.hyperstar.prefs.util.SP
 
 object SPUtils : PrefUtils()  {
     const val PREFERENCE_NAME = "HyperStar_SP"
-    const val TAG = "ggc"
 
     /**
      * 初始化
@@ -16,11 +15,11 @@ object SPUtils : PrefUtils()  {
      */
     fun init(service: XposedService?) {
         if (service == null){
-            Log.d(TAG, "SPUtils init: service is null")
+            Log.d(TAG, "init: service is null")
             return
         }
         pref =  service.getRemotePreferences(PREFERENCE_NAME)
-        Log.d(TAG, "SPUtils initialized")
+        Log.d(TAG, "initialized")
     }
 
     fun getAllPreferences(sputils: ArrayList<SP>) {

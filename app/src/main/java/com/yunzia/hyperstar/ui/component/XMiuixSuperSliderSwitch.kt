@@ -13,8 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.SPUtils
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 
 @Composable
@@ -41,7 +40,7 @@ fun XMiuixSuperSliderSwitch(
         checked = MiuixSuperSwitchState,
         onCheckedChange = {
             MiuixSuperSwitchState = it
-            SPUtils.setBoolean(switchKey,MiuixSuperSwitchState)
+            SPUtils.putBoolean(switchKey,MiuixSuperSwitchState)
         },
     )
 
@@ -81,7 +80,7 @@ fun SwitchContentFolder(
         insideMargin = insideMargin,
         onCheckedChange = {
             MiuixSuperSwitchState = it
-            SPUtils.setBoolean(switchKey,MiuixSuperSwitchState)
+            SPUtils.putBoolean(switchKey,MiuixSuperSwitchState)
         },
     )
 

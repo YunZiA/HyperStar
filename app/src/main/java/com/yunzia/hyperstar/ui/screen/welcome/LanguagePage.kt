@@ -36,7 +36,7 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.TextButton
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.screen.pagers.titleColor
-import com.yunzia.hyperstar.utils.PreferencesUtil
+import com.yunzia.hyperstar.prefs.PreferencesUtil
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Icon

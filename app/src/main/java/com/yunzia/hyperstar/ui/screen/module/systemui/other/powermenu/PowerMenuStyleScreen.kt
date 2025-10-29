@@ -67,7 +67,7 @@ import com.yunzia.hyperstar.ui.component.topbar.TopButton
 import com.yunzia.hyperstar.ui.component.helper.getSystemCornerRadius
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.SPUtils
 import com.yunzia.hyperstar.utils.rememberWindowSize
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
@@ -113,7 +113,7 @@ fun PowerMenuStyleScreen(
                     tint = colorScheme.primary
                 ){
                     style.intValue = pagerState.currentPage
-                    SPUtils.setInt("is_power_menu_style",style.intValue)
+                    SPUtils.putInt("is_power_menu_style",style.intValue)
                 }
 
             }

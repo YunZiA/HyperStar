@@ -12,7 +12,7 @@ import com.yunzia.hyperstar.hook.base.replaceHookMethod
 import com.yunzia.hyperstar.hook.base.replaceHookedAllConstructors
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.hook.util.plugin.CommonUtils
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.prefs.XSPUtils
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LayoutInflated
 

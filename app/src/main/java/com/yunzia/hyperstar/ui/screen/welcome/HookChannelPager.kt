@@ -40,12 +40,8 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.Button
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.screen.pagers.titleColor
-import com.yunzia.hyperstar.utils.OSVersion
-import com.yunzia.hyperstar.utils.SPUtils
-import com.yunzia.hyperstar.utils.getHookChannel
+import com.yunzia.hyperstar.prefs.SPUtils
 import com.yunzia.hyperstar.utils.getSettingChannel
-import com.yunzia.hyperstar.utils.isBetaOS
-import com.yunzia.hyperstar.utils.isOS2
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Text
@@ -156,7 +152,7 @@ private fun LazyListScope.channelItem(
                     Log.d("ggc", "channelItem: $isSelected")
                     if (isSelected) {
                         Log.d("ggc", "channelItem: isSelected $isSelected")
-                        SPUtils.setInt("is_Hook_Channel", selectedItem.intValue)
+                        SPUtils.putInt("is_Hook_Channel", selectedItem.intValue)
                     }
                 }
                 .clip(G2RoundedCornerShape(CardDefaults.CornerRadius))

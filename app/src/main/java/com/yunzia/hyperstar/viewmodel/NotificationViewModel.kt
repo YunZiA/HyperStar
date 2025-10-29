@@ -16,7 +16,7 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.LoadStatus
 import com.yunzia.hyperstar.ui.component.search.SearchStatus
 import com.yunzia.hyperstar.ui.screen.module.systemui.other.notification.NotificationInfo
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.SPUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asFlow
@@ -60,7 +60,7 @@ class NotificationViewModel(
                     _loadStatus.value.isEmpty = _selectedApps.isEmpty()
 
                     if (_selectedApps.isEmpty()) {
-                        SPUtils.setString("notification_icon_type_whitelist", "||")
+                        SPUtils.putString("notification_icon_type_whitelist", "||")
                         _unselectedApps.clear()
                         _unselectedApps.addAll(_allAppList)
                         return@collect
@@ -71,7 +71,7 @@ class NotificationViewModel(
                         packageNames.forEach { append("|$it") }
                     } + "|"
 
-                    SPUtils.setString("notification_icon_type_whitelist", result)
+                    SPUtils.putString("notification_icon_type_whitelist", result)
                     _unselectedApps.clear()
                     _unselectedApps.addAll(
                         _allAppList.filter {
@@ -118,7 +118,7 @@ class NotificationViewModel(
     // 更新选中应用列表的方法
     fun updateSelectedApps() {
         if (_selectedApps.isEmpty()) {
-            SPUtils.setString("notification_icon_type_whitelist", "||")
+            SPUtils.putString("notification_icon_type_whitelist", "||")
             _unselectedApps.clear()
             _unselectedApps.addAll(_allAppList)
             return
@@ -129,7 +129,7 @@ class NotificationViewModel(
             packageNames.forEach { append("|$it") }
         } + "|"
 
-        SPUtils.setString("notification_icon_type_whitelist", result)
+        SPUtils.putString("notification_icon_type_whitelist", result)
         _unselectedApps.clear()
         _unselectedApps.addAll(
             _allAppList.filter {
@@ -192,7 +192,7 @@ class NotificationViewModel(
 
     private fun updateWhitelist() {
         if (_selectedApps.isEmpty()) {
-            SPUtils.setString("notification_icon_type_whitelist", "||")
+            SPUtils.putString("notification_icon_type_whitelist", "||")
             return
         }
 
@@ -201,7 +201,7 @@ class NotificationViewModel(
             packageNames.forEach { append("|$it") }
         } + "|"
 
-        SPUtils.setString("notification_icon_type_whitelist", result)
+        SPUtils.putString("notification_icon_type_whitelist", result)
     }
 
     @SuppressLint("QueryPermissionsNeeded")

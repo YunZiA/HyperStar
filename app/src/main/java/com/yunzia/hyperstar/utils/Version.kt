@@ -3,6 +3,9 @@ package com.yunzia.hyperstar.utils
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import com.yunzia.hyperstar.prefs.PreferencesUtil
+import com.yunzia.hyperstar.prefs.SPUtils
+import com.yunzia.hyperstar.prefs.XSPUtils
 import yunzia.utils.SystemProperties
 
 
@@ -60,12 +63,9 @@ fun getHookChannel():Int{
     return XSPUtils.getInt("is_Hook_Channel",if (isBetaOS) 1 else OSVersion)
 }
 
-
 fun getSettingChannel():Int{
     return SPUtils.getInt("is_Hook_Channel",if (isBetaOS) 1 else OSVersion)
 }
-
-
 
 fun getVersionCode(mContext: Context): Int {
     var versionCode = 0

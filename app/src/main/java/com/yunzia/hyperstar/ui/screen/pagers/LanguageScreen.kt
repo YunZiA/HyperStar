@@ -20,7 +20,7 @@ import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.component.pager.NavPager
-import com.yunzia.hyperstar.utils.PreferencesUtil
+import com.yunzia.hyperstar.prefs.PreferencesUtil
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.extra.CheckboxLocation

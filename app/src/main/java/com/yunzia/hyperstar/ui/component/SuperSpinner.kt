@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.SPUtils
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
@@ -92,7 +92,7 @@ fun SuperSpinner(
         selected.intValue = it
 
         Log.d("ggc", "$key: ${selected.intValue}")
-        SPUtils.setInt(key,selected.intValue)
+        SPUtils.putInt(key,selected.intValue)
         onSelectedIndexChange?.invoke(it)
 
     }

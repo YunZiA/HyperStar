@@ -49,14 +49,13 @@ import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.item.ListIte
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.item.MediaItem
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.item.VolumeItem
 import com.yunzia.hyperstar.utils.Helper
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.SPUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Card
-import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Switch
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -159,8 +158,8 @@ class ControlCenterListViewModel(application: Application) : AndroidViewModel(ap
             )
 
             // 更新 SPUtils
-            enable?.let { SPUtils.setBoolean("${itemTag}_span_size_enable", it) }
-            spanSize?.let { SPUtils.setFloat("${itemTag}_span_size", it) }
+            enable?.let { SPUtils.putBoolean("${itemTag}_span_size_enable", it) }
+            spanSize?.let { SPUtils.putFloat("${itemTag}_span_size", it) }
 
             currentStates + (itemTag to newState)
 
@@ -186,7 +185,7 @@ class ControlCenterListViewModel(application: Application) : AndroidViewModel(ap
 
     fun updateSwitch(enabled: Boolean) {
         _switchEnabled.value = enabled
-        SPUtils.setBoolean("controlCenter_priority_enable", enabled)
+        SPUtils.putBoolean("controlCenter_priority_enable", enabled)
     }
 
     fun moveItem(fromIndex: Int, toIndex: Int) {
@@ -225,7 +224,7 @@ class ControlCenterListViewModel(application: Application) : AndroidViewModel(ap
 
     private fun setLists(list: List<String>) {
         list.forEachIndexed { index, s ->
-            SPUtils.setFloat("${s}_priority", 30f + index)
+            SPUtils.putFloat("${s}_priority", 30f + index)
         }
     }
 

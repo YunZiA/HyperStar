@@ -14,7 +14,7 @@ import com.yunzia.hyperstar.ui.component.LoadStatus
 import com.yunzia.hyperstar.ui.component.search.SearchStatus
 import com.yunzia.hyperstar.ui.component.search.SearchStatus.Status
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.media.app.AppInfo
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.SPUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asFlow
@@ -50,7 +50,7 @@ class MediaAppSettingsViewModel(
 
     fun updateSelectedApp(packageName: String) {
         _currentApp.value = if (_currentApp.value == packageName) "" else packageName
-        SPUtils.setString("media_default_app_package", _currentApp.value)
+        SPUtils.putString("media_default_app_package", _currentApp.value)
     }
 
     init {

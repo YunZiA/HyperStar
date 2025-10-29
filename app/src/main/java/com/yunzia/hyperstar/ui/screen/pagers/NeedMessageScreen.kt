@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.ui.screen.pagers
 
 import android.content.ClipData
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.pager.NavPager
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
@@ -58,8 +60,9 @@ fun NeedMessageScreen(
     currentStartDestination: MutableState<String>,
 ) {
     val context = LocalContext.current
+    val activity = LocalActivity.current as MainActivity
     val debugInfo = "Debug Info of HyperStar\n\n" +
-            "ModuleActive = ${isModuleActive()}\n" +
+            "ModuleActive = ${activity.isActive}\n" +
             "HookChannel =  OS${getSettingChannel()}\n" +
             "VersionCode = ${getVersionCode(context)}\n" +
             "VersionName = ${getVerName(context)}\n\n" +
@@ -71,7 +74,6 @@ fun NeedMessageScreen(
             "HyperOSVersion = $OSVersion\n" +
             "IsBetaVersion = $isBetaOS\n" +
             "SystemVersion = $systemVersionIncremental"
-
 
     val localClipboard = LocalClipboard.current
     val debugInfoString = buildAnnotatedString {

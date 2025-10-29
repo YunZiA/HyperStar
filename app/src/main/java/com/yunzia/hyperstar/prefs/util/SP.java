@@ -1,4 +1,4 @@
-package com.yunzia.hyperstar.utils;
+package com.yunzia.hyperstar.prefs.util;
 
 public class SP {
 

@@ -2,7 +2,7 @@ package com.yunzia.hyperstar.hook.app.plugin
 
 import android.content.res.Configuration
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.prefs.XSPUtils
 import yunzia.utils.DensityUtil
 
 class VolumeBarLayoutParams: Hooker() {

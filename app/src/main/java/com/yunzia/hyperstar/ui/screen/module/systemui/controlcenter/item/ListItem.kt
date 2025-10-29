@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.ui.component.dialog.MSuperDialog
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.EnableItemDropdown
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.EnableItemSlider
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.SPUtils
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Surface

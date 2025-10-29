@@ -1,12 +1,10 @@
 package com.yunzia.hyperstar.hook.app.plugin.os3
 
-import android.view.ViewGroup
 import android.widget.TextView
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.afterHookAllConstructors
 import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.util.startMarqueeOfFading
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.prefs.XSPUtils
 
 class QSListTileLabelMarquee : Hooker() {
 

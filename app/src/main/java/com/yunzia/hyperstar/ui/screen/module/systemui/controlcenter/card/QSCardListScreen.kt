@@ -57,7 +57,7 @@ import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.modifier.elevation
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.SPUtils
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
@@ -124,7 +124,7 @@ private fun saveList(items: List<Card>) {
 
     //cardList = items
 
-    SPUtils.setString("card_tile_list",mCardStyleTiles)
+    SPUtils.putString("card_tile_list",mCardStyleTiles)
 
 }
 

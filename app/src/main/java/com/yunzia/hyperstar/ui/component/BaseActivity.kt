@@ -15,17 +15,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.yunzia.hyperstar.prefs.PreferencesUtil
 import io.github.libxposed.service.XposedService
 import io.github.libxposed.service.XposedService.OnScopeEventListener
 import io.github.libxposed.service.XposedServiceHelper
 import com.yunzia.hyperstar.ui.theme.HyperStarTheme
 import com.yunzia.hyperstar.utils.LanguageHelper
-import com.yunzia.hyperstar.utils.PreferencesUtil
+import com.yunzia.hyperstar.prefs.SPUtils
 import kotlin.system.exitProcess
 
 
 abstract class BaseActivity : ComponentActivity() {
+
+    var isActive by mutableStateOf(false)
 
     private var mService: XposedService? = null
 
@@ -85,7 +89,9 @@ abstract class BaseActivity : ComponentActivity() {
         XposedServiceHelper.registerListener(object : XposedServiceHelper.OnServiceListener {
             override fun onServiceBind(service: XposedService) {
                 //Log.d("ggc", "onServiceBind: \n$service")
+                isActive = true
                 mService = service
+                SPUtils.init(service)
                 serviceInfo += "Binder acquired"
                 serviceInfo += "\nAPI " + service.apiVersion
                 serviceInfo += "\nFramework " + service.frameworkName
@@ -113,6 +119,7 @@ abstract class BaseActivity : ComponentActivity() {
 //                }
             }
 
+
             override fun onServiceDied(service: XposedService) {
                 Log.d("ggc", "onServiceDied: \n$service")
 
@@ -139,7 +146,7 @@ abstract class BaseActivity : ComponentActivity() {
 
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase)
-        PreferencesUtil.getInstance().init(newBase)
+        PreferencesUtil.init(newBase)
 
     }
 

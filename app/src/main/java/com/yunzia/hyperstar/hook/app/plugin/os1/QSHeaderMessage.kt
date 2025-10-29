@@ -4,7 +4,7 @@ import android.os.Handler
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.base.replaceHookMethod
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.prefs.XSPUtils
 
 class QSHeaderMessage : Hooker() {
     private val showMessage= XSPUtils.getBoolean("close_header_show_message",false)

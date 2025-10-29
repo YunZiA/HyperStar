@@ -4,7 +4,7 @@ package com.yunzia.hyperstar.hook.init
 import com.yunzia.hyperstar.hook.base.InitHooker
 import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.base.replaceHookMethod
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.prefs.XSPUtils
 
 //@Init(packageName = "com.xiaomi.barrage")
 class InitBarrageHook: InitHooker() {

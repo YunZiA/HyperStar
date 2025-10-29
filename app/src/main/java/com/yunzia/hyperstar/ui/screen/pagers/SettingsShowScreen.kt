@@ -12,7 +12,7 @@ import com.yunzia.hyperstar.ui.component.PMiuixSuperDropdown
 import com.yunzia.hyperstar.ui.component.PMiuixSuperSwitch
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.NavPager
-import com.yunzia.hyperstar.utils.PreferencesUtil
+import com.yunzia.hyperstar.prefs.PreferencesUtil
 
 @Composable
 fun SettingsShowScreen(

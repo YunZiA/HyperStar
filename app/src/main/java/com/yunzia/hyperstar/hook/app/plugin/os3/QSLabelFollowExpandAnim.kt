@@ -2,8 +2,7 @@ package com.yunzia.hyperstar.hook.app.plugin.os3
 
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.base.replaceHookMethod
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.prefs.XSPUtils
 
 class QSLabelFollowExpandAnim : Hooker(){
 

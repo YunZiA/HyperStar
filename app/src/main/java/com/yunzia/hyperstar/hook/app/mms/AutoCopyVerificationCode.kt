@@ -8,7 +8,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.prefs.XSPUtils
 
 
 class AutoCopyVerificationCode: Hooker() {

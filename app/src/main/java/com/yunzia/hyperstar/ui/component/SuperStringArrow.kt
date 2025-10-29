@@ -2,7 +2,6 @@ package com.yunzia.hyperstar.ui.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.dialog.SuperDialogs
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.SPUtils
 import top.yukonga.miuix.kmp.extra.SuperArrow
 
 @Composable
@@ -144,7 +143,7 @@ private fun StringDialog(
                     values.value = "null"
                     isChange.value = false
                     text.value = TextFieldValue(text = "", selection = TextRange(0))
-                    SPUtils.setString(key, "null")
+                    SPUtils.putString(key, "null")
                     showDialog.value = false
                     //showDialog.value = false
 
@@ -167,7 +166,7 @@ private fun StringDialog(
                         values.value = text.value.text
 
                     }
-                    SPUtils.setString(key, values.value)
+                    SPUtils.putString(key, values.value)
                     showDialog.value = false
 
                 }

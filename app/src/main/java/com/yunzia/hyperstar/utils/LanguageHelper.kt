@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Resources
+import com.yunzia.hyperstar.prefs.PreferencesUtil
 import java.util.Locale
 
 

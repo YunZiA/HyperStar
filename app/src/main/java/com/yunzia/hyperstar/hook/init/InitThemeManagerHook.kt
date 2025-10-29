@@ -1,10 +1,9 @@
 package com.yunzia.hyperstar.hook.init
 
-import android.app.AndroidAppHelper
 //import com.yunzia.annotations.Init
 import com.yunzia.hyperstar.hook.base.InitHooker
 import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.prefs.XSPUtils
 
 //@Init(packageName = "com.android.thememanager")
 class InitThemeManagerHook: InitHooker() {

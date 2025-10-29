@@ -1,6 +1,6 @@
 package com.yunzia.hyperstar.hook.tool;
 
-import com.yunzia.hyperstar.utils.XSPUtils;
+import com.yunzia.hyperstar.prefs.XSPUtils;
 
 import de.robv.android.xposed.XposedBridge;
 

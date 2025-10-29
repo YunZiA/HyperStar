@@ -2,7 +2,7 @@ package com.yunzia.hyperstar.hook.app.plugin
 
 import android.content.res.XModuleResources
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.prefs.XSPUtils
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
 class QSEditText: Hooker() {

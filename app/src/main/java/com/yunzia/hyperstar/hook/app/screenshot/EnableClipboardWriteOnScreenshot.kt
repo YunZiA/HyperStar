@@ -3,7 +3,7 @@ package com.yunzia.hyperstar.hook.app.screenshot
 import android.content.ContentResolver
 import android.provider.Settings
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.prefs.XSPUtils
 
 class EnableClipboardWriteOnScreenshot : Hooker() {
 

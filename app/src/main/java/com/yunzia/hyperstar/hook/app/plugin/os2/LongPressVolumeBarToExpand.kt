@@ -5,7 +5,7 @@ import android.view.MotionEvent
 import android.view.View
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.prefs.XSPUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

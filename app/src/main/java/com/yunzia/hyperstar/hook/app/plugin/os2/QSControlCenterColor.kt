@@ -19,7 +19,7 @@ import com.yunzia.hyperstar.hook.base.afterHookConstructor
 import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.tool.starLog
 import com.yunzia.hyperstar.hook.util.plugin.ConfigUtils
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.prefs.XSPUtils
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
 //这里是改变控制中心臭臭颜色的地方

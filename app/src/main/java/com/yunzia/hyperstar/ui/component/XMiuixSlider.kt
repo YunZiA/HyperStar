@@ -48,7 +48,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,8 +58,8 @@ import com.yunzia.hyperstar.ui.component.enums.EventState
 import com.yunzia.hyperstar.ui.component.modifier.bounceClick
 import com.yunzia.hyperstar.ui.component.modifier.bounceScale
 import com.yunzia.hyperstar.ui.component.tool.FilterFloat
-import com.yunzia.hyperstar.utils.PreferencesUtil
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.PreferencesUtil
+import com.yunzia.hyperstar.prefs.SPUtils
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.Slider
 import top.yukonga.miuix.kmp.basic.Text
@@ -194,7 +193,7 @@ fun XMiuixSlider(
             progress = progress.floatValue,
             onProgressChange = { newProgress ->
                 progress.floatValue = newProgress
-                SPUtils.setFloat(key, progress.floatValue)
+                SPUtils.putFloat(key, progress.floatValue)
             },
             effect = effect,
             maxValue = maxValue,
@@ -269,7 +268,7 @@ fun XMiuixSliders(
                 progress = x_progress,
                 onProgressChange = { newProgress ->
                     x_progress = newProgress
-                    SPUtils.setFloat(key, x_progress)
+                    SPUtils.putFloat(key, x_progress)
                 },
                 effect = effect,
                 maxValue = maxValue,
@@ -398,7 +397,7 @@ fun XSuperSliders(
             progress = progress.floatValue,
             onProgressChange = { newProgress ->
                 progress.floatValue = newProgress
-                SPUtils.setFloat(key, progress.floatValue)
+                SPUtils.putFloat(key, progress.floatValue)
             },
             effect = effect,
             maxValue = maxValue,
@@ -549,7 +548,7 @@ fun ValueDialog(
                     focusManager.clearFocus()
                     filter.setInputValue(String.format("%.${decimalPlaces}f", defValue))
                     values.floatValue = defValue
-                    SPUtils.setFloat(key, defValue)
+                    SPUtils.putFloat(key, defValue)
                     showDialog.value = false
                     //showDialog.value = false
 
@@ -566,10 +565,10 @@ fun ValueDialog(
                     if (filter.getInputValue().text == ""){
                         filter.setInputValue(String.format("%.${decimalPlaces}f", defValue))
                         values.floatValue = defValue
-                        SPUtils.setFloat(key, defValue)
+                        SPUtils.putFloat(key, defValue)
                     }else{
                         values.floatValue = filter.getInputValue().text.toFloat()
-                        SPUtils.setFloat(key, values.floatValue)
+                        SPUtils.putFloat(key, values.floatValue)
 
                     }
                     showDialog.value = false

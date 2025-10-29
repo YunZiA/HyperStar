@@ -37,7 +37,7 @@ import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.nav.PagersModel
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPager
 import com.yunzia.hyperstar.utils.Helper
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.SPUtils
 import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -131,7 +131,7 @@ fun FunItem(
             .clickable {
                 selectFun.value = if (isSelect) "" else type
                 isSelect = !isSelect
-                SPUtils.setString(key, type)
+                SPUtils.putString(key, type)
             }
             .pointerInput(eventState) {
 
@@ -171,7 +171,7 @@ fun FunItem(
 
                     selectFun.value = if (isSelect) "" else type
                     isSelect = !isSelect
-                    SPUtils.setString(key, type)
+                    SPUtils.putString(key, type)
                 }
             )
 

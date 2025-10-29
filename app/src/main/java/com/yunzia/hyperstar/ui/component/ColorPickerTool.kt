@@ -41,7 +41,6 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,7 +50,7 @@ import androidx.wear.compose.material.rememberSwipeableState
 import androidx.wear.compose.material.swipeable
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.SPUtils
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.Text
@@ -201,7 +200,7 @@ fun ColorPickerTool(
                         swappableState.animateTo(Status.CLOSE)
                     }
                     color.value = dfColor
-                    SPUtils.setString(key,"null")
+                    SPUtils.putString(key,"null")
                 }
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -228,7 +227,7 @@ fun ColorPickerTool(
         showDialog = showDialog
     ) {
         color.value = it
-        SPUtils.setString(key,color.value.toHex())
+        SPUtils.putString(key,color.value.toHex())
 
     }
 }

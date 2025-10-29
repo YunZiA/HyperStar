@@ -60,11 +60,9 @@ import com.yunzia.hyperstar.utils.JBUtil
 import com.yunzia.hyperstar.utils.JBUtil.clear
 import com.yunzia.hyperstar.utils.JBUtil.openFile
 import com.yunzia.hyperstar.utils.JBUtil.saveFile
-import com.yunzia.hyperstar.utils.PreferencesUtil
-import com.yunzia.hyperstar.utils.SPUtils
-import com.yunzia.hyperstar.utils.getHookChannel
+import com.yunzia.hyperstar.prefs.PreferencesUtil
+import com.yunzia.hyperstar.prefs.SPUtils
 import com.yunzia.hyperstar.utils.getSettingChannel
-import com.yunzia.hyperstar.utils.isOS2
 import dev.chrisbanes.haze.HazeState
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
@@ -307,7 +305,7 @@ fun ChannelSpinner(
         selected.intValue = it + 1
 
         Log.d("ggc", "$key: ${selected.intValue}")
-        SPUtils.setInt(key,selected.intValue)
+        SPUtils.putInt(key,selected.intValue)
         onSelectedIndexChange?.invoke(it)
 
     }

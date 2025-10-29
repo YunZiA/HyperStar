@@ -86,10 +86,10 @@ fun Home(
     showReboot: MutableState<Boolean>,
     pagerState: PagerState
 ) {
-    val isModuleActive = isModuleActive()
     val context = LocalContext.current
     val view = LocalView.current
     val activity = LocalActivity.current as MainActivity
+    val isModuleActive = activity.isActive
     val rebootStyle = activity.rebootStyle
 
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())

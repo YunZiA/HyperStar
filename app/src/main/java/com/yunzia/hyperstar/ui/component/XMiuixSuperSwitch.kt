@@ -9,9 +9,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.yunzia.hyperstar.utils.PreferencesUtil
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.PreferencesUtil
+import com.yunzia.hyperstar.prefs.SPUtils
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 
 @Composable
@@ -32,7 +31,7 @@ fun XSuperSwitch(
         insideMargin = insideMargin,
         onCheckedChange = {
             state.value = it
-            SPUtils.setBoolean(key,state.value)
+            SPUtils.putBoolean(key,state.value)
         },
     )
 
@@ -58,7 +57,7 @@ fun XSuperSwitch(
         insideMargin = insideMargin,
         onCheckedChange = {
             state.value = it
-            SPUtils.setBoolean(key,state.value)
+            SPUtils.putBoolean(key,state.value)
             onStateChanged(state.value)
         },
     )
@@ -85,7 +84,7 @@ fun XSuperSwitch(
         insideMargin = insideMargin,
         onCheckedChange = {
             state.value = it
-            SPUtils.setBoolean(key,state.value)
+            SPUtils.putBoolean(key,state.value)
         },
     )
 

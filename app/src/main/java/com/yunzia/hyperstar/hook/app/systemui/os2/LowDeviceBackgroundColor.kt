@@ -2,7 +2,7 @@ package com.yunzia.hyperstar.hook.app.systemui.os2
 
 import androidx.core.graphics.toColorInt
 import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.prefs.XSPUtils
 
 
 class LowDeviceBackgroundColor: Hooker() {

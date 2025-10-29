@@ -52,6 +52,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.savedstate.SavedState
+import com.yunzia.hyperstar.prefs.PreferencesUtil
 import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.ui.component.XScaffold
 import com.yunzia.hyperstar.ui.component.helper.getSystemCornerRadius
@@ -97,8 +98,6 @@ import com.yunzia.hyperstar.ui.screen.pagers.TranslatorScreen
 import com.yunzia.hyperstar.ui.screen.pagers.UpdaterScreen
 import com.yunzia.hyperstar.ui.screen.welcome.ActivePage
 import com.yunzia.hyperstar.ui.screen.welcome.WelcomeScreen
-import com.yunzia.hyperstar.utils.Helper.isModuleActive
-import com.yunzia.hyperstar.utils.PreferencesUtil
 import com.yunzia.hyperstar.utils.isFold
 import com.yunzia.hyperstar.utils.isPad
 import kotlinx.coroutines.delay
@@ -144,7 +143,7 @@ fun App(){
 
         val isUpdate = remember { mutableStateOf(false) }
 
-        if (!isModuleActive()){
+        if (!activity.isActive){
             if (!isFold() && !isPad()){
                 activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             }

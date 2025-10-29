@@ -35,7 +35,7 @@ import com.yunzia.hyperstar.ui.component.PMiuixSuperDropdown
 import com.yunzia.hyperstar.ui.component.PMiuixSuperSwitch
 import com.yunzia.hyperstar.ui.component.XSuperDropdown
 import com.yunzia.hyperstar.ui.component.itemGroup
-import com.yunzia.hyperstar.utils.PreferencesUtil
+import com.yunzia.hyperstar.prefs.PreferencesUtil
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Text
 

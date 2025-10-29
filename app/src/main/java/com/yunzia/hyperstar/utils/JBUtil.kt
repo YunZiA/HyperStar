@@ -11,6 +11,9 @@ import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.prefs.PreferencesUtil
+import com.yunzia.hyperstar.prefs.SPUtils
+import com.yunzia.hyperstar.prefs.util.SP
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.InputStreamReader
@@ -98,7 +101,7 @@ object JBUtil {
                     val value = sp.value
                     when (sp.type) {
                         SP.type_boolean -> when (sp.spType) {
-                            "SPUtils" -> SPUtils.setBoolean(
+                            "SPUtils" -> SPUtils.putBoolean(
                                 key,
                                 (value as Boolean)
                             )
@@ -113,9 +116,9 @@ object JBUtil {
 
                         SP.type_float -> when (sp.spType) {
                             "SPUtils" -> if (value is Double) {
-                                SPUtils.setFloat(key, value.toFloat())
+                                SPUtils.putFloat(key, value.toFloat())
                             } else {
-                                SPUtils.setFloat(key, (value as Float))
+                                SPUtils.putFloat(key, (value as Float))
                             }
 
                             "PreferencesUtil" -> if (value is Double) {
@@ -129,9 +132,9 @@ object JBUtil {
 
                         SP.type_int -> when (sp.spType) {
                             "SPUtils" -> if (value is Double) {
-                                SPUtils.setInt(key, value.toInt())
+                                SPUtils.putInt(key, value.toInt())
                             } else {
-                                SPUtils.setInt(key, value as Int)
+                                SPUtils.putInt(key, value as Int)
                             }
 
                             "PreferencesUtil" -> if (value is Double) {
@@ -145,9 +148,9 @@ object JBUtil {
 
                         SP.type_long -> when (sp.spType) {
                             "SPUtils" -> if (value is Double) {
-                                SPUtils.setLong(key, value.toLong())
+                                SPUtils.putLong(key, value.toLong())
                             } else {
-                                SPUtils.setLong(key, (value as Long))
+                                SPUtils.putLong(key, (value as Long))
                             }
 
                             "PreferencesUtil" -> if (value is Double) {
@@ -160,7 +163,7 @@ object JBUtil {
                         }
 
                         else -> when (sp.spType) {
-                            "SPUtils" -> SPUtils.setString(key, value as String)
+                            "SPUtils" -> SPUtils.putString(key, value as String)
                             "PreferencesUtil" -> PreferencesUtil.putString(key, value as String)
                             else -> Log.d(TAG, "readGson: not getSpType " + sp.key)
                         }

@@ -3,7 +3,7 @@ package com.yunzia.hyperstar.hook.app.home
 import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.base.findClassWithPrefix
 import com.yunzia.hyperstar.hook.base.replaceHookMethod
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.prefs.XSPUtils
 
 class RemoveNoBlurDevice : Hooker() {
 

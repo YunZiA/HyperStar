@@ -9,7 +9,7 @@ import com.yunzia.hyperstar.hook.base.Hooker
 import com.yunzia.hyperstar.hook.base.beforeHookConstructor
 import com.yunzia.hyperstar.hook.base.findClass
 import com.yunzia.hyperstar.hook.util.startMarqueeOfFading
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.prefs.XSPUtils
 
 //import de.robv.android.xposed.XposedHelpers
 

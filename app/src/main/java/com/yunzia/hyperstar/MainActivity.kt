@@ -23,8 +23,7 @@ import androidx.profileinstaller.ProfileInstaller
 import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.utils.AppInfo
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
-import com.yunzia.hyperstar.utils.PreferencesUtil
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.PreferencesUtil
 import com.yunzia.hyperstar.viewmodel.UpdaterDownloadViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -172,7 +171,6 @@ class MainActivity : BaseActivity() {
         // Initialize profile installer and module settings
         ProfileInstaller.writeProfile(this)
         if (isModuleActive()) {
-            SPUtils.getInstance().init(this)
             toggleLauncherIconVisibility(PreferencesUtil.getBoolean("is_hide_icon", false))
         }
     }

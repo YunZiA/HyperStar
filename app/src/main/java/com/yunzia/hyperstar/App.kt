@@ -135,7 +135,7 @@ fun printBackStackDetailed(navController: NavController) {
 fun App(){
 
     val context = LocalContext.current
-    val activity = LocalActivity.current as BaseActivity
+    val activity = LocalActivity.current as MainActivity
 
     XScaffold(
         modifier = Modifier

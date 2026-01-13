@@ -11,7 +11,6 @@ class ResourcesImpl(resources: Any?) {
     val displayMetrics by lazy { XposedHelpers.callMethod(mResourcesImpl,"getDisplayMetrics") as DisplayMetrics }
 
     fun getId(name: String, type: String, packageName: String):Int {
-
        val id =  XposedHelpers.callMethod(mResourcesImpl,"getIdentifier",name,type,packageName) as Int
 
         return id

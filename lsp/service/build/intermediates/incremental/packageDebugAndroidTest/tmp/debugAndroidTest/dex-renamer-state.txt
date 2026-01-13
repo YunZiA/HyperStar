@@ -1,0 +1,7 @@
+#Mon Jan 12 19:50:53 CST 2026
+base.0=C\:\\Users\\25748\\StudioProjects\\HyperStar_it\\lsp\\service\\build\\intermediates\\dex\\debugAndroidTest\\mergeLibDexDebugAndroidTest\\3\\classes.dex
+base.1=C\:\\Users\\25748\\StudioProjects\\HyperStar_it\\lsp\\service\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\0\\classes.dex
+path.0=3/classes.dex
+path.1=0/classes.dex
+renamed.0=classes.dex
+renamed.1=classes2.dex

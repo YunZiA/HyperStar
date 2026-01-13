@@ -1,4 +1,5 @@
 
+import com.android.build.gradle.internal.services.aapt2DaemonServiceRegistry
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.time.LocalDateTime
@@ -139,10 +140,15 @@ android {
         }
     }
 
+//    androidResources {
+//        additionalParameters.clear() // 清空已有参数
+//        additionalParameters.add("--allow-reserved-package-id")
+//        additionalParameters.add("--package-id")
+//        additionalParameters.add("0x66")
+//    }
 }
 dependencies {
-//    compileOnly(libs.libxposed.api)
-//    implementation(libs.libxposed.service)
+    compileOnly(project(":lsp:annotations"))
     compileOnly(project(":lsp:api"))
     implementation(project(":lsp:service"))
     // 系统UI控制库，实现沉浸式状态栏

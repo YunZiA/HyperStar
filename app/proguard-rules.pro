@@ -46,3 +46,18 @@
 #}
 -keep class com.yunzia.hyperstar.** { *; }
 
+# 保留所有 Xposed 相关注解
+-keepattributes *Annotation*
+
+# 保留 LibXposed / LSPosed 的注解类
+-keep class io.github.libxposed.** { *; }
+#-keep class io.github.libxposed.api.** { *; }
+
+# 保留你的 Hooker 类及其注解方法（关键！）
+-keepclassmembers class * {
+    @io.github.libxposed.api.annotations.BeforeInvocation <methods>;
+    @io.github.libxposed.api.annotations.AfterInvocation <methods>;
+    @io.github.libxposed.api.annotations.XposedHooker <methods>;
+}
+
+

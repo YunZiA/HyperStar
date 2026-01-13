@@ -29,9 +29,7 @@ import kotlin.system.exitProcess
 
 abstract class BaseActivity : ComponentActivity() {
 
-    var isActive by mutableStateOf(false)
 
-    private var mService: XposedService? = null
 
     private val mCallback = object : OnScopeEventListener {
         override fun onScopeRequestPrompted(packageName: String) {
@@ -84,54 +82,6 @@ abstract class BaseActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var serviceInfo = ""
-
-        XposedServiceHelper.registerListener(object : XposedServiceHelper.OnServiceListener {
-            override fun onServiceBind(service: XposedService) {
-                //Log.d("ggc", "onServiceBind: \n$service")
-                isActive = true
-                mService = service
-                SPUtils.init(service)
-                serviceInfo += "Binder acquired"
-                serviceInfo += "\nAPI " + service.apiVersion
-                serviceInfo += "\nFramework " + service.frameworkName
-                serviceInfo += "\nFramework version " + service.frameworkVersion
-                serviceInfo += "\nFramework version code " + service.frameworkVersionCode
-                serviceInfo += "\nScope: " + service.scope
-                Log.d("ggc", "onServiceBind: \n$serviceInfo")
-
-//                binding.requestScope.setOnClickListener {
-//                    service.requestScope("com.android.settings", mCallback)
-//                }
-//                binding.randomPrefs.setOnClickListener {
-//                    val prefs = service.getRemotePreferences("test")
-//                    val old = prefs.getInt("test", -1)
-//                    val new = Random.nextInt()
-//                    Toast.makeText(this@BaseActivity, "$old -> $new", Toast.LENGTH_SHORT).show()
-//                    prefs.edit().putInt("test", new).apply()
-//                }
-//                binding.remoteFile.setOnClickListener {
-//                    service.openRemoteFile("test.txt").use { pfd ->
-//                        FileWriter(pfd.fileDescriptor).use {
-//                            it.append("Hello World!")
-//                        }
-//                    }
-//                }
-            }
-
-
-            override fun onServiceDied(service: XposedService) {
-                Log.d("ggc", "onServiceDied: \n$service")
-
-            }
-        })
-
-        val handler = Handler(Looper.getMainLooper())
-        handler.postDelayed({
-            if (mService == null) {
-                Log.d("BaseActivity", "onCreate: Binder is null")
-            }
-        }, 5000)
         enableEdgeToEdge()
         setContent {
             HyperStarTheme() {

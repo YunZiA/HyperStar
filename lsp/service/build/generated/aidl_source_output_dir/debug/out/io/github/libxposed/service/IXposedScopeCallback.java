@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Using: C:\Users\25748\AppData\Local\Android\Sdk\build-tools\35.0.0\aidl.exe -pC:\Users\25748\AppData\Local\Android\Sdk\platforms\android-34\framework.aidl -oC:\Users\25748\StudioProjects\HyperStar_it\lsp\service\build\generated\aidl_source_output_dir\debug\out -IC:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\interface\src\main\aidl -IC:\Users\25748\StudioProjects\HyperStar_it\lsp\service\src\debug\aidl -dC:\Users\25748\AppData\Local\Temp\aidl18373367710811387184.d C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\interface\src\main\aidl\io\github\libxposed\service\IXposedScopeCallback.aidl
+ * Using: C:\Users\25748\AppData\Local\Android\Sdk\build-tools\35.0.0\aidl.exe -pC:\Users\25748\AppData\Local\Android\Sdk\platforms\android-34\framework.aidl -oC:\Users\25748\StudioProjects\HyperStar_it\lsp\service\build\generated\aidl_source_output_dir\debug\out -IC:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\interface\src\main\aidl -IC:\Users\25748\StudioProjects\HyperStar_it\lsp\service\src\debug\aidl -dC:\Users\25748\AppData\Local\Temp\aidl8676556767771887298.d C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\interface\src\main\aidl\io\github\libxposed\service\IXposedScopeCallback.aidl
  */
 package io.github.libxposed.service;
 public interface IXposedScopeCallback extends android.os.IInterface

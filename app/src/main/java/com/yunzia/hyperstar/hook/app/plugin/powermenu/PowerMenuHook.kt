@@ -4,72 +4,37 @@ package com.yunzia.hyperstar.hook.app.plugin.powermenu
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
-import android.content.res.XModuleResources
 import android.view.View
 import android.view.animation.Interpolator
 import android.widget.FrameLayout
-import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.action.Action
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.base.MenuItem
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.menu.menuB
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.menu.menuA
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.hook.core.helper.getObjectField
+import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
+import com.yunzia.hyperstar.hook.core.helper.callMethodAs
 import com.yunzia.hyperstar.prefs.XSPUtils
-import de.robv.android.xposed.callbacks.XC_InitPackageResources
 
 
-class PowerMenuHook : Hooker() {
-
-    var icBootloader = 0
-    var icRecovery = 0
-    var icAirplaneOn = 0
-    var icAirplaneOff = 0
-    var icSilentOn = 0
-    var icSilentOff = 0
-    var icQsScreenshot = 0
-
-    var xiaoai = 0
-    var alipayPay = 0
-    var wechatScan = 0
-    var alipayScan = 0
-    var wechatPay = 0
+object PowerMenuHook : BasePluginHook() {
 
     val isPowerMenuNavShow = XSPUtils.getBoolean("is_power_menu_nav_show",false)
 
     val isPowerMenuStyle = XSPUtils.getInt("is_power_menu_style",0)
 
-    override fun initResources(
-        resparam: XC_InitPackageResources.InitPackageResourcesParam?,
-        modRes: XModuleResources?
-    ) {
-        super.initResources(resparam, modRes)
-
-        xiaoai = resparam?.res?.addResource(modRes,R.drawable.xiaoai)!!
-        icBootloader = resparam.res?.addResource(modRes,R.drawable.ic_bootloader)!!
-        icRecovery = resparam.res?.addResource(modRes,R.drawable.ic_recovery)!!
-        icAirplaneOn = resparam.res?.addResource(modRes,R.drawable.ic_airplane_on)!!
-        starLog.log("icAirplaneOn = $icAirplaneOn")
-        icAirplaneOff = resparam.res?.addResource(modRes,R.drawable.ic_airplane_off)!!
-        icSilentOn = resparam.res?.addResource(modRes,R.drawable.ic_silent_on)!!
-        icSilentOff = resparam.res?.addResource(modRes,R.drawable.ic_silent_off)!!
-        icQsScreenshot = resparam.res?.addResource(modRes,R.drawable.ic_qs_screenshot)!!
-        alipayScan = resparam.res?.addResource(modRes,R.drawable.alipay_scan)!!
-        alipayPay = resparam.res?.addResource(modRes,R.drawable.alipay_pay)!!
-        wechatScan = resparam.res?.addResource(modRes,R.drawable.wechat_scan)!!
-        wechatPay = resparam.res?.addResource(modRes,R.drawable.wechat_pay)!!
-
-
-    }
 
 
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
 
-        val MiuiGlobalActionsDialog = findClass("com.android.systemui.miui.globalactions.MiuiGlobalActionsDialog",classLoader)
-        val VolumeUtil = findClass("com.android.systemui.miui.volume.VolumeUtil",classLoader)
+    override fun init() {
+        
+
+        val MiuiGlobalActionsDialog = findClass("com.android.systemui.miui.globalactions.MiuiGlobalActionsDialog",pluginClassLoader)
+        val VolumeUtil = findClass("com.android.systemui.miui.volume.VolumeUtil",pluginClassLoader)
 
         if (isPowerMenuNavShow) {
             MiuiGlobalActionsDialog.afterHookMethod(
@@ -100,8 +65,7 @@ class PowerMenuHook : Hooker() {
                 val s = mSliderView.layoutParams as FrameLayout.LayoutParams
                 //mSliderView.translationX = 250f
                 val action = Action(
-                    mContext,xiaoai, icBootloader, icRecovery, icAirplaneOn, icAirplaneOff,
-                    icSilentOn, icSilentOff, icQsScreenshot, alipayPay, wechatScan, alipayScan, wechatPay , VolumeUtil!!
+                    mContext, VolumeUtil!!
                 )
 
                 when(isPowerMenuStyle){
@@ -152,7 +116,7 @@ class PowerMenuHook : Hooker() {
         }
         findClass(
             "com.android.systemui.miui.globalactions.SliderView",
-            classLoader
+            pluginClassLoader
         ).afterHookMethod(
             "handleActionMoveForAlpha",
             Float::class.java

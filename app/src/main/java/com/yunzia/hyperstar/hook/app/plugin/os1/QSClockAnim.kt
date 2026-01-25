@@ -1,16 +1,16 @@
 package com.yunzia.hyperstar.hook.app.plugin.os1
 
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.base.replaceHookMethod
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
 import com.yunzia.hyperstar.prefs.XSPUtils
 
-class QSClockAnim : Hooker() {
+object QSClockAnim : BasePluginHook() {
 
     val closeQsClockAnim = XSPUtils.getBoolean("close_qs_clock_anim",false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
 
         if (!closeQsClockAnim) return
 
@@ -21,7 +21,7 @@ class QSClockAnim : Hooker() {
 
         findClass(
             "miui.systemui.controlcenter.panel.main.header.FakeStatusHeaderController",
-            classLoader
+            pluginClassLoader
         ).replaceHookMethod(
             "onCreate"
         ){

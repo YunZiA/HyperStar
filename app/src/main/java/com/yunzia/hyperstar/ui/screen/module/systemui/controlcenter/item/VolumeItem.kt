@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,7 +29,6 @@ import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.EnableItemDr
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import yunzia.ui.Card
 
 @Composable
@@ -74,7 +74,7 @@ fun VolumeItem(
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 4.dp)
             .elevation(
-                shape = SquircleShape(18.dp),
+                shape = RoundedCornerShape(18.dp),
                 backgroundColor = colorScheme.secondary,
                 shadowElevation = 2f
             ),
@@ -85,7 +85,7 @@ fun VolumeItem(
             Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.6f)
-                .background(colorScheme.surface, SquircleShape(8.dp)),
+                .background(colorScheme.surface, RoundedCornerShape(8.dp)),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally,
         ){

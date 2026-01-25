@@ -4,7 +4,7 @@
 //
 //import android.content.res.XModuleResources;
 //
-//import com.yunzia.hyperstar.hook.app.NotDeveloperHooker;
+//import com.yunzia.hyperstar.hook.app.NotDeveloperBaseHook;
 //import com.yunzia.hyperstar.hook.init.InitBarrageHook;
 //import com.yunzia.hyperstar.hook.init.InitMMSHook;
 //import com.yunzia.hyperstar.hook.init.InitMiuiHomeHook;
@@ -13,7 +13,7 @@
 //import com.yunzia.hyperstar.hook.init.SystemUIHookForOS1;
 //import com.yunzia.hyperstar.hook.init.SystemUIHookForOS2;
 //import com.yunzia.hyperstar.hook.init.SystemUIHookForOS3;
-//import com.yunzia.hyperstar.hook.tool.starLog;
+//import com.yunzia.hyperstar.hook.core.Log;
 //
 //import de.robv.android.xposed.IXposedHookInitPackageResources;
 //import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -23,7 +23,7 @@
 //import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 //import de.robv.android.xposed.callbacks.XC_LoadPackage;
 //
-//public class InitHook implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
+//public class init implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
 //
 //    private final SystemUIHookForOS3 systemUIHook0S3 = new SystemUIHookForOS3();
 //    private final SystemUIHookForOS2 systemUIHook0S2 = new SystemUIHookForOS2();
@@ -34,7 +34,7 @@
 //    @Override
 //    public void initZygote(StartupParam startupParam) throws Throwable {
 //        mPath = startupParam.modulePath;
-//        starLog.log("HookChannel is currently configured for OS" + isHookChannel);
+//        log("HookChannel is currently configured for OS" + isHookChannel);
 //
 //    }
 //
@@ -53,7 +53,7 @@
 //                systemUIHook0S3.initResources(resparam,modRes);
 //                break;
 //            default:
-//                starLog.logE("Resource initialization failed! Because the HookChannel is OS"+isHookChannel);
+//                logE("Resource initialization failed! Because the HookChannel is OS"+isHookChannel);
 //        }
 //
 //
@@ -66,29 +66,29 @@
 //            XposedHelpers.findAndHookMethod("com.yunzia.hyperstar.utils.Helper", lpparam.classLoader, "isModuleActive", XC_MethodReplacement.returnConstant(true));
 //        }
 //
-//        new NotDeveloperHooker().initHook(lpparam);
+//        new NotDeveloperBaseHook().init(lpparam);
 //
 //        switch (isHookChannel) {
 //            case 1:
-//                systemUIHook0S1.initHook(lpparam);
+//                systemUIHook0S1.init(lpparam);
 //                break;
 //            case 2:
-//                systemUIHook0S2.initHook(lpparam);
+//                systemUIHook0S2.init(lpparam);
 //                break;
 //            case 3:
-//                systemUIHook0S3.initHook(lpparam);
+//                systemUIHook0S3.init(lpparam);
 //                break;
 //            default:
-//                starLog.logE("Hook initialization failed! Because the HookChannel is OS"+isHookChannel);
+//                logE("Hook initialization failed! Because the HookChannel is OS"+isHookChannel);
 //
 //        }
 //        if(isHookChannel > 1){
-//            new InitMiuiHomeHook().initHook(lpparam);
-//            new InitMiuiScreenshot().initHook(lpparam);
+//            new InitMiuiHomeHook().init(lpparam);
+//            new InitMiuiScreenshot().init(lpparam);
 //        }
-//        new InitMMSHook().initHook(lpparam);
-//        new InitBarrageHook().initHook(lpparam);
-//        new InitThemeManagerHook().initHook(lpparam);
+//        new InitMMSHook().init(lpparam);
+//        new InitBarrageHook().init(lpparam);
+//        new InitThemeManagerHook().init(lpparam);
 //
 //
 //    }

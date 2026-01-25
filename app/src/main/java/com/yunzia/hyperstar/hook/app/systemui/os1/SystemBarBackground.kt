@@ -1,19 +1,22 @@
 package com.yunzia.hyperstar.hook.app.systemui.os1
 
 import android.view.View
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.afterHookConstructor
-import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.core.BaseHook
+import com.yunzia.hyperstar.hook.core.helper.afterHookConstructor
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.getObjectField
+import com.yunzia.hyperstar.hook.core.helper.setIntField
 import com.yunzia.hyperstar.prefs.XSPUtils
 
 
-class SystemBarBackground : Hooker() {
+object SystemBarBackground : BaseHook() {
 
     private val isTransparentNavigationBarBackground = XSPUtils.getBoolean("is_transparent_navigationBar_background",false)
     private val isTransparentStatusBarBackground = XSPUtils.getBoolean("is_transparent_statusBar_background",false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
 
         transparentNavigationBarBackground()
         transparentStatusBarBackground()
@@ -23,8 +26,7 @@ class SystemBarBackground : Hooker() {
     private fun transparentStatusBarBackground() {
         if (!isTransparentStatusBarBackground) return
         findClass(
-            "com.android.systemui.statusbar.phone.PhoneStatusBarTransitions",
-            classLoader
+            "com.android.systemui.statusbar.phone.PhoneStatusBarTransitions"
         ).afterHookConstructor(
             View::class.java
         ) {
@@ -38,19 +40,16 @@ class SystemBarBackground : Hooker() {
     private fun transparentNavigationBarBackground() {
         if (!isTransparentNavigationBarBackground) return
         val navigationBarTransitions = findClass(
-            "com.android.systemui.navigationbar.NavigationBarTransitions",
-            classLoader
+            "com.android.systemui.navigationbar.NavigationBarTransitions"
         )
 
         val NavigationBarView = findClass(
-            "com.android.systemui.navigation.NavigationBarView",
-            classLoader
+            "com.android.systemui.navigation.NavigationBarView"
         )
         val LightBarTransitionsControllerFactory = findClass(
-            "com.android.systemui.statusbar.phone.LightBarTransitionsController\$Factory",
-            classLoader
+            "com.android.systemui.statusbar.phone.LightBarTransitionsController\$Factory"
         )
-        val DisplayTracker = findClass("com.android.systemui.settings.DisplayTracker", classLoader)
+        val DisplayTracker = findClass("com.android.systemui.settings.DisplayTracker")
 
 
         navigationBarTransitions.afterHookConstructor(

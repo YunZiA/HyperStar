@@ -1,21 +1,22 @@
 package com.yunzia.hyperstar.hook.init
 
 //import com.yunzia.annotations.Init
-import com.yunzia.hyperstar.hook.base.InitHooker
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.base.replaceHookMethod
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
+import com.yunzia.hyperstar.hook.core.BaseHooks
+import com.yunzia.hyperstar.hook.core.annotation.Init
+import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.prefs.XSPUtils
 
-//@Init(packageName = "com.xiaomi.barrage")
-class InitBarrageHook: InitHooker() {
+@Init(packageName = "com.xiaomi.barrage")
+object InitBarrageHook: BaseHooks() {
 
-    override fun initHook() {
+    override fun init() {
 
         if (XSPUtils.getBoolean("is_disable_barrage_click",false)){
 
             findClass(
-                "com.xiaomi.barrage.utils.BarrageWindowUtils",
-                classLoader
+                "com.xiaomi.barrage.utils.BarrageWindowUtils"
             ).replaceHookMethod(
                 "initListener"
             ){

@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -60,7 +61,6 @@ import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.prefs.SPUtils
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import yunzia.ui.DraggableGrid
 
 data class Card(
@@ -344,7 +344,7 @@ fun CardItem(
                 .fillMaxSize()
                 .padding(vertical = 4.dp, horizontal = 4.dp)
                 .elevation(
-                    shape = SquircleShape(18.dp),
+                    shape = RoundedCornerShape(18.dp),
                     backgroundColor = colorScheme.secondary,
                     shadowElevation = 3f
                 ),

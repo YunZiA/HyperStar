@@ -3,26 +3,31 @@ package com.yunzia.hyperstar.hook.app.plugin
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.Log
 import android.widget.LinearLayout
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.afterHookConstructor
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.tool.starLog
-import com.yunzia.hyperstar.hook.tool.starLog.logE
+import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.Log.logD
+import com.yunzia.hyperstar.hook.core.helper.afterHookConstructor
+import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
+import com.yunzia.hyperstar.hook.core.Log
+import com.yunzia.hyperstar.hook.core.Log.logE
+import com.yunzia.hyperstar.hook.core.helper.callMethod
+import com.yunzia.hyperstar.hook.core.helper.getFloatField
+import com.yunzia.hyperstar.hook.core.helper.getIntField
+import com.yunzia.hyperstar.hook.core.helper.getObjectField
 import com.yunzia.hyperstar.prefs.XSPUtils
 
 
-class QSCardTileList : Hooker() {
+object QSCardTileList : BasePluginHook() {
 
     private val mCardStyleTiles = XSPUtils.getString("card_tile_list","wifi|cell|")
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
         if (XSPUtils.getBoolean("use_card_tile_list",false)){
 
             startMethodsHook()
-
         }
 
     }
@@ -44,7 +49,7 @@ class QSCardTileList : Hooker() {
 
         findClass(
             "miui.systemui.controlcenter.qs.QSController",
-            classLoader
+            pluginClassLoader
         ).beforeHookMethod(
             "getCardStyleTileSpecs"
         ){
@@ -54,7 +59,7 @@ class QSCardTileList : Hooker() {
 
         findClass(
             "miui.systemui.controlcenter.qs.tileview.QSCardItemView",
-            classLoader
+            pluginClassLoader
         ).apply {
             afterHookConstructor(
                 Context::class.java,
@@ -84,7 +89,7 @@ class QSCardTileList : Hooker() {
                 this as LinearLayout
                 val state = this.getObjectField("state")
                 if (state == null){
-                    starLog.logE("state == null")
+                    logE("state == null")
                     return@beforeHookMethod
                 }
                 val i = state.getIntField("state")
@@ -158,7 +163,7 @@ class QSCardTileList : Hooker() {
 
     private fun getList():ArrayList<String> {
 
-        if (mCardStyleTiles.isNullOrEmpty()) return ArrayList()
+        if (mCardStyleTiles.isEmpty()) return ArrayList()
 
         val listFromString: List<String> = mCardStyleTiles.split("|")
         val cardLists =  emptyList<String>().toMutableList()
@@ -170,7 +175,7 @@ class QSCardTileList : Hooker() {
             }
             cardLists.add(tag)
             tileList.add(tag)
-            Log.d("ggc",tag)
+            logD("ggc",tag)
 
         }
         return tileList

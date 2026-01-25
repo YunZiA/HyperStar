@@ -29,6 +29,11 @@ android {
         resValues = false
         aidl = true
     }
+    buildTypes {
+        create("dev") {
+            initWith(getByName("debug"))
+        }
+    }
 
     dependencies {
         compileOnly(libs.androidx.annotation)

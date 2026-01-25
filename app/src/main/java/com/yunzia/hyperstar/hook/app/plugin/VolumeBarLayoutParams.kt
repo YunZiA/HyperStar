@@ -1,11 +1,12 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
 import android.content.res.Configuration
-import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.dimenReplaceByValue
 import com.yunzia.hyperstar.prefs.XSPUtils
 import yunzia.utils.DensityUtil
 
-class VolumeBarLayoutParams: Hooker() {
+object VolumeBarLayoutParams: BasePluginHook() {
 
     val VolumeOffsetTopCollapsedP = XSPUtils.getFloat("volume_offset_top_collapsed_p",-1f)
     val VolumeOffsetTopCollapsedL = XSPUtils.getFloat("volume_offset_top_collapsed_l",-1f)
@@ -22,70 +23,70 @@ class VolumeBarLayoutParams: Hooker() {
     val ShadowHeightP = XSPUtils.getFloat("volume_shadow_height_collapsed_p",-1f)
     val ShadowHeightL = XSPUtils.getFloat("volume_shadow_height_collapsed_l",-1f)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
         startCollpasedColumn()
     }
 
     private fun startCollpasedColumn() {
 
-        replaceDimen(
+        dimenReplaceByValue(
             "miui_volume_dialog_shadow_height_no_footer",plugin
         ) {
             if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (ShadowHeightNoFooterP == -1f) return@replaceDimen null
+                if (ShadowHeightNoFooterP == -1f) return@dimenReplaceByValue null
                 DensityUtil.Companion.dpToPx(displayMetrics, ShadowHeightNoFooterP)
             } else {
-                if (ShadowHeightNoFooterL == -1f) return@replaceDimen null
+                if (ShadowHeightNoFooterL == -1f) return@dimenReplaceByValue null
                 DensityUtil.Companion.dpToPx(displayMetrics, ShadowHeightNoFooterL)
             }
         }
-        replaceDimen(
+        dimenReplaceByValue(
             "miui_volume_dialog_shadow_height",plugin
         ) {
             if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (ShadowHeightP == -1f) return@replaceDimen null
+                if (ShadowHeightP == -1f) return@dimenReplaceByValue null
                 DensityUtil.Companion.dpToPx(displayMetrics, ShadowHeightP)
             } else {
-                if (ShadowHeightL == -1f) return@replaceDimen null
+                if (ShadowHeightL == -1f) return@dimenReplaceByValue null
                 DensityUtil.Companion.dpToPx(displayMetrics, ShadowHeightL)
             }
         }
 
-        replaceDimen(
+        dimenReplaceByValue(
             "miui_volume_offset_top_collapsed", plugin
         ){
             if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (VolumeOffsetTopCollapsedP == -1f) return@replaceDimen null
+                if (VolumeOffsetTopCollapsedP == -1f) return@dimenReplaceByValue null
                 DensityUtil.Companion.dpToPx(displayMetrics, VolumeOffsetTopCollapsedP)
             } else {
-                if (VolumeOffsetTopCollapsedL == -1f) return@replaceDimen null
+                if (VolumeOffsetTopCollapsedL == -1f) return@dimenReplaceByValue null
                 DensityUtil.Companion.dpToPx(displayMetrics, VolumeOffsetTopCollapsedL)
             }
         }
 
 
-        replaceDimen(
+        dimenReplaceByValue(
             "miui_volume_dialog_shadow_margin_top", plugin
         ){
             if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (ShadowMarginTopP == -1f) return@replaceDimen null
+                if (ShadowMarginTopP == -1f) return@dimenReplaceByValue null
                 DensityUtil.Companion.dpToPx(displayMetrics, ShadowMarginTopP)
             } else {
-                if (ShadowMarginTopL == -1f) return@replaceDimen null
+                if (ShadowMarginTopL == -1f) return@dimenReplaceByValue null
                 DensityUtil.Companion.dpToPx(displayMetrics, ShadowMarginTopL)
             }
         }
 
 
-        replaceDimen(
+        dimenReplaceByValue(
             "miui_volume_column_height",plugin
         ){
             if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (VolumeHeightCollapsedP == -1f) return@replaceDimen null
+                if (VolumeHeightCollapsedP == -1f) return@dimenReplaceByValue null
                 DensityUtil.Companion.dpToPx(displayMetrics, VolumeHeightCollapsedP)
             } else {
-                if (VolumeHeightCollapsedL == -1f) return@replaceDimen null
+                if (VolumeHeightCollapsedL == -1f) return@dimenReplaceByValue null
                 DensityUtil.Companion.dpToPx(displayMetrics, VolumeHeightCollapsedL)
             }
         }

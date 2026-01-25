@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.hook.app.plugin.powermenu.action
 
-import android.R
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
@@ -13,73 +12,27 @@ import android.os.PowerManager
 import android.os.RemoteException
 import android.os.UserHandle
 import android.provider.Settings
+import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.base.MenuItem
-import de.robv.android.xposed.XposedHelpers
+import com.yunzia.hyperstar.hook.core.helper.callStaticMethod
 
 class Action(
     val mContext: Context,
-    var xiaoai:Int,
-    var icBootloader:Int,
-    var icRecovery :Int,
-    var icAirplaneOn :Int,
-    var icAirplaneOff :Int,
-    var icSilentOn :Int,
-    var icSilentOff :Int,
-    var icQsScreenshot :Int,
-    var alipayPay :Int,
-    var wechatScan :Int,
-    var alipayScan :Int,
-    var wechatPay :Int,
     val VolumeUtil: Class<*>
 ) {
-
-    fun getAction(
-        action:String
-    ): MenuItem {
-
-        when(action){
-            "empty"->{
-                return MenuItem(isEmpty = true)
-            }
-            "recovery"->{
-                return recovery(mContext,icRecovery)
-            }
-            "bootloader"->{
-                return bootloader(mContext,icBootloader)
-            }
-            "xiaoai"->{
-                return xiaoai(mContext,xiaoai)
-
-            }
-            "screenshot"->{
-                return screenshot(mContext,icQsScreenshot)
-            }
-            "silentMode"->{
-                return silentMode(mContext, VolumeUtil, icSilentOn, icSilentOff)
-            }
-            "airPlane"->{
-                return airPlane(mContext,icAirplaneOn, icAirplaneOff)
-            }
-            "wcScan"->{
-                return wcScaner(mContext,wechatScan)
-            }
-            "wcCode"->{
-                return wcCode(mContext,wechatPay)
-            }
-            "apScan"->{
-                return apScan(mContext,alipayScan)
-            }
-            "apCode"->{
-                return apCode(mContext,alipayPay)
-            }
-            else->{
-                return MenuItem(isEmpty = true)
-
-            }
-
-        }
-
-
+    fun getAction(action:String): MenuItem = when(action){
+        "empty"-> MenuItem(isEmpty = true)
+        "recovery"-> recovery(mContext,R.drawable.ic_recovery)
+        "bootloader"-> bootloader(mContext,R.drawable.ic_bootloader)
+        "xiaoai"-> xiaoai(mContext, R.drawable.xiaoai)
+        "screenshot"-> screenshot(mContext,R.drawable.ic_qs_screenshot)
+        "silentMode"-> silentMode(mContext, VolumeUtil, R.drawable.ic_silent_on, R.drawable.ic_silent_off)
+        "airPlane"-> airPlane(mContext,R.drawable.ic_airplane_on, R.drawable.ic_airplane_off)
+        "wcScan"-> wcScaner(mContext,R.drawable.wechat_scan)
+        "wcCode"-> wcCode(mContext,R.drawable.wechat_pays)
+        "apScan"-> apScan(mContext,R.drawable.alipay_scan)
+        "apCode"-> apCode(mContext,R.drawable.alipay_pay)
+        else-> MenuItem(isEmpty = true)
     }
 
     fun rebootToMode(context: Context, mode:String) {
@@ -91,17 +44,18 @@ class Action(
         }
     }
 
-    fun createStateListDrawable(context: Context, state: Boolean, selectedID:Int, defaultID:Int): StateListDrawable {
-
+    fun createStateListDrawable(
+        context: Context,
+        state: Boolean,
+        selectedID:Int,
+        defaultID:Int
+    ): StateListDrawable {
         val selectedDrawable = context.getDrawable(selectedID)
-
         val defaultDrawable = context.getDrawable(defaultID)
-
         val stateListDrawable = StateListDrawable().apply {
-            addState(intArrayOf(R.attr.state_selected), selectedDrawable)
+            addState(intArrayOf(android.R.attr.state_selected), selectedDrawable)
             addState(intArrayOf(), if (state) selectedDrawable else defaultDrawable)
         }
-
         return stateListDrawable
     }
     fun recovery (
@@ -155,7 +109,6 @@ class Action(
                     e.printStackTrace()
                 }
             }, 400)
-
         }
     }
     @SuppressLint("WrongConstant")
@@ -173,9 +126,7 @@ class Action(
             intent.putExtra("voice_assist_start_from_key", "FOD")
             intent.setFlags(0x14800000)
             context.startActivity(intent)
-
         }
-
     }
     fun airPlane (
         mContext: Context,
@@ -206,14 +157,14 @@ class Action(
         icSilentOn:Int,
         icSilentOff:Int
     ): MenuItem {
-        val silentMode = XposedHelpers.callStaticMethod(VolumeUtil,"isSilentMode",mContext)  as Boolean
+        val silentMode = VolumeUtil.callStaticMethod("isSilentMode",mContext)  as Boolean
         return MenuItem(
             createStateListDrawable(mContext, silentMode, icSilentOn, icSilentOff),
             "静音",
             silentMode
         ) { v, _ ->
             v.isSelected = !silentMode
-            XposedHelpers.callStaticMethod(VolumeUtil, "setSilenceMode", mContext, !silentMode)
+            VolumeUtil.callStaticMethod("setSilenceMode", mContext, !silentMode)
         }
     }
     fun wcScaner (
@@ -232,7 +183,6 @@ class Action(
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.setAction("android.intent.action.VIEW")
             context.startActivity(intent)
-
         }
     }
     @SuppressLint("WrongConstant")
@@ -256,7 +206,6 @@ class Action(
             )
             intent.putExtra("key_entry_scene", 2)
             context.startActivity(intent)
-
         }
     }
     fun apCode (
@@ -268,12 +217,10 @@ class Action(
             "支付宝收款码",
             false
         ) { _, context: Context ->
-
             val uri = Uri.parse("alipayqr://platformapi/startapp?saId=20000056")
             val intent = Intent(Intent.ACTION_VIEW, uri)
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
-
         }
     }
     fun apScan (
@@ -292,8 +239,4 @@ class Action(
 
         }
     }
-
-
-
-
 }

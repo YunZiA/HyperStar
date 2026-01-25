@@ -10,19 +10,32 @@ import android.widget.FrameLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.graphics.toColorInt
-import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.afterHookAllConstructors
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.base.BaseHookHelper.getColorBy
+import com.yunzia.hyperstar.hook.base.BaseHookHelper.getIntArrayBy
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.base.findViewByIdNameAs
+import com.yunzia.hyperstar.hook.base.percentageProgress
+import com.yunzia.hyperstar.hook.core.Log
+import com.yunzia.hyperstar.hook.core.Log.log
+import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.colorReplaceByValue
+import com.yunzia.hyperstar.hook.core.helper.afterHookAllConstructors
+import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.hook.core.helper.callMethod
+import com.yunzia.hyperstar.hook.core.helper.callMethodAs
+import com.yunzia.hyperstar.hook.core.helper.callStaticMethodAs
+import com.yunzia.hyperstar.hook.core.helper.getObjectField
+import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
+import com.yunzia.hyperstar.hook.core.helper.getObjectFieldOrNullAs
 import com.yunzia.hyperstar.hook.util.plugin.ControlCenterUtils
 import com.yunzia.hyperstar.hook.util.plugin.MiBlurCompat
 import com.yunzia.hyperstar.hook.util.plugin.Util
 import com.yunzia.hyperstar.prefs.XSPUtils
+import io.github.kyuubiran.ezxhelper.android.util.ViewUtil.findViewByIdName
 import yunzia.utils.DensityUtil.Companion.dpToPx
 
 
-class VolumeOrQSBrightnessValue : Hooker() {
+object VolumeOrQSBrightnessValue : BasePluginHook() {
     val mainValueBlendColor = XSPUtils.getString("toggle_slider_value_color_main", "null")
     val secondaryValueBlendColor = XSPUtils.getString("toggle_slider_value_color_secondary", "null")
 
@@ -34,8 +47,8 @@ class VolumeOrQSBrightnessValue : Hooker() {
     private val volumeShow = XSPUtils.getBoolean("volume_top_value_show",false)
     private val brightnessShow = XSPUtils.getBoolean("qs_brightness_top_value_show",false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
         if (!brightnessShow && !volumeShow) return
         startMethodsHook()
 
@@ -43,14 +56,14 @@ class VolumeOrQSBrightnessValue : Hooker() {
 
     private fun startMethodsHook() {
 
-        val controlCenterUtils = ControlCenterUtils(classLoader)
-        val miBlurCompat = MiBlurCompat(classLoader)
+        val controlCenterUtils = ControlCenterUtils(pluginClassLoader)
+        val miBlurCompat = MiBlurCompat(pluginClassLoader)
 
         if (volumeShow){
-            val VolumeUtils = findClass("miui.systemui.util.VolumeUtils",classLoader)
+            val VolumeUtils = findClass("miui.systemui.util.VolumeUtils",pluginClassLoader)
             findClass(
                 "miui.systemui.controlcenter.panel.main.volume.VolumeSliderController",
-                classLoader
+                pluginClassLoader
             ).afterHookMethod(
                 "updateIconProgress",
                 Boolean::class.java
@@ -66,8 +79,8 @@ class VolumeOrQSBrightnessValue : Hooker() {
                 topValue.text = convertToPercentageProgress(level, sliderMaxValue / 1000)
             }
 
-            val volumePanelViewController = findClass("com.android.systemui.miui.volume.VolumePanelViewController",classLoader)
-            val util = Util(classLoader)
+            val volumePanelViewController = findClass("com.android.systemui.miui.volume.VolumePanelViewController",pluginClassLoader)
+            val util = Util(pluginClassLoader)
 
             volumePanelViewController.apply {
                 //侧边音量条进度值&&All场景二级音量条进度值ui启用
@@ -156,7 +169,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
         if (brightnessShow){
             findClass(
                 "miui.systemui.controlcenter.panel.main.brightness.BrightnessSliderController",
-                classLoader
+                pluginClassLoader
             ).apply {
                 afterHookMethod(
                     "createViewHolder",
@@ -171,7 +184,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
                             width = dpToPx(root.resources,50f).toInt()
                         }
                         topText.layoutParams = mLayoutParams
-                        starLog.log("toggle_slider_item_view ${topText.layoutParams}")
+                        log("toggle_slider_item_view ${topText.layoutParams}")
                     }
 
                 }
@@ -193,7 +206,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
 
             findClass(
                 "miui.systemui.controlcenter.panel.main.brightness.BrightnessPanelSliderController",
-                classLoader
+                pluginClassLoader
             ).apply {
                 afterHookAllConstructors {
                     val brightnessPanel = it.args[0] as FrameLayout
@@ -204,7 +217,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
                         width = dpToPx(brightnessPanel.resources,50f).toInt()
                     }
                     topText.layoutParams = mLayoutParams
-                    starLog.log("toggle_slider_item_view ${topText.layoutParams}")
+                    log("toggle_slider_item_view ${topText.layoutParams}")
                 }
                 afterHookMethod(
                     "updateIconProgress"
@@ -263,7 +276,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
 
             findClass(
                 "miui.systemui.controlcenter.panel.main.brightness.BrightnessPanelAnimator",
-                classLoader
+                pluginClassLoader
             ).afterHookMethod(
                 "frameCallback"
             ) {
@@ -273,7 +286,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
                 val icon = sliderController.callMethodAs<View>("getVIcon")?:return@afterHookMethod
                 val sizeSliderX =  this.getObjectFieldAs<Float>("sizeSliderX")?:return@afterHookMethod
                 val sizeBgX = this.getObjectFieldAs<Float>("sizeBgX") ?:return@afterHookMethod
-                starLog.log("${topValue.left} || ${topValue.right} **$sizeSliderX")
+                log("${topValue.left} || ${topValue.right} **$sizeSliderX")
 
                 val left = (dpToPx(topValue.resources, 50f).toInt() - icon.layoutParams.width) / 2
 
@@ -287,7 +300,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
 
         if (toggleSliderValueColor != null && toggleSliderValueColor != "null"){
 
-            replaceColor("toggle_slider_top_text_color", plugin, toggleSliderValueColor.toColorInt())
+            colorReplaceByValue("toggle_slider_top_text_color", plugin, toggleSliderValueColor.toColorInt())
         }
 
 
@@ -295,7 +308,7 @@ class VolumeOrQSBrightnessValue : Hooker() {
 
         findClass(
             "miui.systemui.controlcenter.panel.main.recyclerview.ToggleSliderViewHolder",
-            classLoader
+            pluginClassLoader
         ).apply {
             afterHookMethod("updateSize") {
                 val item = this.getObjectFieldAs<View>("itemView")

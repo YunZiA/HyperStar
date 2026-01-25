@@ -22,6 +22,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
 
+    buildTypes {
+        create("dev") {
+            initWith(getByName("debug"))
+        }
+    }
+
 
     dependencies {
         compileOnly(libs.androidx.annotation)

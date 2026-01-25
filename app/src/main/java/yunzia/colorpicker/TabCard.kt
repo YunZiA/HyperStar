@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 @Composable
 fun TabCard(
@@ -49,7 +48,7 @@ fun TabCard(
 
 
     Box(modifier = modifier
-        .background(tabBgColor,SquircleShape(8.dp))
+        .background(tabBgColor,RoundedCornerShape(8.dp))
         .padding(5.dp)
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {

@@ -27,11 +27,11 @@
 -keepattributes EnclosingMethod
 
 
-#-keep class * extends com.yunzia.hyperstar.hook.base.HookerHelper
+#-keep class * extends com.yunzia.hyperstar.hook.base.BaseHookHelper
 #
 #-keep class com.yunzia.hyperstar.hook.util.**{*;}
 #-keep class com.yunzia.hyperstar.utils.Helper
-#-keep class com.yunzia.hyperstar.InitHook
+#-keep class com.yunzia.hyperstar.init
 #-keep class com.yunzia.hyperstar.ui.**{*;}
 #
 #
@@ -53,11 +53,11 @@
 -keep class io.github.libxposed.** { *; }
 #-keep class io.github.libxposed.api.** { *; }
 
-# 保留你的 Hooker 类及其注解方法（关键！）
+# 保留你的 BaseHook 类及其注解方法（关键！）
 -keepclassmembers class * {
     @io.github.libxposed.api.annotations.BeforeInvocation <methods>;
     @io.github.libxposed.api.annotations.AfterInvocation <methods>;
-    @io.github.libxposed.api.annotations.XposedHooker <methods>;
+    @io.github.libxposed.api.annotations.XposedBaseHook <methods>;
 }
 
 

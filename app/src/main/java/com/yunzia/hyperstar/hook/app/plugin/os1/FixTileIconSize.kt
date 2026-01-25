@@ -2,30 +2,33 @@ package com.yunzia.hyperstar.hook.app.plugin.os1
 
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.hook.core.helper.getBooleanField
+import com.yunzia.hyperstar.hook.core.helper.getFloatField
 import com.yunzia.hyperstar.prefs.XSPUtils
 
-class FixTileIconSize : Hooker() {
+object FixTileIconSize : BasePluginHook() {
 
     val fix = XSPUtils.getBoolean("fix_list_tile_icon_scale",false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
         if (!fix) return
         findClass(
             "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
-            classLoader
+            pluginClassLoader
         ).apply {
             afterHookMethod(
                 "getProperIconSize",
                 Drawable::class.java
             ){
                 val drawable = it.args[0] as Drawable
-                val isCustomTile = this.getBooleanField("isCustomTile")
+                val isCustomTile = this.getBooleanField("isCustomTile")?:return@afterHookMethod
                 if (isCustomTile) return@afterHookMethod
                 if(drawable !is AnimatedVectorDrawable) return@afterHookMethod
-                val customTileSize = this.getFloatField("customTileSize").toInt()
+                val customTileSize = this.getFloatField("customTileSize")?.toInt()?:return@afterHookMethod
                 if (drawable.intrinsicHeight < customTileSize){
                     it.result = customTileSize
                 }

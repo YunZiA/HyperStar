@@ -18,7 +18,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.base.MenuItem
-import de.robv.android.xposed.XposedHelpers
+import com.yunzia.hyperstar.hook.core.helper.callMethod
 import yunzia.utils.DensityUtil.Companion.dpToPx
 
 
@@ -29,7 +29,7 @@ fun menuB(mContext: Context, thisObj: Any?, items: List<MenuItem?>, mTalkbackLay
 
     val leftMenu = ButtonB(mContext,items[0]!!){
         Handler(Looper.getMainLooper()).postDelayed({
-            XposedHelpers.callMethod(thisObj,"dismiss",1)
+            thisObj.callMethod("dismiss",1)
         }, 100)
     }
 
@@ -37,7 +37,7 @@ fun menuB(mContext: Context, thisObj: Any?, items: List<MenuItem?>, mTalkbackLay
 
     val rightMenu = ButtonB(mContext,items[1]!!){
         Handler(Looper.getMainLooper()).postDelayed({
-            XposedHelpers.callMethod(thisObj,"dismiss",1)
+            thisObj.callMethod("dismiss",1)
         }, 100)
     }
 

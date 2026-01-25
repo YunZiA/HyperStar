@@ -3,21 +3,21 @@ package com.yunzia.hyperstar.hook.app.plugin.os1
 import android.graphics.Outline
 import android.view.View
 import android.view.ViewOutlineProvider
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.getDimensionPixelOffset
-import com.yunzia.hyperstar.hook.base.replaceHookMethod
+import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
 import com.yunzia.hyperstar.prefs.XSPUtils
 import yunzia.utils.DensityUtil
 
-class VolumeColumnProgressRadius : Hooker() {
+object VolumeColumnProgressRadius : BasePluginHook() {
 
     val isChangeVolumeProgressRadius = XSPUtils.getBoolean("is_change_volume_progress_radius",false)
 
     val volumeProgressRadius = XSPUtils.getFloat("volume_progress_radius",2f)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
         if (!isChangeVolumeProgressRadius) return
         startMethodsHook()
     }
@@ -25,7 +25,7 @@ class VolumeColumnProgressRadius : Hooker() {
     private fun startMethodsHook() {
         findClass(
             "com.android.systemui.miui.volume.MiuiVolumeSeekBarProgressView",
-            classLoader
+            pluginClassLoader
         ).apply {
             replaceHookMethod(
                 "setRoundRect",

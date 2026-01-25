@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.content.res.XModuleResources
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
@@ -15,31 +14,38 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.SeekBar
 import android.widget.TextView
-import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.afterHookConstructor
-import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.helper.afterHookConstructor
+import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.getDimensionPixelSize
-import com.yunzia.hyperstar.hook.base.replaceHookMethod
+import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper
+import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.dimenReplaceById
+import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.dimenReplaceByValue
+import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.hookLayout
+import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.integerReplaceById
+import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
+import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
+import com.yunzia.hyperstar.hook.core.helper.callMethod
+import com.yunzia.hyperstar.hook.core.helper.getObjectField
+import com.yunzia.hyperstar.hook.core.helper.setObjectField
 import com.yunzia.hyperstar.prefs.XSPUtils
-import de.robv.android.xposed.callbacks.XC_InitPackageResources
-import de.robv.android.xposed.callbacks.XC_LayoutInflated
+import io.github.kyuubiran.ezxhelper.android.util.ViewUtil.findViewByIdName
 import kotlin.math.roundToInt
 
-class PadVolume : Hooker() {
+object PadVolume : BasePluginHook() {
 
     private val padVolume = XSPUtils.getBoolean("is_use_pad_volume", false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+
         if (!padVolume){
             return
         }
 
         findClass(
             "com.android.systemui.miui.volume.MiuiVolumeTimerDrawableHelper",
-            classLoader
+            pluginClassLoader
         ).beforeHookMethod(
             "updateDrawables"
         ){
@@ -48,7 +54,7 @@ class PadVolume : Hooker() {
 
         findClass(
             "com.android.systemui.miui.volume.MiuiVerticalVolumeTimerSeekBar",
-            classLoader
+            pluginClassLoader
         ).apply {
             afterHookConstructor(
                 Context::class.java,
@@ -84,488 +90,386 @@ class PadVolume : Hooker() {
 
     }
 
-    override fun initResources(
-        resparam: XC_InitPackageResources.InitPackageResourcesParam?,
-        modRes: XModuleResources?
+    fun initResources(
     ) {
-        super.initResources(resparam, modRes)
 
         if (!padVolume){
             return
         }
 
-        if (resparam == null || modRes == null) {
-            return
-        }
 
-        resparam.res.setReplacement(
+        integerReplaceById(
             plugin,
-            "integer",
             "expand_silent_dnd_orientation",
-            modRes.fwd(R.integer.expand_silent_dnd_orientation)
+            R.integer.expand_silent_dnd_orientation
         )
-        resparam.res.setReplacement(
+        integerReplaceById(
             plugin,
-            "integer",
             "miui_volume_ringer_gravity",
-            modRes.fwd(R.integer.miui_volume_ringer_gravity)
+            R.integer.miui_volume_ringer_gravity
         )
-        resparam.res.setReplacement(
+        integerReplaceById(
             plugin,
-            "integer",
             "miui_volume_dialog_gravity_expanded",
-            modRes.fwd(R.integer.miui_volume_dialog_gravity_expanded)
+            R.integer.miui_volume_dialog_gravity_expanded
         )
-        resparam.res.setReplacement(
+        integerReplaceById(
             plugin,
-            "integer",
             "miui_volume_dialog_gravity_collapsed",
-            modRes.fwd(R.integer.miui_volume_dialog_gravity_collapsed)
+            R.integer.miui_volume_dialog_gravity_collapsed
         )
-        resparam.res.setReplacement(
+        integerReplaceById(
             plugin,
-            "integer",
             "miui_volume_layout_orientation_expanded",
-            modRes.fwd(R.integer.miui_volume_layout_orientation_expanded)
+            R.integer.miui_volume_layout_orientation_expanded
         )
-        resparam.res.setReplacement(
+        integerReplaceById(
             plugin,
-            "integer",
             "miui_volume_dialog_large_display_orientation",
-            modRes.fwd(R.integer.miui_volume_dialog_large_display_orientation)
+            R.integer.miui_volume_dialog_large_display_orientation
         )
-        resparam.res.setReplacement(
+        integerReplaceById(
             plugin,
-            "integer",
             "miui_volume_ringer_layout_orientation_expand",
-            modRes.fwd(R.integer.miui_volume_ringer_layout_orientation_expand)
+            R.integer.miui_volume_ringer_layout_orientation_expand
         )
-        resparam.res.setReplacement(
-            plugin,
-            "dimen",
+        dimenReplaceById(
             "miui_volume_background_height_t",
-            modRes.fwd(R.dimen.miui_volume_background_height_t)
-        )
-        resparam.res.setReplacement(
             plugin,
-            "dimen",
+            R.dimen.miui_volume_background_height_t
+        )
+        dimenReplaceById(
+            plugin,
             "miui_volume_background_margin_top_t",
-            modRes.fwd(R.dimen.miui_volume_background_margin_top_t)
+            R.dimen.miui_volume_background_margin_top_t
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_background_padding_t",
-            modRes.fwd(R.dimen.miui_volume_background_padding_t)
+            R.dimen.miui_volume_background_padding_t
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_background_padding_t_4stream",
-            modRes.fwd(R.dimen.miui_volume_background_padding_t_4stream)
+            R.dimen.miui_volume_background_padding_t_4stream
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_background_width_t",
-            modRes.fwd(R.dimen.miui_volume_background_width_t)
+            R.dimen.miui_volume_background_width_t
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_background_width_t_4stream",
-            modRes.fwd(R.dimen.miui_volume_background_width_t_4stream)
+            R.dimen.miui_volume_background_width_t_4stream
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_bg_radius",
-            modRes.fwd(R.dimen.miui_volume_bg_radius)
+            R.dimen.miui_volume_bg_radius
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_bg_radius_expanded",
-            modRes.fwd(R.dimen.miui_volume_bg_radius_expanded)
+            R.dimen.miui_volume_bg_radius_expanded
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_blur_bg_radius",
-            modRes.fwd(R.dimen.miui_volume_blur_bg_radius)
+            R.dimen.miui_volume_blur_bg_radius
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_button_size",
-            modRes.fwd(R.dimen.miui_volume_button_size)
+            R.dimen.miui_volume_button_size
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_column_height",
-            modRes.fwd(R.dimen.miui_volume_column_height)
+            R.dimen.miui_volume_column_height
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_column_height_expanded",
-            modRes.fwd(R.dimen.miui_volume_column_height_expanded)
+            R.dimen.miui_volume_column_height_expanded
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_column_margin_horizontal_expanded",
-            modRes.fwd(R.dimen.miui_volume_column_margin_horizontal_expanded)
+            R.dimen.miui_volume_column_margin_horizontal_expanded
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_column_margin_horizontal_expanded_t",
-            modRes.fwd(R.dimen.miui_volume_column_margin_horizontal_expanded_t)
+            R.dimen.miui_volume_column_margin_horizontal_expanded_t
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_column_margin_horizontal_expanded_t_4stream",
-            modRes.fwd(R.dimen.miui_volume_column_margin_horizontal_expanded_t_4stream)
+            R.dimen.miui_volume_column_margin_horizontal_expanded_t_4stream
         )
 
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_column_width_expanded",
-            modRes.fwd(R.dimen.miui_volume_column_width_expanded)
+            R.dimen.miui_volume_column_width_expanded
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_column_width_expanded_4stream",
-            modRes.fwd(R.dimen.miui_volume_column_width_expanded_4stream)
+            R.dimen.miui_volume_column_width_expanded_4stream
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_content_width_expanded",
-            modRes.fwd(R.dimen.miui_volume_content_width_expanded)
+            R.dimen.miui_volume_content_width_expanded
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_content_width_expanded_4stream",
-            modRes.fwd(R.dimen.miui_volume_content_width_expanded_4stream)
+            R.dimen.miui_volume_content_width_expanded_4stream
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_countdown_progressbar_height",
-            modRes.fwd(R.dimen.miui_volume_countdown_progressbar_height)
+            R.dimen.miui_volume_countdown_progressbar_height
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_countdown_progressbar_width",
-            modRes.fwd(R.dimen.miui_volume_countdown_progressbar_width)
+            R.dimen.miui_volume_countdown_progressbar_width
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_countdown_radius",
-            modRes.fwd(R.dimen.miui_volume_countdown_radius)
+            R.dimen.miui_volume_countdown_radius
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_dialog_shadow_margin_top",
-            modRes.fwd(R.dimen.miui_volume_dialog_shadow_margin_top)
+            R.dimen.miui_volume_dialog_shadow_margin_top
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_footer_margin_left_expanded",
-            modRes.fwd(R.dimen.miui_volume_footer_margin_left_expanded)
+            R.dimen.miui_volume_footer_margin_left_expanded
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_footer_margin_top",
-            modRes.fwd(R.dimen.miui_volume_footer_margin_top)
+            R.dimen.miui_volume_footer_margin_top
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_footer_margin_top_expanded",
-            modRes.fwd(R.dimen.miui_volume_footer_margin_top_expanded)
+            R.dimen.miui_volume_footer_margin_top_expanded
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_margin_left_expanded",
-            modRes.fwd(R.dimen.miui_volume_margin_left_expanded)
+            R.dimen.miui_volume_margin_left_expanded
         )
 
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_margin_top_expanded",
-            modRes.fwd(R.dimen.miui_volume_margin_top_expanded)
+            R.dimen.miui_volume_margin_top_expanded
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_offset_end",
-            modRes.fwd(R.dimen.miui_volume_offset_end)
+            R.dimen.miui_volume_offset_end
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_offset_end_expanded",
-            modRes.fwd(R.dimen.miui_volume_offset_end_expanded)
+            R.dimen.miui_volume_offset_end_expanded
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_offset_top_collapsed",
-            modRes.fwd(R.dimen.miui_volume_offset_top_collapsed)
+            R.dimen.miui_volume_offset_top_collapsed
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_offset_top_expand",
-            modRes.fwd(R.dimen.miui_volume_offset_top_expand)
+            R.dimen.miui_volume_offset_top_expand
         )
 
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_ringer_btn_height",
-            modRes.fwd(R.dimen.miui_volume_ringer_btn_height)
+            R.dimen.miui_volume_ringer_btn_height
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_ringer_btn_layout_width",
-            modRes.fwd(R.dimen.miui_volume_ringer_btn_layout_width)
+            R.dimen.miui_volume_ringer_btn_layout_width
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_ringer_btn_width",
-            modRes.fwd(R.dimen.miui_volume_ringer_btn_width)
+            R.dimen.miui_volume_ringer_btn_width
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_ringer_divider_height",
-            modRes.fwd(R.dimen.miui_volume_ringer_divider_height)
+            R.dimen.miui_volume_ringer_divider_height
         )
 
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_ringer_layout_width_expanded",
-            modRes.fwd(R.dimen.miui_volume_ringer_layout_width_expanded)
+            R.dimen.miui_volume_ringer_layout_width_expanded
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_ringer_layout_width_expanded_4stream",
-            modRes.fwd(R.dimen.miui_volume_ringer_layout_width_expanded_4stream)
+            R.dimen.miui_volume_ringer_layout_width_expanded_4stream
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_seekbar_icon_margin_bottom",
-            modRes.fwd(R.dimen.miui_volume_seekbar_icon_margin_bottom)
+            R.dimen.miui_volume_seekbar_icon_margin_bottom
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_seekbar_icon_margin_bottom_expand",
-            modRes.fwd(R.dimen.miui_volume_seekbar_icon_margin_bottom_expand)
+            R.dimen.miui_volume_seekbar_icon_margin_bottom_expand
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_segment_indicator_height",
-            modRes.fwd(R.dimen.miui_volume_segment_indicator_height)
+            R.dimen.miui_volume_segment_indicator_height
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_segment_indicator_width",
-            modRes.fwd(R.dimen.miui_volume_segment_indicator_width)
+            R.dimen.miui_volume_segment_indicator_width
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_silence_button_height",
-            modRes.fwd(R.dimen.miui_volume_silence_button_height)
+            R.dimen.miui_volume_silence_button_height
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_silence_button_width",
-            modRes.fwd(R.dimen.miui_volume_silence_button_width)
+            R.dimen.miui_volume_silence_button_width
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_timer_corner_radius",
-            modRes.fwd(R.dimen.miui_volume_timer_corner_radius)
+            R.dimen.miui_volume_timer_corner_radius
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_timer_margin_bottom",
-            modRes.fwd(R.dimen.miui_volume_timer_margin_bottom)
+            R.dimen.miui_volume_timer_margin_bottom
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_timer_margin_left",
-            modRes.fwd(R.dimen.miui_volume_timer_margin_left)
+            R.dimen.miui_volume_timer_margin_left
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_timer_margin_left_4stream",
-            modRes.fwd(R.dimen.miui_volume_timer_margin_left_4stream)
+            R.dimen.miui_volume_timer_margin_left_4stream
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_timer_seekbar_height",
-            modRes.fwd(R.dimen.miui_volume_timer_seekbar_height)
+            R.dimen.miui_volume_timer_seekbar_height
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_timer_seekbar_width",
-            modRes.fwd(R.dimen.miui_volume_timer_seekbar_width)
+            R.dimen.miui_volume_timer_seekbar_width
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_timer_seekbar_width_4stream",
-            modRes.fwd(R.dimen.miui_volume_timer_seekbar_width_4stream)
+            R.dimen.miui_volume_timer_seekbar_width_4stream
         )
-        resparam.res.setReplacement(
+        dimenReplaceById(
             plugin,
-            "dimen",
             "miui_volume_timer_time_text_size",
-            modRes.fwd(R.dimen.miui_volume_timer_time_text_size)
+            R.dimen.miui_volume_timer_time_text_size
         )
 
 
-        resparam.res.hookLayout(plugin,"layout","miui_volume_timer_layout",object : XC_LayoutInflated() {
-            @SuppressLint("DiscouragedApi")
-            override fun handleLayoutInflated(liparam: LayoutInflatedParam?) {
-                val root = liparam?.view as ViewGroup
-                //val mContext = root.context
+        hookLayout("miui_volume_timer_layout", plugin) {
+            this as ViewGroup
+            if (resources.configuration?.orientation != Configuration.ORIENTATION_LANDSCAPE) return@hookLayout
+            val timerSeekbar = this.findViewByIdName("timer_seekbar") as SeekBar
+            timerSeekbar.maxHeight = getDimensionPixelSize(resources,"miui_volume_timer_seekbar_height", plugin)
+            val timerSeekbarlp = timerSeekbar.layoutParams
+            if (timerSeekbarlp is ViewGroup.MarginLayoutParams) {
+                val marginParams = timerSeekbarlp
+                marginParams.topMargin = getDimensionPixelSize(resources,"miui_volume_timer_margin", plugin)
+                marginParams.bottomMargin = getDimensionPixelSize(resources,"miui_volume_timer_margin", plugin)
+                timerSeekbar.layoutParams = marginParams
+            }
+            val volumeTimerView = this.findViewByIdName("volume_timer_view") as FrameLayout
+            val volumeTimerViewlp = volumeTimerView.layoutParams
+            if (volumeTimerViewlp is ViewGroup.MarginLayoutParams) {
+                val marginParams = volumeTimerViewlp
+                marginParams.topMargin = getDimensionPixelSize(resources,"miui_volume_timer_margin", plugin)
+                marginParams.bottomMargin = getDimensionPixelSize(resources,"miui_volume_timer_margin", plugin)
+                volumeTimerView.layoutParams = marginParams
+            }
+            val timeAbove = getChildAt(2) as TextView
+            removeViewAt(2)
+            timeAbove.id = resources.getIdentifier("ticking_time_above_progress_view","id",plugin)
+            //val timeAbovelp = timeAbove.layoutParams
+            val timeAbovelp = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            )
+            timeAbovelp.gravity = Gravity.CENTER_VERTICAL
+            volumeTimerView.addView(timeAbove,timeAbovelp)
+            val timerBg = findViewByIdName("timer_bg") as FrameLayout
 
-                val res = root.resources
-                if (res.configuration?.orientation != Configuration.ORIENTATION_LANDSCAPE){
-                    return
-                }
-
-                val timerSeekbar = root.findViewByIdName("timer_seekbar") as SeekBar
-                timerSeekbar.maxHeight = getDimensionPixelSize(res,"miui_volume_timer_seekbar_height", plugin)
-                val timerSeekbarlp = timerSeekbar.layoutParams
-                if (timerSeekbarlp is ViewGroup.MarginLayoutParams) {
-                    val marginParams = timerSeekbarlp
-                    marginParams.topMargin = getDimensionPixelSize(res,"miui_volume_timer_margin", plugin)
-                    marginParams.bottomMargin = getDimensionPixelSize(res,"miui_volume_timer_margin", plugin)
-                    timerSeekbar.layoutParams = marginParams
-                }
-
-                val volumeTimerView = root.findViewByIdName("volume_timer_view") as FrameLayout
-
-                val volumeTimerViewlp = volumeTimerView.layoutParams
-                if (volumeTimerViewlp is ViewGroup.MarginLayoutParams) {
-                    val marginParams = volumeTimerViewlp
-                    marginParams.topMargin = getDimensionPixelSize(res,"miui_volume_timer_margin", plugin)
-                    marginParams.bottomMargin = getDimensionPixelSize(res,"miui_volume_timer_margin", plugin)
-
-                    volumeTimerView.layoutParams = marginParams
-                }
-                val timeAbove = root.getChildAt(2) as TextView
-                root.removeViewAt(2)
-                timeAbove.id = res.getIdentifier("ticking_time_above_progress_view","id",plugin)
-                //val timeAbovelp = timeAbove.layoutParams
-                val timeAbovelp = FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.WRAP_CONTENT,
-                    FrameLayout.LayoutParams.WRAP_CONTENT
-                )
-                timeAbovelp.gravity = Gravity.CENTER_VERTICAL
-
-                volumeTimerView.addView(timeAbove,timeAbovelp)
-
-                val timerBg = root.findViewByIdName("timer_bg") as FrameLayout
-
-                val timerBglp = timerBg.layoutParams
-                if (timerBglp is ViewGroup.MarginLayoutParams) {
-                    val marginParams = timerBglp
-                    marginParams.topMargin = getDimensionPixelSize(res,"miui_volume_timer_popup_text_margin_top", plugin)
-
-                    marginParams.leftMargin = 0
-
-                    timerBg.layoutParams = marginParams
-                }
-
-                val timerText = timerBg.findViewByIdName("timer_text") as TextView
-
-                timerText.setPadding(
-                    dpToPx(res, 9.089997f),
-                    dpToPx(res, 6.539979f),
-                    dpToPx(res, 9.089997f),0)
-
+            val timerBglp = timerBg.layoutParams
+            if (timerBglp is ViewGroup.MarginLayoutParams) {
+                val marginParams = timerBglp
+                marginParams.topMargin = getDimensionPixelSize(resources,"miui_volume_timer_popup_text_margin_top", plugin)
+                marginParams.leftMargin = 0
+                timerBg.layoutParams = marginParams
+            }
+            val timerText = timerBg.findViewByIdName("timer_text") as TextView
+            timerText.setPadding(
+                dpToPx(resources, 9.089997f),
+                dpToPx(resources, 6.539979f),
+                dpToPx(resources, 9.089997f),
+                0
+            )
+        }
+        hookLayout("miui_ringer_mode_layout",plugin){
+            this as ViewGroup
+            val res = context.resources
+            if (res.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE){
+                if (childCount != 2) return@hookLayout
+                val timer = getChildAt(0)
+                val bgBlur = getChildAt(1)
+                if (timer !is FrameLayout) return@hookLayout
+                timer.visibility = View.GONE
+                removeAllViews()
+                addView(bgBlur,0)
+                addView(timer,1)
 
             }
-        })
-
-
-        resparam.res.hookLayout(plugin,"layout","miui_ringer_mode_layout",object : XC_LayoutInflated(){
-            override fun handleLayoutInflated(liparam: LayoutInflatedParam?) {
-                val root = liparam?.view as ViewGroup
-                val res = root.context.resources
-                if (res.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE){
-                    if (root.childCount != 2){
-                        return
-                    }
-                    val timer = root.getChildAt(0)
-                    val bgBlur = root.getChildAt(1)
-                    if (timer !is FrameLayout){
-                        return
-                    }
-
-                    timer.visibility = View.GONE
-                    root.removeAllViews()
-                    root.addView(bgBlur,0)
-                    root.addView(timer,1)
-
-                }
+        }
+        hookLayout("miui_volume_dialog_ringer_mode",plugin){
+            this as ViewGroup
+            val res = context.resources
+            if (res.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE){
+                val text = findViewByIdName("timer_text_landscape")
+                if (text !is TextView) return@hookLayout
+                removeViewInLayout(text)
             }
-        })
-
-        resparam.res.hookLayout(plugin,"layout","miui_volume_dialog_ringer_mode",object : XC_LayoutInflated(){
-            override fun handleLayoutInflated(liparam: LayoutInflatedParam?) {
-                val root = liparam?.view as ViewGroup
-                val res = root.context.resources
-                if (res.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE){
-
-                    val text = root.findViewByIdName("timer_text_landscape")
-
-                    if (text !is TextView){
-                        return
-                    }
-
-                    root.removeViewInLayout(text)
-
-                }
-            }
-        })
-
+        }
 
     }
 

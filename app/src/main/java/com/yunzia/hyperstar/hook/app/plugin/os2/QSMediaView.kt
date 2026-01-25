@@ -5,14 +5,17 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.marginTop
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.afterHookAllConstructors
-import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.base.findViewByIdNameAs
+import com.yunzia.hyperstar.hook.core.helper.afterHookAllConstructors
+import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
+import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
 import com.yunzia.hyperstar.hook.util.startMarqueeOfFading
 import com.yunzia.hyperstar.prefs.XSPUtils
 
 
-class QSMediaView : Hooker() {
+object QSMediaView : BasePluginHook() {
 
     val isHideCover:Boolean = XSPUtils.getBoolean("is_hide_cover",false)
     val isTitleCenter:Boolean = XSPUtils.getBoolean("is_title_center",false)
@@ -20,15 +23,15 @@ class QSMediaView : Hooker() {
     val isArtistMarquee:Boolean = XSPUtils.getBoolean("is_artist_marquee",false)
     val isEmptyStateMarquee:Boolean = XSPUtils.getBoolean("is_emptyState_marquee",false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
         startMethodsHook()
     }
 
     private fun startMethodsHook() {
-        val ReflectionHelper = findClass("miuix.reflect.ReflectionHelper",classLoader)
+        val ReflectionHelper = findClass("miuix.reflect.ReflectionHelper",pluginClassLoader)
         val fadingEdgeLength = 40
-        val MediaPlayerViewHolder  = findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",classLoader)
+        val MediaPlayerViewHolder  = findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",pluginClassLoader)
         MediaPlayerViewHolder.apply {
             beforeHookMethod(
                 "updateSize"
@@ -126,8 +129,8 @@ class QSMediaView : Hooker() {
 //            }
         }
 
-        val HapticFeedback = findClass("miui.systemui.util.HapticFeedback",classLoader)
-        val MiShadowUtils = findClass("miuix.core.util.MiShadowUtils",classLoader)
+        val HapticFeedback = findClass("miui.systemui.util.HapticFeedback",pluginClassLoader)
+        val MiShadowUtils = findClass("miuix.core.util.MiShadowUtils",pluginClassLoader)
 
 
     }

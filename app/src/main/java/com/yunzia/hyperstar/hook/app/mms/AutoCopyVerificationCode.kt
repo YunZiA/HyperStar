@@ -7,15 +7,17 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
-import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.core.BaseHook
+import com.yunzia.hyperstar.hook.core.Log.logD
+import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.prefs.XSPUtils
 
 
-class AutoCopyVerificationCode: Hooker() {
+object AutoCopyVerificationCode: BaseHook() {
     val autoCopyVerificationCode = XSPUtils.getBoolean("auto_copy_verification_code",false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
         if (!autoCopyVerificationCode) return
         PendingIntent::class.java.apply {
             afterHookMethod(

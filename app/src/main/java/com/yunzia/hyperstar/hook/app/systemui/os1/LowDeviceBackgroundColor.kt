@@ -1,19 +1,22 @@
 package com.yunzia.hyperstar.hook.app.systemui.os1
 
 import androidx.core.graphics.toColorInt
-import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.colorReplaceByValue
+import com.yunzia.hyperstar.hook.core.BaseHook
 import com.yunzia.hyperstar.prefs.XSPUtils
+import io.github.kyuubiran.ezxhelper.xposed.EzXposed
 
 
-class LowDeviceBackgroundColor: Hooker() {
+object LowDeviceBackgroundColor: BaseHook() {
     private val lowDeviceBackgroundColor by lazy {  XSPUtils.getString("low_device_qc_background_color","null")}
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+
+    override fun init() {
+        
 
         if (lowDeviceBackgroundColor != null && lowDeviceBackgroundColor != "null"){
 
-            replaceColor("notification_control_center_solid_background_color",systemUI,lowDeviceBackgroundColor!!.toColorInt())
+            colorReplaceByValue("notification_control_center_solid_background_color", EzXposed.hookedPackageName,lowDeviceBackgroundColor!!.toColorInt())
 
 
         }

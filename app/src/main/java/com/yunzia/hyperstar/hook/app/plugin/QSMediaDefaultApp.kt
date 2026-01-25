@@ -1,15 +1,16 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.afterHookAllMethods
 import com.yunzia.hyperstar.prefs.XSPUtils
 
-class QSMediaDefaultApp : Hooker() {
+object QSMediaDefaultApp : BasePluginHook() {
 
     val apps = XSPUtils.getString("media_default_app_package","")
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
         if (apps != ""){
             startMethodsHook()
         }
@@ -19,7 +20,7 @@ class QSMediaDefaultApp : Hooker() {
 
         findClass(
             "com.android.systemui.QSControlMiPlayDetailHeader\$Companion\$getLastPlayingAppPackageName\$2",
-            classLoader
+            pluginClassLoader
         ).afterHookAllMethods("invokeSuspend"){
             it.result = apps
         }

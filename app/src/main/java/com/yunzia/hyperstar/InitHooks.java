@@ -8,7 +8,7 @@
 //import com.yunzia.hyperstar.hook.init.InitMiuiHomeHook;
 //import com.yunzia.hyperstar.hook.init.SystemUIHookForOS1;
 //import com.yunzia.hyperstar.hook.init.SystemUIHookForOS2;
-//import com.yunzia.hyperstar.hook.tool.starLog;
+//import com.yunzia.hyperstar.hook.core.Log;
 //
 //import de.robv.android.xposed.IXposedHookInitPackageResources;
 //import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -17,11 +17,11 @@
 //import de.robv.android.xposed.XposedHelpers;
 //import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 //import de.robv.android.xposed.callbacks.XC_LoadPackage;
-//import xyz.xfqlittlefan.notdeveloper.xposed.NotDeveloperHooker;
+//import xyz.xfqlittlefan.notdeveloper.xposed.NotDeveloperBaseHook;
 //
 //
 //
-//public class InitHooks implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
+//public class inits implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
 //
 //    private final SystemUIHookForOS2 systemUIHook0S2 = new SystemUIHookForOS2();
 //    private final SystemUIHookForOS1 systemUIHook0S1 = new SystemUIHookForOS1();
@@ -31,7 +31,7 @@
 //    @Override
 //    public void initZygote(StartupParam startupParam) throws Throwable {
 //        mPath=startupParam.modulePath;
-//        starLog.log("HookChannel is currently configured for OS" + isHookChannel);
+//        log("HookChannel is currently configured for OS" + isHookChannel);
 //
 //    }
 //
@@ -47,7 +47,7 @@
 //                systemUIHook0S2.initResources(resparam,modRes);
 //                break;
 //            default:
-//                starLog.logE("Resource initialization failed! Because the HookChannel is OS"+isHookChannel);
+//                logE("Resource initialization failed! Because the HookChannel is OS"+isHookChannel);
 //        }
 //
 //
@@ -60,18 +60,18 @@
 //            XposedHelpers.findAndHookMethod("com.yunzia.hyperstar.utils.Helper", lpparam.classLoader, "isModuleActive", XC_MethodReplacement.returnConstant(true));
 //        }
 //
-//        new NotDeveloperHooker().initHook(lpparam);
+//        new NotDeveloperBaseHook().init(lpparam);
 //
 //        switch (isHookChannel) {
 //            case 1:
-//                systemUIHook0S1.initHook(lpparam);
+//                systemUIHook0S1.init(lpparam);
 //                break;
 //            case 2:
-//                systemUIHook0S2.initHook(lpparam);
-//                new InitMiuiHomeHook().initHook(lpparam);
+//                systemUIHook0S2.init(lpparam);
+//                new InitMiuiHomeHook().init(lpparam);
 //                break;
 //            default:
-//                starLog.logE("Hook initialization failed! Because the HookChannel is OS"+isHookChannel);
+//                logE("Hook initialization failed! Because the HookChannel is OS"+isHookChannel);
 //
 //        }
 //

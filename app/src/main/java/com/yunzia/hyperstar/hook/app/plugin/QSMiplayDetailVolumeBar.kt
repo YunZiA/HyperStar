@@ -5,19 +5,22 @@ import android.util.TypedValue
 import android.widget.RelativeLayout
 import android.widget.SeekBar
 import android.widget.TextView
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.getColor
 import com.yunzia.hyperstar.hook.base.getDimension
+import com.yunzia.hyperstar.hook.core.helper.afterHookAllMethods
+import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
 import com.yunzia.hyperstar.prefs.XSPUtils
 
 
-class QSMiplayDetailVolumeBar: Hooker() {
+object QSMiplayDetailVolumeBar: BasePluginHook() {
 
     val isDetailVolumebarShowValue = XSPUtils.getBoolean("is_detail_volumebar_show_value",false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
 
         if (!isDetailVolumebarShowValue) return
 
@@ -25,7 +28,7 @@ class QSMiplayDetailVolumeBar: Hooker() {
     }
 
     private fun starMethodHook() {
-        val QSControlMiPlayDetailHeader = findClass("com.android.systemui.QSControlMiPlayDetailHeader",classLoader)
+        val QSControlMiPlayDetailHeader = findClass("com.android.systemui.QSControlMiPlayDetailHeader",pluginClassLoader)
 
         QSControlMiPlayDetailHeader.apply {
             afterHookMethod("initUI"){

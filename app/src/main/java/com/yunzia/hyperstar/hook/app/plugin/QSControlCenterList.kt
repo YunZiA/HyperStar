@@ -1,11 +1,12 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.base.replaceHookMethod
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
+import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
 import com.yunzia.hyperstar.prefs.XSPUtils
 
-class QSControlCenterList : Hooker() {
+object QSControlCenterList : BasePluginHook() {
 
     private val priorityEnable = XSPUtils.getBoolean("controlCenter_priority_enable",false)
 
@@ -46,8 +47,8 @@ class QSControlCenterList : Hooker() {
     val listSpanSize = XSPUtils.getFloat("list_span_size", 1f).toInt()
     val editSpanSize = XSPUtils.getFloat("edit_span_size", 4f).toInt()
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
 
         startPriorityHook()
         startMethodsHook()
@@ -55,14 +56,14 @@ class QSControlCenterList : Hooker() {
 
     private fun startPriorityHook() {
         if (!priorityEnable) return
-        val QSCardsController = findClass("miui.systemui.controlcenter.panel.main.qs.QSCardsController",classLoader)
-        val MediaPlayerController = findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController",classLoader)
-        val BrightnessSliderController = findClass("miui.systemui.controlcenter.panel.main.brightness.BrightnessSliderController",classLoader)
-        val VolumeSliderController = findClass("miui.systemui.controlcenter.panel.main.volume.VolumeSliderController",classLoader)
-        val DeviceControlsEntryController = findClass("miui.systemui.controlcenter.panel.main.devicecontrol.DeviceControlsEntryController",classLoader)
-        val DeviceCenterEntryController = findClass("miui.systemui.controlcenter.panel.main.devicecenter.entry.DeviceCenterEntryController",classLoader)
-        val QSListController = findClass("miui.systemui.controlcenter.panel.main.qs.QSListController",classLoader)
-        val EditButtonController = findClass("miui.systemui.controlcenter.panel.main.qs.EditButtonController",classLoader)
+        val QSCardsController = findClass("miui.systemui.controlcenter.panel.main.qs.QSCardsController",pluginClassLoader)
+        val MediaPlayerController = findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController",pluginClassLoader)
+        val BrightnessSliderController = findClass("miui.systemui.controlcenter.panel.main.brightness.BrightnessSliderController",pluginClassLoader)
+        val VolumeSliderController = findClass("miui.systemui.controlcenter.panel.main.volume.VolumeSliderController",pluginClassLoader)
+        val DeviceControlsEntryController = findClass("miui.systemui.controlcenter.panel.main.devicecontrol.DeviceControlsEntryController",pluginClassLoader)
+        val DeviceCenterEntryController = findClass("miui.systemui.controlcenter.panel.main.devicecenter.entry.DeviceCenterEntryController",pluginClassLoader)
+        val QSListController = findClass("miui.systemui.controlcenter.panel.main.qs.QSListController",pluginClassLoader)
+        val EditButtonController = findClass("miui.systemui.controlcenter.panel.main.qs.EditButtonController",pluginClassLoader)
 
         QSCardsController.replaceHookMethod("getPriority"){
             return@replaceHookMethod cardPriority
@@ -98,16 +99,16 @@ class QSControlCenterList : Hooker() {
     }
 
     private fun startMethodsHook() {
-        val QSCardsController = findClass("miui.systemui.controlcenter.panel.main.qs.QSCardsController",classLoader)
-        val MediaPlayerController = findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController",classLoader)
-        val BrightnessSliderController = findClass("miui.systemui.controlcenter.panel.main.brightness.BrightnessSliderController",classLoader)
-        val VolumeSliderController = findClass("miui.systemui.controlcenter.panel.main.volume.VolumeSliderController",classLoader)
-        val DeviceControlsEntryController = findClass("miui.systemui.controlcenter.panel.main.devicecontrol.DeviceControlsEntryController",classLoader)
-        val DeviceCenterEntryController = findClass("miui.systemui.controlcenter.panel.main.devicecenter.entry.DeviceCenterEntryController",classLoader)
-        val QSListController = findClass("miui.systemui.controlcenter.panel.main.qs.QSListController",classLoader)
-        val EditButtonController = findClass("miui.systemui.controlcenter.panel.main.qs.EditButtonController",classLoader)
+        val QSCardsController = findClass("miui.systemui.controlcenter.panel.main.qs.QSCardsController",pluginClassLoader)
+        val MediaPlayerController = findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController",pluginClassLoader)
+        val BrightnessSliderController = findClass("miui.systemui.controlcenter.panel.main.brightness.BrightnessSliderController",pluginClassLoader)
+        val VolumeSliderController = findClass("miui.systemui.controlcenter.panel.main.volume.VolumeSliderController",pluginClassLoader)
+        val DeviceControlsEntryController = findClass("miui.systemui.controlcenter.panel.main.devicecontrol.DeviceControlsEntryController",pluginClassLoader)
+        val DeviceCenterEntryController = findClass("miui.systemui.controlcenter.panel.main.devicecenter.entry.DeviceCenterEntryController",pluginClassLoader)
+        val QSListController = findClass("miui.systemui.controlcenter.panel.main.qs.QSListController",pluginClassLoader)
+        val EditButtonController = findClass("miui.systemui.controlcenter.panel.main.qs.EditButtonController",pluginClassLoader)
 
-        val QSRecord = findClass("miui.systemui.controlcenter.panel.main.qs.QSRecord",classLoader)
+        val QSRecord = findClass("miui.systemui.controlcenter.panel.main.qs.QSRecord",pluginClassLoader)
 
 
         if (cardSpanSizeEnable || listSpanSizeEnable){

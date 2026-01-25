@@ -140,14 +140,18 @@ android {
         }
     }
 
-//    androidResources {
-//        additionalParameters.clear() // 清空已有参数
-//        additionalParameters.add("--allow-reserved-package-id")
-//        additionalParameters.add("--package-id")
-//        additionalParameters.add("0x66")
-//    }
+    androidResources {
+        additionalParameters.clear() // 清空已有参数
+        additionalParameters.add("--allow-reserved-package-id")
+        additionalParameters.add("--package-id")
+        additionalParameters.add("0x66")
+    }
 }
 dependencies {
+    //implementation(libs.xposed.api)
+    implementation(libs.ezxhelper.core)
+    implementation(libs.ezxhelper.xposed.api)
+    implementation(libs.ezxhelper.android.utils)
     compileOnly(project(":lsp:annotations"))
     compileOnly(project(":lsp:api"))
     implementation(project(":lsp:service"))
@@ -162,6 +166,7 @@ dependencies {
 
     implementation (libs.androidx.palette.ktx)
     implementation(libs.kotlinx.serialization.json)
+    implementation (libs.miuix)
 
     //implementation ("com.godaddy.android.colorpicker:compose-color-picker-android:0.7.0")
     implementation(libs.github.colormath.ext.jetpack.compose)
@@ -171,13 +176,9 @@ dependencies {
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.cardview)
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    compileOnly (libs.android.xposed)
-    implementation(libs.kyuubiran.ezxhelper)
+    //compileOnly (libs.android.xposed)
     implementation(libs.androidx.foundation)
-    implementation (libs.miuix)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

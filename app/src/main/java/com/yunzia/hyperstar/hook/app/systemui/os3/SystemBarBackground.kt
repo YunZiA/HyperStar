@@ -11,25 +11,31 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.core.graphics.alpha
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.afterHookConstructor
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.hook.core.BaseHook
+import com.yunzia.hyperstar.hook.core.helper.afterHookConstructor
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.Log
+import com.yunzia.hyperstar.hook.core.Log.logD
+import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.hook.core.helper.callMethodAs
+import com.yunzia.hyperstar.hook.core.helper.getIntField
+import com.yunzia.hyperstar.hook.core.helper.getObjectField
+import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
+import com.yunzia.hyperstar.hook.core.helper.setIntField
 import com.yunzia.hyperstar.prefs.XSPUtils
 
 
-class SystemBarBackground : Hooker() {
+object SystemBarBackground : BaseHook() {
 
     private val isTransparentNavigationBarBackground = XSPUtils.getBoolean("is_transparent_navigationBar_background",false)
     private val isTransparentStatusBarBackground = XSPUtils.getBoolean("is_transparent_statusBar_background",false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
         if (!isTransparentNavigationBarBackground && !isTransparentStatusBarBackground) return
 
         findClass(
             "com.android.systemui.shared.statusbar.phone.BarTransitions",
-            classLoader
         ).afterHookConstructor(
             Int::class.java,
             View::class.java
@@ -37,6 +43,9 @@ class SystemBarBackground : Hooker() {
             val view = it.args[1] as View
 
             val name = view.context.resources.getResourceEntryName(view.id)
+
+            val cc = view.context.resources.getString(R.string.systemui)
+            logD("R.string.systemui $cc")
 
             if ((isTransparentNavigationBarBackground && name == "navigation_bar_view") ||
                 (isTransparentStatusBarBackground && name == "status_bar_container")
@@ -54,15 +63,14 @@ class SystemBarBackground : Hooker() {
     fun gradientBackground(){
 
         findClass(
-            "com.android.systemui.shared.statusbar.phone.BarTransitions\$BarBackgroundDrawable",
-            classLoader
+            "com.android.systemui.shared.statusbar.phone.BarTransitions\$BarBackgroundDrawable"
         ).afterHookMethod(
             "draw",
             Canvas::class.java
         ) {
             val mMode = this.getIntField("mMode")
-            val mColor = this.getIntField("mColor")
-            starLog.logD("SystemBarBackground","mColor = $mColor")
+            val mColor = this.getIntField("mColor")!!
+            logD("SystemBarBackground","mColor = $mColor")
             if (mColor.alpha == 0) return@afterHookMethod
             when (mMode){
                 1,2->{
@@ -70,7 +78,7 @@ class SystemBarBackground : Hooker() {
                     val mPaint = this.getObjectFieldAs<Paint>("mPaint")
                     val mFrame = this.getObjectFieldAs<Rect>("mFrame")
                     val mGradient = this.getObjectFieldAs<Drawable>("mGradient")
-                    val mGradientAlpha = this.getIntField("mGradientAlpha")
+                    val mGradientAlpha = this.getIntField("mGradientAlpha")!!
                     val mSemiTransparent = this.getIntField("mSemiTransparent")
                     val bounds: Rect = if (mFrame != null) mFrame else this.callMethodAs<Rect>("getBounds")
                     if (bounds.isEmpty) {
@@ -83,7 +91,7 @@ class SystemBarBackground : Hooker() {
                         mGradient.draw(canvas)
                     }
 
-                    starLog.logD("SystemBarBackground","bounds.left = ${bounds.left}\nbounds.right = ${bounds.right}")
+                    logD("SystemBarBackground","bounds.left = ${bounds.left}\nbounds.right = ${bounds.right}")
                     // 创建从下到上的渐变（常见于状态栏遮罩）
                     // 如果你想从上到下，交换 y 坐标
 //                    val gradient = LinearGradient(

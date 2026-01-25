@@ -1,16 +1,16 @@
 package com.yunzia.hyperstar.hook.app.plugin.os1
 
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.base.replaceHookMethod
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
 import com.yunzia.hyperstar.prefs.XSPUtils
 
-class QSEditButton : Hooker() {
+object QSEditButton : BasePluginHook() {
 
     private val closeEditButtonShow = XSPUtils.getBoolean("close_edit_button_show",false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
         if (!closeEditButtonShow){
             return
         }
@@ -21,7 +21,7 @@ class QSEditButton : Hooker() {
 
         findClass(
             "miui.systemui.controlcenter.panel.main.qs.EditButtonController",
-            classLoader
+            pluginClassLoader
         ).apply {
             replaceHookMethod(
                 "available",

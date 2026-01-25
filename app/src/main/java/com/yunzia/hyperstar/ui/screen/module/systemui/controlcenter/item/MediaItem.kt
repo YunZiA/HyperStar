@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,7 +21,6 @@ import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import yunzia.ui.Card
 
 @Composable
@@ -42,7 +42,7 @@ fun MediaItem(
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 4.dp)
             .elevation(
-                shape = SquircleShape(18.dp),
+                shape = RoundedCornerShape(18.dp),
                 backgroundColor = colorScheme.secondary,
                 shadowElevation = 2f
             ),

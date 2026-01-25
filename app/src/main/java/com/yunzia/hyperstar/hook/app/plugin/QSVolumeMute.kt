@@ -1,14 +1,14 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
-import com.yunzia.hyperstar.hook.base.Hooker
+import com.yunzia.hyperstar.hook.core.BasePluginHook
 
-class QSVolumeMute: Hooker() {
+object QSVolumeMute: BasePluginHook() {
 
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
 //        findClass(
-//            "miui.systemui.controlcenter.panel.main.recyclerview.ToggleSliderViewHolder",classLoader
+//            "miui.systemui.controlcenter.panel.main.recyclerview.ToggleSliderViewHolder",pluginClassLoader
 //        ).afterHookMethod(
 //            "setInMirror",
 //            Boolean::class.java

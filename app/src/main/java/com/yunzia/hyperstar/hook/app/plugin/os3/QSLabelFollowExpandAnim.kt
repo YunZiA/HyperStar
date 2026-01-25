@@ -1,17 +1,20 @@
 package com.yunzia.hyperstar.hook.app.plugin.os3
 
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.base.BaseHookHelper.findMethodExt
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.getObjectField
+import com.yunzia.hyperstar.hook.core.helper.replaceHook
 import com.yunzia.hyperstar.prefs.XSPUtils
 
-class QSLabelFollowExpandAnim : Hooker(){
+object QSLabelFollowExpandAnim : BasePluginHook(){
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
         if (!XSPUtils.getBoolean("title_follow_anim", false)) return
         findClass(
             "miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder",
-            classLoader
+            pluginClassLoader
         ).apply {
 //            replaceHookMethod("getItemFrame"){
 //
@@ -19,9 +22,9 @@ class QSLabelFollowExpandAnim : Hooker(){
         }.findMethodExt(
             "getIconFrame",
             { isBridge && isSynthetic }
-        ).replace {
+        ).replaceHook {
             val itemView = this.getObjectField("itemView")
-            return@replace itemView
+            return@replaceHook itemView
         }
     }
 

@@ -1,35 +1,36 @@
 package com.yunzia.hyperstar.hook.util.plugin
 
 import android.view.View
-import de.robv.android.xposed.XposedHelpers
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.callStaticMethod
 
 class MiBlurCompat(private val classLoader: ClassLoader?) {
 
-    private val miBlurCompat = XposedHelpers.findClass("miui.systemui.util.MiBlurCompat",classLoader)
+    private val miBlurCompat = findClass("miui.systemui.util.MiBlurCompat",classLoader)
 
     fun setMiViewBlurModeCompat(view: View,mode:Int){
-        XposedHelpers.callStaticMethod(miBlurCompat,"setMiViewBlurModeCompat",view,mode)
+        miBlurCompat.callStaticMethod("setMiViewBlurModeCompat",view,mode)
     }
 
     fun clearMiBackgroundBlendColorCompat(view: View){
 
-        XposedHelpers.callStaticMethod(miBlurCompat,"clearMiBackgroundBlendColorCompat",view)
+        miBlurCompat.callStaticMethod("clearMiBackgroundBlendColorCompat",view)
     }
 
     fun setMiBackgroundBlurRadiusCompat(view: View,radius:Int){
 
-        XposedHelpers.callStaticMethod(miBlurCompat,"setMiBackgroundBlurRadiusCompat",view,radius)
+        miBlurCompat.callStaticMethod("setMiBackgroundBlurRadiusCompat",view,radius)
     }
 
     fun setMiBackgroundBlendColors(view: View?, colorArray:IntArray, float: Float){
 
-        XposedHelpers.callStaticMethod(miBlurCompat, "setMiBackgroundBlendColors",view,colorArray,float)
+        miBlurCompat.callStaticMethod( "setMiBackgroundBlendColors",view,colorArray,float)
     }
 
     fun chooseBackgroundBlurContainerCompat(view: View,view2: View?){
 
         try {
-            XposedHelpers.callStaticMethod(miBlurCompat, "chooseBackgroundBlurContainerCompat",view,view2)
+            miBlurCompat.callStaticMethod( "chooseBackgroundBlurContainerCompat",view,view2)
         }  catch (e: NoSuchMethodError) {
             View::class.java.getMethod("chooseBackgroundBlurContainer", View::class.java).invoke(view,view2)
 

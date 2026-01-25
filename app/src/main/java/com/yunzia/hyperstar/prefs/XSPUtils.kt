@@ -1,12 +1,9 @@
 package com.yunzia.hyperstar.prefs
 
 import android.content.SharedPreferences
-import android.util.Log
-import com.yunzia.hyperstar.InitHook
-import com.yunzia.hyperstar.prefs.XSPUtils.TAG
-import com.yunzia.hyperstar.prefs.XSPUtils.pref
+import com.yunzia.hyperstar.hook.core.BaseXposedModule
 
-fun InitHook.loadPref(){
+fun BaseXposedModule.loadPref(){
     XSPUtils.init(getRemotePreferences(SPUtils.PREFERENCE_NAME))
     log("RemotePreferences initialized")
 }

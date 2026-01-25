@@ -1,7 +1,5 @@
 package com.yunzia.hyperstar.hook.app.plugin.os1
 
-import android.content.res.XModuleResources
-import android.content.res.XResources
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
@@ -11,68 +9,76 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.github.kyuubiran.ezxhelper.misc.ViewUtils.findViewByIdName
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.afterHookConstructor
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.base.BaseHookHelper.setColorField
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.helper.afterHookConstructor
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.base.findViewByIdNameAs
+import com.yunzia.hyperstar.hook.core.Log
+import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
+import com.yunzia.hyperstar.hook.core.helper.callMethod
+import com.yunzia.hyperstar.hook.core.helper.callMethodAs
+import com.yunzia.hyperstar.hook.core.helper.getObjectField
+import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
+import com.yunzia.hyperstar.hook.core.helper.getStaticObjectField
 import com.yunzia.hyperstar.hook.util.plugin.ConfigUtils
 import com.yunzia.hyperstar.prefs.XSPUtils
-import de.robv.android.xposed.callbacks.XC_InitPackageResources
+import io.github.kyuubiran.ezxhelper.android.util.ViewUtil.findViewByIdName
 
-class QSControlCenterColor : Hooker() {
-
-
-    override fun initResources(
-        resparam: XC_InitPackageResources.InitPackageResourcesParam?,
-        modRes: XModuleResources?
-    ) {
-        super.initResources(resparam, modRes)
-        starBackgroundColorsByRes()
-        startCardColorsByRes()
-        startToggleSliderColorsByRes()
-        startListColorsByRes()
-        startDeviceColorsByRes()
+object QSControlCenterColor : BasePluginHook() {
 
 
-    }
+//    override fun initResources(
+//        resparam: XC_InitPackageResources.InitPackageResourcesParam?,
+//        modRes: XModuleResources?
+//    ) {
+//        super.initResources(resparam, modRes)
+//        starBackgroundColorsByRes()
+//        startCardColorsByRes()
+//        startToggleSliderColorsByRes()
+//        startListColorsByRes()
+//        startDeviceColorsByRes()
+//
+//
+//    }
 
-    private fun startDeviceColorsByRes() {
+//    private fun startDeviceColorsByRes() {
+//
+//        val deviceCenterItemBackgroundColor = XSPUtils.getString("device_center_item_background_color","null")
+//        val deviceCenterDetailIconColor = XSPUtils.getString("device_center_detail_icon_color","null")
+//
+//        if (deviceCenterDetailIconColor != "null"){
+//            resparam?.res?.setReplacement(plugin, "drawable", "ic_device_center_detail_item", object : XResources.DrawableLoader(){
+//                override fun newDrawable(res: XResources?, id: Int): Drawable {
+//                    val newDraw = res?.getDrawable(id) as Drawable
+//                    newDraw.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceCenterDetailIconColor),PorterDuff.Mode.SRC_IN)
+//                    return newDraw
+//                }
+//
+//            })
+//
+//        }
+//
+//        if (deviceCenterItemBackgroundColor != "null"){
+//            resparam?.res?.setReplacement(plugin, "drawable", "ic_device_center_item_background_default", object : XResources.DrawableLoader(){
+//                override fun newDrawable(res: XResources?, id: Int): Drawable {
+//                    val newDraw = res?.getDrawable(id) as Drawable
+//                    logD("${newDraw.alpha}")
+//                    // newDraw.alpha
+//                    newDraw.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceCenterItemBackgroundColor),PorterDuff.Mode.SRC_IN)
+//                    return newDraw
+//                }
+//
+//            })
+//
+//        }
+//
+//
+//    }
 
-        val deviceCenterItemBackgroundColor = XSPUtils.getString("device_center_item_background_color","null")
-        val deviceCenterDetailIconColor = XSPUtils.getString("device_center_detail_icon_color","null")
+    override fun init() {
 
-        if (deviceCenterDetailIconColor != "null"){
-            resparam?.res?.setReplacement(plugin, "drawable", "ic_device_center_detail_item", object : XResources.DrawableLoader(){
-                override fun newDrawable(res: XResources?, id: Int): Drawable {
-                    val newDraw = res?.getDrawable(id) as Drawable
-                    newDraw.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceCenterDetailIconColor),PorterDuff.Mode.SRC_IN)
-                    return newDraw
-                }
-
-            })
-
-        }
-
-        if (deviceCenterItemBackgroundColor != "null"){
-            resparam?.res?.setReplacement(plugin, "drawable", "ic_device_center_item_background_default", object : XResources.DrawableLoader(){
-                override fun newDrawable(res: XResources?, id: Int): Drawable {
-                    val newDraw = res?.getDrawable(id) as Drawable
-                    starLog.logD("${newDraw.alpha}")
-                    // newDraw.alpha
-                    newDraw.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceCenterItemBackgroundColor),PorterDuff.Mode.SRC_IN)
-                    return newDraw
-                }
-
-            })
-
-        }
-
-
-    }
-
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
 
         startCardTitleHook()
         startCardIconHook()
@@ -86,8 +92,8 @@ class QSControlCenterColor : Hooker() {
 
     private fun startEditColor() {
         val editTitleColor = XSPUtils.getString("edit_title_color","null")
-        val ConfigUtils = findClass("miui.systemui.controlcenter.ConfigUtils",classLoader)
-        val EditButtonViewHolder = findClass("miui.systemui.controlcenter.panel.main.qs.EditButtonController\$EditButtonViewHolder",classLoader)
+        val ConfigUtils = findClass("miui.systemui.controlcenter.ConfigUtils",pluginClassLoader)
+        val EditButtonViewHolder = findClass("miui.systemui.controlcenter.panel.main.qs.EditButtonController\$EditButtonViewHolder",pluginClassLoader)
 
 
         EditButtonViewHolder.apply {
@@ -127,8 +133,8 @@ class QSControlCenterColor : Hooker() {
         val deviceCenterIconColor = XSPUtils.getString("device_center_icon_color","null")
         val deviceCenterTitleColor = XSPUtils.getString("device_center_title_color","null")
 
-        val configUtils = ConfigUtils(classLoader)
-        val EmptyDeviceViewHolder = findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.EmptyDeviceViewHolder",classLoader)
+        val configUtils = ConfigUtils(pluginClassLoader)
+        val EmptyDeviceViewHolder = findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.EmptyDeviceViewHolder",pluginClassLoader)
 
         EmptyDeviceViewHolder.apply {
             if (deviceCenterTitleColor != "null" || deviceCenterIconColor != "null"){
@@ -169,7 +175,7 @@ class QSControlCenterColor : Hooker() {
 
         val deviceControlIconColor = XSPUtils.getString("device_control_icon_color","null")
         val deviceControlTitleColor = XSPUtils.getString("device_control_title_color","null")
-        val DeviceControlEntryViewHolder = findClass("miui.systemui.controlcenter.panel.main.devicecontrol.DeviceControlsEntryController\$DeviceControlEntryViewHolder",classLoader)
+        val DeviceControlEntryViewHolder = findClass("miui.systemui.controlcenter.panel.main.devicecontrol.DeviceControlsEntryController\$DeviceControlEntryViewHolder",pluginClassLoader)
 
         DeviceControlEntryViewHolder.apply {
             if (deviceControlTitleColor != "null" || deviceControlIconColor != "null"){
@@ -207,181 +213,181 @@ class QSControlCenterColor : Hooker() {
 
     }
 
-    private fun startToggleSliderColorsByRes() {
-        val mainProgressBlendColor = XSPUtils.getString("toggle_slider_progress_color_main", "null")
-        val secondaryProgressBlendColor = XSPUtils.getString("toggle_slider_progress_color_secondary", "null")
-
-        val progressColor = XSPUtils.getString("toggle_slider_progress_color", "null")
-        val valueColor = XSPUtils.getString("toggle_slider_value_color", "null")
-
-        if (progressColor != "null") ReplaceColor("toggle_slider_progress_color",progressColor)
-
-
-        //ReplaceColor("toggle_slider_icon_color",valueColor)
-
-        if (valueColor != "null") ReplaceColor("toggle_slider_top_text_color",valueColor)
-
-        ReplaceIntArray(
-            "toggle_slider_progress_blend_colors"
-        ) { array ->
-            if (mainProgressBlendColor != "null"){
-                array[0] = Color.parseColor(mainProgressBlendColor)
-
-            }
-            if (secondaryProgressBlendColor != "null"){
-                array[2] = Color.parseColor(secondaryProgressBlendColor)
-
-            }
-
-        }
-
-
-    }
-
-
-
-    private fun starBackgroundColorsByRes() {
-        val backgroundColor = XSPUtils.getString("background_color", "null")
-        val editBackgroundColor = XSPUtils.getString("edit_background_color", "null")
-        val editBackgroundMode =XSPUtils.getInt("edit_background_mode",0)
-
-        val mainBackgroundBlendColor = XSPUtils.getString("background_blend_color_main", "null")
-        val secondaryBackgroundBlendColor = XSPUtils.getString("background_blend_color_secondary", "null")
-
-        val mainEditBackgroundBlendColor = XSPUtils.getString("edit_background_blend_color_main", "null")
-        val secondaryEditBackgroundBlendColor = XSPUtils.getString("edit_background_blend_color_secondary", "null")
-
-        if (backgroundColor != "null"){
-
-            ReplaceColor("qs_card_disabled_color",backgroundColor)
-            ReplaceColor("external_entry_background_color",backgroundColor)
-            ReplaceColor("toggle_slider_progress_background_color",backgroundColor)
-            ReplaceColor("qs_disabled_color",backgroundColor)
+//    private fun startToggleSliderColorsByRes() {
+//        val mainProgressBlendColor = XSPUtils.getString("toggle_slider_progress_color_main", "null")
+//        val secondaryProgressBlendColor = XSPUtils.getString("toggle_slider_progress_color_secondary", "null")
+//
+//        val progressColor = XSPUtils.getString("toggle_slider_progress_color", "null")
+//        val valueColor = XSPUtils.getString("toggle_slider_value_color", "null")
+//
+//        if (progressColor != "null") colorReplaceByValue("toggle_slider_progress_color",progressColor)
+//
+//
+//        //colorReplaceByValue("toggle_slider_icon_color",valueColor)
+//
+//        if (valueColor != "null") colorReplaceByValue("toggle_slider_top_text_color",valueColor)
+//
+//        ReplaceIntArray(
+//            "toggle_slider_progress_blend_colors"
+//        ) { array ->
+//            if (mainProgressBlendColor != "null"){
+//                array[0] = Color.parseColor(mainProgressBlendColor)
+//
+//            }
+//            if (secondaryProgressBlendColor != "null"){
+//                array[2] = Color.parseColor(secondaryProgressBlendColor)
+//
+//            }
+//
+//        }
+//
+//
+//    }
 
 
-        }
-        if (editBackgroundMode == 0){
-            if (editBackgroundColor != "null"){
-                ReplaceColor("qs_customize_entry_button_background_color",editBackgroundColor)
 
-            }
-            ReplaceIntArray(
-                "control_center_edit_button_blend_colors",
+//    private fun starBackgroundColorsByRes() {
+//        val backgroundColor = XSPUtils.getString("background_color", "null")
+//        val editBackgroundColor = XSPUtils.getString("edit_background_color", "null")
+//        val editBackgroundMode =XSPUtils.getInt("edit_background_mode",0)
+//
+//        val mainBackgroundBlendColor = XSPUtils.getString("background_blend_color_main", "null")
+//        val secondaryBackgroundBlendColor = XSPUtils.getString("background_blend_color_secondary", "null")
+//
+//        val mainEditBackgroundBlendColor = XSPUtils.getString("edit_background_blend_color_main", "null")
+//        val secondaryEditBackgroundBlendColor = XSPUtils.getString("edit_background_blend_color_secondary", "null")
+//
+//        if (backgroundColor != "null"){
+//
+//            colorReplaceByValue("qs_card_disabled_color",backgroundColor)
+//            colorReplaceByValue("external_entry_background_color",backgroundColor)
+//            colorReplaceByValue("toggle_slider_progress_background_color",backgroundColor)
+//            colorReplaceByValue("qs_disabled_color",backgroundColor)
+//
+//
+//        }
+//        if (editBackgroundMode == 0){
+//            if (editBackgroundColor != "null"){
+//                colorReplaceByValue("qs_customize_entry_button_background_color",editBackgroundColor)
+//
+//            }
+//            ReplaceIntArray(
+//                "control_center_edit_button_blend_colors",
+//
+//                ) { array ->
+//                if (mainEditBackgroundBlendColor != "null"){
+//                    array[0] = Color.parseColor(mainEditBackgroundBlendColor)
+//
+//                }
+//                if (secondaryEditBackgroundBlendColor != "null"){
+//                    array[2] = Color.parseColor(secondaryEditBackgroundBlendColor)
+//
+//                }
+//
+//            }
+//
+//        }else{
+//
+//            val res = resparam!!.res
+//
+//            val array = res.getIntArray(res.getIdentifier("control_center_list_items_blend_colors", "array", plugin))
+//            res.setReplacement(plugin,"array","control_center_edit_button_blend_colors",array)
+//            val color = res.getColor(res.getIdentifier("external_entry_background_color","color",plugin))
+//            res.setReplacement(plugin,"color","qs_customize_entry_button_background_color",color)
+//
+//        }
+//
+//
+//        if (mainBackgroundBlendColor != "null" || secondaryBackgroundBlendColor != "null"){
+//            ReplaceIntArray(
+//                "control_center_qs_items_blend_colors"
+//            ) { array ->
+//                if (mainBackgroundBlendColor != "null"){
+//                    array[0] = Color.parseColor(mainBackgroundBlendColor)
+//
+//                }
+//                if (secondaryBackgroundBlendColor != "null"){
+//                    array[2] = Color.parseColor(secondaryBackgroundBlendColor)
+//
+//                }
+//
+//            }
+//            ReplaceIntArray(
+//                "control_center_list_items_blend_colors"
+//            ) { array ->
+//                if (mainBackgroundBlendColor != "null"){
+//                    array[0] = Color.parseColor(mainBackgroundBlendColor)
+//
+//                }
+//                if (secondaryBackgroundBlendColor != "null"){
+//                    array[2] = Color.parseColor(secondaryBackgroundBlendColor)
+//
+//                }
+//
+//
+//            }
+//        }
+//
+//    }
+//
+//    private fun startCardColorsByRes() {
+//        val enableColor = XSPUtils.getString("card_enabled_color", "null")
+//        val restrictedColor = XSPUtils.getString("card_restricted_color", "null")
+//        val unavailableColor = XSPUtils.getString("card_unavailable_color", "null")
+//
+//
+//        if (enableColor != "null"){
+//            colorReplaceByValue("qs_card_enabled_color",enableColor)
+//            colorReplaceByValue("qs_card_cellular_color",enableColor)
+//            colorReplaceByValue("qs_card_flashlight_color",enableColor)
+//        }
+//
+//        if (restrictedColor != "null"){
+//            colorReplaceByValue("qs_card_unavailable_color",restrictedColor)
+//        }
+//
+//        if (unavailableColor != "null"){
+//            colorReplaceByValue("qs_card_disabled_color",unavailableColor)
+//        }
+//
+//    }
 
-                ) { array ->
-                if (mainEditBackgroundBlendColor != "null"){
-                    array[0] = Color.parseColor(mainEditBackgroundBlendColor)
-
-                }
-                if (secondaryEditBackgroundBlendColor != "null"){
-                    array[2] = Color.parseColor(secondaryEditBackgroundBlendColor)
-
-                }
-
-            }
-
-        }else{
-
-            val res = resparam!!.res
-
-            val array = res.getIntArray(res.getIdentifier("control_center_list_items_blend_colors", "array", plugin))
-            res.setReplacement(plugin,"array","control_center_edit_button_blend_colors",array)
-            val color = res.getColor(res.getIdentifier("external_entry_background_color","color",plugin))
-            res.setReplacement(plugin,"color","qs_customize_entry_button_background_color",color)
-
-        }
-
-
-        if (mainBackgroundBlendColor != "null" || secondaryBackgroundBlendColor != "null"){
-            ReplaceIntArray(
-                "control_center_qs_items_blend_colors"
-            ) { array ->
-                if (mainBackgroundBlendColor != "null"){
-                    array[0] = Color.parseColor(mainBackgroundBlendColor)
-
-                }
-                if (secondaryBackgroundBlendColor != "null"){
-                    array[2] = Color.parseColor(secondaryBackgroundBlendColor)
-
-                }
-
-            }
-            ReplaceIntArray(
-                "control_center_list_items_blend_colors"
-            ) { array ->
-                if (mainBackgroundBlendColor != "null"){
-                    array[0] = Color.parseColor(mainBackgroundBlendColor)
-
-                }
-                if (secondaryBackgroundBlendColor != "null"){
-                    array[2] = Color.parseColor(secondaryBackgroundBlendColor)
-
-                }
-
-
-            }
-        }
-
-    }
-
-    private fun startCardColorsByRes() {
-        val enableColor = XSPUtils.getString("card_enabled_color", "null")
-        val restrictedColor = XSPUtils.getString("card_restricted_color", "null")
-        val unavailableColor = XSPUtils.getString("card_unavailable_color", "null")
-
-
-        if (enableColor != "null"){
-            ReplaceColor("qs_card_enabled_color",enableColor)
-            ReplaceColor("qs_card_cellular_color",enableColor)
-            ReplaceColor("qs_card_flashlight_color",enableColor)
-        }
-
-        if (restrictedColor != "null"){
-            ReplaceColor("qs_card_unavailable_color",restrictedColor)
-        }
-
-        if (unavailableColor != "null"){
-            ReplaceColor("qs_card_disabled_color",unavailableColor)
-        }
-
-    }
-
-    private fun startListColorsByRes() {
-
-        val enableColor = XSPUtils.getString("list_enabled_color", "null")
-        val restrictedColor = XSPUtils.getString("list_restricted_color", "null")
-        val warningColor = XSPUtils.getString("list_warning_color", "null")
-        val unavailableColor = XSPUtils.getString("list_unavailable_color", "null")
-        val tileColorForState = XSPUtils.getInt("qs_list_tile_color_for_state",0)
-
-        if (tileColorForState == 0){
-            val titleColor = XSPUtils.getString("list_title_color", "null")
-            if (titleColor != "null") ReplaceColor("qs_text_disabled_color",titleColor)
-
-        }
-
-
-        if (enableColor != "null"){
-            ReplaceColor("qs_enabled_color",enableColor)
-
-        }
-        if (warningColor != "null"){
-            ReplaceColor("qs_warning_color",warningColor)
-
-        }
-
-        if (restrictedColor != "null"){
-            ReplaceColor("qs_restrict_color",restrictedColor)
-
-        }
-
-        if (unavailableColor != "null"){
-            ReplaceColor("qs_unavailable_color",unavailableColor)
-
-        }
-
-
-    }
+//    private fun startListColorsByRes() {
+//
+//        val enableColor = XSPUtils.getString("list_enabled_color", "null")
+//        val restrictedColor = XSPUtils.getString("list_restricted_color", "null")
+//        val warningColor = XSPUtils.getString("list_warning_color", "null")
+//        val unavailableColor = XSPUtils.getString("list_unavailable_color", "null")
+//        val tileColorForState = XSPUtils.getInt("qs_list_tile_color_for_state",0)
+//
+//        if (tileColorForState == 0){
+//            val titleColor = XSPUtils.getString("list_title_color", "null")
+//            if (titleColor != "null") colorReplaceByValue("qs_text_disabled_color",titleColor)
+//
+//        }
+//
+//
+//        if (enableColor != "null"){
+//            colorReplaceByValue("qs_enabled_color",enableColor)
+//
+//        }
+//        if (warningColor != "null"){
+//            colorReplaceByValue("qs_warning_color",warningColor)
+//
+//        }
+//
+//        if (restrictedColor != "null"){
+//            colorReplaceByValue("qs_restrict_color",restrictedColor)
+//
+//        }
+//
+//        if (unavailableColor != "null"){
+//            colorReplaceByValue("qs_unavailable_color",unavailableColor)
+//
+//        }
+//
+//
+//    }
 
 
 
@@ -389,8 +395,8 @@ class QSControlCenterColor : Hooker() {
 
         val iconColor = XSPUtils.getString("toggle_slider_icon_color", "null")
 
-        val BrightnessSliderController = findClass("miui.systemui.controlcenter.panel.main.brightness.BrightnessSliderController",classLoader)
-        val VolumeSliderController = findClass("miui.systemui.controlcenter.panel.main.volume.VolumeSliderController",classLoader)
+        val BrightnessSliderController = findClass("miui.systemui.controlcenter.panel.main.brightness.BrightnessSliderController",pluginClassLoader)
+        val VolumeSliderController = findClass("miui.systemui.controlcenter.panel.main.volume.VolumeSliderController",pluginClassLoader)
 
 
         if (iconColor != "null"){
@@ -423,11 +429,11 @@ class QSControlCenterColor : Hooker() {
 
         }
 
-        //ReplaceColor("toggle_slider_icon_color",iconColor)
+        //colorReplaceByValue("toggle_slider_icon_color",iconColor)
     }
 
     private fun startMediaColorsHook() {
-        val configUtils = ConfigUtils(classLoader)
+        val configUtils = ConfigUtils(pluginClassLoader)
         val titleColor = XSPUtils.getString("media_title_color", "null")
         val artistColor = XSPUtils.getString("media_artist_color", "null")
         val emptyStateColor = XSPUtils.getString("media_empty_state_color", "null")
@@ -435,8 +441,8 @@ class QSControlCenterColor : Hooker() {
         val enabledIconColor = XSPUtils.getString("media_icon_color_enabled", "null")
         val deviceIconColor = XSPUtils.getString("media_device_icon_color", "null")
 
-        val MediaPlayerViewHolder = findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",classLoader)
-        val MediaPlayerIconsInfo = findClass("miui.systemui.controlcenter.media.MediaPlayerIconsInfo",classLoader)
+        val MediaPlayerViewHolder = findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",pluginClassLoader)
+        val MediaPlayerIconsInfo = findClass("miui.systemui.controlcenter.media.MediaPlayerIconsInfo",pluginClassLoader)
 
         MediaPlayerViewHolder.apply {
             afterHookConstructor(
@@ -563,8 +569,8 @@ class QSControlCenterColor : Hooker() {
         val unavailableSecondaryColor = XSPUtils.getString("card_secondary_unavailable_color", "null")
 
 
-        val QSItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSItemView", classLoader)
-        val QSCardItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSCardItemView", classLoader)
+        val QSItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSItemView", pluginClassLoader)
+        val QSCardItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSCardItemView", pluginClassLoader)
 
         QSCardItemView.beforeHookMethod(
             "updateBackground"
@@ -612,7 +618,7 @@ class QSControlCenterColor : Hooker() {
     }
 
     private fun startListIconColor() {
-        val QSTileItemIconView = findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemIconView", classLoader)
+        val QSTileItemIconView = findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemIconView", pluginClassLoader)
         val offColor = XSPUtils.getString("list_icon_off_color", "null")
         val onColor = XSPUtils.getString("list_icon_on_color", "null")
         val restrictedColor = XSPUtils.getString("list_icon_restricted_color", "null")
@@ -647,7 +653,7 @@ class QSControlCenterColor : Hooker() {
 
         findClass(
             "miui.systemui.controlcenter.qs.tileview.QSCardItemIconView",
-            classLoader
+            pluginClassLoader
         ).afterHookMethod(
             "updateResources"
         ){

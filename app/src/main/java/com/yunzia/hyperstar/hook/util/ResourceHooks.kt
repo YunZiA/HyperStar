@@ -7,7 +7,7 @@
 //import io.github.libxposed.api.XposedInterface.BeforeHookCallback
 //import io.github.libxposed.api.XposedInterface.AfterHookCallback
 //import java.util.concurrent.ConcurrentHashMap
-//import name.monwf.customiuizer.mods.utils.HookerClassHelper.MethodHook
+//import name.monwf.customiuizer.mods.utils.BaseHookClassHelper.MethodHook
 //import kotlin.collections.get
 //
 //class ResourceHooks {

@@ -10,7 +10,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.base.MenuItem
-import de.robv.android.xposed.XposedHelpers
+import com.yunzia.hyperstar.hook.core.helper.callMethod
 import yunzia.utils.DensityUtil.Companion.dpToPx
 
 private val plugin = "miui.systemui.plugin"
@@ -21,13 +21,13 @@ fun menuC(mContext: Context, thisObj: Any?, items: List<MenuItem?>, mTalkbackLay
 
     val menu1 = ButtonB(mContext, items[0]!!) {
         Handler(Looper.getMainLooper()).postDelayed({
-            XposedHelpers.callMethod(thisObj, "dismiss", 1)
+            thisObj.callMethod( "dismiss", 1)
         }, 100)
     }
 
     val menu2 = ButtonB(mContext, items[1]!!) {
         Handler(Looper.getMainLooper()).postDelayed({
-            XposedHelpers.callMethod(thisObj, "dismiss", 1)
+            thisObj.callMethod( "dismiss", 1)
         }, 100)
     }
 

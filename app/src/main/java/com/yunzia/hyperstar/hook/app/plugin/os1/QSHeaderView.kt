@@ -8,21 +8,30 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintSet
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.getDimensionPixelOffset
-import com.yunzia.hyperstar.hook.base.replaceHookMethod
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
+import com.yunzia.hyperstar.hook.core.Log
+import com.yunzia.hyperstar.hook.core.Log.log
+import com.yunzia.hyperstar.hook.core.Log.logD
+import com.yunzia.hyperstar.hook.core.Log.logE
+import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.hook.core.helper.callMethod
+import com.yunzia.hyperstar.hook.core.helper.callMethodAs
+import com.yunzia.hyperstar.hook.core.helper.getObjectField
+import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
+import com.yunzia.hyperstar.hook.core.helper.getStaticObjectField
+import com.yunzia.hyperstar.hook.util.ConstraintSet
 import com.yunzia.hyperstar.prefs.XSPUtils
 
 
-class QSHeaderView : Hooker() {
+object QSHeaderView : BasePluginHook() {
     var viewId: Int = 0
     private val is_use_chaos_header = XSPUtils.getBoolean("is_use_chaos_header", false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
         if (!is_use_chaos_header) {
             return
         }
@@ -47,7 +56,7 @@ class QSHeaderView : Hooker() {
 
         findClass(
             "miui.systemui.controlcenter.panel.main.qs.EditButtonController_Factory",
-            classLoader
+            pluginClassLoader
         ).apply {
             afterHookMethod(
                 "get"
@@ -55,22 +64,22 @@ class QSHeaderView : Hooker() {
 
                 val qsListControllerProviders = this.getObjectField("qsListControllerProvider")
                 if (qsListControllerProviders == null) {
-                    starLog.logE("qsListControllerProviders == null")
+                    logE("qsListControllerProviders == null")
                     return@afterHookMethod
                 }
-                starLog.logD("qsListControllerProviders != null")
+                logD("qsListControllerProviders != null")
                 qsListControllerProvider = qsListControllerProviders
 
             }
         }
         val MainPanelModeController = findClass(
             "miui.systemui.controlcenter.panel.main.MainPanelModeController\$MainPanelMode",
-            classLoader
+            pluginClassLoader
         )
 
         findClass(
             "miui.systemui.controlcenter.panel.main.header.StatusHeaderController",
-            classLoader
+            pluginClassLoader
         ).apply {
             afterHookMethod(
                 "createStatusBarViews"
@@ -148,19 +157,19 @@ class QSHeaderView : Hooker() {
                     if (view.alpha == 0f) return@setOnClickListener
                     it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     if (qsListControllerProvider != null) {
-                        starLog.logD("qsListControllerProvider != null")
+                        logD("qsListControllerProvider != null")
                         val get = qsListControllerProvider.callMethod("get")
                         if (get == null) {
-                            starLog.logE("get == null")
+                            logE("get == null")
                         } else {
                             val mainPanelMode: Array<out Any>? =
                                 MainPanelModeController?.enumConstants
                             if (mainPanelMode == null) {
-                                starLog.logE("enumConstants == null")
+                                logE("enumConstants == null")
                                 return@setOnClickListener
                             }
 
-                            starLog.logD("" + mainPanelMode[0])
+                            logD("" + mainPanelMode[0])
                             get.callMethod("startQuery", mainPanelMode[2])
                         }
 
@@ -187,12 +196,12 @@ class QSHeaderView : Hooker() {
 
     }
 
-    private fun startMethodsHook1(classLoader: ClassLoader?) {
+    private fun startMethodsHook1() {
         val MainHeader = findClass(
             "miui.systemui.controlcenter.panel.main.header.StatusHeaderController",
-            classLoader
+            pluginClassLoader
         )
-        val CommonUtils = findClass("miui.systemui.util.CommonUtils", classLoader)
+        val CommonUtils = findClass("miui.systemui.util.CommonUtils", pluginClassLoader)
         MainHeader.replaceHookMethod(
             "updateConstraint"
         ) {
@@ -205,7 +214,7 @@ class QSHeaderView : Hooker() {
             if (fakeStatusBarViewController == null) return@replaceHookMethod null
 
 
-            val constraintSet = ConstraintSet()
+            val constraintSet = ConstraintSet(pluginClassLoader)
             //val header_status_bar_icon:Int = sysUIContext.resources.get("header_status_bar_icons", "id", "miui.systemui.plugin");
 
             val header_carrier_vertical_mode_margin_bottom = mContext.resources.getIdentifier(
@@ -228,7 +237,7 @@ class QSHeaderView : Hooker() {
             );
             val privacy_container: Int =
                 mContext.resources.getIdentifier("privacy_container", "id", "miui.systemui.plugin");
-            starLog.log("" + header_status_bar_icons + header_date + header_carrier_view + privacy_container)
+            log("" + header_status_bar_icons + header_date + header_carrier_view + privacy_container)
             constraintSet.constrainWidth(header_status_bar_icons, -2)
             constraintSet.constrainHeight(header_status_bar_icons, -2)
             constraintSet.constrainWidth(header_date, -2)

@@ -10,49 +10,26 @@ import com.yunzia.hyperstar.hook.app.systemui.os2.SystemBarBackground
 import com.yunzia.hyperstar.hook.app.systemui.os2.NotificationForLm
 import com.yunzia.hyperstar.hook.app.systemui.os2.QSHeaderView
 import com.yunzia.hyperstar.hook.app.systemui.os2.Test
-import com.yunzia.hyperstar.hook.base.InitHooker
+import com.yunzia.hyperstar.hook.core.BaseHook
+import com.yunzia.hyperstar.hook.core.BaseHooks
+import com.yunzia.hyperstar.hook.core.annotation.Init
 import java.lang.Boolean
 import java.lang.Float
 import kotlin.Exception
 import kotlin.Int
 
-//@Init(packageName = "com.android.systemui")
-class SystemUIHookForOS2 : InitHooker() {
-    private val pluginHookForOS2 = PluginHookForOS2()
-    private val qsHeaderView = QSHeaderView()
-    private val addCatPaw = AddCatPaw()
-    private val test = Test()
-
-    override fun initResources() {
-        if (resparam!!.packageName != mPackageName) {
-            initResource(pluginHookForOS2)
-            return
-        }
-        initResource(qsHeaderView)
-
-        // modRes.fwd(R.color.black)
-
-        //initResource(test);
-        //initResource(addCatPaw);
-    }
-
-    override fun initHook() {
-        SystemBarBackground().initHooker()
-        LowDeviceBackgroundColor().initHooker()
-        NotificationForLm().initHooker()
-        qsHeaderView.initHooker()
-        pluginHookForOS2.initHooker()
-
-        //initHooker(test);
-
-        //initHooker(addCatPaw);
-//
-//        doTestHook();
-    }
+@Init(packageName = "com.android.systemui", versions = [2])
+object SystemUIHookForOS2 : BaseHooks() {
 
 
-    private fun doTestHook() {
-        //    "isFlipDevice"
+    override fun init() {
+        initHooks(
+            SystemBarBackground,
+            LowDeviceBackgroundColor,
+            NotificationForLm,
+            QSHeaderView,
+            PluginHooksForOS2
+        )
     }
 
     fun applyViewShadowForMediaAlbum(f: Float, f2: Float, i: Int, view: View?) {

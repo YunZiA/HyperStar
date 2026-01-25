@@ -16,7 +16,7 @@ import android.media.ImageReader
 import android.util.Log
 import androidx.core.graphics.ColorUtils
 import androidx.palette.graphics.Palette
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.core.Log.logE
 
 class BitmapUtils {
     companion object {
@@ -69,13 +69,13 @@ class BitmapUtils {
 
             val dominantColor = palette.getDominantColor(Color.TRANSPARENT)
             if (dominantColor == Color.TRANSPARENT){
-                starLog.logE("backgroundColor is null")
+                logE("backgroundColor is null")
                 return bitmap
             }
 
             val outHsl = FloatArray(3)
             ColorUtils.colorToHSL(dominantColor,outHsl)
-            //starLog.log("1 Hue: ${outHsl[0]}, Saturation: ${outHsl[1]}, Lightness: ${outHsl[2]}")
+            //log("1 Hue: ${outHsl[0]}, Saturation: ${outHsl[1]}, Lightness: ${outHsl[2]}")
             outHsl[2] = if (outHsl[2] > 0.5f){
                 0.4f
             }else if (outHsl[2] < 0.11f){
@@ -91,7 +91,7 @@ class BitmapUtils {
                 0.5f
             } else outHsl[1]
 
-            //starLog.log("2 Hue: ${outHsl[0]}, Saturation: ${outHsl[1]}, Lightness: ${outHsl[2]}")
+            //log("2 Hue: ${outHsl[0]}, Saturation: ${outHsl[1]}, Lightness: ${outHsl[2]}")
 
             val backgroundColor = ColorUtils.HSLToColor(outHsl)
 

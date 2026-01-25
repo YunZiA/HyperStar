@@ -3,16 +3,19 @@ package com.yunzia.hyperstar.hook.app.plugin
 import android.content.Context
 import android.view.View
 import android.widget.LinearLayout
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.hook.core.helper.getObjectField
+import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
 import com.yunzia.hyperstar.prefs.XSPUtils
 
-class QSCardAutoCollapse : Hooker() {
+object QSCardAutoCollapse : BasePluginHook() {
 
     private val clickClose = XSPUtils.getBoolean("card_tile_click_close",false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
 
         startMethodsHook()
     }
@@ -32,8 +35,8 @@ class QSCardAutoCollapse : Hooker() {
 
         findClass(
             "miui.systemui.controlcenter.qs.tileview.QSCardItemView\$onFinishInflate\$1",
-            classLoader
-        ).afterHookMethod("invoke",View::class.java){
+            pluginClassLoader
+        ).afterHookMethod("invoke",View::class.java) {
 
             val qsCardItemView = this.getObjectFieldAs<LinearLayout>("this$0")
 

@@ -1,14 +1,17 @@
 package com.yunzia.hyperstar.hook.util.systemui
 
-import com.yunzia.hyperstar.hook.tool.starLog
-import de.robv.android.xposed.XposedHelpers
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.Log
+import com.yunzia.hyperstar.hook.core.Log.logE
+import com.yunzia.hyperstar.hook.core.helper.callMethod
+import com.yunzia.hyperstar.hook.core.helper.getStaticObjectField
 
 class Dependency(private val classloader: ClassLoader?) {
 
-    private val dependency = XposedHelpers.findClassIfExists("com.android.systemui.Dependency",classloader)
+    private val dependency = findClass("com.android.systemui.Dependency",classloader)
 
     val sDependency by lazy {
-        XposedHelpers.getStaticObjectField(dependency,"sDependency")
+        dependency.getStaticObjectField("sDependency")
     }
 
     fun getDependencyInner(any: Any): Any? {
@@ -16,13 +19,13 @@ class Dependency(private val classloader: ClassLoader?) {
         if (sDependency == null){
             return null
         }
-        return XposedHelpers.callMethod(sDependency,"getDependencyInner",any)
+        return sDependency.callMethod("getDependencyInner",any)
     }
 
     fun getDependencyInnerByName(name: String): Any? {
-        val obj = XposedHelpers.findClass(name, classloader)
+        val obj = findClass(name, classloader)
         if (obj == null){
-            starLog.logE("$name is null")
+            logE("$name is null")
             return null
         }
         return getDependencyInner(obj)

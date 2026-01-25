@@ -4,23 +4,25 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.base.replaceHookMethod
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.Log.logD
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
+import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
+import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
 import com.yunzia.hyperstar.prefs.XSPUtils
 import yunzia.utils.DensityUtil.Companion.dpToPx
 
-class QSListTileRadius : Hooker() {
+object QSListTileRadius : BasePluginHook() {
 
     val isQSListTileRadius = XSPUtils.getBoolean("is_qs_list_tile_radius",false)
     val qsListTileRadius = XSPUtils.getFloat("qs_list_tile_radius",24f)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
         if (!isQSListTileRadius) return
         findClass(
             "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",
-            classLoader
+            pluginClassLoader
         ).apply {
             replaceHookMethod(
                 "getCornerRadius"

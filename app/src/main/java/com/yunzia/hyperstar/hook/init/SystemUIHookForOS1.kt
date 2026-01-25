@@ -3,26 +3,17 @@ package com.yunzia.hyperstar.hook.init
 //import com.yunzia.annotations.Init
 import com.yunzia.hyperstar.hook.app.systemui.os1.LowDeviceBackgroundColor
 import com.yunzia.hyperstar.hook.app.systemui.os1.SystemBarBackground
-import com.yunzia.hyperstar.hook.base.InitHooker
+import com.yunzia.hyperstar.hook.core.BaseHooks
+import com.yunzia.hyperstar.hook.core.annotation.Init
 
-//@Init(packageName = "com.android.systemui")
-class SystemUIHookForOS1 : InitHooker() {
-    private val pluginHookForOS1 = PluginHookForOS1()
+@Init(packageName = "com.android.systemui", versions = [1])
+object SystemUIHookForOS1 : BaseHooks() {
 
-    override fun initResources() {
-        initResource(pluginHookForOS1)
-        if (resparam!!.packageName != mPackageName) return
-    }
-
-    override fun initHook() {
-        pluginHookForOS1.initHooker()
-        SystemBarBackground().initHooker()
-        LowDeviceBackgroundColor().initHooker()
-
-        doTestHook()
-    }
-
-
-    private fun doTestHook() {
+    override fun init() {
+        initHooks(
+            PluginHookForOS1,
+            SystemBarBackground,
+            LowDeviceBackgroundColor
+        )
     }
 }

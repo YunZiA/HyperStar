@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="io.github.libxposed.service" >
+
+    <uses-sdk android:minSdkVersion="27" />
+
+    <application>
+        <provider
+            android:name="io.github.libxposed.service.XposedProvider"
+            android:authorities="dollar_openBracket_applicationId_closeBracket.XposedService"
+            android:exported="true"
+            tools:ignore="ExportedContentProvider" />
+    </application>
+
+</manifest>

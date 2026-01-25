@@ -12,7 +12,7 @@ import android.widget.GridView
 import android.widget.LinearLayout
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.base.MenuItem
 import com.yunzia.hyperstar.hook.base.getDimensionPixelOffset
-import de.robv.android.xposed.XposedHelpers
+import com.yunzia.hyperstar.hook.core.helper.callMethod
 import yunzia.utils.DensityUtil.Companion.dpToPx
 
 private val plugin = "miui.systemui.plugin"
@@ -35,7 +35,7 @@ fun menuA(mContext: Context, thisObj: Any?, items: List<MenuItem?>,mTalkbackLayo
         //verticalSpacing = dpToPx(res,14f).toInt()
         adapter = GridAdapter(mContext, items1) {
             Handler(Looper.getMainLooper()).postDelayed({
-                XposedHelpers.callMethod(thisObj, "dismiss", 1)
+                thisObj.callMethod("dismiss", 1)
             }, 100)
         }
     }
@@ -46,7 +46,7 @@ fun menuA(mContext: Context, thisObj: Any?, items: List<MenuItem?>,mTalkbackLayo
             horizontalSpacing = dpToPx(res,10f).toInt()
             adapter = GridAdapter(mContext, items.subList(4, num)) {
                 Handler(Looper.getMainLooper()).postDelayed({
-                    XposedHelpers.callMethod(thisObj, "dismiss", 1)
+                    thisObj.callMethod("dismiss", 1)
                 }, 100)
             }
         }

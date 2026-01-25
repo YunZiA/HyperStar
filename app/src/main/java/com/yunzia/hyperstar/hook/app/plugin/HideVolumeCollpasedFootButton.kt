@@ -1,25 +1,29 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
 import android.view.View
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.base.replaceHookMethod
+import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.Log.logD
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.callMethodAs
+import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
+import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
 import com.yunzia.hyperstar.hook.util.plugin.Util
 import com.yunzia.hyperstar.prefs.XSPUtils
 
-class HideVolumeCollpasedFootButton : Hooker() {
+object HideVolumeCollpasedFootButton : BasePluginHook() {
     val isHideStandardView = XSPUtils.getBoolean("is_hide_StandardView",false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
 
         if (!isHideStandardView) return
 
-        val util = Util(classLoader)
+        val util = Util(pluginClassLoader)
 
         findClass(
             "com.android.systemui.miui.volume.MiuiVolumeDialogView",
-            classLoader
+            pluginClassLoader
         ).replaceHookMethod(
             "updateFooterVisibility",
             Boolean::class.java
@@ -32,10 +36,7 @@ class HideVolumeCollpasedFootButton : Hooker() {
                 setVisOrGone(mRingerModeLayout,mExpanded)
                 setVisOrGone(mExpandButton, it.args[0] as Boolean && !mExpanded)
             }
-
         }
 
-
     }
-
 }

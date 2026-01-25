@@ -1,6 +1,6 @@
 //package com.yunzia.hyperstar.hook.help
 //
-//import com.yunzia.hyperstar.InitHook.MyHooker
+//import com.yunzia.hyperstar.init.MyBaseHook
 //
 //
 //hufun
@@ -22,7 +22,7 @@
 //    methodHook: Any?.(param:MethodHookParam) -> Any?,
 //){
 //
-//    hook(exampleMethod, MyHooker::class.java)
+//    hook(exampleMethod, MyBaseHook::class.java)
 //    this?: return
 //    XposedBridge.hookMethod(this, object : XC_MethodReplacement() {
 //        override fun replaceHookedMethod(param: MethodHookParam): Any? {
@@ -99,9 +99,9 @@
 //        })
 //
 //    }catch (e: NoSuchMethodError) {
-//        starLog.logE("$e")
+//        logE("$e")
 //    }catch (e: Exception){
-//        starLog.logE("$e")
+//        logE("$e")
 //    }
 //}
 //

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableFloatStateOf
@@ -28,7 +29,6 @@ import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import yunzia.ui.Card
 
 
@@ -125,7 +125,7 @@ fun ListItem(
                     modifier = Modifier
                         .size(81.dp)
                         .padding(vertical = 4.dp, horizontal = 4.dp),
-                    shape = SquircleShape(18.dp),
+                    shape = RoundedCornerShape(18.dp),
                     color = colorScheme.secondary,
                     shadowElevation = 2.0.dp,
                     content = {}

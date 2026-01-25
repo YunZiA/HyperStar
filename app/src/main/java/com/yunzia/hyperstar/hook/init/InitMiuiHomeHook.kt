@@ -1,15 +1,16 @@
 package com.yunzia.hyperstar.hook.init
 
-//import com.yunzia.annotations.Init
 import com.yunzia.hyperstar.hook.app.home.RemoveNoBlurDevice
-import com.yunzia.hyperstar.hook.base.InitHooker
-import com.yunzia.hyperstar.utils.getHookChannel
+import com.yunzia.hyperstar.hook.core.BaseHooks
+import com.yunzia.hyperstar.hook.core.annotation.Init
 
-//@Init(packageName = "com.miui.home")
-class InitMiuiHomeHook : InitHooker() {
+@Init(packageName = "com.miui.home", versions = [2, 3])
+object InitMiuiHomeHook : BaseHooks() {
 
-    override fun initHook() {
-        RemoveNoBlurDevice().initHooker()
+    override fun init() {
+        initHooks(
+            RemoveNoBlurDevice
+        )
     }
 
 }

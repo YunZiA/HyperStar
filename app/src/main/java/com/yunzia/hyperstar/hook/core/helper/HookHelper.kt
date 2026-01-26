@@ -93,9 +93,7 @@ fun Class<*>?.beforeHookMethod(
     block: Any?.(BeforeHookParam) -> Unit
 ) {
     try {
-        logD("${this?.simpleName}","$methodName")
         findMethodExact(this, methodName, *paramTypes)?.createBeforeHook { it.thisObjectOrNull.block(it) }
-        logD("${this?.simpleName}","$methodName")
     }catch (e : Exception){
         logE("${this?.simpleName}","${e.cause}")
     }

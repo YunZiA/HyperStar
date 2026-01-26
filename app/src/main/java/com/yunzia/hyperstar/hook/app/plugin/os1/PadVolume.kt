@@ -398,7 +398,6 @@ object PadVolume : BasePluginHook() {
             R.dimen.miui_volume_timer_time_text_size
         )
 
-
         hookLayout("miui_volume_timer_layout", plugin) {
             this as ViewGroup
             if (resources.configuration?.orientation != Configuration.ORIENTATION_LANDSCAPE) return@hookLayout
@@ -446,7 +445,7 @@ object PadVolume : BasePluginHook() {
                 0
             )
         }
-        hookLayout("miui_ringer_mode_layout",plugin){
+        hookLayout("miui_ringer_mode_layout",plugin) {
             this as ViewGroup
             val res = context.resources
             if (res.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE){
@@ -461,7 +460,7 @@ object PadVolume : BasePluginHook() {
 
             }
         }
-        hookLayout("miui_volume_dialog_ringer_mode",plugin){
+        hookLayout("miui_volume_dialog_ringer_mode",plugin) {
             this as ViewGroup
             val res = context.resources
             if (res.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE){

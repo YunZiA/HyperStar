@@ -53,7 +53,6 @@ object QSListView : BasePluginHook() {
     val listLabelTop = XSPUtils.getFloat("list_label_top", 0f)
 
     override fun init() {
-        
         startMethodsHook()
         titleFollowAnimation()
         qsTileRadius()

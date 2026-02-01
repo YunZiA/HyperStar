@@ -11,10 +11,7 @@ object EnableClipboardWriteOnScreenshot : BaseHook() {
     val isEnable = XSPUtils.getBoolean("enable_clipboard_write_on_screenshot",false)
 
     override fun init() {
-        
-
         if (!isEnable) return
-
         Settings.Secure::class.java.afterHookMethod(
             "getInt",
             ContentResolver::class.java,

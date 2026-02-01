@@ -92,8 +92,6 @@ fun SystemUIOtherPager(
                     key = "low_device_not_second_background_color"
                 )
             }
-
-
         }
     }
 }

@@ -48,8 +48,6 @@ object QSControlCenterList : BasePluginHook() {
     val editSpanSize = XSPUtils.getFloat("edit_span_size", 4f).toInt()
 
     override fun init() {
-        
-
         startPriorityHook()
         startMethodsHook()
     }
@@ -109,8 +107,6 @@ object QSControlCenterList : BasePluginHook() {
         val EditButtonController = findClass("miui.systemui.controlcenter.panel.main.qs.EditButtonController",pluginClassLoader)
 
         val QSRecord = findClass("miui.systemui.controlcenter.panel.main.qs.QSRecord",pluginClassLoader)
-
-
         if (cardSpanSizeEnable || listSpanSizeEnable){
             QSRecord.replaceHookMethod("getSpanSize"){
                 val isCard = this.getObjectFieldAs<Boolean>("isCard")
@@ -124,32 +120,26 @@ object QSControlCenterList : BasePluginHook() {
             }
 
         }
-
-
         if (cardRightOrLeftEnable){
             QSCardsController.replaceHookMethod("getRightOrLeft"){
                 return@replaceHookMethod cardRightOrLeft
             }
         }
-
         if (mediaRightOrLeftEnable){
             MediaPlayerController.replaceHookMethod("getRightOrLeft"){
                 return@replaceHookMethod mediaRightOrLeft
             }
         }
-
         if (brightnessRightOrLeftEnable){
             BrightnessSliderController.replaceHookMethod("getRightOrLeft"){
                 return@replaceHookMethod brightnessRightOrLeft
             }
         }
-
         if (volumeRightOrLeftEnable){
             VolumeSliderController.replaceHookMethod("getRightOrLeft"){
                 return@replaceHookMethod volumeRightOrLeft
             }
         }
-
         DeviceControlsEntryController.apply {
             if (deviceControlRightOrLeftEnable){
                 replaceHookMethod("getRightOrLeft"){
@@ -160,46 +150,30 @@ object QSControlCenterList : BasePluginHook() {
                 replaceHookMethod("getSpanSize"){
                     return@replaceHookMethod deviceControlSpanSize
                 }
-
             }
-
         }
-
         DeviceCenterEntryController.apply {
             if (deviceCenterRightOrLeftEnable){
                 replaceHookMethod("getRightOrLeft"){
                     return@replaceHookMethod deviceCenterRightOrLeft
-
                 }
             }
             if (deviceCenterSpanSizeEnable){
                 replaceHookMethod("getSpanSize"){
                     return@replaceHookMethod deviceCenterSpanSize
-
                 }
-
             }
-
         }
-
         if (listRightOrLeftEnable){
             QSListController.replaceHookMethod("getRightOrLeft"){
                 return@replaceHookMethod listRightOrLeft
-
             }
-
         }
-
-
         if (editSpanSizeEnable){
             EditButtonController.replaceHookMethod("getSpanSize"){
                 return@replaceHookMethod editSpanSize
-
             }
-
         }
-
-
     }
 
 }

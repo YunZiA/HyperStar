@@ -18,7 +18,6 @@ object QSListTileRadius : BasePluginHook() {
     val qsListTileRadius = XSPUtils.getFloat("qs_list_tile_radius",24f)
 
     override fun init() {
-        
         if (!isQSListTileRadius) return
         findClass(
             "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",

@@ -18,7 +18,6 @@ object VolumeColumnProgressRadius : BasePluginHook() {
     val volumeProgressRadius = XSPUtils.getFloat("volume_progress_radius",2f)
 
     override fun init() {
-        
         if (!isChangeVolumeProgressRadius) return
         startMethodsHook()
     }

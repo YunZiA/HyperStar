@@ -25,10 +25,7 @@ object LongPressVolumeBarToExpand: BasePluginHook() {
     val isPressExpandVolume = XSPUtils.getBoolean("is_press_expand_volume",false)
 
     override fun init() {
-        
-
         if (!isPressExpandVolume) return
-
         var longClick = false
         var longPressJob: Job? = null
 
@@ -75,7 +72,6 @@ object LongPressVolumeBarToExpand: BasePluginHook() {
                     isClickable = false
                     visibility = View.GONE
                 }
-
             }
         }
 
@@ -85,7 +81,6 @@ object LongPressVolumeBarToExpand: BasePluginHook() {
             beforeHookMethod("lambda\$processExpandTouch\$1") {
                 this.setObjectField("mIsExpandButton",true)
             }
-
         }
 
         findClass(
@@ -100,13 +95,9 @@ object LongPressVolumeBarToExpand: BasePluginHook() {
                 val mSeekBarAnimListener = this.getObjectField("mSeekBarAnimListener")
                 val volumePanelViewController = mSeekBarAnimListener.getObjectField("this\$0")
                 val mVolumeView = volumePanelViewController.getObjectFieldAs<View>("mVolumeView")
-
-
                 this.setLongField("mCurrentMS",0L)
                 if (mSeekBarOnclickListener != null) {
                     val motionEvent = it.args?.get(0) as MotionEvent
-
-
                     when (motionEvent.action) {
                         MotionEvent.ACTION_DOWN -> {
 
@@ -117,16 +108,13 @@ object LongPressVolumeBarToExpand: BasePluginHook() {
                                     mVolumeView.startScaleAnimation() // 执行缩放动画
                                     delay(300)
                                     val mMoveY = this@afterHookMethod.getFloatField("mMoveY")!!
-
                                     if (longClick && mMoveY < 10f){
                                         mVolumeView.apply {
                                             performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                                             scaleY = 1f
                                             scaleX = 1f
                                         }
-
                                         mSeekBarOnclickListener.callMethod( "onClick")
-
                                     }
 
                                 }
@@ -142,7 +130,6 @@ object LongPressVolumeBarToExpand: BasePluginHook() {
                             longPressJob?.cancel()
                         }
                     }
-
                 }
             }
         }

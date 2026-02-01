@@ -14,9 +14,7 @@ object QSToggleSliderRadius : BasePluginHook() {
     val progressRadius = XSPUtils.getFloat("qs_progress_radius",2f)
 
     override fun init() {
-        
         if (!XSPUtils.getBoolean("is_change_qs_progress_radius",false)) return
-
         startMethodsHook()
     }
 

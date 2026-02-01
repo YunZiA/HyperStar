@@ -28,8 +28,6 @@ object QSTileAutoCollapse : BasePluginHook() {
 
 
     override fun init() {
-        
-
         if (clickClose){
             val QSTileItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemView", pluginClassLoader)
             val MainPanelModeController = findClass("miui.systemui.controlcenter.panel.main.MainPanelModeController\$MainPanelMode",pluginClassLoader)
@@ -47,7 +45,6 @@ object QSTileAutoCollapse : BasePluginHook() {
                         logE("clickAction == null")
                         return@beforeHookMethod
                     }
-
                     val enumConstants: Array<out Any>? = MainPanelModeController?.getEnumConstants()
                     if (enumConstants == null){
                         logE("enumConstants == null")
@@ -59,14 +56,9 @@ object QSTileAutoCollapse : BasePluginHook() {
                         collapseStatusBar(mContext)
                     }else{
                         logD("mainPanelMode == edit")
-
                     }
                 }
-
-
             }
-
         }
     }
-
 }

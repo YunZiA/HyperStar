@@ -42,21 +42,8 @@ object QSMediaCoverBackground: BasePluginHook() {
     val alpha = XSPUtils.getFloat("cover_dim_background_value",0f).coerceIn(0f, 100f)
     val coverAnciently:Boolean = XSPUtils.getBoolean("cover_anciently",false)
 
-
-//    override fun initResources(
-//        resparam: XC_InitPackageResources.InitPackageResourcesParam?,
-//        modRes: XModuleResources?
-//    ) {
-//        super.initResources(resparam, modRes)
-//        vintage = resparam?.res?.addResource(modRes, R.drawable.vintage)!!
-//
-//
-//    }
-
     override fun init() {
-        
         startMethodsHook()
-
     }
 
     private fun startMethodsHook() {
@@ -158,10 +145,8 @@ object QSMediaCoverBackground: BasePluginHook() {
                             if (view == null) return
                             outline?.setRoundRect(0,0,view.width,view.height,_cornerRadius)
                         }
-
                     }
                     itemView.clipToOutline = true
-
                 }
                 replaceHookMethod("updateResources"){
                     return@replaceHookMethod null
@@ -171,8 +156,4 @@ object QSMediaCoverBackground: BasePluginHook() {
 
         }
     }
-
-
-
-
 }

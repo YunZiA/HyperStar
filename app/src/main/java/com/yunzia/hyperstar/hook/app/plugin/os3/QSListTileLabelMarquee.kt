@@ -14,7 +14,6 @@ object QSListTileLabelMarquee : BasePluginHook() {
     val labelMarquee = XSPUtils.getBoolean("list_tile_label_marquee",false)
 
     override fun init() {
-        
         if (!labelMarquee) return
         findClass(
             "miui.systemui.controlcenter.qs.tileview.QSTileItemView", pluginClassLoader
@@ -25,7 +24,6 @@ object QSListTileLabelMarquee : BasePluginHook() {
             val binding = this.callMethod("getBinding")
             val label = binding.getObjectFieldAs<TextView>("tileLabel")
             label.startMarqueeOfFading(25)
-
         }
     }
 }

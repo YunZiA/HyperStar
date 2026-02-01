@@ -13,7 +13,6 @@ object FixTileIconSize : BasePluginHook() {
     val fix = XSPUtils.getBoolean("fix_list_tile_icon_scale",false)
 
     override fun init() {
-        
         if (!fix) return
         findClass(
             "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView",

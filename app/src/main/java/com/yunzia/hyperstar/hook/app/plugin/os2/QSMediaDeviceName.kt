@@ -11,12 +11,9 @@ import com.yunzia.hyperstar.prefs.XSPUtils
 object QSMediaDeviceName : BasePluginHook() {
 
     override fun init() {
-        
-
         if (XSPUtils.getInt("is_local_speaker",0) == 1){
             startMethodsHook()
         }
-
     }
 
     private fun startMethodsHook() {

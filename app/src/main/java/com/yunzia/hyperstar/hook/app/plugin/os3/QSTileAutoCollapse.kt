@@ -67,7 +67,6 @@ object QSTileAutoCollapse : BasePluginHook() {
                         collapseStatusBar(qSTileItemView.context)
                     } else {
                         logE("mainPanelMode == edit")
-
                     }
                 }
             }

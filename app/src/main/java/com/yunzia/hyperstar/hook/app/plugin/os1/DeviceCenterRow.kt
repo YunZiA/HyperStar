@@ -1,13 +1,17 @@
 package com.yunzia.hyperstar.hook.app.plugin.os1
 
+import android.view.View
+import android.view.ViewGroup
 import com.yunzia.hyperstar.hook.core.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.Log.logD
+import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.hookLayout
 import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
 import com.yunzia.hyperstar.hook.core.helper.replaceHookAllConstructors
 import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
 import com.yunzia.hyperstar.hook.core.helper.setObjectField
 import com.yunzia.hyperstar.prefs.XSPUtils
+import io.github.kyuubiran.ezxhelper.android.util.ViewUtil.findViewByIdName
 
 object DeviceCenterRow: BasePluginHook() {
 
@@ -16,55 +20,39 @@ object DeviceCenterRow: BasePluginHook() {
 
 //    override fun init() {
 //
-//        if (deviceCenterSpanSize == 1){
-//            resparam?.res?.hookLayout(plugin,"layout","device_center_empty_item",object : XC_LayoutInflated(){
-//                override fun handleLayoutInflated(liparam: LayoutInflatedParam?) {
 //
-//                    val root = liparam?.view as ViewGroup
-//                    val title = root.findViewByIdName("title")
-//                    val icon = root.findViewByIdName("icon")
-//                    val lp = icon?.layoutParams as MarginLayoutParams
-//                    lp.marginStart = 0
-//                    icon.layoutParams = lp
-//                    title?.visibility = View.GONE
-////                }
-//                }
-//
-//            })
-//
-//        }
-//
-//
-//        //res.setReplacement(plugin,"dimen","device_center_device_item_width",res.getDimensionPixelSize(device_center_item_height))
-//        if (deviceCenterSpanSize < 4){
-//            resparam?.res?.hookLayout(plugin,"layout","device_center_device_item",object : XC_LayoutInflated(){
-//                override fun handleLayoutInflated(liparam: LayoutInflatedParam?) {
-//
-//                    val root = liparam?.view as ViewGroup
-//                    val lp = root.layoutParams
-//                    lp.width = lp.height
-//                    root.layoutParams = lp
-////                for (i in root.childCount) {
-////                }
-//                }
-//
-//            })
-//
-//        }
 //
 //    }
 
 
     override fun init() {
-        
-
 
         val a = findClass("h.a.g.a",pluginClassLoader)
-
         val DeviceCenterCardController = findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.DeviceCenterCardController",pluginClassLoader)
-
         val DeviceCenterEntryViewHolderMode = findClass("miui.systemui.controlcenter.panel.main.devicecenter.entry.DeviceCenterEntryViewHolder\$Mode",pluginClassLoader)
 
+        if (deviceCenterSpanSize == 1){
+            hookLayout("device_center_empty_item",plugin) {
+                this as ViewGroup
+                val title = this.findViewByIdName("title")
+                val icon = this.findViewByIdName("icon")
+                val lp = icon?.layoutParams as ViewGroup.MarginLayoutParams
+                lp.marginStart = 0
+                icon.layoutParams = lp
+                title?.visibility = View.GONE
+            }
+
+        }
+        //res.setReplacement(plugin,"dimen","device_center_device_item_width",res.getDimensionPixelSize(device_center_item_height))
+        if (deviceCenterSpanSize < 4){
+            hookLayout("device_center_device_item",plugin) {
+                this as ViewGroup
+                val lp = layoutParams.apply {
+                    width = height
+                }
+                layoutParams = lp
+            }
+        }
         if (isDeviceCenterMode != 0 || deviceCenterSpanSize !=4){
             a.replaceHookAllConstructors {
                 this.setObjectField("a", it.args[0])

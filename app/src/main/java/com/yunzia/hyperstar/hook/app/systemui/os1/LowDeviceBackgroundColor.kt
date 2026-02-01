@@ -10,15 +10,9 @@ import io.github.kyuubiran.ezxhelper.xposed.EzXposed
 object LowDeviceBackgroundColor: BaseHook() {
     private val lowDeviceBackgroundColor by lazy {  XSPUtils.getString("low_device_qc_background_color","null")}
 
-
     override fun init() {
-        
-
         if (lowDeviceBackgroundColor != null && lowDeviceBackgroundColor != "null"){
-
             colorReplaceByValue("notification_control_center_solid_background_color", EzXposed.hookedPackageName,lowDeviceBackgroundColor!!.toColorInt())
-
-
         }
 
     }

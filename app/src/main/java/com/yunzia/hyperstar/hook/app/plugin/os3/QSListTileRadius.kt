@@ -71,7 +71,6 @@ object QSListTileRadius : BasePluginHook() {
         res : Resources,
         name:String
     ) {
-
         val id: Int = res.getIdentifier(name, "drawable", plugin)
         val drawable: Drawable = context.theme.getDrawable(id)
         if (drawable is GradientDrawable) {

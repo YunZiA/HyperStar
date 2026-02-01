@@ -11,9 +11,7 @@ object RemoveNoBlurDevice : BaseHook() {
     val isUnlock = XSPUtils.getBoolean("is_unlock_home_blur",false)
 
     override fun init() {
-
         if (!isUnlock) return
-
         findClassWithPrefix(
             "com.miui.home.launcher.common.BlurUtilities",
             "com.miui.home.common.utils.BlurUtilities"

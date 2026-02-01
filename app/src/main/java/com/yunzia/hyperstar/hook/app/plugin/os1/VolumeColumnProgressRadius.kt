@@ -17,7 +17,6 @@ object VolumeColumnProgressRadius : BasePluginHook() {
     val volumeProgressRadius = XSPUtils.getFloat("volume_progress_radius",2f)
 
     override fun init() {
-        
         if (!isChangeVolumeProgressRadius) return
         startMethodsHook()
     }
@@ -43,17 +42,11 @@ object VolumeColumnProgressRadius : BasePluginHook() {
                         if (view == null) return
                         if (radius >= maxRadius){
                             outline?.setRoundRect(0,view.height-height, view.width,view.height,maxRadius)
-
                         }else{
                             outline?.setRoundRect(0,view.height-height, view.width,view.height,radius)
-
                         }
-
                     }
-
                 }
-
-
                 return@replaceHookMethod null
             }
             replaceHookMethod(
@@ -97,18 +90,12 @@ object VolumeColumnProgressRadius : BasePluginHook() {
                         if (view == null) return
                         if (radius >= maxRadius){
                             outline?.setRoundRect(0,view.height-height, view.width,view.height,maxRadius)
-
                         }else{
                             outline?.setRoundRect(0,view.height-height, view.width,view.height,radius)
-
                         }
-
                     }
-
                 }
-
                 return@replaceHookMethod null
-
             }
         }
     }

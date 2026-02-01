@@ -17,7 +17,6 @@ object AutoCopyVerificationCode: BaseHook() {
     val autoCopyVerificationCode = XSPUtils.getBoolean("auto_copy_verification_code",false)
 
     override fun init() {
-        
         if (!autoCopyVerificationCode) return
         PendingIntent::class.java.apply {
             afterHookMethod(

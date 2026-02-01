@@ -12,7 +12,6 @@ object LowDeviceBackgroundColor: BaseHook() {
     private val lowDeviceSecondBackgroundColor by lazy {  XSPUtils.getString("low_device_not_second_background_color","null")}
 
     override fun init() {
-
         if (lowDeviceBackgroundColor != null && lowDeviceBackgroundColor != "null"){
             colorReplaceByValue("shade_solid_background_color", EzXposed.hookedPackageName,lowDeviceBackgroundColor!!.toColorInt())
             colorReplaceByValue("notification_control_center_solid_background_color", EzXposed.hookedPackageName,lowDeviceSecondBackgroundColor!!.toColorInt())

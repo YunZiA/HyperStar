@@ -10,7 +10,6 @@ object QSEditButton : BasePluginHook() {
     private val closeEditButtonShow = XSPUtils.getBoolean("close_edit_button_show",false)
 
     override fun init() {
-        
         if (!closeEditButtonShow){
             return
         }

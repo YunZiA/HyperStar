@@ -25,7 +25,6 @@ object NotDeveloperHook : BaseHook() {
     val ADB_ENABLED = "adb_enabled"
     val ADB_WIFI_ENABLED = "adb_wifi_enabled"
 
-
     override fun init() {
         val packageName = EzXposed.hookedPackageName
         if (packageName.startsWith("android")
@@ -103,8 +102,6 @@ object NotDeveloperHook : BaseHook() {
         val overrideAdb = "mtp"
         val overridesvcadbd = "stopped"
         clazz.apply {
-
-
             listOf(methodGet, methodGetProp, methodGetBoolean, methodGetInt, methodGetLong).forEach {
                 this.afterHookAllMethods(it) {param ->
                     val arg = param.args[0] as String

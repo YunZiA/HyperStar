@@ -28,7 +28,6 @@ object QSTileAutoCollapse : BasePluginHook() {
 
 
     override fun init() {
-        
 
         if (clickClose){
             val QSTileItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemView", pluginClassLoader)
@@ -62,7 +61,6 @@ object QSTileAutoCollapse : BasePluginHook() {
                         collapseStatusBar(qSTileItemView.context)
                     } else {
                         logE("mainPanelMode == edit")
-
                     }
                 }
             }

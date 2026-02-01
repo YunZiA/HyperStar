@@ -48,10 +48,8 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
     private val brightnessShow = XSPUtils.getBoolean("qs_brightness_top_value_show",false)
 
     override fun init() {
-        
         if (!brightnessShow && !volumeShow) return
         startMethodsHook()
-
     }
 
     private fun startMethodsHook() {
@@ -158,12 +156,8 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
                             colorArray,false
                         )
                     }
-
-
                 }
             }
-
-
         }
 
         if (brightnessShow){
@@ -195,12 +189,9 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
                     val seekBar = this.callMethodAs<SeekBar>("getSlider") ?: return@afterHookMethod
                     val itemView = sliderHolder.getObjectFieldAs<View>("itemView")
                     val topValue = itemView.findViewByIdNameAs<TextView>("top_text")
-
                     val str = seekBar.percentageProgress()
-
                     topValue.visibility = View.VISIBLE
                     topValue.text = str
-
                 }
             }
 
@@ -299,10 +290,8 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
         }
 
         if (toggleSliderValueColor != null && toggleSliderValueColor != "null"){
-
             colorReplaceByValue("toggle_slider_top_text_color", plugin, toggleSliderValueColor.toColorInt())
         }
-
 
         var colorArray : IntArray? = null
 
@@ -367,12 +356,8 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
                     valueColorArray[2] = secondaryValueBlendColor!!.toColorInt()
                 }
                 miBlurCompat.setMiBackgroundBlendColors(topValue,valueColorArray,1f)
-
             }
         }
-
-
-
 
     }
 
@@ -380,6 +365,5 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
         progress:Int ,
         max:Int
     ) = "${(progress * 100 / max)}%"
-
 
 }

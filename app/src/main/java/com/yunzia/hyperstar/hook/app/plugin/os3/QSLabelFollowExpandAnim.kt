@@ -10,7 +10,6 @@ import com.yunzia.hyperstar.prefs.XSPUtils
 object QSLabelFollowExpandAnim : BasePluginHook(){
 
     override fun init() {
-        
         if (!XSPUtils.getBoolean("title_follow_anim", false)) return
         findClass(
             "miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder",

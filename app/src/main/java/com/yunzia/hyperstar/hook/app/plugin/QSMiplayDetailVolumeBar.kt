@@ -20,10 +20,7 @@ object QSMiplayDetailVolumeBar: BasePluginHook() {
     val isDetailVolumebarShowValue = XSPUtils.getBoolean("is_detail_volumebar_show_value",false)
 
     override fun init() {
-        
-
         if (!isDetailVolumebarShowValue) return
-
         starMethodHook()
     }
 

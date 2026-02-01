@@ -24,12 +24,9 @@ object QSCardTileList : BasePluginHook() {
     private val mCardStyleTiles = XSPUtils.getString("card_tile_list","wifi|cell|")
 
     override fun init() {
-        
         if (XSPUtils.getBoolean("use_card_tile_list",false)){
-
             startMethodsHook()
         }
-
     }
 
     private fun startMethodsHook() {
@@ -155,16 +152,11 @@ object QSCardTileList : BasePluginHook() {
                     }
                 }
             }
-
-
         }
-
     }
 
     private fun getList():ArrayList<String> {
-
         if (mCardStyleTiles.isEmpty()) return ArrayList()
-
         val listFromString: List<String> = mCardStyleTiles.split("|")
         val cardLists =  emptyList<String>().toMutableList()
         val tileList = ArrayList<String>()
@@ -176,7 +168,6 @@ object QSCardTileList : BasePluginHook() {
             cardLists.add(tag)
             tileList.add(tag)
             logD("ggc",tag)
-
         }
         return tileList
 

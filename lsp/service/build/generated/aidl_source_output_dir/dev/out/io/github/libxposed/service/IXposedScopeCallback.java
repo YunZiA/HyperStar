@@ -1,6 +1,10 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Using: C:\Users\25748\AppData\Local\Android\Sdk\build-tools\35.0.0\aidl.exe -pC:\Users\25748\AppData\Local\Android\Sdk\platforms\android-34\framework.aidl -oC:\Users\25748\StudioProjects\HyperStar_it\lsp\service\build\generated\aidl_source_output_dir\dev\out -IC:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\interface\src\main\aidl -IC:\Users\25748\StudioProjects\HyperStar_it\lsp\service\src\dev\aidl -dC:\Users\25748\AppData\Local\Temp\aidl8286503803425044666.d C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\service\interface\src\main\aidl\io\github\libxposed\service\IXposedScopeCallback.aidl
+ * Using: C:\\Users\\25748\\AppData\\Local\\Android\\Sdk\\build-tools\\36.0.0\\aidl.exe -pC:\\Users\\25748\\AppData\\Local\\Android\\Sdk\\platforms\\android-34\\framework.aidl -oC:\\Users\\25748\\StudioProjects\\HyperStar_it\\lsp\\service\\build\\generated\\aidl_source_output_dir\\dev\\out -IC:\\Users\\25748\\StudioProjects\\HyperStar_it\\lsp\\service\\src\\main\\aidl -IC:\\Users\\25748\\StudioProjects\\HyperStar_it\\lsp\\service\\service\\interface\\src\\main\\aidl -IC:\\Users\\25748\\StudioProjects\\HyperStar_it\\lsp\\service\\src\\dev\\aidl -dC:\\Users\\25748\\AppData\\Local\\Temp\\aidl15797052059709758182.d C:\\Users\\25748\\StudioProjects\\HyperStar_it\\lsp\\service\\service\\interface\\src\\main\\aidl\\io\\github\\libxposed\\service\\IXposedScopeCallback.aidl
+ *
+ * DO NOT CHECK THIS FILE INTO A CODE TREE (e.g. git, etc..).
+ * ALWAYS GENERATE THIS FILE FROM UPDATED AIDL COMPILER
+ * AS A BUILD INTERMEDIATE ONLY. THIS IS NOT SOURCE CODE.
  */
 package io.github.libxposed.service;
 public interface IXposedScopeCallback extends android.os.IInterface
@@ -31,7 +35,7 @@ public interface IXposedScopeCallback extends android.os.IInterface
   /** Local-side IPC implementation stub class. */
   public static abstract class Stub extends android.os.Binder implements io.github.libxposed.service.IXposedScopeCallback
   {
-    /** Construct the stub at attach it to the interface. */
+    /** Construct the stub and attach it to the interface. */
     @SuppressWarnings("this-escape")
     public Stub()
     {

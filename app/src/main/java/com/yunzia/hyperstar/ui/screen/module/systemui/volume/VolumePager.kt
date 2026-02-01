@@ -15,6 +15,8 @@ import com.yunzia.hyperstar.ui.component.XSuperSwitch
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.navigation.Navigator
+import com.yunzia.hyperstar.utils.isAtLeastOS2Settings
+import com.yunzia.hyperstar.utils.isOS1Settings
 import com.yunzia.hyperstar.utils.isOS2Settings
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 
@@ -38,15 +40,14 @@ fun VolumePager(
                 key = "is_super_blur_volume",
                 option = R.array.is_super_blur_entire
             )
-
-            if (!isOS2Settings()){
+            if (isOS1Settings()){
                 XSuperSwitch(
                     title = stringResource(R.string.title_use_pad_volume),
                     summary = stringResource(R.string.summary_use_pad_volume),
                     key = "is_use_pad_volume"
                 )
             }
-            if (isOS2Settings()){
+            if (isAtLeastOS2Settings()){
                 XSuperSwitch(
                     title = stringResource(R.string.title_volume_top_value_show),
                     key = "volume_top_value_show"
@@ -69,15 +70,12 @@ fun VolumePager(
             title = R.string.sidebar_mode,
             position = SuperGroupPosition.FIRST
         ){
-
-
-            if (isOS2Settings()){
+            if (isAtLeastOS2Settings()){
                 XSuperSwitch(
                     title = stringResource(R.string.title_press_expand_volume),
                     summary = stringResource(R.string.summary_press_expand_volume),
                     key = "is_press_expand_volume"
                 )
-
             }
             XSuperSwitch(
                 title = stringResource(R.string.title_standardview_hide),

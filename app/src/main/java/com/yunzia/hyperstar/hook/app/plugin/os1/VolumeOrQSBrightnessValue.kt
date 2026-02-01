@@ -32,10 +32,8 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
     private val brightnessShow = XSPUtils.getBoolean("qs_brightness_top_value_show",false)
 
     override fun init() {
-        
         if (!brightnessShow && !volumeShow) return
         startMethodsHook()
-
     }
 
     private fun startMethodsHook() {
@@ -54,10 +52,8 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
                 val max = seekBar.max
                 val value = this.callMethodAs<Int>("getTargetValue")
                 val topValue = item.findViewByIdNameAs<TextView>("top_text")
-
                 topValue.visibility = View.VISIBLE
                 topValue.text = ((value * 100) / max).toString() + "%"
-
             }
         }
 
@@ -125,8 +121,5 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
             }
             miBlurCompat.setMiBackgroundBlendColors(topValue,valueColorArray,1f)
         }
-
     }
-
-
 }

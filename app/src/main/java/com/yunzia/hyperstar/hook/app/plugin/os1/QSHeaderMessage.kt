@@ -13,7 +13,6 @@ object QSHeaderMessage : BasePluginHook() {
     val showMessageMillis: Float = XSPUtils.getFloat("header_show_message_millis",1f)*1000
 
     override fun init() {
-        
         startMethodsHook()
     }
 
@@ -44,9 +43,7 @@ object QSHeaderMessage : BasePluginHook() {
                     val uiHandler = getObjectField("uiHandler") as Handler
                     val hideMsgCallback = getObjectField("hideMsgCallback") as Runnable
                     uiHandler.postDelayed(hideMsgCallback,showMessageMillis.toLong())
-
                     return@replaceHookMethod null
-
                 }
 
             }

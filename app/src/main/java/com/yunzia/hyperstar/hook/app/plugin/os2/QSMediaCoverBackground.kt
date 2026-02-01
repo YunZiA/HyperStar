@@ -41,9 +41,7 @@ object QSMediaCoverBackground: BasePluginHook() {
     val coverAnciently:Boolean = XSPUtils.getBoolean("cover_anciently",false)
 
     override fun init() {
-        
         startMethodsHook()
-
     }
 
     private fun startMethodsHook() {

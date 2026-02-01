@@ -2,18 +2,17 @@
     name="dev"
     package="io.github.libxposed.service"
     minSdkVersion="27"
-    targetSdkVersion="27"
+    targetSdkVersion="34"
     debuggable="true"
     mergedManifest="build\intermediates\merged_manifest\dev\processDevManifest\AndroidManifest.xml"
-    proguardFiles="build\intermediates\default_proguard_files\global\proguard-android.txt-8.13.0"
+    proguardFiles="build\intermediates\default_proguard_files\global\proguard-android-optimize.txt-9.0.0"
     partialResultsDir="build\intermediates\lint_vital_partial_results\dev\lintVitalAnalyzeDev\out"
-    desugaredMethodsFiles="C:\Users\25748\.gradle\caches\8.13\transforms\6bc88c30182beb084498ab155a5d7d1f\transformed\D8BackportedDesugaredMethods.txt">
-  <buildFeatures
-      namespacing="REQUIRED"/>
+    desugaredMethodsFiles="C:\Users\25748\.gradle\caches\9.2.1\transforms\45a54097911bc4a15f85713b7097b31a\workspace\transformed\D8BackportedDesugaredMethods.txt">
+  <buildFeatures/>
   <sourceProviders>
     <sourceProvider
         manifests="service\service\src\main\AndroidManifest.xml"
-        javaDirectories="service\service\src\main\java;src\dev\java;src\main\java;src\main\kotlin;src\dev\kotlin"
+        javaDirectories="src\main\java;service\service\src\main\java;src\dev\java;src\main\kotlin;src\dev\kotlin"
         resDirectories="src\main\res;src\dev\res"
         assetsDirectories="src\main\assets;src\dev\assets"/>
   </sourceProviders>
@@ -22,10 +21,10 @@
   <testFixturesSourceProviders>
   </testFixturesSourceProviders>
   <artifact
-      classOutputs="build\intermediates\javac\dev\compileDevJavaWithJavac\classes;build\intermediates\compile_r_class_jar\dev\generateDevRFile\R.jar"
+      classOutputs="build\intermediates\javac\dev\compileDevJavaWithJavac\classes;build\intermediates\built_in_kotlinc\dev\compileDevKotlin\classes;build\intermediates\compile_r_class_jar\dev\generateDevRFile\R.jar"
       type="MAIN"
       applicationId="io.github.libxposed.service"
       generatedSourceFolders="build\generated\ap_generated_sources\dev\out;build\generated\aidl_source_output_dir\dev\out"
-      desugaredMethodsFiles="C:\Users\25748\.gradle\caches\8.13\transforms\6bc88c30182beb084498ab155a5d7d1f\transformed\D8BackportedDesugaredMethods.txt">
+      desugaredMethodsFiles="C:\Users\25748\.gradle\caches\9.2.1\transforms\45a54097911bc4a15f85713b7097b31a\workspace\transformed\D8BackportedDesugaredMethods.txt">
   </artifact>
 </variant>

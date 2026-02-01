@@ -32,6 +32,7 @@ import com.yunzia.hyperstar.hook.core.helper.setObjectField
 import com.yunzia.hyperstar.prefs.XSPUtils
 import io.github.kyuubiran.ezxhelper.android.util.ViewUtil.findViewByIdName
 import kotlin.math.roundToInt
+import androidx.core.graphics.withSave
 
 object PadVolume : BasePluginHook() {
 
@@ -80,23 +81,12 @@ object PadVolume : BasePluginHook() {
                 val progressDrawable: Drawable = (
                         callMethod( "getProgressDrawable") ?: return@replaceHookMethod null
                         ) as Drawable
-                canvas.save()
-                progressDrawable.draw(canvas)
-                canvas.restore()
+                canvas.withSave {
+                    progressDrawable.draw(this)
+                }
                 return@replaceHookMethod null
             }
         }
-
-
-    }
-
-    fun initResources(
-    ) {
-
-        if (!padVolume){
-            return
-        }
-
 
         integerReplaceById(
             plugin,

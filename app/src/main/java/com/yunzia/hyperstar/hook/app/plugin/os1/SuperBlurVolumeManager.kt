@@ -11,7 +11,6 @@ object SuperBlurVolumeManager : BasePluginHook() {
     val superBlurVolume = XSPUtils.getInt("is_super_blur_volume",0)
 
     override fun init() {
-        
         if (superBlurVolume != 0){
             startMethodsHook()
         }
@@ -22,15 +21,11 @@ object SuperBlurVolumeManager : BasePluginHook() {
             "miui.systemui.util.MiBlurCompat",
             pluginClassLoader
         ).afterHookMethod("getBackgroundBlurOpened",Context::class.java){
-
             if (superBlurVolume == 1){
                 it.result = false
-
             }else if (superBlurVolume == 2){
                 it.result = true
-
             }
         }
-
     }
 }

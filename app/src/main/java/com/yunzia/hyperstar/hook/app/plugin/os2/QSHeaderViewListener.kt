@@ -23,7 +23,6 @@ object QSHeaderViewListener : BasePluginHook() {
     private val is_use_chaos_header = XSPUtils.getBoolean("is_use_chaos_header",false)
 
     override fun init() {
-        
         if (!is_use_chaos_header) return
         startMethodsHook()
     }
@@ -32,7 +31,6 @@ object QSHeaderViewListener : BasePluginHook() {
     private fun startMethodsHook() {
         var qsListController: Any? = null
         val MainPanelModeController = findClass("miui.systemui.controlcenter.panel.main.MainPanelController\$Mode",pluginClassLoader)
-
         val MainPanelHeaderController  = findClass("miui.systemui.controlcenter.panel.main.header.MainPanelHeaderController",pluginClassLoader)
 
         MainPanelHeaderController.afterHookAllConstructors {
@@ -69,7 +67,6 @@ object QSHeaderViewListener : BasePluginHook() {
             pluginClassLoader
         ).afterHookAllConstructors {
             val qsListControllerProvider = this.getObjectField("qsListControllerProvider")
-
             if (qsListControllerProvider == null){
                 logE("qsListControllerProviders == null")
                 return@afterHookAllConstructors

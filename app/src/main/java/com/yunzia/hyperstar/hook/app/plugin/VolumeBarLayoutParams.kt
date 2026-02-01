@@ -24,7 +24,6 @@ object VolumeBarLayoutParams: BasePluginHook() {
     val ShadowHeightL = XSPUtils.getFloat("volume_shadow_height_collapsed_l",-1f)
 
     override fun init() {
-        
         startCollpasedColumn()
     }
 

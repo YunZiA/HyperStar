@@ -15,8 +15,6 @@ object QSCardAutoCollapse : BasePluginHook() {
     private val clickClose = XSPUtils.getBoolean("card_tile_click_close",false)
 
     override fun init() {
-        
-
         startMethodsHook()
     }
 
@@ -30,22 +28,14 @@ object QSCardAutoCollapse : BasePluginHook() {
     }
 
     private fun startMethodsHook() {
-
         if (!clickClose) return
-
         findClass(
             "miui.systemui.controlcenter.qs.tileview.QSCardItemView\$onFinishInflate\$1",
             pluginClassLoader
         ).afterHookMethod("invoke",View::class.java) {
-
             val qsCardItemView = this.getObjectFieldAs<LinearLayout>("this$0")
-
             qsCardItemView.getObjectField("clickAction") ?: return@afterHookMethod
-
             collapseStatusBar(qsCardItemView.context)
-
         }
-
     }
-
 }

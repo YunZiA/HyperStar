@@ -24,7 +24,6 @@ object QSMediaView : BasePluginHook() {
     val isEmptyStateMarquee:Boolean = XSPUtils.getBoolean("is_emptyState_marquee",false)
 
     override fun init() {
-        
         startMethodsHook()
     }
 

@@ -58,6 +58,13 @@ fun isOS2():Boolean{
 fun isOS2Settings():Boolean{
     return getSettingChannel() == 2
 }
+fun isAtLeastOS2Settings():Boolean{
+    return getSettingChannel() >= 2
+}
+
+fun isOS1Settings():Boolean{
+    return getSettingChannel() == 1
+}
 
 fun getHookChannel():Int{
     return XSPUtils.getInt("is_Hook_Channel",if (isBetaOS) 1 else OSVersion)

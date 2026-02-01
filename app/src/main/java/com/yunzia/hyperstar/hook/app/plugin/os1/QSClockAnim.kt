@@ -10,11 +10,7 @@ object QSClockAnim : BasePluginHook() {
     val closeQsClockAnim = XSPUtils.getBoolean("close_qs_clock_anim",false)
 
     override fun init() {
-        
-
-        if (!closeQsClockAnim) return
-
-        startMethodsHook()
+        if (closeQsClockAnim) startMethodsHook()
     }
 
     private fun startMethodsHook() {

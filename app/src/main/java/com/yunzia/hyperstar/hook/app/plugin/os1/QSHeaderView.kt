@@ -31,13 +31,7 @@ object QSHeaderView : BasePluginHook() {
     private val is_use_chaos_header = XSPUtils.getBoolean("is_use_chaos_header", false)
 
     override fun init() {
-        
-        if (!is_use_chaos_header) {
-            return
-        }
-
-        startMethodsHook()
-
+        if (is_use_chaos_header) startMethodsHook()
     }
 
     fun collapseStatusBar(context: Context) {
@@ -52,7 +46,6 @@ object QSHeaderView : BasePluginHook() {
 
     private fun startMethodsHook() {
         var qsListControllerProvider: Any? = null
-
 
         findClass(
             "miui.systemui.controlcenter.panel.main.qs.EditButtonController_Factory",
@@ -72,6 +65,7 @@ object QSHeaderView : BasePluginHook() {
 
             }
         }
+
         val MainPanelModeController = findClass(
             "miui.systemui.controlcenter.panel.main.MainPanelModeController\$MainPanelMode",
             pluginClassLoader
@@ -136,12 +130,9 @@ object QSHeaderView : BasePluginHook() {
                     addView(c)
                     addView(b)
                 }
-
                 //header.top = 200
                 viewId = header.id
-
                 view.addView(header)
-
                 a.setOnClickListener {
                     if (view.alpha == 0f) return@setOnClickListener
                     it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
@@ -168,11 +159,9 @@ object QSHeaderView : BasePluginHook() {
                                 logE("enumConstants == null")
                                 return@setOnClickListener
                             }
-
                             logD("" + mainPanelMode[0])
                             get.callMethod("startQuery", mainPanelMode[2])
                         }
-
                     }
 
                 }

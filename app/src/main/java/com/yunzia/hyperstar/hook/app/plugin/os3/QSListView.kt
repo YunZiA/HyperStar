@@ -52,7 +52,6 @@ object QSListView : BasePluginHook() {
     val listLabelTop = XSPUtils.getFloat("list_label_top", 0f)
 
     override fun init() {
-        
         setLabelLayoutAndSize()
         resetWordlessMode()
         labelColorFollowTileState()
@@ -226,7 +225,6 @@ object QSListView : BasePluginHook() {
             findClass("miui.systemui.controlcenter.qs.tileview.QSItemView", pluginClassLoader)
         val QSTileItemView =
             findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemView", pluginClassLoader)
-
 
         if (labelColorFollowTileState != 0 || labelMode != 0){
             QSTileItemView.apply {

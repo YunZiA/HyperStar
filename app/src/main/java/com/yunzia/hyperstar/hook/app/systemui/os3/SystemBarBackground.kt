@@ -44,9 +44,6 @@ object SystemBarBackground : BaseHook() {
 
             val name = view.context.resources.getResourceEntryName(view.id)
 
-            val cc = view.context.resources.getString(R.string.systemui)
-            logD("R.string.systemui $cc")
-
             if ((isTransparentNavigationBarBackground && name == "navigation_bar_view") ||
                 (isTransparentStatusBarBackground && name == "status_bar_container")
             ) {

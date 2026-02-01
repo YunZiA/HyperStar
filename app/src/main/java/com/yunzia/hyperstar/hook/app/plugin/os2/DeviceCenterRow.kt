@@ -25,7 +25,6 @@ object DeviceCenterRow: BasePluginHook() {
     val isDeviceCenterMode = XSPUtils.getInt("is_device_center_mode", 0)
 
     override fun init() {
-
         if (deviceCenterSpanSize == 1){
             hookLayout("device_center_empty_item",plugin) {
                 this as ViewGroup
@@ -47,7 +46,6 @@ object DeviceCenterRow: BasePluginHook() {
             }
 
         }
-
 
         if (deviceCenterSpanSize < 4){
             val DetailViewHolder = findClass("miui.systemui.controlcenter.panel.main.devicecenter.devices.DetailViewHolder",pluginClassLoader)
@@ -143,27 +141,15 @@ object DeviceCenterRow: BasePluginHook() {
                 }else{
                     return@replaceHookMethod if (deviceItems.size > deviceCenterSpanSize){
                         if (isDeviceCenterMode == 2){
-
                             rowMode[1]
-
                         }else{
-
                             rowMode[2]
-
                         }
                     }else{
                         rowMode[1]
                     }
-
                 }
-
             }
-
         }
-
-
-
     }
-
-
 }

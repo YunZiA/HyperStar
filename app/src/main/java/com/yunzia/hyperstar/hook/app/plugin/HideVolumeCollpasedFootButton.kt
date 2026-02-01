@@ -15,10 +15,7 @@ object HideVolumeCollpasedFootButton : BasePluginHook() {
     val isHideStandardView = XSPUtils.getBoolean("is_hide_StandardView",false)
 
     override fun init() {
-        
-
         if (!isHideStandardView) return
-
         val util = Util(pluginClassLoader)
 
         findClass(
@@ -37,6 +34,5 @@ object HideVolumeCollpasedFootButton : BasePluginHook() {
                 setVisOrGone(mExpandButton, it.args[0] as Boolean && !mExpanded)
             }
         }
-
     }
 }

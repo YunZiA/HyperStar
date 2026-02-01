@@ -15,6 +15,7 @@ object QSMiplayAppIconRadius: BasePluginHook() {
 
     private val disableAppIconRadius = XSPUtils.getBoolean("qs_detail_app_icon_radius",false)
     private val qsDetailProgressBgRadius = XSPUtils.getBoolean("qs_detail_progress_bg_radius",false)
+
     override fun init() {
         if (disableAppIconRadius) {
             hookLayout("qs_control_detail_header_metainfo_layout",plugin){
@@ -38,26 +39,12 @@ object QSMiplayAppIconRadius: BasePluginHook() {
             }catch (e: Exception) {
                 Log.d("ggc", "${e.message}")
             }
-
-
             //resparam?.res?.getIdentifier("qs_control_detail_header_metainfo_layout_support_land","layout",plugin)
-
 
         }
 
         if (qsDetailProgressBgRadius){
             dimenReplaceById(plugin, "miplay_seekbar_progress_bg_corner_radiu", R.dimen.miplay_seekbar_progress_bg_corner_radiu)
         }
-
     }
-
-//    override fun initResources(
-//        resparam: XC_InitPackageResources.InitPackageResourcesParam?,
-//        modRes: XModuleResources?
-//    ) {
-//
-//
-//
-//
-//    }
 }

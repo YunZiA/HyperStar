@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.AnimatedVectorDrawable
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -14,7 +13,6 @@ import com.yunzia.hyperstar.hook.core.BasePluginHook
 import com.yunzia.hyperstar.hook.core.helper.afterHookConstructor
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.findViewByIdNameAs
-import com.yunzia.hyperstar.hook.core.Log
 import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.colorReplaceByIdName
 import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.colorReplaceByValue
 import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.drawableReplaceByValue
@@ -32,9 +30,6 @@ import com.yunzia.hyperstar.prefs.XSPUtils
 import io.github.kyuubiran.ezxhelper.android.util.ViewUtil.findViewByIdName
 
 object QSControlCenterColor : BasePluginHook() {
-
-
-
 
     override fun init() {
         startCardTitle()
@@ -202,7 +197,6 @@ object QSControlCenterColor : BasePluginHook() {
 
         if (progressColor != "null") colorReplaceByValue("toggle_slider_progress_color", plugin, progressColor)
 
-
         //colorReplaceByValue("toggle_slider_icon_color",valueColor)
 
         if (valueColor != "null") colorReplaceByValue("toggle_slider_top_text_color", plugin, valueColor)
@@ -213,11 +207,9 @@ object QSControlCenterColor : BasePluginHook() {
         ) {
             if (mainProgressBlendColor != "null"){
                 this[0] = Color.parseColor(mainProgressBlendColor)
-
             }
             if (secondaryProgressBlendColor != "null"){
                 this[2] = Color.parseColor(secondaryProgressBlendColor)
-
             }
 
         }
@@ -239,13 +231,10 @@ object QSControlCenterColor : BasePluginHook() {
         val secondaryEditBackgroundBlendColor = XSPUtils.getString("edit_background_blend_color_secondary", "null")
 
         if (backgroundColor != "null"){
-
             colorReplaceByValue("qs_card_disabled_color", plugin, backgroundColor)
             colorReplaceByValue("external_entry_background_color", plugin, backgroundColor)
             colorReplaceByValue("toggle_slider_progress_background_color", plugin, backgroundColor)
             colorReplaceByValue("qs_disabled_color", plugin, backgroundColor)
-
-
         }
         if (editBackgroundMode == 0){
             if (editBackgroundColor != "null"){
@@ -269,7 +258,6 @@ object QSControlCenterColor : BasePluginHook() {
             colorReplaceByIdName("qs_customize_entry_button_background_color",plugin,"external_entry_background_color")
         }
 
-
         if (mainBackgroundBlendColor != "null" || secondaryBackgroundBlendColor != "null"){
             intArrayReplaceByValue(
                 "control_center_qs_items_blend_colors",
@@ -277,13 +265,10 @@ object QSControlCenterColor : BasePluginHook() {
             ) {
                 if (mainBackgroundBlendColor != "null"){
                     this[0] = Color.parseColor(mainBackgroundBlendColor)
-
                 }
                 if (secondaryBackgroundBlendColor != "null"){
                     this[2] = Color.parseColor(secondaryBackgroundBlendColor)
-
                 }
-
             }
             intArrayReplaceByValue(
                 "control_center_list_items_blend_colors",
@@ -333,30 +318,23 @@ object QSControlCenterColor : BasePluginHook() {
         if (tileColorForState == 0){
             val titleColor = XSPUtils.getString("list_title_color", "null")
             if (titleColor != "null") colorReplaceByValue("qs_text_disabled_color", plugin, titleColor)
-
         }
 
 
         if (enableColor != "null"){
             colorReplaceByValue("qs_enabled_color", plugin, enableColor)
-
         }
         if (warningColor != "null"){
             colorReplaceByValue("qs_warning_color", plugin, warningColor)
-
         }
 
         if (restrictedColor != "null"){
             colorReplaceByValue("qs_restrict_color", plugin, restrictedColor)
-
         }
 
         if (unavailableColor != "null"){
             colorReplaceByValue("qs_unavailable_color", plugin, unavailableColor)
-
         }
-
-
     }
 
 
@@ -367,7 +345,6 @@ object QSControlCenterColor : BasePluginHook() {
 
         val BrightnessSliderController = findClass("miui.systemui.controlcenter.panel.main.brightness.BrightnessSliderController",pluginClassLoader)
         val VolumeSliderController = findClass("miui.systemui.controlcenter.panel.main.volume.VolumeSliderController",pluginClassLoader)
-
 
         if (iconColor != "null"){
 
@@ -558,31 +535,18 @@ object QSControlCenterColor : BasePluginHook() {
             val status = this.findViewByIdNameAs<TextView>("status")
 
             if (state == 0) {
-
                 if (disablePrimaryColor != "null") title.setTextColor(Color.parseColor(disablePrimaryColor))
-
                 if (disableSecondaryColor != "null") status.setTextColor(Color.parseColor(disableSecondaryColor))
-
             } else if (state == 1 && states) {
-
                 if (restrictedPrimaryColor != "null") title.setTextColor(Color.parseColor(restrictedPrimaryColor))
-
                 if (restrictedSecondaryColor != "null") status.setTextColor(Color.parseColor(restrictedSecondaryColor))
-
             } else if (state != 2) {
-
                 if (unavailablePrimaryColor != "null") title.setTextColor(Color.parseColor(unavailablePrimaryColor))
-
                 if (unavailableSecondaryColor != "null") status.setTextColor(Color.parseColor(unavailableSecondaryColor))
-
             } else {
-
                 if (enablePrimaryColor != "null") title.setTextColor(Color.parseColor(enablePrimaryColor))
-
                 if (enableSecondaryColor != "null") status.setTextColor(Color.parseColor(enableSecondaryColor))
-
             }
-
         }
 
     }
@@ -627,7 +591,6 @@ object QSControlCenterColor : BasePluginHook() {
         ).afterHookMethod(
             "updateResources"
         ){
-
             if (onColor != "null"){
                 setColorField(this,"iconColor",onColor)
             }

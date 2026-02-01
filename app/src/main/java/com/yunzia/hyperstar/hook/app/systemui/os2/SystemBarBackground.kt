@@ -17,16 +17,12 @@ object SystemBarBackground : BaseHook() {
     private val isTransparentStatusBarBackground = XSPUtils.getBoolean("is_transparent_statusBar_background",false)
 
     override fun init() {
-        
-
         transparentNavigationBarBackground()
         transparentStatusBarBackground()
-
     }
 
     private fun transparentStatusBarBackground() {
         if (!isTransparentStatusBarBackground) return
-
 //        val BarTransitions = findClass(
 //            "com.android.systemui.statusbar.phone.BarTransitions",
 //            classLoader

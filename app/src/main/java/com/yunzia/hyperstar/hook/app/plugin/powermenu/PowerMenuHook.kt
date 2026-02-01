@@ -23,16 +23,9 @@ import com.yunzia.hyperstar.prefs.XSPUtils
 object PowerMenuHook : BasePluginHook() {
 
     val isPowerMenuNavShow = XSPUtils.getBoolean("is_power_menu_nav_show",false)
-
     val isPowerMenuStyle = XSPUtils.getInt("is_power_menu_style",0)
 
-
-
-
-
     override fun init() {
-        
-
         val MiuiGlobalActionsDialog = findClass("com.android.systemui.miui.globalactions.MiuiGlobalActionsDialog",pluginClassLoader)
         val VolumeUtil = findClass("com.android.systemui.miui.volume.VolumeUtil",pluginClassLoader)
 
@@ -64,12 +57,8 @@ object PowerMenuHook : BasePluginHook() {
 
                 val s = mSliderView.layoutParams as FrameLayout.LayoutParams
                 //mSliderView.translationX = 250f
-                val action = Action(
-                    mContext, VolumeUtil!!
-                )
-
+                val action = Action(mContext, VolumeUtil!!)
                 when(isPowerMenuStyle){
-
                     1->{
                         val items1: List<MenuItem?> = listOf(
                             action.getAction("recovery"),
@@ -79,9 +68,7 @@ object PowerMenuHook : BasePluginHook() {
                             mContext, this, items1, mTalkbackLayout, mSliderView
                         )
                     }
-
                     2->{
-
                         val items: MutableList<MenuItem?> = (0..7)
                             .map { i -> XSPUtils.getString("power_menu_style_b_$i", "null").toString() }
                             .filter { it != "null" }

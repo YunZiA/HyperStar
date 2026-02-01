@@ -16,7 +16,6 @@ import com.yunzia.hyperstar.prefs.XSPUtils
 object NotificationForLm:BaseHook() {
 
     override fun init() {
-
         val miuiBaseNotifUtil = findClass("com.miui.systemui.notification.MiuiBaseNotifUtil")
         val appList = XSPUtils.getString("notification_icon_type_whitelist", "com.tencent.mm") ?: return
 
@@ -37,19 +36,14 @@ object NotificationForLm:BaseHook() {
                     if (channelId == "app_all"){
                         return@replaceHookMethod 1
                     }else{
-
                         logD("getNotificationTypeForIm $applicationInfo | ${notification.channelId} compare $channelId")
                         //return@replaceHookMethod  if ("message_channel_new_id" == notification.channelId || notification.channelId.startsWith("message_channel_")) 1 else -1
-
                         return@replaceHookMethod  if (channelId == notification.channelId || notification.channelId.startsWith(channelId)) 1 else -1
                     }
-
-
                 }
                 return@replaceHookMethod -1
             }
             return@replaceHookMethod -1
-
         }
 
     }

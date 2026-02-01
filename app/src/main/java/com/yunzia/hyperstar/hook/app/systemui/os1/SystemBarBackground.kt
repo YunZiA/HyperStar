@@ -16,11 +16,8 @@ object SystemBarBackground : BaseHook() {
     private val isTransparentStatusBarBackground = XSPUtils.getBoolean("is_transparent_statusBar_background",false)
 
     override fun init() {
-        
-
         transparentNavigationBarBackground()
         transparentStatusBarBackground()
-
     }
 
     private fun transparentStatusBarBackground() {
@@ -51,7 +48,6 @@ object SystemBarBackground : BaseHook() {
         )
         val DisplayTracker = findClass("com.android.systemui.settings.DisplayTracker")
 
-
         navigationBarTransitions.afterHookConstructor(
             NavigationBarView,
             LightBarTransitionsControllerFactory,
@@ -61,7 +57,6 @@ object SystemBarBackground : BaseHook() {
             val mBarBackground = this.getObjectField("mBarBackground")
             //Object mSemiTransparent = XposedHelpers.getIntField(thisObject,"mSemiTransparent");
             mBarBackground.setIntField("mSemiTransparent", 0)
-
         }
 
     }

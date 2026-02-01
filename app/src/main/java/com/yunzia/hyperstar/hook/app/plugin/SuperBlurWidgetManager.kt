@@ -11,7 +11,6 @@ object SuperBlurWidgetManager : BasePluginHook() {
     val superBlurWidget = XSPUtils.getInt("is_super_blur_Widget",0)
 
     override fun init() {
-        
         if (superBlurWidget != 0){
             startMethodsHook()
 

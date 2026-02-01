@@ -20,6 +20,7 @@ import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.navigation.Navigator
 import com.yunzia.hyperstar.ui.navigation.SystemUIRoutes
 import com.yunzia.hyperstar.utils.getSettingChannel
+import com.yunzia.hyperstar.utils.isOS1Settings
 import com.yunzia.hyperstar.utils.isOS2Settings
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 
@@ -137,7 +138,7 @@ fun ControlCenterPager(
                 title = stringResource(R.string.qs_brightness_top_value_show_title),
                 key = "qs_brightness_top_value_show"
             )
-            if (!isOS2Settings()){
+            if (isOS1Settings()){
                 XSuperSwitch(
                     title = stringResource(R.string.qs_volume_top_value_show_title),
                     key = "qs_volume_top_value_show"

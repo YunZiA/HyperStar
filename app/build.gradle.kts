@@ -1,12 +1,11 @@
 
 import com.android.build.api.dsl.ApplicationExtension
-import com.android.build.gradle.internal.api.ApkVariantOutputImpl
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Properties
-
 
 plugins {
     alias(libs.plugins.android.application)
@@ -15,54 +14,39 @@ plugins {
     id ("kotlin-parcelize")
 }
 
-configure<ApplicationExtension> {
-
+val versionInfo: Pair<Int, String> by lazy {
     val versionFile = file("version.properties")
-    val properties = Properties().apply {
-        load(FileInputStream(versionFile))
-    }
+    val props = Properties().apply { load(FileInputStream(versionFile)) }
+    if (versionFile.canRead()) {
+        val appVersionName = props.getProperty("APP_VERSION_NAME", "1.0.0")
+        val versionNamePart = appVersionName.split(".").first() //yyyyMMdd
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHm")
+        val createTime = LocalDateTime.now(ZoneId.of("Asia/Shanghai")).format(formatter)
 
-    fun getVersionCode():Int {
-        if (versionFile.canRead()) {
-
-            val versionName = properties["VERSION_NAME"].toString().split(".")[0]
-            val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
-            val createTime = LocalDateTime.now().format(formatter).takeLast(  6)
-            val baseVersionCode = "$versionName$createTime"
-            var versionCode = "${baseVersionCode}00".toInt()
-            val runTasks = gradle.startParameter.taskNames
-            System.out.println("> Configure project :runTasks = $runTasks")
-            if (":app:assembleDebug" !in runTasks && "" !in runTasks){
-                val lastVersionCode = properties["VERSION_CODE"].toString()
-                if (lastVersionCode.take(7) == baseVersionCode){
-                    versionCode = lastVersionCode.toInt()+1
-                }
-                System.out.println("> Configure project :app:assembleRelease versionCode = $versionCode")
-
-                properties["VERSION_CODE"] = versionCode.toString()
-                FileOutputStream(versionFile).use { output ->
-                    properties.store(output, null)
-                }
+        val baseVersionCode = "$versionNamePart${createTime.substring(2, 8)}"
+        var versionCode = "${baseVersionCode}00".toInt()
+        val versionName = "${appVersionName}_${createTime}"
+        val runTasks = gradle.startParameter.taskNames
+        System.out.println("> Configure project :runTasks = $runTasks")
+        if (":app:assembleDebug" !in runTasks && "" !in runTasks){
+            val lastVersionCode = properties["VERSION_CODE"].toString()
+            if (lastVersionCode.take(7) == baseVersionCode) {
+                versionCode = lastVersionCode.toInt() + 1
             }
-
-            return versionCode
-        } else {
-            throw GradleException("Could not find version.properties!")
+            props["VERSION_CODE"] = versionCode.toString()
+            props["VERSION_NAME"] = versionName
+            FileOutputStream(versionFile).use { output ->
+                props.store(output, null)
+            }
         }
+        System.out.println("> Configure project :{versionCode = $versionCode, versionName = $versionName}")
+        Pair(versionCode, versionName)
+    } else {
+        throw GradleException("Could not find version.properties!")
     }
+}
 
-    fun getVersionName():String{
-        if (versionFile.canRead()) {
-
-            val versionName = properties["VERSION_NAME"].toString()
-            val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHm")
-            val createTime = LocalDateTime.now().format(formatter)
-            return "${versionName}_$createTime"
-        } else {
-            throw GradleException("Could not find version.properties!")
-        }
-
-    }
+configure<ApplicationExtension> {
     namespace = "com.yunzia.hyperstar"
     compileSdk = 36
 
@@ -70,8 +54,8 @@ configure<ApplicationExtension> {
         applicationId = "com.yunzia.hyperstar"
         minSdk = 33
         targetSdk = 36
-        versionCode = getVersionCode()
-        versionName = getVersionName()
+        versionCode = versionInfo.first
+        versionName = versionInfo.second
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -79,21 +63,28 @@ configure<ApplicationExtension> {
         }
     }
 
-    androidComponents.apply {
-        onVariants(selector().all()) { variant ->
-            variant.outputs.forEach { output ->
-                if (output is ApkVariantOutputImpl) {
-                    val appName = "HyperStar"
-                    val versionName = "v ${defaultConfig.versionName}"
-                    val buildType = variant.name
-                    output.outputFileName = "${appName}_ ${versionName}_ ${buildType}.apk"
-                }
+    val keystoreFile = System.getenv("KEYSTORE_PATH")
+    signingConfigs {
+        if (keystoreFile != null) {
+            create("ci") {
+                storeFile = file(keystoreFile)
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
+                enableV4Signing = true
+            }
+        }else{
+            create("default"){
+                enableV4Signing = true
+
             }
         }
+
     }
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName(if (keystoreFile != null) "ci" else "default")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -108,6 +99,7 @@ configure<ApplicationExtension> {
             isShrinkResources = false
         }
         create("dev") {
+            signingConfig = signingConfigs.getByName(if (keystoreFile != null) "ci" else "default")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -118,7 +110,6 @@ configure<ApplicationExtension> {
         create("cc") {
         }
     }
-    //outputFileName = "${defaultConfig.applicationId}${buildType.applicationIdSuffix}-${defaultConfig.versionName}${buildType.versionNameSuffix}.apk"
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -141,6 +132,11 @@ configure<ApplicationExtension> {
         additionalParameters.add("0x66")
     }
 }
+
+base {
+    archivesName.set("HyperStar_${versionInfo.second}")
+}
+
 dependencies {
     compileOnly(project(":lsp:annotations"))
     compileOnly(project(":lsp:api"))

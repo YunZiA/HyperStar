@@ -15,7 +15,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN

@@ -22,11 +22,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.gson.Gson
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
-import com.yunzia.hyperstar.ui.component.nav.PagersModel
-import com.yunzia.hyperstar.prefs.SPUtils
 import com.yunzia.hyperstar.ui.navigation.Navigator
 import com.yunzia.hyperstar.ui.navigation.Route
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
@@ -207,72 +204,6 @@ fun SuperNavHostArrow(
         }
     )
 }
-
-@Composable
-fun SuperArgNavHostArrow(
-    leftIcon: Int? = null,
-    title: String,
-    summary: String? = null,
-    endText: String? = null,
-    key: String = "",
-    def: String = "null",
-    navController: Navigator,
-    route: Route,
-    rightDo: @Composable ((String) -> String) = {it}
-) {
-
-    val pagersModel = Gson().toJson(PagersModel(title, key))
-
-    val style = if ( key == ""){
-        null
-    }else{
-        rightDo(SPUtils.getString(key,def))
-    }
-    val routes = "$route?${Uri.encode(pagersModel)}"
-
-    val click = remember { mutableStateOf(false) }
-
-    SuperArrow(
-        modifier = Modifier.bounceAnim{
-            if (click.value){
-                navController.navigate(route)
-            }
-            click.value = false
-        },
-        startAction = if (leftIcon != null){ {
-            Row {
-                Image(
-                    painter = painterResource(leftIcon),
-                    contentDescription = title,
-                    modifier = Modifier.size(30.dp)
-                )
-                Spacer(Modifier.width(16.dp))
-            }
-        } }else{ null },
-        title = title,
-        endActions = {
-            endText?.let {
-                Text(
-                    text = it,
-                    modifier = Modifier
-                        .padding(end = 8.dp)
-                        .align(Alignment.CenterVertically)
-                        .weight(1f, fill = false),
-                    fontSize = MiuixTheme.textStyles.body2.fontSize,
-                    color = colorScheme.onSurfaceVariantActions,
-                    textAlign = TextAlign.End,
-                )
-            } },
-        summary = summary,
-        onClick = {
-            click.value = true
-
-        }
-    )
-}
-
-
-
 
 @Composable
 fun SuperActivityArrow(

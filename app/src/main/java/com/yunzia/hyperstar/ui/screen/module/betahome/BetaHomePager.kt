@@ -3,7 +3,6 @@ package com.yunzia.hyperstar.ui.screen.module.betahome
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.ui.component.XSuperSwitch

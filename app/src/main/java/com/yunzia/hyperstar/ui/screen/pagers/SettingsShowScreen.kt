@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.PDropdown

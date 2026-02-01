@@ -20,86 +20,85 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseButton
 import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
 import com.yunzia.hyperstar.prefs.PreferencesUtil
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-
-@Composable
-fun VerDialog(
-    show: MutableState<Boolean>,
-    navController: NavHostController
-) {
-
-    val mContext = navController.context
-
-    SuperXDialog(
-        title = stringResource(R.string.os_tips),
-        show = show,
-        onDismissRequest = {}
-    ) {
-
-        Text(
-            text = stringResource(R.string.os_description),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 15.dp),
-            textAlign = TextAlign.Start,
-            color = colorScheme.onSurface,
-            fontWeight = FontWeight.Medium,
-            fontSize = 15.sp,
-            style = TextStyle(textIndent = TextIndent(20.sp, 0.sp))
-
-        )
-        Text(
-            text = stringResource(R.string.os1_link),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp)
-                .padding(top = 12.dp, bottom = 25.dp)
-                .clickable(
-                    onClick = {
-                        mContext.startActivity(
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse("https://github.com/YunZiA/HyperStar")
-                            )
-                        )
-                    },
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
-                ),
-            textDecoration = TextDecoration.Underline,
-            textAlign = TextAlign.End,
-            color = colorScheme.primary,
-            fontWeight = FontWeight.Medium,
-            fontSize = 13.sp
-        )
-        BaseButton(
-            text = stringResource(R.string.cancel),
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                show.value = false
-                PreferencesUtil.removePreferences("ver_waring")
-            }
-
-        )
-        Spacer(Modifier.height(12.dp))
-        BaseButton(
-            text = stringResource(R.string.no_warning),
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                show.value = false
-                PreferencesUtil.putBoolean("ver_waring",false)
-
-            }
-
-        )
-
-
-    }
-
-}
+//
+//@Composable
+//fun VerDialog(
+//    show: MutableState<Boolean>,
+//    navController: NavHostController
+//) {
+//
+//    val mContext = navController.context
+//
+//    SuperXDialog(
+//        title = stringResource(R.string.os_tips),
+//        show = show,
+//        onDismissRequest = {}
+//    ) {
+//
+//        Text(
+//            text = stringResource(R.string.os_description),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(top = 15.dp),
+//            textAlign = TextAlign.Start,
+//            color = colorScheme.onSurface,
+//            fontWeight = FontWeight.Medium,
+//            fontSize = 15.sp,
+//            style = TextStyle(textIndent = TextIndent(20.sp, 0.sp))
+//
+//        )
+//        Text(
+//            text = stringResource(R.string.os1_link),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(horizontal = 10.dp)
+//                .padding(top = 12.dp, bottom = 25.dp)
+//                .clickable(
+//                    onClick = {
+//                        mContext.startActivity(
+//                            Intent(
+//                                Intent.ACTION_VIEW,
+//                                Uri.parse("https://github.com/YunZiA/HyperStar")
+//                            )
+//                        )
+//                    },
+//                    indication = null,
+//                    interactionSource = remember { MutableInteractionSource() }
+//                ),
+//            textDecoration = TextDecoration.Underline,
+//            textAlign = TextAlign.End,
+//            color = colorScheme.primary,
+//            fontWeight = FontWeight.Medium,
+//            fontSize = 13.sp
+//        )
+//        BaseButton(
+//            text = stringResource(R.string.cancel),
+//            modifier = Modifier.fillMaxWidth(),
+//            onClick = {
+//                show.value = false
+//                PreferencesUtil.removePreferences("ver_waring")
+//            }
+//
+//        )
+//        Spacer(Modifier.height(12.dp))
+//        BaseButton(
+//            text = stringResource(R.string.no_warning),
+//            modifier = Modifier.fillMaxWidth(),
+//            onClick = {
+//                show.value = false
+//                PreferencesUtil.putBoolean("ver_waring",false)
+//
+//            }
+//
+//        )
+//
+//
+//    }
+//
+//}

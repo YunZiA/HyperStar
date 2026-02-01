@@ -4,7 +4,6 @@ import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.SuperGroupPosition

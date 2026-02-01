@@ -3,7 +3,6 @@ package com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.list
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.XMiuixSlider

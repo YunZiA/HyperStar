@@ -33,7 +33,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.enums.EventState

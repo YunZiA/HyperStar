@@ -20,7 +20,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.component.nav.backParentPager
 import com.yunzia.hyperstar.ui.navigation.Navigator
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.ScrollBehavior

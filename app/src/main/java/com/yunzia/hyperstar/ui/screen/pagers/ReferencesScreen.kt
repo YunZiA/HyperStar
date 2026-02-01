@@ -1,10 +1,8 @@
 package com.yunzia.hyperstar.ui.screen.pagers
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.SuperIntentArrow
@@ -25,52 +23,58 @@ fun ReferencesScreen() {
             position = SuperGroupPosition.FIRST
         ) {
             SuperIntentArrow(
-                title = "miuix-kotlin-multiplatform",
-                summary = "YuKongA",
+                title = "EzXHelper3.0",
+                summary = "KyuubiRan",
                 context = context,
-                url = "https://github.com/miuix-kotlin-multiplatform/miuix"
+                url = "https://github.com/KyuubiRan/EzXHelper/tree/3.x"
             )
-
-            SuperIntentArrow(
-                title = "Xposed",
-                summary = "rovo89,Tungstwenty",
-                context = context,
-                url = "https://github.com/rovo89/XposedBridge"
-            )
-
-            SuperIntentArrow(
-                title = "XposedBridge",
-                summary = "rovo89",
-                context = context,
-                url = "https://github.com/rovo89/XposedBridge"
-            )
-
-            SuperIntentArrow(
-                title = "Haze",
-                summary = "Chris Banes",
-                context = context,
-                url = "https://github.com/chrisbanes/haze"
-            )
-
             SuperIntentArrow(
                 title = "Gson",
                 summary = "Android Open Source Project, Google Inc.",
                 context = context,
                 url = "https://github.com/google/gson"
             )
-
+            SuperIntentArrow(
+                title = "Haze",
+                summary = "Chris Banes",
+                context = context,
+                url = "https://github.com/chrisbanes/haze"
+            )
+            SuperIntentArrow(
+                title = "miuix-kotlin-multiplatform",
+                summary = "YuKongA",
+                context = context,
+                url = "https://github.com/miuix-kotlin-multiplatform/miuix"
+            )
             SuperIntentArrow(
                 title = "OkHttp",
                 summary = "squarejesse",
                 context = context,
                 url = "https://github.com/square/okhttp"
             )
-
             SuperIntentArrow(
-                title = "AndroidLiquidGlass",
-                summary = "Kyant",
+                title = "Xposed",
+                summary = "rovo89,Tungstwenty",
                 context = context,
-                url = "https://github.com/Kyant0/AndroidLiquidGlass"
+                url = "https://github.com/rovo89/XposedBridge"
+            )
+            SuperIntentArrow(
+                title = "libxposed api",
+                summary = "libxposed",
+                context = context,
+                url = "https://github.com/libxposed/api"
+            )
+            SuperIntentArrow(
+                title = "libxposed service",
+                summary = "libxposed",
+                context = context,
+                url = "https://github.com/libxposed/service"
+            )
+            SuperIntentArrow(
+                title = "XposedBridge",
+                summary = "rovo89",
+                context = context,
+                url = "https://github.com/rovo89/XposedBridge"
             )
         }
         itemGroup(title = "AGPL-3.0") {
@@ -87,14 +91,12 @@ fun ReferencesScreen() {
             title = "No License",
             position = SuperGroupPosition.LAST
         ) {
-
             SuperIntentArrow(
                 title = "IAmNotADeveloper",
                 summary = "ReChronoRain",
                 context = context,
                 url = "https://github.com/xfqwdsj/IAmNotADeveloper"
             )
-
         }
     }
 }

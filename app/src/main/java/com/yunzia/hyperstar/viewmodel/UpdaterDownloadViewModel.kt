@@ -1,15 +1,18 @@
 package com.yunzia.hyperstar.viewmodel
 
+import android.os.Parcelable
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yunzia.hyperstar.ui.component.nav.CommitHistory
 import com.yunzia.hyperstar.utils.FileSize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.FileOutputStream
@@ -195,6 +198,15 @@ class UpdaterDownloadViewModel: ViewModel() {
         NONE, DOWNLOAD, SUCCESS, FAIL
     }
 }
+
+@Serializable
+@Parcelize
+data class CommitHistory(
+    @SerialName("apk_name")
+    val apkName: String,
+    @SerialName("commit_message")
+    val commitMessage: String
+) : Parcelable
 
 
 

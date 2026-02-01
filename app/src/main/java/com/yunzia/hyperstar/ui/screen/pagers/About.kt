@@ -71,7 +71,6 @@ import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
-import com.yunzia.hyperstar.ui.component.nav.nav
 import com.yunzia.hyperstar.ui.component.view.BgEffectView
 import com.yunzia.hyperstar.utils.getVerName
 import dev.chrisbanes.haze.HazeState

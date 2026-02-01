@@ -3,7 +3,6 @@ package com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.slider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.ColorPickerTool
 import com.yunzia.hyperstar.ui.component.ContentFolder

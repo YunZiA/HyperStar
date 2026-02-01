@@ -27,7 +27,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation.NavController
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
@@ -83,32 +82,11 @@ import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
-@SuppressLint("RestrictedApi")
-fun printBackStackDetailed(navController: NavController) {
-    val backStack = navController.currentBackStack.value
-    println("Detailed Backstack contents:")
-    for (entry in backStack) {
-        val destination = entry.destination
-        val id = destination.id
-        val route = destination.route ?: "N/A"
-        val label = destination.label?.toString() ?: "N/A"
-
-        println("""
-            Destination:
-              ID: $id
-              Route: $route
-              Label: $label
-              Arguments: ${destination.arguments}
-        """.trimIndent())
-    }
-}
-
 @SuppressLint("SourceLockedOrientationActivity", "UnusedBoxWithConstraintsScope",
     "LocalContextConfigurationRead"
 )
 @Composable
 fun App(){
-
     val context = LocalContext.current
     val activity = LocalActivity.current as MainActivity
 

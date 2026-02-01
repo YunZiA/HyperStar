@@ -32,7 +32,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.pager.NavPager

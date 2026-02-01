@@ -18,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseButton
 import com.yunzia.hyperstar.ui.component.dialog.SuperCTDialogDefaults
@@ -55,97 +54,97 @@ fun checkApplication(context: Context, packageName: String?): Boolean {
         return false
     }
 }
-
-@Composable
-fun ActiveDialog(
-    show: MutableState<Boolean>,
-    navController: NavHostController
-
-) {
-
-    val mContext = navController.context
-
-    val packageName = "org.lsposed.manager"
-    val className = "org.lsposed.manager.ui.activity.MainActivity"
-
-    val go = checkApplication(mContext,packageName)
-
-    val intent = Intent().apply {
-        setClassName(packageName,className)
-        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    }
-
-
-    SuperXDialog(
-        title = stringResource(R.string.tips),
-        show = show,
-        onDismissRequest = {}
-    ) {
-
-        Text(
-            stringResource(R.string.not_activated_toast_description),
-            Modifier
-                .padding(horizontal = 5.dp)
-                .padding(top = 8.dp, bottom = 24.dp)
-                .fillMaxWidth(),
-            color = SuperCTDialogDefaults.summaryColor(),
-            textAlign = TextAlign.Center,
-            fontSize = 16.sp
-        )
-        BaseButton(
-            text = stringResource(R.string.cancel),
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                show.value = false
-                PreferencesUtil.removePreferences("no_active_waring")
-            }
-
-        )
-        Spacer(Modifier.height(12.dp))
-        BaseButton(
-            text = stringResource(R.string.no_warning),
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                show.value = false
-                PreferencesUtil.putBoolean("no_active_waring",false)
-
-            }
-
-        )
-        if (go){
-            Spacer(Modifier.height(12.dp))
-            BaseButton(
-                text = stringResource(R.string.active_faster),
-                modifier = Modifier.fillMaxWidth(),
-                submit = true,
-                onClick = {
-                    show.value = false
-                    mContext.startActivity(intent)
-
-                }
-
-            )
-
-        }else if (Helper.getRootPermission() == 0){
-
-            Spacer(Modifier.height(12.dp))
-            BaseButton(
-                text = stringResource(R.string.active_faster),
-                modifier = Modifier.fillMaxWidth(),
-                submit = true,
-                onClick = {
-                    show.value = false
-                    Helper.rootShell("am start -c 'org.lsposed.manager.LAUNCH_MANAGER' 'com.android.shell/.BugreportWarningActivity'")
-
-
-                }
-
-            )
-
-        }
-
-    }
-
-
-
-}
+//
+//@Composable
+//fun ActiveDialog(
+//    show: MutableState<Boolean>,
+//    navController: NavHostController
+//
+//) {
+//
+//    val mContext = navController.context
+//
+//    val packageName = "org.lsposed.manager"
+//    val className = "org.lsposed.manager.ui.activity.MainActivity"
+//
+//    val go = checkApplication(mContext,packageName)
+//
+//    val intent = Intent().apply {
+//        setClassName(packageName,className)
+//        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//    }
+//
+//
+//    SuperXDialog(
+//        title = stringResource(R.string.tips),
+//        show = show,
+//        onDismissRequest = {}
+//    ) {
+//
+//        Text(
+//            stringResource(R.string.not_activated_toast_description),
+//            Modifier
+//                .padding(horizontal = 5.dp)
+//                .padding(top = 8.dp, bottom = 24.dp)
+//                .fillMaxWidth(),
+//            color = SuperCTDialogDefaults.summaryColor(),
+//            textAlign = TextAlign.Center,
+//            fontSize = 16.sp
+//        )
+//        BaseButton(
+//            text = stringResource(R.string.cancel),
+//            modifier = Modifier.fillMaxWidth(),
+//            onClick = {
+//                show.value = false
+//                PreferencesUtil.removePreferences("no_active_waring")
+//            }
+//
+//        )
+//        Spacer(Modifier.height(12.dp))
+//        BaseButton(
+//            text = stringResource(R.string.no_warning),
+//            modifier = Modifier.fillMaxWidth(),
+//            onClick = {
+//                show.value = false
+//                PreferencesUtil.putBoolean("no_active_waring",false)
+//
+//            }
+//
+//        )
+//        if (go){
+//            Spacer(Modifier.height(12.dp))
+//            BaseButton(
+//                text = stringResource(R.string.active_faster),
+//                modifier = Modifier.fillMaxWidth(),
+//                submit = true,
+//                onClick = {
+//                    show.value = false
+//                    mContext.startActivity(intent)
+//
+//                }
+//
+//            )
+//
+//        }else if (Helper.getRootPermission() == 0){
+//
+//            Spacer(Modifier.height(12.dp))
+//            BaseButton(
+//                text = stringResource(R.string.active_faster),
+//                modifier = Modifier.fillMaxWidth(),
+//                submit = true,
+//                onClick = {
+//                    show.value = false
+//                    Helper.rootShell("am start -c 'org.lsposed.manager.LAUNCH_MANAGER' 'com.android.shell/.BugreportWarningActivity'")
+//
+//
+//                }
+//
+//            )
+//
+//        }
+//
+//    }
+//
+//
+//
+//}

@@ -21,7 +21,6 @@ miuix = "0.8.0-rc07"
 okhttp = "5.3.2"
 paletteKtx = "1.0.0"
 profileinstaller = "1.4.1"
-androidx-navigation-compose = "2.9.6"
 ezxhelper = "3.1.1-rc1"
 jetbrainsKotlinJvm = "2.3.0"
 symbolProcessingApi = "2.3.4"
@@ -38,7 +37,6 @@ androidx-palette-ktx = { module = "androidx.palette:palette-ktx", version.ref = 
 androidx-profileinstaller = { module = "androidx.profileinstaller:profileinstaller", version.ref = "profileinstaller" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
-androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation-compose" }
 dexkit = { module = "org.luckypray:dexkit", version.ref = "dexkit" }
 github-colormath-ext-jetpack-compose = { module = "com.github.ajalt.colormath:colormath-ext-jetpack-compose", version.ref = "colormathExtJetpackComposeVersion" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }

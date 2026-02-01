@@ -76,6 +76,7 @@ class MainActivity : BaseActivity() {
     @SuppressLint("MissingPermission", "RemoteViewLayout")
     @Composable
     override fun InitData(savedInstanceState: Bundle?) {
+        isActive = savedInstanceState?.getBoolean(KEY_IS_ACTIVE,false)?:false
 //
 //        TextView(this).setText()
 //        TypedArray().getText()
@@ -240,7 +241,10 @@ class MainActivity : BaseActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putBoolean(KEY_IS_RECREATE, true)
+        outState.apply {
+            putBoolean(KEY_IS_RECREATE, true)
+            putBoolean(KEY_IS_ACTIVE, isActive)
+        }
     }
 
     /**
@@ -298,6 +302,7 @@ class MainActivity : BaseActivity() {
         private const val TAG = "MainActivity"
         private const val REQUEST_CODE_INSTALLED_APPS = 999
         private const val KEY_IS_RECREATE = "isRecreate"
+        private const val KEY_IS_ACTIVE = "isActive"
     }
 }
 

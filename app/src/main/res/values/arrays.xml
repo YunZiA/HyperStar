@@ -181,6 +181,9 @@
         <item>System</item>
         <item>Light</item>
         <item>Dark</item>
+        <item>Monet (Follow system)</item>
+        <item>Monet (Light)</item>
+        <item>Monet (Dark)</item>
     </string-array>
     <string-array name="reboot_menus_style">
         <item>dialog</item>

@@ -31,9 +31,9 @@ import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.Button
-import com.yunzia.hyperstar.ui.component.PMiuixSuperDropdown
+import com.yunzia.hyperstar.ui.component.PDropdown
 import com.yunzia.hyperstar.ui.component.PMiuixSuperSwitch
-import com.yunzia.hyperstar.ui.component.XSuperDropdown
+import com.yunzia.hyperstar.ui.component.XDropdown
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.prefs.PreferencesUtil
 import kotlinx.coroutines.launch
@@ -88,7 +88,7 @@ fun BaseSettingPage(pagerState: PagerState) {
                     key = "is_hide_icon"
                 )
 
-                PMiuixSuperDropdown(
+                PDropdown(
                     title = stringResource(R.string.title_reboot_menus_style),
                     option = R.array.reboot_menus_style,
                     selectedIndex = rebootStyle.intValue,
@@ -108,7 +108,7 @@ fun BaseSettingPage(pagerState: PagerState) {
             itemGroup(
                 title = R.string.err_find
             ){
-                XSuperDropdown(
+                XDropdown(
                     title = stringResource(R.string.title_log_level),
                     summary = stringResource(R.string.summary_log_level),
                     dfOpt = 0,

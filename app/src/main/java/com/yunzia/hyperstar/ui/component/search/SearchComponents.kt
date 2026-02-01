@@ -3,7 +3,6 @@ package com.yunzia.hyperstar.ui.component.search
 import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -32,7 +31,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
@@ -63,7 +61,7 @@ import com.yunzia.hyperstar.ui.component.pager.SearchBar
 import com.yunzia.hyperstar.ui.component.pager.SearchBarFake
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.BackHandler
+import com.yunzia.hyperstar.ui.navigation.NavBackHandler
 
 // Remember Search Status
 @Composable
@@ -253,7 +251,7 @@ fun SearchStatus.SearchPager(
                 enter = expandHorizontally() + slideInHorizontally(initialOffsetX = { it }),
                 exit = shrinkHorizontally() + slideOutHorizontally(targetOffsetX = { it })
             ) {
-                BackHandler(enabled = true) {
+                NavBackHandler(isBackEnabled = true) {
                     searchStatus.current = SearchStatus.Status.COLLAPSING
                 }
                 Text(

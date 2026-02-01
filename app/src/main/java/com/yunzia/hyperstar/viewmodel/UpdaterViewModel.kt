@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yunzia.hyperstar.ui.component.card.TiltAnimationState
 import com.yunzia.hyperstar.ui.component.helper.getSystemCornerRadius
+import com.yunzia.hyperstar.ui.component.helper.getWindowSize
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +28,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.getWindowSize
 
 class UpdaterViewModel : ViewModel() {
 
@@ -208,7 +208,7 @@ private fun rememberUpdateDetailAnimations(
     )
 
     val myRadius = getSystemCornerRadius()
-    val windowHeight = with(LocalDensity.current) { getWindowSize().height.toDp() }
+    val windowHeight = getWindowSize().height
 
     val animatedValues = AnimatedValues(
         color = animateColorAsState(

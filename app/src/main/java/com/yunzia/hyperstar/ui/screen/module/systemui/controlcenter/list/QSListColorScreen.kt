@@ -10,17 +10,16 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.ColorPickerTool
 import com.yunzia.hyperstar.ui.component.ItemAnim
 import com.yunzia.hyperstar.ui.component.SuperGroupPosition
-import com.yunzia.hyperstar.ui.component.XSuperDropdown
+import com.yunzia.hyperstar.ui.component.XDropdown
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.prefs.SPUtils
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 
 @Composable
-fun QSListColorScreen(
-    navController: NavController,
-    currentStartDestination: MutableState<String>
-) {
+fun QSListColorScreen() {
+    val navController = LocalNavigator.current
     val tileColor = remember {
         mutableIntStateOf(SPUtils.getInt("qs_list_tile_color_for_state",0))
     }
@@ -28,7 +27,6 @@ fun QSListColorScreen(
     ModuleNavPagers(
         activityTitle = stringResource(R.string.tile_color),
         navController = navController,
-        parentRoute = currentStartDestination,
         endClick = {
             Helper.rootShell("killall com.android.systemui")
         },
@@ -39,7 +37,7 @@ fun QSListColorScreen(
             position = SuperGroupPosition.FIRST
         ) {
 
-            XSuperDropdown(
+            XDropdown(
                 title = stringResource(R.string.title_color_in_state),
                 option = R.array.qs_list_tile_color_for_state_entire,
                 key = "qs_list_tile_color_for_state",

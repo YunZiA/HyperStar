@@ -26,21 +26,19 @@ import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.extra.CheckboxLocation
 import top.yukonga.miuix.kmp.extra.SuperCheckbox
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import com.kyant.shapes.RoundedRectangle
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 
 @Composable
 fun LanguagePager(
-    navController: NavController,
-    currentStartDestination: MutableState<String>
-
 ) {
     val activity = LocalActivity.current as MainActivity
+    val navController = LocalNavigator.current
     val languageList = stringArrayResource(R.array.language_list).toList()
 
     NavPager(
         activityTitle = stringResource(R.string.language),
         navController = navController,
-        parentRoute = currentStartDestination,
     ) {
 
 
@@ -82,10 +80,10 @@ private fun LanguageItem(
             .padding(horizontal = 12.dp)
             .padding(top = 10.dp)
             .bounceAnimN {}
-            .clip(G2RoundedCornerShape(CardDefaults.CornerRadius))
+            .clip(RoundedRectangle(CardDefaults.CornerRadius))
             .background(if (isSelected.value) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
         ,
-        checkboxLocation = CheckboxLocation.Right,
+        checkboxLocation = CheckboxLocation.End,
         insideMargin = PaddingValues(20.dp),
         onCheckedChange = { onCheckedChange(it) }
     )

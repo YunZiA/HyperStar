@@ -8,7 +8,7 @@ android {
         val main by getting
         main.apply {
             manifest.srcFile("AndroidManifest.xml")
-            java.setSrcDirs(listOf("api/api/src/main/java"))
+            java.directories.add("api/api/src/main/java")
         }
     }
 

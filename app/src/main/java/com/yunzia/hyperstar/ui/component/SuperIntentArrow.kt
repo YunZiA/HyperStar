@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
@@ -21,19 +22,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.google.gson.Gson
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
 import com.yunzia.hyperstar.ui.component.nav.PagersModel
-import com.yunzia.hyperstar.ui.component.nav.nav
 import com.yunzia.hyperstar.prefs.SPUtils
+import com.yunzia.hyperstar.ui.navigation.Navigator
+import com.yunzia.hyperstar.ui.navigation.Route
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.SuperArrow
 import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.extra.SuperDialogDefaults
+import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 
 @Composable
@@ -46,13 +48,13 @@ fun BaseArrow(
 
     val click = remember { mutableStateOf(false) }
     SuperArrow(
-        modifier = Modifier.bounceAnim{
+        modifier = Modifier.bounceAnim {
             if (click.value){
                 onClick?.invoke()
             }
             click.value = false
         },
-        leftAction = if (leftIcon != null){ {
+        startAction = if (leftIcon != null){ {
             Row {
                 Image(
                     painter = painterResource(leftIcon),
@@ -74,20 +76,20 @@ fun BaseArrow(
 fun SuperIntentArrow(
     leftIcon : Int? = null,
     title : String,
-    navController: NavController,
     summary : String? = null,
+    context: Context,
     url : String
 ) {
 
     val click = remember { mutableStateOf(false) }
     SuperArrow(
-        modifier = Modifier.bounceAnim{
+        modifier = Modifier.bounceAnim {
             if (click.value){
-                navController.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
             }
             click.value = false
         },
-        leftAction = if (leftIcon != null){ {
+        startAction = if (leftIcon != null){ {
             Row {
                 Image(
                     painter = painterResource(leftIcon),
@@ -100,7 +102,6 @@ fun SuperIntentArrow(
         title = title,
         summary = summary,
         onClick = {
-
             click.value = true
         }
     )
@@ -109,24 +110,23 @@ fun SuperIntentArrow(
 @Composable
 fun SuperNavHostArrow(
     leftIcon:Int ? = null,
-    title : String,
-    summary : String ? = null,
-    rightText: String? = null,
-    navController : NavHostController,
+    title: String,
+    summary: String ? = null,
+    endText: String? = null,
+    navController: Navigator,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
-    route: String,
+    route: Route,
 ) {
-
 
     val click = remember { mutableStateOf(false) }
     SuperArrow(
         modifier = Modifier.bounceAnim{
             if (click.value){
-                navController.nav(route)
+                navController.navigate(route)
             }
             click.value = false
         },
-        leftAction = if (leftIcon != null){ {
+        startAction = if (leftIcon != null){ {
             Row {
                 Image(
                     painter = painterResource(leftIcon),
@@ -139,7 +139,19 @@ fun SuperNavHostArrow(
         title = title,
         insideMargin = insideMargin,
         summary = summary,
-        rightText = rightText,
+        endActions = {
+            endText?.let {
+                Text(
+                    text = it,
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .align(Alignment.CenterVertically)
+                        .weight(1f, fill = false),
+                    fontSize = MiuixTheme.textStyles.body2.fontSize,
+                    color = colorScheme.onSurfaceVariantActions,
+                    textAlign = TextAlign.End,
+                )
+            } },
         onClick = {
             click.value = true
         }
@@ -149,23 +161,23 @@ fun SuperNavHostArrow(
 
 @Composable
 fun SuperNavHostArrow(
-    leftIcon:Painter,
-    title : String,
-    summary : String ? = null,
+    leftIcon: Painter,
+    title: String,
+    summary: String ? = null,
     rightText: String? = null,
-    navController : NavHostController,
-    route: String,
+    navController: Navigator,
+    route: Route,
 ) {
 
     val click = remember { mutableStateOf(false) }
     SuperArrow(
         modifier = Modifier.bounceAnim{
             if (click.value){
-                navController.nav(route)
+                navController.navigate(route)
             }
             click.value = false
         },
-        leftAction = {
+        startAction = {
             Row {
                 Image(
                     painter = leftIcon,
@@ -177,7 +189,19 @@ fun SuperNavHostArrow(
         },
         title = title,
         summary = summary,
-        rightText = rightText,
+        endActions = {
+            rightText?.let {
+                Text(
+                    text = it,
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .align(Alignment.CenterVertically)
+                        .weight(1f, fill = false),
+                    fontSize = MiuixTheme.textStyles.body2.fontSize,
+                    color = colorScheme.onSurfaceVariantActions,
+                    textAlign = TextAlign.End,
+                )
+            } },
         onClick = {
             click.value = true
         }
@@ -186,14 +210,15 @@ fun SuperNavHostArrow(
 
 @Composable
 fun SuperArgNavHostArrow(
-    leftIcon:Int ? = null,
-    title : String,
-    summary : String ? = null,
-    key : String = "",
-    def:String = "null",
-    navController : NavHostController,
-    route: String,
-    rightDo: @Composable (String) -> String = {it}
+    leftIcon: Int? = null,
+    title: String,
+    summary: String? = null,
+    endText: String? = null,
+    key: String = "",
+    def: String = "null",
+    navController: Navigator,
+    route: Route,
+    rightDo: @Composable ((String) -> String) = {it}
 ) {
 
     val pagersModel = Gson().toJson(PagersModel(title, key))
@@ -210,11 +235,11 @@ fun SuperArgNavHostArrow(
     SuperArrow(
         modifier = Modifier.bounceAnim{
             if (click.value){
-                navController.nav(routes)
+                navController.navigate(route)
             }
             click.value = false
         },
-        leftAction = if (leftIcon != null){ {
+        startAction = if (leftIcon != null){ {
             Row {
                 Image(
                     painter = painterResource(leftIcon),
@@ -225,7 +250,19 @@ fun SuperArgNavHostArrow(
             }
         } }else{ null },
         title = title,
-        rightText = style,
+        endActions = {
+            endText?.let {
+                Text(
+                    text = it,
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .align(Alignment.CenterVertically)
+                        .weight(1f, fill = false),
+                    fontSize = MiuixTheme.textStyles.body2.fontSize,
+                    color = colorScheme.onSurfaceVariantActions,
+                    textAlign = TextAlign.End,
+                )
+            } },
         summary = summary,
         onClick = {
             click.value = true
@@ -248,7 +285,7 @@ fun SuperActivityArrow(
 
     SuperArrow(
         modifier = Modifier.bounceAnim(),
-        leftAction = if (leftIcon != null){ {
+        startAction = if (leftIcon != null){ {
             Row {
                 Image(
                     painter = painterResource(leftIcon),
@@ -287,7 +324,7 @@ fun SuperWarnDialogArrow(
             }
             click.value = false
         },
-        leftAction = if (leftIcon != null){ {
+        startAction = if (leftIcon != null){ {
             Row {
                 Image(
                     painter = painterResource(leftIcon),

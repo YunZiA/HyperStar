@@ -2,22 +2,22 @@ package com.yunzia.hyperstar.ui.screen.pagers
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.SuperIntentArrow
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.NavPager
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 
 @Composable
-fun TranslatorScreen(
-    navController: NavController,
-    currentStartDestination: MutableState<String>,
-) {
+fun TranslatorScreen() {
+    val navController = LocalNavigator.current
+    val context = LocalContext.current
     NavPager(
         activityTitle = stringResource(R.string.translator),
-        navController = navController,
-        parentRoute = currentStartDestination,
+        navController = navController
     ) {
         itemGroup(
             title = "English"
@@ -25,13 +25,13 @@ fun TranslatorScreen(
             SuperIntentArrow(
                 title = "cafayeli",
                 summary = "Telegram@cafayeli",
-                navController = navController,
+                context = context,
                 url = "https://t.me/cafayeli"
             )
             SuperIntentArrow(
                 title = "Natsukawa Masuzu",
                 summary = "Telegram@Minggg07",
-                navController = navController,
+                context = context,
                 url = "https://t.me/Minggg07"
             )
         }
@@ -41,7 +41,7 @@ fun TranslatorScreen(
             SuperIntentArrow(
                 title = "Алексей",
                 summary = "Telegram@Osean22",
-                navController = navController,
+                context = context,
                 url = "https://t.me/Osean22"
             )
         }
@@ -51,7 +51,7 @@ fun TranslatorScreen(
             SuperIntentArrow(
                 title = "Natsukawa Masuzu",
                 summary = "Telegram@Minggg07",
-                navController = navController,
+                context = context,
                 url = "https://t.me/Minggg07"
             )
         }
@@ -61,7 +61,7 @@ fun TranslatorScreen(
             SuperIntentArrow(
                 title = "Julio César",
                 summary = "Telegram@jj24_0",
-                navController = navController,
+                context = context,
                 url = "https://t.me/jj24_0"
             )
         }
@@ -71,7 +71,7 @@ fun TranslatorScreen(
             SuperIntentArrow(
                 title = "Adaias Junior",
                 summary = "Telegram@Miel11s",
-                navController = navController,
+                context = context,
                 url = "https://t.me/Miel11s"
             )
 

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -22,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -38,16 +40,15 @@ import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.NavPager
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import com.kyant.shapes.RoundedRectangle
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 
 @SuppressLint("StringFormatMatches")
 @Composable
-fun NotDeveloperScreen(
-    navController: NavController,
-    currentStartDestination: MutableState<String>,
-) {
+fun NotDeveloperScreen() {
     val status = stringArrayResource(R.array.status)
-    val mContext = navController.context
+    val navController = LocalNavigator.current
+    val mContext = LocalContext.current
     val contentResolver = mContext.contentResolver
     val update = remember { mutableStateOf(false) }
     val result = remember { mutableListOf<String>() }
@@ -75,7 +76,6 @@ fun NotDeveloperScreen(
     NavPager(
         activityTitle = stringResource(R.string.not_developer),
         navController = navController,
-        parentRoute = currentStartDestination,
     ) {
 
         item {

@@ -40,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -59,6 +60,7 @@ import com.yunzia.hyperstar.ui.component.modifier.elevation
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.prefs.SPUtils
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import yunzia.ui.DraggableGrid
@@ -129,11 +131,9 @@ private fun saveList(items: List<Card>) {
 }
 
 @Composable
-fun QSCardListScreen(
-    navController: NavController,
-    currentStartDestination: MutableState<String>
-) {
-    val mContext = navController.context
+fun QSCardListScreen() {
+    val navController = LocalNavigator.current
+    val mContext = LocalContext.current
     val cardMap = mutableMapOf<String, Card>()
     var items by remember { mutableStateOf(emptyList<Card>()) }
     var lastitems by remember { mutableStateOf(emptyList<Card>()) }
@@ -153,7 +153,6 @@ fun QSCardListScreen(
 
     ModuleNavPagers(
         activityTitle = stringResource(R.string.card_tile_edit),
-        parentRoute = currentStartDestination,
         navController = navController,
         endIcon = {
 

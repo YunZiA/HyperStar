@@ -4,6 +4,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -14,12 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.yunzia.hyperstar.ui.component.dialog.MSuperDialog
+import com.yunzia.hyperstar.ui.component.dialog.CancelBottomSheet
 import com.yunzia.hyperstar.ui.component.modifier.elevation
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.EnableItemDropdown
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.extra.WindowBottomSheetDefaults
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import yunzia.ui.Card
 
@@ -58,16 +60,16 @@ fun MediaItem(
 
 
 
-    MSuperDialog(
+    CancelBottomSheet(
         title = item.name,
         show = showDialog,
-        showAction = true,
         onDismissRequest = {
             showDialog.value = false
         }
     ) {
 
         Card(
+            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width),
             colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
         ) {
             EnableItemDropdown(

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
@@ -26,23 +25,22 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.enums.EventState
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
-import com.yunzia.hyperstar.ui.component.nav.PagersModel
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPager
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.prefs.SPUtils
 import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
-import top.yukonga.miuix.kmp.utils.getWindowSize
+import com.kyant.shapes.RoundedRectangle
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import com.yunzia.hyperstar.ui.navigation.PowerMenuRoutes
 
 
 fun getFunList():List<String>{
@@ -62,32 +60,27 @@ fun getFunList():List<String>{
 
 
 @Composable
-fun SelectFunScreen(
-    navController: NavHostController,
-    backStackEntry: NavBackStackEntry,
-    parentRoute: MutableState<String>
-) {
+fun SelectFunScreen(select: PowerMenuRoutes.FunSelect) {
+    val navController = LocalNavigator.current
 
     val funTypes = stringArrayResource(R.array.power_fun_types).toList()
     val funTitles = stringArrayResource(R.array.power_fun_titles).toList()
 
-    val pagersJson = backStackEntry.arguments?.getParcelable("pagersJson", PagersModel::class.java)
-    val key = pagersJson?.key!!
+    val key = select.key
 
     val selectFun = remember { mutableStateOf(SPUtils.getString(key, "null")) }
 
 
     ModuleNavPager(
-        activityTitle = pagersJson.title,
+        activityTitle = stringResource(select.titleRes),
         navController = navController,
-        parentRoute = parentRoute,
         endClick = {
             Helper.rootShell("killall com.android.systemui")
         },
     ) {topAppBarScrollBehavior,padding->
 
         LazyColumn(
-            modifier = Modifier.height(getWindowSize().height.dp)
+            modifier = Modifier.fillMaxSize()
                 .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
             contentPadding = PaddingValues(top = padding.calculateTopPadding() + 12.dp, bottom = padding.calculateBottomPadding()),
         ) {
@@ -126,7 +119,7 @@ fun FunItem(
             .padding(horizontal = 28.dp)
             .padding(top = 10.dp)
             .scale(scale)
-            .clip(G2RoundedCornerShape(16.dp))
+            .clip(RoundedRectangle(16.dp))
             .background(if (isSelect) colorScheme.tertiaryContainer  else colorScheme.surfaceVariant)
             .clickable {
                 selectFun.value = if (isSelect) "" else type

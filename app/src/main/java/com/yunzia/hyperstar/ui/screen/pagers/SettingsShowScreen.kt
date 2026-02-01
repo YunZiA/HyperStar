@@ -8,19 +8,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.component.PMiuixSuperDropdown
+import com.yunzia.hyperstar.ui.component.PDropdown
 import com.yunzia.hyperstar.ui.component.PMiuixSuperSwitch
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.NavPager
 import com.yunzia.hyperstar.prefs.PreferencesUtil
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 
 @Composable
-fun SettingsShowScreen(
-    navController: NavHostController,
-    currentStartDestination: MutableState<String>
-) {
+fun SettingsShowScreen() {
 
     val context = LocalContext.current
+    val navController = LocalNavigator.current
     val activity = LocalActivity.current as MainActivity
     val showFPSMonitor = activity.showFPSMonitor
     val rebootStyle = activity.rebootStyle
@@ -28,7 +27,6 @@ fun SettingsShowScreen(
     NavPager(
         activityTitle = stringResource(R.string.model_pager_setting),
         navController = navController,
-        parentRoute = currentStartDestination,
     ) {
 
         itemGroup(
@@ -44,10 +42,10 @@ fun SettingsShowScreen(
             )
 
         }
-        this.itemGroup(
+        itemGroup(
             title = R.string.main_page_title
         ){
-            PMiuixSuperDropdown(
+            PDropdown(
                 title = stringResource(R.string.title_reboot_menus_style),
                 option = R.array.reboot_menus_style,
                 selectedIndex = rebootStyle.intValue,
@@ -70,18 +68,13 @@ fun SettingsShowScreen(
     //            )
 
         }
-        this.itemGroup(
+        itemGroup(
             title = R.string.setting_item
         ) {
             PMiuixSuperSwitch(
                 title = stringResource(R.string.click_bounce),
                 key = "bounce_anim_enable",
                 defValue = true
-            )
-
-            PMiuixSuperSwitch(
-                title = stringResource(R.string.progress_effect_title),
-                key = "is_progress_effect"
             )
         }
 

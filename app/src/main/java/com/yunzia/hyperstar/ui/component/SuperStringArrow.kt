@@ -31,6 +31,7 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.dialog.SuperDialogs
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
 import com.yunzia.hyperstar.prefs.SPUtils
+import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.SuperArrow
 
 @Composable
@@ -47,7 +48,7 @@ fun SuperStringArrow(
         modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
-        rightText = if (mString.value == "null") stringResource(R.string.default_value) else mString.value,
+        endActions = { Text(if (mString.value == "null") stringResource(R.string.default_value) else mString.value) },
         onClick = {
             show.value = true
         }

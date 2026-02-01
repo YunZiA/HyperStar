@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import com.kyant.shapes.RoundedRectangle
 
 @Composable
 fun InputField(
@@ -98,7 +98,7 @@ fun InputField(
         interactionSource = interactionSource,
         decorationBox =
             @Composable { innerTextField ->
-                val shape = remember { derivedStateOf { G2RoundedCornerShape(50.dp) } }
+                val shape = remember { derivedStateOf { RoundedRectangle(50.dp) } }
                 Box(
                     modifier = Modifier
                         .background(

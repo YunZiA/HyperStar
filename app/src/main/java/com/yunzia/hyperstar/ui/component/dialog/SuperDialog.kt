@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.component.dialog
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -30,11 +31,10 @@ import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.BackHandler
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import com.kyant.shapes.RoundedRectangle
+import com.yunzia.hyperstar.ui.component.helper.getWindowSize
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.DialogLayout
 import top.yukonga.miuix.kmp.utils.getRoundedCorner
-import top.yukonga.miuix.kmp.utils.getWindowSize
 
 /**
  * A dialog with a title, a summary, and other contents.
@@ -72,8 +72,8 @@ fun SuperDialog(
 
     val density = LocalDensity.current
     val getWindowSize by rememberUpdatedState(getWindowSize())
-    val windowWidth by rememberUpdatedState(getWindowSize.width.dp / density.density)
-    val windowHeight by rememberUpdatedState(getWindowSize.height.dp / density.density)
+    val windowWidth by rememberUpdatedState(getWindowSize.width)
+    val windowHeight by rememberUpdatedState(getWindowSize.height)
     val paddingModifier = remember(outsideMargin) { Modifier.padding(horizontal = outsideMargin.width).padding(bottom = outsideMargin.height) }
     val roundedCorner by rememberUpdatedState(getRoundedCorner())//- outsideMargin.width
     val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) roundedCorner-5.dp  else 32.dp } }
@@ -113,12 +113,12 @@ fun SuperDialog(
                     }
                     .align(contentAlignment.invoke().value)
                     .graphicsLayer(
-                        shape = G2RoundedCornerShape(bottomCornerRadius),
+                        shape = RoundedRectangle(bottomCornerRadius),
                         clip = false
                     )
                     .background(
                         color = backgroundColor,
-                        shape = G2RoundedCornerShape(bottomCornerRadius)
+                        shape = RoundedRectangle(bottomCornerRadius)
                     )
                     .padding(
                         horizontal = insideMargin.width,
@@ -174,15 +174,15 @@ fun SuperDialogs(
 
     val density = LocalDensity.current
     val getWindowSize by rememberUpdatedState(getWindowSize())
-    val windowWidth by rememberUpdatedState(getWindowSize.width.dp / density.density)
-    val windowHeight by rememberUpdatedState(getWindowSize.height.dp / density.density)
+    val windowWidth by rememberUpdatedState(getWindowSize.width)
+    val windowHeight by rememberUpdatedState(getWindowSize.height)
     val paddingModifier = remember(outsideMargin) { Modifier.padding(horizontal = outsideMargin.width).padding(bottom = outsideMargin.height) }
     val roundedCorner by rememberUpdatedState(getRoundedCorner())//- outsideMargin.width
     val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) roundedCorner-5.dp  else 32.dp } }
     val maxWidth by remember { derivedStateOf { if (windowHeight >= 480.dp && windowWidth >= 840.dp) 420.dp else  383.2.dp } }
     val contentAlignment by rememberUpdatedState { derivedStateOf { if (windowHeight >= 480.dp && windowWidth >= 840.dp) Alignment.Center else Alignment.BottomCenter } }
 
-    BackHandler(enabled = show.value) {
+    BackHandler(show.value) {
         onDismissRequest?.invoke()
     }
 
@@ -220,12 +220,12 @@ fun SuperDialogs(
                     }
                     .align(contentAlignment.invoke().value)
                     .graphicsLayer(
-                        shape = G2RoundedCornerShape(bottomCornerRadius),
+                        shape = RoundedRectangle(bottomCornerRadius),
                         clip = false
                     )
                     .background(
                         color = backgroundColor,
-                        shape = G2RoundedCornerShape(bottomCornerRadius)
+                        shape = RoundedRectangle(bottomCornerRadius)
                     )
                     .padding(
                         horizontal = insideMargin.width,

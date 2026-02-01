@@ -40,7 +40,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.CardColors
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import com.kyant.shapes.RoundedRectangle
 
 @Composable
 fun Touch3DCard() {
@@ -278,7 +278,7 @@ fun Modifier.withTiltEffect(
         rotationY = tiltState.rotationY.value
         scaleX = tiltState.scale.value
         scaleY = tiltState.scale.value
-        shape = G2RoundedCornerShape(radius)
+        shape = RoundedRectangle(radius)
         clip = true
         transformOrigin = TransformOrigin(
             pivotFractionX = tiltState.pivotX.value,
@@ -304,7 +304,7 @@ fun Modifier.withTiltEffect(
             pivotFractionX = tiltState.pivotX.value,
             pivotFractionY = tiltState.pivotY.value
         )
-        shape = G2RoundedCornerShape(radius)
+        shape = RoundedRectangle(radius)
         clip = true
     }
     .pointerInput(Unit) {

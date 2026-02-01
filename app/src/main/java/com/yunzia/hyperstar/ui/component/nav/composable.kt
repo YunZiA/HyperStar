@@ -36,7 +36,7 @@ import androidx.navigation.compose.ComposeNavigatorDestinationBuilder
 import androidx.navigation.get
 import com.yunzia.hyperstar.ui.component.helper.getSystemCornerRadius
 import kotlinx.coroutines.delay
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import com.kyant.shapes.RoundedRectangle
 import top.yukonga.miuix.kmp.utils.getRoundedCorner
 import kotlin.collections.forEach
 import kotlin.math.log
@@ -108,7 +108,7 @@ public fun NavGraphBuilder.composable(
                 Box(
                     Modifier
                         .fillMaxSize()
-                        .clip(G2RoundedCornerShape(corner.value.dp))
+                        .clip(RoundedRectangle(corner.value.dp))
                 ){
                     content(navBackStackEntry)
                 }

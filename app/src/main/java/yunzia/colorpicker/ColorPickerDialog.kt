@@ -43,13 +43,13 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults.buttonColors
 import androidx.wear.compose.material.Icon
+import com.kyant.shapes.RoundedRectangle
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseButton
 import com.yunzia.hyperstar.ui.component.MTextField
 import com.yunzia.hyperstar.ui.component.dialog.SuperDialog
 import com.yunzia.hyperstar.ui.component.tool.FilterColorHex
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 
 @Composable
@@ -105,11 +105,11 @@ fun ColorPickerDialog(
                 Image(
                     modifier = Modifier
                         .size(60.dp)
-                        .clip(G2RoundedCornerShape(10.dp))
+                        .clip(RoundedRectangle(10.dp))
                         .border(
                             2.dp,
                             if (color.value.toColor() == colorScheme.surfaceVariant) colorScheme.secondaryContainer else Color.Transparent,
-                            G2RoundedCornerShape(10.dp)
+                            RoundedRectangle(10.dp)
                         ),
                     imageVector = ImageVector.vectorResource(R.drawable.transparent),
                     colorFilter = ColorFilter.tint(
@@ -137,7 +137,7 @@ fun ColorPickerDialog(
                                     doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
                                 },
                                 //contentPadding = PaddingValues(10.dp,16.dp),
-                                shape = G2RoundedCornerShape(12.dp),
+                                shape = RoundedRectangle(12.dp),
                                 colors = buttonColors(
                                     backgroundColor = Color.Transparent,
                                     contentColor = Color.Transparent,

@@ -29,7 +29,7 @@ fun XScaffold(
         MiuixPopupHost()
         SuperNotificationHost()
         },
-    containerColor: Color = MiuixTheme.colorScheme.background,
+    containerColor: Color = MiuixTheme.colorScheme.surface,
     contentWindowInsets: WindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Vertical),
     content: @Composable (PaddingValues) -> Unit
 ) {

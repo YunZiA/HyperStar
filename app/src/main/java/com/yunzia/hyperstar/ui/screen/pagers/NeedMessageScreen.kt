@@ -52,14 +52,13 @@ import com.yunzia.hyperstar.utils.isPad
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import com.kyant.shapes.RoundedRectangle
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 
 @Composable
-fun NeedMessageScreen(
-    navController: NavController,
-    currentStartDestination: MutableState<String>,
-) {
+fun NeedMessageScreen() {
     val context = LocalContext.current
+    val navController = LocalNavigator.current
     val activity = LocalActivity.current as MainActivity
     val debugInfo = "Debug Info of HyperStar\n\n" +
             "ModuleActive = ${activity.isActive}\n" +
@@ -98,7 +97,6 @@ fun NeedMessageScreen(
     NavPager(
         activityTitle = stringResource(R.string.debug_message),
         navController = navController,
-        parentRoute = currentStartDestination
     ) {
 
         item {
@@ -106,7 +104,7 @@ fun NeedMessageScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp)
-                    .clip(G2RoundedCornerShape(21.dp))
+                    .clip(RoundedRectangle(21.dp))
                     .background(Color(0x2A0D84FF))
                     ,
                 verticalAlignment = Alignment.CenterVertically,

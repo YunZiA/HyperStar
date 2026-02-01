@@ -1,5 +1,6 @@
 
-import com.android.build.gradle.internal.services.aapt2DaemonServiceRegistry
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.gradle.internal.api.ApkVariantOutputImpl
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.time.LocalDateTime
@@ -9,14 +10,12 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
-
     id ("kotlin-parcelize")
 }
 
-android {
+configure<ApplicationExtension> {
 
     val versionFile = file("version.properties")
     val properties = Properties().apply {
@@ -80,15 +79,15 @@ android {
         }
     }
 
-    applicationVariants.all {
-        outputs.all {
-            if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
-                val config = project.android.defaultConfig
-                val appName = "HyperStar"
-                val versionName = "v" + config.versionName
-                val buildType = this.name
-
-                this.outputFileName = "${appName}_${versionName}_${buildType}.apk"
+    androidComponents.apply {
+        onVariants(selector().all()) { variant ->
+            variant.outputs.forEach { output ->
+                if (output is ApkVariantOutputImpl) {
+                    val appName = "HyperStar"
+                    val versionName = "v ${defaultConfig.versionName}"
+                    val buildType = variant.name
+                    output.outputFileName = "${appName}_ ${versionName}_ ${buildType}.apk"
+                }
             }
         }
     }
@@ -124,15 +123,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "21"
-    }
+
     buildFeatures {
         compose = true
         aidl = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
     }
     packaging {
         resources {
@@ -148,36 +142,37 @@ android {
     }
 }
 dependencies {
-    //implementation(libs.xposed.api)
-    implementation(libs.ezxhelper.core)
-    implementation(libs.ezxhelper.xposed.api)
-    implementation(libs.ezxhelper.android.utils)
     compileOnly(project(":lsp:annotations"))
     compileOnly(project(":lsp:api"))
     implementation(project(":lsp:service"))
-    // 系统UI控制库，实现沉浸式状态栏
-    implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.okhttp)
+    implementation(libs.ezxhelper.core)
+    implementation(libs.ezxhelper.xposed.api)
+    implementation(libs.ezxhelper.android.utils)
 
+    implementation(libs.okhttp)
     implementation(libs.gson)
-    implementation(libs.androidx.navigation.compose)
-    implementation("com.github.skydoves:cloudy:0.2.4")
     implementation(libs.haze)
+    implementation(libs.kyant.shapes)
+    implementation(libs.miuix)
+    implementation(libs.miuix.icons)
+    implementation(libs.miuix.navigation3.ui)
+    implementation(libs.miuix.navigation3.adaptive)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigationevent.compose)
 
     implementation (libs.androidx.palette.ktx)
     implementation(libs.kotlinx.serialization.json)
-    implementation (libs.miuix)
 
-    //implementation ("com.godaddy.android.colorpicker:compose-color-picker-android:0.7.0")
     implementation(libs.github.colormath.ext.jetpack.compose)
     implementation(libs.androidx.profileinstaller)
-    implementation (libs.androidx.constraintlayout.compose)
-    implementation (libs.accompanist.drawablepainter)
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.accompanist.drawablepainter)
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    //compileOnly (libs.android.xposed)
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

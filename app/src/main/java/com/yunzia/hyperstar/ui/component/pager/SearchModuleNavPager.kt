@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +25,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
@@ -35,7 +33,6 @@ import com.yunzia.hyperstar.ui.component.topbar.ModuleNavTopAppBar
 import com.yunzia.hyperstar.ui.component.XScaffold
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
-import com.yunzia.hyperstar.ui.component.nav.backParentPager
 import com.yunzia.hyperstar.ui.component.search.SearchBox
 import com.yunzia.hyperstar.ui.component.search.SearchPager
 import com.yunzia.hyperstar.ui.component.search.SearchStatus
@@ -46,25 +43,24 @@ import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.BackHandler
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import com.kyant.shapes.RoundedRectangle
+import com.yunzia.hyperstar.ui.navigation.Navigator
 
 @Composable
 fun SearchModuleNavPager(
     activityTitle: String,
     searchStatus: SearchStatus,
-    navController: NavController,
-    parentRoute: MutableState<String>,
+    navController: Navigator,
     floatingActionButton: @Composable () -> Unit = {},
     floatingPagerButton: @Composable () -> Unit = {},
     floatingActionButtonPosition: FabPosition = FabPosition.End,
     startClick: () -> Unit = {
-        navController.backParentPager(parentRoute.value)
+        navController.goBack()
     },
     endClick: () -> Unit,
     endIcon: @Composable () -> Unit = {},
-    result: LazyListScope.(ScrollBehavior)-> Unit,
-    contents: @Composable (ScrollBehavior, PaddingValues) -> Unit
+    result: LazyListScope.(ScrollBehavior) -> Unit,
+    contents: @Composable (ScrollBehavior, PaddingValues) -> Unit,
 ) {
 
     val hazeState = remember { HazeState() }
@@ -91,11 +87,6 @@ fun SearchModuleNavPager(
             }
         }
     ) { padding ->
-
-        BackHandler(true) {
-            navController.backParentPager(parentRoute.value)
-        }
-
         searchStatus.SearchBox(
             modifier = Modifier
                 .blur(hazeState)
@@ -189,7 +180,7 @@ fun SearchBarFake(
             .padding(horizontal = 12.dp)
             .background(
                 color = colorScheme.surfaceContainerHigh,
-                shape = G2RoundedCornerShape(50.dp)
+                shape = RoundedRectangle(50.dp)
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {

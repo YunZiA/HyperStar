@@ -8,7 +8,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import com.kyant.shapes.RoundedRectangle
 import top.yukonga.miuix.kmp.utils.getCornerRadiusBottom
 
 
@@ -31,9 +31,9 @@ fun getSystemSmoothCornerRadius(): Dp {
 }
 
 @Composable
-fun getSystemSmoothCornerShape(): G2RoundedCornerShape {
+fun getSystemSmoothCornerShape(): RoundedRectangle {
     val cornerDp = getSystemCornerRadius()
     Log.d("ggc", "getSystemCornerRadius: $cornerDp")
-    if (cornerDp <= 22.dp) return G2RoundedCornerShape(cornerDp)
-    return  G2RoundedCornerShape(cornerDp*12/10)
+    if (cornerDp <= 22.dp) return RoundedRectangle(cornerDp)
+    return  RoundedRectangle(cornerDp*12/10)
 }

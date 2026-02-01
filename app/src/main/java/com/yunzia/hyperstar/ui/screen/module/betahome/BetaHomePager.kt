@@ -8,18 +8,18 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.ui.component.XSuperSwitch
 import com.yunzia.hyperstar.ui.component.itemGroup
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import com.yunzia.hyperstar.utils.Helper
 
 
 @Composable
 fun BetaHomePager(
-    navController: NavController,
     parentRoute: MutableState<String>,
 ) {
+    val navController = LocalNavigator.current
     ModuleNavPagers(
         activityTitle = stringResource(R.string.beta_home),
         navController = navController,
-        parentRoute = parentRoute,
         endClick = {
             Helper.rootShell("killall com.miui.home")
         },

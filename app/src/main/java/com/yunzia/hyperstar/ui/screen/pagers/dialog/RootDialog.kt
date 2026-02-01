@@ -12,12 +12,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseButton
 import com.yunzia.hyperstar.ui.component.dialog.SuperCTDialogDefaults
 import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
 import com.yunzia.hyperstar.prefs.PreferencesUtil
+import com.yunzia.hyperstar.ui.navigation.MainRoutes
 import top.yukonga.miuix.kmp.basic.Text
 
 @Composable
@@ -69,7 +69,7 @@ fun RootDialog(
             submit = true,
             onClick = {
                 show.value = false
-                navController.navigate(PagerList.GO_ROOT)
+                navController.navigate(MainRoutes.GoRoot)
 
             }
 

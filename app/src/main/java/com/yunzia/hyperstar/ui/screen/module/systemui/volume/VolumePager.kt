@@ -5,23 +5,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.ContentFolder
 import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.XMiuixSuperSliderSwitch
-import com.yunzia.hyperstar.ui.component.XSuperDropdown
+import com.yunzia.hyperstar.ui.component.XDropdown
 import com.yunzia.hyperstar.ui.component.XSuperSliders
 import com.yunzia.hyperstar.ui.component.XSuperSwitch
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
+import com.yunzia.hyperstar.ui.navigation.Navigator
 import com.yunzia.hyperstar.utils.isOS2Settings
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 
 @Composable
 fun VolumePager(
-    navController: NavController,
+    navController: Navigator,
     scrollBehavior: ScrollBehavior,
     paddingValue: PaddingValues
 ) {
@@ -34,7 +33,7 @@ fun VolumePager(
             title = R.string.basics,
             position = SuperGroupPosition.FIRST
         ){
-            XSuperDropdown(
+            XDropdown(
                 title = stringResource(R.string.is_super_blur_volume_title),
                 key = "is_super_blur_volume",
                 option = R.array.is_super_blur_entire
@@ -119,8 +118,7 @@ fun OrientationDimBarFolder(
             title = stringResource(R.string.PORTRAIT),
             key = key+"_p",
             defValue = -1f,
-            maxValue = maxValue,
-            minValue = 0f,
+            valueRange = 0f..maxValue,
             unit = "dp",
             decimalPlaces = 1
         )
@@ -131,8 +129,7 @@ fun OrientationDimBarFolder(
             title = stringResource(R.string.LANDSCAPE),
             key = key+"_l",
             defValue = -1f,
-            maxValue = maxValue,
-            minValue = 0f,
+            valueRange = 0f..maxValue,
             unit = "dp",
             decimalPlaces = 1
         )

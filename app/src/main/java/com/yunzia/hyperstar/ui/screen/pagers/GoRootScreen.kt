@@ -40,6 +40,7 @@ import com.yunzia.hyperstar.ui.component.enums.EventState
 import com.yunzia.hyperstar.ui.component.modifier.bounceClick
 import com.yunzia.hyperstar.ui.component.modifier.bounceScale
 import com.yunzia.hyperstar.ui.component.pager.NavPager
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.media.app.AppInfo
 import com.yunzia.hyperstar.utils.root
 import kotlinx.coroutines.Dispatchers
@@ -93,11 +94,9 @@ private fun getRootManagerInfo(
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
-fun GoRootPager(
-    navController: NavHostController,
-    currentStartDestination: MutableState<String>
-) {
+fun GoRootPager() {
     val mContext = LocalContext.current
+    val navController = LocalNavigator.current
     ///val rootList = getRootManagerInfo(mContext)
     
     val noRoot = remember { mutableStateOf<List<AppInfo>?>(null) }
@@ -119,7 +118,6 @@ fun GoRootPager(
     NavPager(
         activityTitle = stringResource(R.string.quick_authorization),
         navController = navController,
-        parentRoute = currentStartDestination,
     ) {
 
         item {

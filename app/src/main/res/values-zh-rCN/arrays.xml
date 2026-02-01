@@ -61,6 +61,9 @@
         <item>跟随系统</item>
         <item>浅色</item>
         <item>深色</item>
+        <item>Monet（跟随系统）</item>
+        <item>Monet (浅色)</item>
+        <item>Monet (深色)</item>
     </string-array>
     <string-array name="is_super_blur_entire">
         <item>默认</item>

@@ -52,19 +52,20 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
+import com.kyant.shapes.RoundedRectangle
 import com.yunzia.hyperstar.R
+import com.yunzia.hyperstar.prefs.PreferencesUtil
+import com.yunzia.hyperstar.prefs.SPUtils
 import com.yunzia.hyperstar.ui.component.dialog.SuperDialogs
 import com.yunzia.hyperstar.ui.component.enums.EventState
 import com.yunzia.hyperstar.ui.component.modifier.bounceClick
 import com.yunzia.hyperstar.ui.component.modifier.bounceScale
 import com.yunzia.hyperstar.ui.component.tool.FilterFloat
-import com.yunzia.hyperstar.prefs.PreferencesUtil
-import com.yunzia.hyperstar.prefs.SPUtils
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.Slider
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import kotlin.math.pow
 
 
 enum class Status{
@@ -82,18 +83,16 @@ fun XMiuixSlider(
     key: String,
     unit: String = "",
     paddingValues: PaddingValues? = null,
-    minValue: Float = 0f,
-    maxValue: Float = 1f,
+    valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     defValue: Float = 0.5f,
     enabled: Boolean = true,
-    progress: MutableFloatState = remember { mutableFloatStateOf(SPUtils.getFloat(key, defValue).coerceIn(minValue, maxValue)) },
+    value: MutableFloatState = remember { mutableFloatStateOf(SPUtils.getFloat(key, defValue).coerceIn(valueRange)) },
     decimalPlaces: Int = 0
 
 ) {
 
     val layoutDirection = LocalLayoutDirection.current
 
-    val effect = PreferencesUtil.getBoolean("is_progress_effect", false)
     val dialog = remember { mutableStateOf(false) }
     @Suppress("NAME_SHADOWING")
     val paddingValues = remember { paddingValues } ?: remember { BasicComponentDefaults.InsideMargin }
@@ -111,7 +110,8 @@ fun XMiuixSlider(
         modifier = Modifier
             .height(IntrinsicSize.Max)
             .fillMaxWidth()
-            .bounceScale(eventState).clip(G2RoundedCornerShape(8.dp))
+            .bounceScale(eventState)
+            .clip(RoundedRectangle(8.dp))
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = { offset ->
@@ -125,15 +125,13 @@ fun XMiuixSlider(
                         }
 
                     }
-                ){
+                ) {
                     if (click.value) {
                         dialog.value = true
-
                     }
 
                 }
             }
-
             .indication(interactionSource, LocalIndication.current)
             .padding(
                 top = paddingValues.calculateTopPadding(),
@@ -168,9 +166,6 @@ fun XMiuixSlider(
 
                 }
 
-
-
-
         ) {
             Text(
                 modifier = Modifier.weight(1f),
@@ -182,24 +177,21 @@ fun XMiuixSlider(
             Text(
                 modifier = Modifier,
                 color = valueColor,
-                text = if (progress.floatValue == defValue) stringResource(R.string.default_value)
-                else if (decimalPlaces == 0) progress.floatValue.coerceIn(minValue, maxValue).toInt().toString() + unit
-                else progress.floatValue.coerceIn(minValue, maxValue).toString() + unit,
+                text = if (value.floatValue == defValue) stringResource(R.string.default_value)
+                else if (decimalPlaces == 0) value.floatValue.coerceIn(valueRange).toInt().toString() + unit
+                else value.floatValue.coerceIn(valueRange).toString() + unit,
                 textAlign = TextAlign.End,
                 fontSize = 14.sp
             )
         }
         Slider(
-            progress = progress.floatValue,
-            onProgressChange = { newProgress ->
-                progress.floatValue = newProgress
-                SPUtils.putFloat(key, progress.floatValue)
+            value = value.floatValue,
+            onValueChange = { newValue ->
+                value.floatValue = newValue
+                SPUtils.putFloat(key, value.floatValue)
             },
-            effect = effect,
-            maxValue = maxValue,
-            minValue = minValue,
-            //dragShow = true,
-            decimalPlaces = decimalPlaces,
+            valueRange = valueRange,
+            steps = ((valueRange.endInclusive - valueRange.start)*(100f * (10f.pow(decimalPlaces)))).toInt(),
             modifier = Modifier
                 .padding(
                     start = paddingValues.calculateStartPadding(layoutDirection),
@@ -218,7 +210,7 @@ fun XMiuixSlider(
         title
     }else{
         "$host·$title"
-    },key,progress,maxValue,minValue,defValue,unit,decimalPlaces,dialog)
+    },key,value,valueRange,defValue,unit,decimalPlaces,dialog)
 
 
 }
@@ -228,14 +220,11 @@ fun XMiuixSliders(
     title: String,
     key: String,
     unit: String = "",
-    minValue: Float = 0f,
-    maxValue: Float = 1f,
+    valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     progress: Float = 0.5f,
     decimalPlaces: Int = 0,
-    values: (Float) -> Float = { progress },
-
-    ) {
-    val effect = PreferencesUtil.getBoolean("is_progress_effect", false)
+    values: (Float) -> Float = { progress }
+) {
 
     Row(
         Modifier
@@ -265,15 +254,13 @@ fun XMiuixSliders(
                 )
             }
             Slider(
-                progress = x_progress,
-                onProgressChange = { newProgress ->
-                    x_progress = newProgress
+                value = x_progress,
+                onValueChange = { newValue ->
+                    x_progress = newValue
                     SPUtils.putFloat(key, x_progress)
                 },
-                effect = effect,
-                maxValue = maxValue,
-                minValue = minValue,
-                decimalPlaces = decimalPlaces,
+                valueRange = valueRange,
+                steps = ((valueRange.endInclusive - valueRange.start)*(100f * (10f.pow(decimalPlaces)))).toInt(),
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
                     .padding(top = 10.dp)
@@ -294,16 +281,14 @@ fun XSuperSliders(
     key : String,
     unit : String = "",
     insideMargin: PaddingValues? = null,
-    minValue: Float = 0f,
-    maxValue: Float = 1f,
+    valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     defValue: Float = 0.5f,
     enabled : Boolean = true,
-    progress : MutableFloatState = remember { mutableFloatStateOf(SPUtils.getFloat(key, defValue).coerceIn(minValue, maxValue)) },
+    value : MutableFloatState = remember { mutableFloatStateOf(SPUtils.getFloat(key, defValue).coerceIn(valueRange)) },
     decimalPlaces : Int = 0
 
 ) {
 
-    val effect = PreferencesUtil.getBoolean("is_progress_effect", false)
     val dialog = remember { mutableStateOf(false) }
 
     @Suppress("NAME_SHADOWING")
@@ -325,7 +310,8 @@ fun XSuperSliders(
         modifier = Modifier
             .height(IntrinsicSize.Max)
             .fillMaxWidth()
-            .bounceScale(eventState).clip(G2RoundedCornerShape(8.dp))
+            .bounceScale(eventState)
+            .clip(RoundedRectangle(8.dp))
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = { offset ->
@@ -340,7 +326,7 @@ fun XSuperSliders(
 
 
                     }
-                ){
+                ) {
                     if (click.value) {
                         dialog.value = true
 
@@ -386,24 +372,21 @@ fun XSuperSliders(
             Text(
                 modifier = Modifier,
                 color = valueColor,
-                text = if (progress.floatValue == defValue) stringResource(R.string.default_value)
-                else if (decimalPlaces == 0) progress.floatValue.toInt().toString() + unit
-                else progress.floatValue.toString() + unit,
+                text = if (value.floatValue == defValue) stringResource(R.string.default_value)
+                else if (decimalPlaces == 0) value.floatValue.toInt().toString() + unit
+                else value.floatValue.toString() + unit,
                 textAlign = TextAlign.End,
                 fontSize = 14.sp
             )
         }
         Slider(
-            progress = progress.floatValue,
-            onProgressChange = { newProgress ->
-                progress.floatValue = newProgress
-                SPUtils.putFloat(key, progress.floatValue)
+            value = value.floatValue,
+            onValueChange = { newValue ->
+                value.floatValue = newValue
+                SPUtils.putFloat(key, value.floatValue)
             },
-            effect = effect,
-            maxValue = maxValue,
-            minValue = minValue,
-            //dragShow = true,
-            decimalPlaces = decimalPlaces,
+            valueRange = valueRange,
+            steps = ((valueRange.endInclusive - valueRange.start)*(100f * (10f.pow(decimalPlaces)))).toInt(),
             modifier = Modifier
                 //.padding(start = insideMargin.calculateStartPadding(layoutDirection), end = insideMargin.calculateEndPadding(layoutDirection))
                 .padding(top = 10.dp),
@@ -416,7 +399,7 @@ fun XSuperSliders(
         title
     }else{
         "$host·$title"
-    },key,progress,maxValue,minValue,defValue,unit,decimalPlaces,dialog)
+    },key,value,valueRange,defValue,unit,decimalPlaces,dialog)
 
 
 }
@@ -450,16 +433,15 @@ fun ValueDialog(
     title: String,
     key: String,
     values: MutableFloatState,
-    maxValue: Float,
-    minValue: Float,
+    valueRange: ClosedFloatingPointRange<Float>,
     defValue: Float,
-    unit : String = "",
+    unit: String = "",
     decimalPlaces: Int,
     showDialog: MutableState<Boolean>
 ){
 
     val kc = LocalSoftwareKeyboardController.current
-    val filter = remember(key1 = values.floatValue) { FilterFloat(values.floatValue,minValue,maxValue,decimalPlaces) }
+    val filter = remember(key1 = values.floatValue) { FilterFloat(values.floatValue,valueRange.start,valueRange.endInclusive,decimalPlaces) }
     val focusManager = LocalFocusManager.current
     var hasFocus by remember { mutableStateOf(false) }
     val firstIsDf = remember(values.floatValue) { mutableStateOf(values.floatValue == defValue) }
@@ -491,7 +473,7 @@ fun ValueDialog(
         }
 //
         Text(
-            stringResource(R.string.range_des, String.format("%.${decimalPlaces}f", minValue), unit, String.format("%.${decimalPlaces}f", maxValue), unit),
+            stringResource(R.string.range_des, String.format("%.${decimalPlaces}f", valueRange.start), unit, String.format("%.${decimalPlaces}f", valueRange.endInclusive), unit),
             Modifier
                 .fillMaxWidth()
                 .padding(start = 5.dp, top = 8.dp, bottom = 10.dp),
@@ -580,8 +562,5 @@ fun ValueDialog(
 
         }
     }
-
-
-
 }
 

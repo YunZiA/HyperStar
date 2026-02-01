@@ -48,10 +48,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastFirst
 import androidx.compose.ui.util.lerp
-import androidx.navigation.NavController
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.nav.backParentPager
+import com.yunzia.hyperstar.ui.navigation.Navigator
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Surface
@@ -67,12 +67,11 @@ import kotlin.math.roundToInt
 fun NavTopAppBar(
     modifier: Modifier,
     title: String,
-    subTitle : String,
+    subTitle: String,
     scrollBehavior: ScrollBehavior? = null,
     color: Color,
-    navController: NavController,
-    parentRoute: MutableState<String>,
-    actions: @Composable() (RowScope.() -> Unit) = {}
+    actions: @Composable() (RowScope.() -> Unit) = {},
+    navController: Navigator
 ){
 
     val view = LocalView.current
@@ -88,7 +87,7 @@ fun NavTopAppBar(
                 modifier = Modifier.padding(start = 12.dp),
                 onClick = {
                     view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                    navController.backParentPager(parentRoute.value)
+                    navController.goBack()
 
                 }
             ) {

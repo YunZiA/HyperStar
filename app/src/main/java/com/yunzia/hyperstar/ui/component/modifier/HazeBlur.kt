@@ -24,7 +24,7 @@ fun Modifier.blur(hazeState: HazeState) = this.hazeSource(hazeState)
 @OptIn(ExperimentalHazeApi::class)
 fun Modifier.showBlur(hazeState: HazeState) = composed {
 
-    val containerColor: Color = colorScheme.background
+    val containerColor: Color = colorScheme.surface
     val alpha = 0.5f
     val blurRadius: Dp = 25.dp
     val noiseFactor = 0f
@@ -49,7 +49,7 @@ fun Modifier.showBlur(hazeState: HazeState) = composed {
 @OptIn(ExperimentalHazeApi::class)
 fun Modifier.showBlurs(hazeState: HazeState, tints: List<HazeTint> = emptyList(),block: (HazeEffectScope.() -> Unit)? = null) = composed {
 
-    val containerColor: Color = colorScheme.background
+    val containerColor: Color = colorScheme.surface
     val alpha = 0.67f
     val blurRadius: Dp = 25.dp
     val noiseFactor = 0f

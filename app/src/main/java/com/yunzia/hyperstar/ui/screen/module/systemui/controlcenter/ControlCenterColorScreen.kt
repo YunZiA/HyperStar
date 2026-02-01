@@ -1,34 +1,29 @@
 package com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavHostController
-import com.yunzia.hyperstar.CenterColorList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.ColorPickerTool
 import com.yunzia.hyperstar.ui.component.ContentFolder
 import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
-import com.yunzia.hyperstar.ui.component.XMiuixContentDropdown
+import com.yunzia.hyperstar.ui.component.XContentDropdown
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.navigation.ColorEditRoutes
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import com.yunzia.hyperstar.utils.Helper
 
 @Composable
-fun ControlCenterColorScreen(
-    navController: NavHostController,
-    currentStartDestination: MutableState<String>
-) {
+fun ControlCenterColorScreen() {
+    val navController = LocalNavigator.current
     ModuleNavPagers(
         activityTitle = stringResource(R.string.control_center_color_edit),
-        parentRoute = currentStartDestination,
         navController = navController,
         endClick = {
             Helper.rootShell("killall com.android.systemui")
         },
     ) {
-
         itemGroup(
             title = R.string.control_center_background_color,
             position = SuperGroupPosition.FIRST
@@ -60,7 +55,7 @@ fun ControlCenterColorScreen(
             SuperNavHostArrow(
                 title = stringResource(R.string.color_edit),
                 navController = navController,
-                route = CenterColorList.CARD_TILE
+                route = ColorEditRoutes.CardTileColor
             )
         }
 
@@ -102,7 +97,7 @@ fun ControlCenterColorScreen(
             SuperNavHostArrow(
                 title = stringResource(R.string.color_edit),
                 navController = navController,
-                route = CenterColorList.TOGGLE_SLIDER
+                route = ColorEditRoutes.ToggleSliderColor
             )
 
         }
@@ -125,7 +120,7 @@ fun ControlCenterColorScreen(
             SuperNavHostArrow(
                 title = stringResource(R.string.color_edit),
                 navController = navController,
-                route = CenterColorList.DEVICE_CENTER
+                route = ColorEditRoutes.DeviceCenterColor
             )
 
         }
@@ -135,7 +130,7 @@ fun ControlCenterColorScreen(
             SuperNavHostArrow(
                 title = stringResource(R.string.color_edit),
                 navController = navController,
-                route = CenterColorList.LIST_COLOR
+                route = ColorEditRoutes.ListColor
             )
         }
         itemGroup(
@@ -143,7 +138,7 @@ fun ControlCenterColorScreen(
             position = SuperGroupPosition.LAST
         ){
 
-            XMiuixContentDropdown(
+            XContentDropdown(
                 title = stringResource(R.string.edit_background_mode),
                 key = "edit_background_mode",
                 option = R.array.edit_background_mode_entire,

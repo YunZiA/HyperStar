@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -47,6 +48,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.integerArrayResource
@@ -58,10 +60,8 @@ import androidx.compose.ui.unit.fontscaling.MathUtils.lerp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.graphics.toColorInt
-import androidx.navigation.NavHostController
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
-import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.ui.component.Button
@@ -83,11 +83,13 @@ import top.yukonga.miuix.kmp.basic.SmallTopAppBar
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
-import top.yukonga.miuix.kmp.utils.getWindowSize
+import com.kyant.shapes.RoundedRectangle
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import com.yunzia.hyperstar.ui.navigation.MainRoutes
+import com.yunzia.hyperstar.ui.navigation.Navigator
+import top.yukonga.miuix.kmp.icon.extended.More
 import yunzia.utils.MiBlurUtilsKt.addMiBackgroundBlendColor
 import yunzia.utils.MiBlurUtilsKt.clearMiBackgroundBlendColor
 import yunzia.utils.MiBlurUtilsKt.setMiBackgroundBlurMode
@@ -136,14 +138,14 @@ fun extractOnlyNumbers(input: String): String {
 @SuppressLint("RestrictedApi", "SetTextI18n")
 @Composable
 fun ThirdPage(
-    navController: NavHostController,
     hazeState: HazeState,
     contentPadding: PaddingValues,
     showReboot: MutableState<Boolean>,
     pagerState: PagerState
 ) {
 
-    val context = navController.context
+    val navController = LocalNavigator.current
+    val context = LocalContext.current
     val activity = LocalActivity.current as MainActivity
     val isNeedUpdate = remember { mutableStateOf(false) }
 
@@ -234,7 +236,7 @@ fun ThirdPage(
                     ) {
 
                         Icon(
-                            imageVector = MiuixIcons.Useful.ImmersionMore,
+                            imageVector = MiuixIcons.More,
                             contentDescription = "restart",
                             tint = colorScheme.onBackground)
 
@@ -378,7 +380,7 @@ fun ThirdPage(
 
             LazyColumn(
                 modifier = Modifier
-                    .height(getWindowSize().height.dp)
+                    .fillMaxSize()
                     .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
                 flingBehavior = ScrollableDefaults.flingBehavior(),
                 state = scroll,
@@ -395,7 +397,7 @@ fun ThirdPage(
                             .fillMaxWidth()
                             .pointerInput(Unit) {
                                 detectTapGestures() {
-                                    navController.nav(PagerList.UPDATER)
+                                    navController.navigate(MainRoutes.Updater)
                                 }
                             }
                     )
@@ -406,13 +408,13 @@ fun ThirdPage(
                         leftIcon = R.drawable.dd,
                         title = "东东说他舍不得",
                         summary = "@YunZiA | Hook",
-                        navController = navController,
+                        context = context,
                         url = "coolmarket://u/8555749"
                     )
                     SuperNavHostArrow(
                         title = stringResource(R.string.translator),
                         navController = navController,
-                        route = PagerList.TRANSLATOR
+                        route = MainRoutes.Translator
 
                     )
 
@@ -424,17 +426,17 @@ fun ThirdPage(
                 ) {
                     SuperIntentArrow(
                         title = stringResource(R.string.qq_group_title),
-                        navController = navController,
+                        context = context,
                         url = "mqqapi://card/show_pslcard?src_type=internal&version=1&uin=810317966&card_type=group&source=qrcode"
                     )
                     SuperIntentArrow(
                         title = stringResource(R.string.telegram_channel),
-                        navController = navController,
+                        context = context,
                         url = "https://t.me/HyperStar_release"
                     )
                     SuperIntentArrow(
                         title = stringResource(R.string.telegram_group),
-                        navController = navController,
+                        context = context,
                         url = "https://t.me/Hyperstar_chat"
                     )
 
@@ -446,20 +448,20 @@ fun ThirdPage(
                     SuperNavHostArrow(
                         title = stringResource(R.string.references_title),
                         navController = navController,
-                        route = PagerList.REFERENCES
+                        route = MainRoutes.References
 
                     )
                     SuperIntentArrow(
                         title = stringResource(R.string.project_address),
                         summary = stringResource(R.string.open_source_statement),
-                        navController = navController,
+                        context = context,
                         url = "https://github.com/YunZiA/HyperStar"
                     )
 
                     SuperNavHostArrow(
                         title = stringResource(R.string.donation),
                         navController = navController,
-                        route = PagerList.DONATION
+                        route = MainRoutes.Donation
 
                     )
                 }
@@ -496,7 +498,7 @@ fun ThirdPage(
 @Composable
 fun UpdaterButton(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: Navigator
 ){
     val activity = LocalActivity.current as BaseActivity
 
@@ -552,7 +554,7 @@ fun UpdaterButton(
             }
             .shadow(
                 elevation = 1.5.dp,
-                shape = G2RoundedCornerShape(16.dp),
+                shape = RoundedRectangle(16.dp),
                 clip = true,
                 ambientColor = shadowColor,
                 spotColor = shadowColor
@@ -563,7 +565,7 @@ fun UpdaterButton(
         minHeight = 52.dp,
         minWidth = 250.dp,
         onClick = {
-            navController.nav(PagerList.UPDATER)
+            navController.navigate(MainRoutes.Updater)
         }
     ){
         Text(

@@ -49,7 +49,8 @@ import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import com.kyant.shapes.RoundedRectangle
+import com.yunzia.hyperstar.ui.navigation.Navigator
 
 @Composable
 fun NotificationOfImAddPage(
@@ -58,7 +59,7 @@ fun NotificationOfImAddPage(
     unSelectApp: SnapshotStateSet<NotificationInfo>
 ){
     val context = LocalContext.current
-    val viewModel:NotificationAddViewModel = viewModel(
+    val viewModel = viewModel<NotificationAddViewModel>(
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return NotificationAddViewModel(context.applicationContext as Application) as T
@@ -151,7 +152,8 @@ fun NotificationOfImAddPage(
 
                 unSelectApp.forEach {app->
                     item(app.packageName) {
-                        AppNotifItem(notificationInfo = app,
+                        AppNotifItem(
+                            notificationInfo = app,
                             isSelected = viewModel.isSelected(app),
                             onSelectionChanged = { isSelected ->
                                 viewModel.toggleAppSelection(app)
@@ -171,7 +173,8 @@ fun NotificationOfImAddPage(
     ) {
         searchResults.forEach { app->
             item(app.packageName) {
-                AppNotifItem(notificationInfo = app,
+                AppNotifItem(
+                    notificationInfo = app,
                     isSelected = viewModel.isSelected(app),
                     onSelectionChanged = { isSelected ->
                         viewModel.toggleAppSelection(app)
@@ -197,7 +200,7 @@ private fun AppNotifItem(
             .padding(horizontal = 16.dp)
             .padding(top = 10.dp)
             .bounceAnimN()
-            .clip(G2RoundedCornerShape(CardDefaults.CornerRadius))
+            .clip(RoundedRectangle(CardDefaults.CornerRadius))
             .background(
                 if (isSelected) colorScheme.tertiaryContainer
                 else colorScheme.surfaceVariant
@@ -207,13 +210,13 @@ private fun AppNotifItem(
         titleColor = titleColor(isSelected),
         summary = notificationInfo.packageName,
         summaryColor = summaryColor(isSelected),
-        leftAction = {
+        startAction = {
             AppIcon(
                 icon = notificationInfo.icon,
                 appName = notificationInfo.appName
             )
         },
-        rightActions = {
+        endActions = {
             Checkbox(
                 checked = isSelected,
                 onCheckedChange = { onSelectionChanged(!isSelected) }

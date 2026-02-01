@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.currentRecomposeScope
@@ -55,7 +56,6 @@ import com.yunzia.hyperstar.utils.getSettingChannel
 import com.yunzia.hyperstar.utils.isOS2Settings
 import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.launch
-import top.yukonga.miuix.kmp.basic.ListPopup
 import top.yukonga.miuix.kmp.basic.ListPopupColumn
 import top.yukonga.miuix.kmp.basic.ListPopupDefaults
 import top.yukonga.miuix.kmp.basic.NavigationBar
@@ -65,23 +65,19 @@ import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.VerticalDivider
 import top.yukonga.miuix.kmp.extra.CheckboxLocation
-import top.yukonga.miuix.kmp.extra.DropdownImpl
 import top.yukonga.miuix.kmp.extra.SuperCheckbox
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
-import top.yukonga.miuix.kmp.utils.getWindowSize
+import com.kyant.shapes.RoundedRectangle
+import top.yukonga.miuix.kmp.basic.DropdownImpl
+import top.yukonga.miuix.kmp.extra.WindowListPopup
 
 @Composable
-fun MainPager(
-    navController: NavHostController,
-    pagerState: PagerState,
-) {
+fun MainPager() {
     val activity = LocalActivity.current as MainActivity
+    val pagerState = rememberPagerState(initialPage = 0 ,pageCount = { 3 })
     val rebootStyle = activity.rebootStyle
     val currentPage = pagerState.currentPage
-
     val coroutineScope = rememberCoroutineScope()
-
     val hazeState = remember { HazeState() }
     val show = remember { mutableStateOf(false) }
 
@@ -111,10 +107,9 @@ fun MainPager(
 
         AppHorizontalPager(
             modifier = Modifier
-                .height(getWindowSize().height.dp)
+                .fillMaxSize()
                 .padding(),
             contentPadding = PaddingValues(bottom = padding.calculateBottomPadding()) ,
-            navController = navController,
             pagerState = pagerState,
             hazeState = hazeState,
             showReboot = show
@@ -131,7 +126,6 @@ fun MainPager(
 
 @Composable
 fun MainPagerByThree(
-    navController: NavHostController,
     pagerState: PagerState,
 ) {
     val context = LocalContext.current
@@ -178,7 +172,6 @@ fun MainPagerByThree(
 
 
         AppHorizontalPager(
-            navController = navController,
             modifier = Modifier
                 .blur(hazeState)
                 .weight(1f)
@@ -211,7 +204,7 @@ fun NavigationBarForStart(
         popupHost= { },
     ){
         LazyColumn(
-            modifier = Modifier.height(getWindowSize().height.dp),
+            modifier = Modifier.fillMaxSize(),
             userScrollEnabled =  false,
             contentPadding = PaddingValues(top = it.calculateTopPadding()+13.dp, bottom = it.calculateBottomPadding()),
         ) {
@@ -235,7 +228,7 @@ fun NavigationBarForStart(
                         BoxWithConstraints(
                             Modifier
                                 .padding(bottom = 5.dp)
-                                .background(bgColor, G2RoundedCornerShape(8.dp))
+                                .background(bgColor, RoundedRectangle(8.dp))
                                 .pointerInput(Unit) {
                                     detectTapGestures(
                                         onTap = {
@@ -292,10 +285,10 @@ fun RebootPup(
     Log.d("ggc", "RebootPup: $os2")
 
 
-    ListPopup(
+    WindowListPopup(
         show = show,
         popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
-        alignment = PopupPositionProvider.Align.TopRight,
+        alignment = PopupPositionProvider.Align.TopEnd,
         onDismissRequest = {
             show.value = false
         }
@@ -349,7 +342,7 @@ fun  RebootDialog(
             modifier = Modifier
                 .padding(top = 8.dp, bottom = 18.dp)
                 .fillMaxWidth()
-                .clip(G2RoundedCornerShape(16.dp))
+                .clip(RoundedRectangle(16.dp))
                 .background(colorScheme.secondaryContainer)
         ) {
             Item(
@@ -419,7 +412,7 @@ fun  Item(
     SuperCheckbox(
         title = title,
         checked = isChecked.value,
-        checkboxLocation = CheckboxLocation.Right,
+        checkboxLocation = CheckboxLocation.End,
         onCheckedChange = {
             isChecked.value = it
             onCheckedChange(isChecked.value,type)
@@ -432,20 +425,14 @@ fun  Item(
 
 @Composable
 fun AppHorizontalPager(
-    navController: NavHostController,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     pagerState: PagerState,
     hazeState: HazeState,
     showReboot: MutableState<Boolean>,
 ) {
-
-
     val context = LocalContext.current
     val activity = context as MainActivity
-
-//    context.resources.getIdentifier()
-//    context.resources.getColor()
 
     HorizontalPager(
         modifier = modifier,
@@ -458,15 +445,15 @@ fun AppHorizontalPager(
             when (page) {
 
                 0 ->{
-                    Home(navController = navController,hazeState,contentPadding,showReboot,pagerState)
+                    Home(hazeState, contentPadding, showReboot, pagerState)
                 }
 
                 1 -> {
-                    Settings(navController = navController,hazeState,contentPadding,showReboot,pagerState)
+                    Settings(hazeState, contentPadding, showReboot, pagerState)
                 }
 
                 else -> {
-                    ThirdPage(navController = navController,hazeState,contentPadding,showReboot,pagerState)
+                    ThirdPage(hazeState, contentPadding, showReboot, pagerState)
                 }
             }
 

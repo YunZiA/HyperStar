@@ -56,7 +56,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.Button
@@ -71,8 +70,10 @@ import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.BackHandler
-import top.yukonga.miuix.kmp.utils.getWindowSize
+import com.yunzia.hyperstar.ui.navigation.NavBackHandler
+import com.yunzia.hyperstar.ui.component.helper.getWindowSize
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import com.yunzia.hyperstar.ui.navigation.Navigator
 import java.io.File
 
 
@@ -81,15 +82,16 @@ fun PagerState.UpdateDetailPage(
     padding: PaddingValues,
     newVersion: String,
     fileUrl: State<String>,
-    navController: NavController,
+    navController: Navigator,
     showUpdater: State<Boolean>,
     downloadStatus: State<DownloadStatus>,
     viewModel: UpdaterViewModel,
     topAppBarScrollBehavior: ScrollBehavior,
     uiState: State<UpdaterViewModel.UpdateDetailUiState>,
-    downloadModel: UpdaterDownloadViewModel
+    downloadModel: UpdaterDownloadViewModel,
 ) {
     // State declarations
+    val navController = LocalNavigator.current
     val progress = this.currentPageOffsetFraction
     val currentPage = this.currentPage
     val lastCommit = downloadModel.lastCommit.collectAsState()
@@ -100,7 +102,7 @@ fun PagerState.UpdateDetailPage(
     val listState = rememberLazyListState()
 
     val density = LocalDensity.current
-    val width = with(density) { getWindowSize().width.toDp() }
+    val width =  getWindowSize().width
     val alpha = remember { mutableStateOf(0f) }
     var offsetX by remember { mutableStateOf(0.dp) }
     //var offsetX = remember { Animatable((-80).dp) }
@@ -158,7 +160,7 @@ fun PagerState.UpdateDetailPage(
     // Root container
     Box(
         modifier = Modifier
-            .height(getWindowSize().height.dp)
+            .height(getWindowSize().height)
             .background(Color.Black.copy(animationState.alpha.coerceAtMost(0.3f)))
     ) {
         // Update available text
@@ -418,11 +420,12 @@ fun PagerState.UpdateDetailPage(
 private fun DetailContent(
     lastCommit: String,
     fileUrl: State<String>,
-    navController: NavController,
+    navController: Navigator,
     padding: PaddingValues,
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
-    BackHandler(true, onBack)
+    val navController = LocalNavigator.current
+    NavBackHandler(isBackEnabled = true, onBackCompleted = onBack)
 
     Column(
         modifier = Modifier
@@ -469,8 +472,7 @@ private fun UpdateActions(
 
     Column(
         modifier = Modifier
-            .height(getWindowSize().height.dp)
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(bottom = 28.dp)
             .navigationBarsPadding(),
         verticalArrangement = Arrangement.Bottom

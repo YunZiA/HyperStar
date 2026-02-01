@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,7 +55,8 @@ import com.yunzia.hyperstar.ui.component.itemGroup
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import com.kyant.shapes.RoundedRectangle
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import yunzia.utils.AppUtils
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -65,11 +67,9 @@ import java.util.TimerTask
 
 
 @Composable
-fun DonationPage(
-    navController: NavController,
-    currentStartDestination: MutableState<String>,
-) {
-    val mContext = navController.context
+fun DonationPage() {
+    val navController = LocalNavigator.current
+    val mContext = LocalContext.current
     val appUtils = AppUtils(mContext)
     val apCode = "https://qr.alipay.com/fkx14314i5s3jbfx0rcwz2e"
     val tipsList = listOf(stringResource(R.string.qr_code_save),stringResource(R.string.donate_tip_one),stringResource(R.string.donate_tip_two))
@@ -112,7 +112,6 @@ fun DonationPage(
     NavPager(
         activityTitle = stringResource(R.string.donation),
         navController = navController,
-        parentRoute = currentStartDestination,
     ) {
         itemGroup(
             position = SuperGroupPosition.FIRST
@@ -261,7 +260,7 @@ private fun SaveImage(
     modifier: Modifier = Modifier,
 ){
 
-    val shape = G2RoundedCornerShape(10.dp)
+    val shape = RoundedRectangle(10.dp)
 
     val hapticFeedback = LocalHapticFeedback.current
     Image(

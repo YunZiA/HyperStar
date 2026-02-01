@@ -11,7 +11,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.yunzia.hyperstar.prefs.PreferencesUtil
 import com.yunzia.hyperstar.prefs.SPUtils
+import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
+import top.yukonga.miuix.kmp.extra.SuperSwitch
 
 @Composable
 fun XSuperSwitch(
@@ -23,7 +25,7 @@ fun XSuperSwitch(
 ) {
     val state: MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) }
     SuperSwitch(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
         checked = state.value,
@@ -49,7 +51,7 @@ fun XSuperSwitch(
 ) {
     val state: MutableState<Boolean> = remember { mutableStateOf(SPUtils.getBoolean(key,false)) }
     SuperSwitch(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
         checked = state.value,
@@ -76,7 +78,7 @@ fun XSuperSwitch(
 ) {
 
     SuperSwitch(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
         checked = state.value,
@@ -101,7 +103,7 @@ fun PMiuixSuperSwitch(
 
     var MiuixSuperSwitchState by remember { mutableStateOf(PreferencesUtil.getBoolean(key,defValue)) }
     SuperSwitch(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         checked = MiuixSuperSwitchState,
         onCheckedChange = {
@@ -122,7 +124,7 @@ fun PMiuixSuperSwitch(
     val updatedOnCheckedChange by rememberUpdatedState(onCheckedChange)
 
     SuperSwitch(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = title,
         checked = checked,
         onCheckedChange = {

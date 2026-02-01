@@ -2,10 +2,7 @@ package com.yunzia.hyperstar.ui.screen.pagers
 
 import android.content.Intent
 import android.util.Log
-import android.view.Gravity
 import android.view.HapticFeedbackConstants
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
@@ -21,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
@@ -38,12 +34,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.navigation.NavHostController
 import androidx.wear.compose.material.Icon
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.yunzia.hyperstar.MainActivity
-import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.SuperGroup
 import com.yunzia.hyperstar.ui.component.SuperGroupPosition
@@ -56,10 +49,13 @@ import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
 import com.yunzia.hyperstar.ui.component.topbar.TopBar
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import com.yunzia.hyperstar.ui.navigation.MainRoutes
+import com.yunzia.hyperstar.ui.navigation.Navigator
+import com.yunzia.hyperstar.ui.navigation.Route
 import com.yunzia.hyperstar.ui.screen.pagers.dialog.checkApplication
 import com.yunzia.hyperstar.utils.AppInfo
 import com.yunzia.hyperstar.utils.Helper
-import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.Helper.isRoot
 import com.yunzia.hyperstar.utils.getSettingChannel
 import dev.chrisbanes.haze.HazeState
@@ -72,15 +68,16 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.basic.ArrowRight
-import top.yukonga.miuix.kmp.icon.icons.useful.Cancel
-import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
+import top.yukonga.miuix.kmp.icon.basic.ArrowRight
+import top.yukonga.miuix.kmp.icon.extended.Close
+import top.yukonga.miuix.kmp.icon.extended.More
+//import top.yukonga.miuix.kmp.icon.icons.basic.ArrowRight
+//import top.yukonga.miuix.kmp.icon.icons.useful.Cancel
+//import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.getWindowSize
 
 @Composable
 fun Home(
-    navController: NavHostController,
     hazeState: HazeState,
     contentPadding: PaddingValues,
     showReboot: MutableState<Boolean>,
@@ -88,6 +85,7 @@ fun Home(
 ) {
     val context = LocalContext.current
     val view = LocalView.current
+    val navController = LocalNavigator.current
     val activity = LocalActivity.current as MainActivity
     val isModuleActive = activity.isActive
     val rebootStyle = activity.rebootStyle
@@ -117,7 +115,7 @@ fun Home(
                     ) {
 
                         Icon(
-                            imageVector = MiuixIcons.Useful.ImmersionMore,
+                            imageVector = MiuixIcons.More,
                             contentDescription = "restart",
                             tint = colorScheme.onBackground)
 
@@ -132,7 +130,7 @@ fun Home(
 
         LazyColumn(
             modifier = Modifier
-                .height(getWindowSize().height.dp)
+                .fillMaxSize()
                 .blur(hazeState)
                 .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
             contentPadding = PaddingValues(top = padding.calculateTopPadding(), bottom = contentPadding.calculateBottomPadding()),
@@ -202,7 +200,7 @@ fun Home(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    navController.navigate(PagerList.GO_ROOT)
+                                    navController.navigate(MainRoutes.GoRoot)
                                 },
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
@@ -240,10 +238,10 @@ fun Home(
             ){
                 AppArrow(
                     appInfo = activity.appInfo,
-                    title = stringResource(R.string.systemui),
                     packageName = "com.android.systemui",
+                    title = stringResource(R.string.systemui),
                     navController = navController,
-                    route = PagerList.SYSTEMUI
+                    route = MainRoutes.SystemUI,
                 )
 
                 AppArrow(
@@ -252,7 +250,7 @@ fun Home(
                     title = stringResource(R.string.hyper_home),
                     packageName = "com.miui.home",
                     navController = navController,
-                    route = PagerList.HOME
+                    route = MainRoutes.Home
                 )
 
                 AppArrow(
@@ -261,14 +259,14 @@ fun Home(
                     title = stringResource(R.string.thememanager),
                     packageName = "com.android.thememanager",
                     navController = navController,
-                    route = PagerList.THEMEMANAGER
+                    route = MainRoutes.ThemeManager
                 )
 
                 AppArrow(
                     appInfo = activity.appInfo,
                     packageName = "com.android.mms",
                     navController = navController,
-                    route = PagerList.MMS
+                    route = MainRoutes.MMS
                 )
 
                 AppArrow(
@@ -276,7 +274,7 @@ fun Home(
                     appInfo = activity.appInfo,
                     packageName = "com.xiaomi.barrage",
                     navController = navController,
-                    route = PagerList.BARRAGE
+                    route = MainRoutes.Barrage,
                 )
 
                 AppArrow(
@@ -284,7 +282,7 @@ fun Home(
                     appInfo = activity.appInfo,
                     packageName = "com.miui.screenshot",
                     navController = navController,
-                    route = PagerList.SCREENSHOT
+                    route = MainRoutes.Screenshot,
                 )
 
             }
@@ -296,7 +294,7 @@ fun Home(
                     leftIcon = R.drawable.not_developer,
                     title = stringResource(R.string.not_developer),
                     navController = navController,
-                    route = PagerList.NOTDEVELOP
+                    route = MainRoutes.NotDeveloper
 
                 )
 
@@ -342,7 +340,7 @@ fun Home(
                                     }
                                 ) {
                                     Icon(
-                                        imageVector =  MiuixIcons.Useful.Cancel,
+                                        imageVector =  MiuixIcons.Close,
                                         contentDescription = "back",
                                         tint = colorScheme.onBackground
                                     )
@@ -385,12 +383,12 @@ fun Home(
 
 @Composable
 fun AppArrow(
-    visible: (AppInfo)-> Boolean = { true },
+    visible: (AppInfo) -> Boolean = { true },
     appInfo: MutableMap<String, AppInfo?>,
     packageName: String,
     title: String? = null,
-    navController: NavHostController,
-    route: String
+    route: Route,
+    navController: Navigator
 ){
     with(appInfo[packageName]){
         Log.d("ggc", "AppArrow: ${this@with != null} &&")

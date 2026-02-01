@@ -8,16 +8,14 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.ColorPickerTool
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import com.yunzia.hyperstar.utils.Helper
 
 @Composable
-fun QSCardColorScreen(
-    navController: NavHostController,
-    currentStartDestination: MutableState<String>
-) {
+fun QSCardColorScreen() {
+    val navController = LocalNavigator.current
     ModuleNavPagers(
         activityTitle = stringResource(R.string.card_tile_color),
-        parentRoute = currentStartDestination,
         navController = navController,
         endClick = {
             Helper.rootShell("killall com.android.systemui")

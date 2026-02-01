@@ -20,7 +20,6 @@ import dev.chrisbanes.haze.HazeState
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
-import top.yukonga.miuix.kmp.utils.getWindowSize
 
 @Composable
 fun ModulePagers(
@@ -38,7 +37,7 @@ fun ModulePagers(
         endIcon = endIcon,
     ){ topAppBarScrollBehavior,padding->
         LazyColumn(
-            modifier = Modifier.height(getWindowSize().height.dp)
+            modifier = Modifier.fillMaxSize()
                 .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
             contentPadding = PaddingValues(top = padding.calculateTopPadding()+14.dp, bottom = padding.calculateBottomPadding()+28.dp),
         ) {

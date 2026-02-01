@@ -23,9 +23,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MediaAppSettingsViewModel(
-    application: Application  // 注入 Application
-) : AndroidViewModel(application) {
+class MediaAppSettingsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _appLists = mutableStateOf<List<AppInfo>>(emptyList())
     val appLists: State<List<AppInfo>> = _appLists

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -19,7 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.topbar.NavTopAppBar
@@ -27,23 +25,19 @@ import com.yunzia.hyperstar.ui.component.XScaffold
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
-import com.yunzia.hyperstar.ui.component.nav.backParentPager
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import com.yunzia.hyperstar.viewmodel.UpdaterDownloadViewModel
 import dev.chrisbanes.haze.HazeState
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.BackHandler
-import top.yukonga.miuix.kmp.utils.getWindowSize
 
 @Composable
-fun LogHistoryScreen(
-    navController: NavController,
-    currentStartDestination: MutableState<String>,
-) {
+fun LogHistoryScreen() {
 
     val hazeState = remember { HazeState() }
+    val navController = LocalNavigator.current
     val activity = LocalActivity.current as MainActivity
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
     val downloadModel: UpdaterDownloadViewModel = activity.downloadModel
@@ -60,17 +54,13 @@ fun LogHistoryScreen(
                 title = stringResource(R.string.update_history_log),
                 scrollBehavior = topAppBarScrollBehavior,
                 navController = navController,
-                parentRoute = currentStartDestination,
                 actions = {}
             )
 
         }
     ) { padding ->
-        BackHandler(true) {
-            navController.backParentPager(currentStartDestination.value)
-        }
         LazyColumn(
-            modifier = Modifier.blur(hazeState).height(getWindowSize().height.dp)
+            modifier = Modifier.blur(hazeState).fillMaxSize()
                 .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
             contentPadding = PaddingValues(top = padding.calculateTopPadding()+30.dp, bottom = padding.calculateBottomPadding()+28.dp),
         ) {

@@ -9,7 +9,7 @@ object PluginClassLoaderProvider {
 
     fun init(pluginClassLoader: ClassLoader?): Boolean {
         pluginClassLoader?.let {
-            if ( classLoader == null || classLoader != it){
+            if (classLoader == null || classLoader != it){
                 classLoader = it
                 Log.log("Loaded pluginClassLoader: $it")
                 return true

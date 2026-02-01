@@ -18,10 +18,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.nav.backParentPager
+import com.yunzia.hyperstar.ui.navigation.Navigator
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.SmallTopAppBar
@@ -109,13 +109,12 @@ fun ActivityTopAppBar(
 @Composable
 fun NavTopAppBar(
     modifier: Modifier,
+    navController: Navigator,
     title: String,
     largeTitle: String? = null,
     scrollBehavior: ScrollBehavior? = null,
     color: Color,
-    navController: NavController,
-    parentRoute: MutableState<String>,
-    actions: @Composable() (RowScope.() -> Unit) = {}
+    actions: @Composable() (RowScope.() -> Unit) = {},
 ){
 
     val view = LocalView.current
@@ -131,7 +130,7 @@ fun NavTopAppBar(
                 modifier = Modifier.padding(start = 12.dp),
                 onClick = {
                     view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                    navController.backParentPager(parentRoute.value)
+                    navController.goBack()
 
                 }
             ) {
@@ -151,10 +150,10 @@ fun NavTopAppBar(
 @Composable
 fun NavSmallTopAppBar(
     modifier: Modifier,
+    navController: Navigator,
     title: String,
     scrollBehavior: ScrollBehavior? = null,
     color: Color,
-    navController: NavController,
     parentRoute: MutableState<String>,
     actions: @Composable() (RowScope.() -> Unit) = {}
 ){
@@ -171,7 +170,7 @@ fun NavSmallTopAppBar(
                 modifier = Modifier.padding(start = 12.dp),
                 onClick = {
                     view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                    navController.backParentPager(parentRoute.value)
+                    navController.goBack()
 
                 }
             ) {

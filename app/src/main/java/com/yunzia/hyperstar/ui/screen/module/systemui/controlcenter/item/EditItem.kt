@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,7 +21,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.yunzia.hyperstar.ui.component.dialog.MSuperDialog
+import com.yunzia.hyperstar.ui.component.dialog.CancelBottomSheet
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.ControlCenterListViewModel
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.EnableItemSlider
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.ItemState
@@ -28,6 +29,7 @@ import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.extra.WindowBottomSheetDefaults
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import yunzia.ui.Card
 
@@ -60,16 +62,16 @@ fun EditItem(
     }
 
 
-    MSuperDialog(
+    CancelBottomSheet(
         title = item.name,
         show = showDialog,
-        showAction = true,
         onDismissRequest = {
             showDialog.value = false
         }
     ) {
 
         Card(
+            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width),
             colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
         ){
             EnableItemSlider(

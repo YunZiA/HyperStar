@@ -18,9 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class NotificationAddViewModel(
-    application: Application
-) : AndroidViewModel(application) {
+class NotificationAddViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _selectedApps = mutableStateSetOf<NotificationInfo>()
     val selectedApps: SnapshotStateSet<NotificationInfo> = _selectedApps

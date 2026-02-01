@@ -35,20 +35,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
-import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.ui.component.BaseArrow
 import com.yunzia.hyperstar.ui.component.BaseButton
-import com.yunzia.hyperstar.ui.component.PMiuixSuperDropdown
+import com.yunzia.hyperstar.ui.component.PDropdown
 import com.yunzia.hyperstar.ui.component.PMiuixSuperSwitch
 import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
-import com.yunzia.hyperstar.ui.component.SuperSpinner
 import com.yunzia.hyperstar.ui.component.SuperWarnDialogArrow
-import com.yunzia.hyperstar.ui.component.XSuperDropdown
+import com.yunzia.hyperstar.ui.component.XDropdown
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.dialog.SuperCTDialogDefaults
 import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
@@ -74,13 +71,15 @@ import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.extra.SpinnerEntry
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import com.kyant.shapes.RoundedRectangle
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import com.yunzia.hyperstar.ui.navigation.MainRoutes
+import top.yukonga.miuix.kmp.extra.WindowSpinner
+import top.yukonga.miuix.kmp.icon.extended.More
 
 @Composable
 fun Settings(
-    navController: NavHostController,
     hazeState: HazeState,
     contentPadding: PaddingValues,
     showReboot: MutableState<Boolean>,
@@ -88,6 +87,7 @@ fun Settings(
 ) {
 
     val context = LocalContext.current
+    val navController = LocalNavigator.current
     val activity = LocalActivity.current as MainActivity
     //if (updateLanguage(activity)) return
 
@@ -142,7 +142,7 @@ fun Settings(
                     ) {
 
                         Icon(
-                            imageVector = MiuixIcons.Useful.ImmersionMore,
+                            imageVector = MiuixIcons.More,
                             contentDescription = "restart",
                             tint = colorScheme.onBackground)
 
@@ -175,12 +175,10 @@ fun Settings(
                 SuperNavHostArrow(
                     title = stringResource(R.string.language),
                     navController = navController,
-                    route = PagerList.LANGUAGE,
-                    rightText = getLanguage()
+                    route = MainRoutes.Language,
+                    endText = getLanguage(),
                 )
-
-
-                PMiuixSuperDropdown(
+                PDropdown(
                     title = stringResource(R.string.color_mode_title),
                     option = R.array.color_mode_items,
                     selectedIndex = activity.colorMode.intValue,
@@ -193,7 +191,7 @@ fun Settings(
                 SuperNavHostArrow(
                     title = stringResource(R.string.model_pager_setting),
                     navController = navController,
-                    route = PagerList.SHOW
+                    route = MainRoutes.Show
 
                 )
 
@@ -239,7 +237,7 @@ fun Settings(
                 ) {
                     activity.updateUI()
                 }
-                XSuperDropdown(
+                XDropdown(
                     title = stringResource(R.string.title_log_level),
                     summary = stringResource(R.string.summary_log_level),
                     dfOpt = 0,
@@ -250,7 +248,7 @@ fun Settings(
                 SuperNavHostArrow(
                     title = stringResource(R.string.debug_message),
                     navController = navController,
-                    route = PagerList.MESSAGE
+                    route = MainRoutes.Message
                 )
 
 
@@ -274,7 +272,7 @@ fun ChannelSpinner(
     titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
     summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
-    leftAction: @Composable (() -> Unit)? = null,
+    startAction: @Composable (() -> Unit)? = null,
     enabled: Boolean = true,
     showValue: Boolean = true,
     onSelectedIndexChange: ((Int) -> Unit)?=null,
@@ -287,7 +285,7 @@ fun ChannelSpinner(
         spinnerItems.add(SpinnerEntry(title = item))
     }
 
-    SuperSpinner(
+    WindowSpinner(
         title = title,
         items = spinnerItems,
         selectedIndex = selected.intValue - 1,
@@ -297,7 +295,7 @@ fun ChannelSpinner(
         titleColor = titleColor,
         summary = summary,
         summaryColor = summaryColor,
-        leftAction = leftAction,
+        startAction = startAction,
         enabled = enabled,
         showValue = showValue,
         //onSelectedIndexChange = onSelectedIndexChange
@@ -341,7 +339,7 @@ fun ErrorDialog(
                     .wrapContentHeight()
                     .background(
                         colorScheme.secondaryContainer,
-                        G2RoundedCornerShape(12.dp)
+                        RoundedRectangle(12.dp)
                     )
                     .padding(12.dp)
             ) {

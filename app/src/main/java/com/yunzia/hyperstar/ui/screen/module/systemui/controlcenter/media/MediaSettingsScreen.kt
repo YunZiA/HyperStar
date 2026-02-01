@@ -7,33 +7,29 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import com.yunzia.hyperstar.ControlCenterList
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.component.SuperContentDropdown
+import com.yunzia.hyperstar.ui.component.ContentDropdown
 import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.component.SuperStringArrow
 import com.yunzia.hyperstar.ui.component.SwitchContentFolder
 import com.yunzia.hyperstar.ui.component.XMiuixSuperSliderSwitch
-import com.yunzia.hyperstar.ui.component.XSuperDropdown
+import com.yunzia.hyperstar.ui.component.XDropdown
 import com.yunzia.hyperstar.ui.component.XSuperSwitch
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import com.yunzia.hyperstar.ui.navigation.MediaRoutes
+import com.yunzia.hyperstar.ui.navigation.SystemUIRoutes
 import com.yunzia.hyperstar.utils.Helper
 
 
 @Composable
-fun MediaSettingsScreen(
-    navController: NavHostController,
-    currentStartDestination: MutableState<String>
-) {
+fun MediaSettingsScreen() {
+    val navController = LocalNavigator.current
     ModuleNavPagers(
         activityTitle = stringResource(R.string.media_settings),
-        parentRoute = currentStartDestination,
         navController = navController,
         endClick = {
             Helper.rootShell("killall com.android.systemui")
@@ -46,7 +42,7 @@ fun MediaSettingsScreen(
             SuperNavHostArrow(
                 title = stringResource(R.string.media_default_app_settings),
                 navController = navController,
-                route = ControlCenterList.MEDIA_APP
+                route = MediaRoutes.MediaApp
             )
             SuperStringArrow(
                 title = stringResource(R.string.title_miplay_detail_header_no_song),
@@ -79,7 +75,7 @@ fun MediaSettingsScreen(
                 title = stringResource(R.string.is_emptyState_marquee_title),
                 key = "is_emptyState_marquee"
             )
-            SuperContentDropdown(
+            ContentDropdown(
                 title = stringResource(R.string.media_background_style_title),
                 key = "media_background_style",
                 option = R.array.media_background_style_entire
@@ -150,7 +146,7 @@ fun MediaSettingsScreen(
                 title = stringResource(R.string.title_detail_volumebar_show_value),
                 key = "is_detail_volumebar_show_value"
             )
-            XSuperDropdown(
+            XDropdown(
                 title = stringResource(R.string.is_local_speaker_title),
                 key = "is_local_speaker",
                 option = R.array.is_local_speaker_entire,

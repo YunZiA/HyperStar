@@ -7,23 +7,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.SystemUIMoreList
 import com.yunzia.hyperstar.ui.component.ColorPickerTool
 import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.component.XSuperSwitch
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
+import com.yunzia.hyperstar.ui.navigation.Navigator
+import com.yunzia.hyperstar.ui.navigation.SystemUIRoutes
 import com.yunzia.hyperstar.utils.getSettingChannel
 import com.yunzia.hyperstar.utils.isOS2Settings
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 
 @Composable
 fun SystemUIOtherPager(
-    navController: NavHostController,
+    navController: Navigator,
     scrollBehavior: ScrollBehavior,
     paddingValue: PaddingValues
 ) {
@@ -59,7 +58,7 @@ fun SystemUIOtherPager(
                 SuperNavHostArrow(
                     title = stringResource(R.string.icon_stacking_whitelist),
                     navController = navController,
-                    route = SystemUIMoreList.NOTIFICATIONOFIM
+                    route = SystemUIRoutes.NotificationOfIm
 
                 )
 
@@ -75,7 +74,7 @@ fun SystemUIOtherPager(
             SuperNavHostArrow(
                 title = stringResource(R.string.power_menu_extra),
                 navController = navController,
-                route = SystemUIMoreList.POWERMENU
+                route = SystemUIRoutes.PowerMenu
 
             )
         }

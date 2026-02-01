@@ -25,9 +25,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class NotificationViewModel(
-    application: Application
-) : AndroidViewModel(application) {
+class NotificationViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _selectedApps = mutableStateSetOf<NotificationInfo>()
     val selectedApps: SnapshotStateSet<NotificationInfo> = _selectedApps

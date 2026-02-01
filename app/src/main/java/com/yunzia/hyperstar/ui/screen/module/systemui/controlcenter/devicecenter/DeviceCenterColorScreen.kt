@@ -1,24 +1,20 @@
 package com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.devicecenter
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.ColorPickerTool
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import com.yunzia.hyperstar.utils.Helper
 
 @Composable
-fun DeviceCenterColorScreen(
-    navController: NavController,
-    currentStartDestination: MutableState<String>
-) {
+fun DeviceCenterColorScreen() {
+    val navController = LocalNavigator.current
     ModuleNavPagers(
         activityTitle = stringResource(R.string.smart_hub_color),
         navController = navController,
-        parentRoute = currentStartDestination,
         endClick = {
             Helper.rootShell("killall com.android.systemui")
         },

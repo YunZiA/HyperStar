@@ -5,21 +5,20 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import com.yunzia.hyperstar.ControlCenterList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.component.SuperStringArrow
 import com.yunzia.hyperstar.ui.component.SwitchContentFolder
-import com.yunzia.hyperstar.ui.component.XMiuixContentDropdown
+import com.yunzia.hyperstar.ui.component.XContentDropdown
 import com.yunzia.hyperstar.ui.component.XMiuixSlider
 import com.yunzia.hyperstar.ui.component.XMiuixSuperSliderSwitch
-import com.yunzia.hyperstar.ui.component.XSuperDropdown
+import com.yunzia.hyperstar.ui.component.XDropdown
 import com.yunzia.hyperstar.ui.component.XSuperSwitch
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
+import com.yunzia.hyperstar.ui.navigation.Navigator
+import com.yunzia.hyperstar.ui.navigation.SystemUIRoutes
 import com.yunzia.hyperstar.utils.getSettingChannel
 import com.yunzia.hyperstar.utils.isOS2Settings
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
@@ -27,7 +26,7 @@ import top.yukonga.miuix.kmp.basic.ScrollBehavior
 
 @Composable
 fun ControlCenterPager(
-    navController: NavHostController,
+    navController: Navigator,
     scrollBehavior: ScrollBehavior,
     paddingValue: PaddingValues
 ) {
@@ -39,7 +38,7 @@ fun ControlCenterPager(
             title = R.string.basics,
             position = SuperGroupPosition.FIRST
         ){
-            XSuperDropdown(
+            XDropdown(
                 title = stringResource(R.string.widget_advanced_textures),
                 key = "is_super_blur_Widget",
                 option = R.array.is_super_blur_entire,
@@ -48,17 +47,17 @@ fun ControlCenterPager(
             SuperNavHostArrow(
                 title = stringResource(R.string.color_edit),
                 navController = navController,
-                route = ControlCenterList.COLOR_EDIT
+                route = SystemUIRoutes.ColorEdit
             )
             SuperNavHostArrow(
                 title = stringResource(R.string.control_center_edit),
                 navController = navController,
-                route = ControlCenterList.LAYOUT_ARRANGEMENT
+                route = SystemUIRoutes.LayoutArrangement
             )
             SuperNavHostArrow(
                 title = stringResource(R.string.media_settings),
                 navController = navController,
-                route = ControlCenterList.MEDIA
+                route = SystemUIRoutes.Media
             )
         }
 
@@ -92,8 +91,7 @@ fun ControlCenterPager(
                         title = stringResource(R.string.header_show_message_millis_title),
                         key = "header_show_message_millis",
                         defValue = 1f,
-                        maxValue = 5f,
-                        minValue = 0.1f,
+                        valueRange = 0.1f..5f,
                         unit = "s",
                         decimalPlaces = 2,
                     )
@@ -115,7 +113,7 @@ fun ControlCenterPager(
                 SuperNavHostArrow(
                     title = stringResource(R.string.card_tile_edit),
                     navController = navController,
-                    route = ControlCenterList.CARD_LIST
+                    route = SystemUIRoutes.CardList
                 )
 
             }
@@ -149,7 +147,7 @@ fun ControlCenterPager(
         this.itemGroup(
             title = R.string.device_center,
         ){
-            XSuperDropdown(
+            XDropdown(
                 title = stringResource(R.string.device_center_ist),
                 key = "is_device_center_mode",
                 option = R.array.is_device_center_mode_entire,
@@ -188,14 +186,14 @@ fun ControlCenterPager(
                 decimalPlaces = 1
             )
 
-            XMiuixContentDropdown(
+            XContentDropdown(
                 title = stringResource(R.string.is_list_label_mode_title),
                 key = "is_list_label_mode",
                 option = R.array.is_list_label_mode_entire,
                 showOptions = 0,
                 contents = {
 
-                    XSuperDropdown(
+                    XDropdown(
                         title = stringResource(R.string.wordless_mode),
                         key = "is_wordless_mode_0",
                         option = R.array.is_wordless_mode_entire,
@@ -206,7 +204,7 @@ fun ControlCenterPager(
                 SuperNavHostArrow(
                     title = stringResource(R.string.tile_layout),
                     navController = navController,
-                    route = ControlCenterList.TILE_LAYOUT
+                    route = SystemUIRoutes.TileLayout
                 )
             }
 

@@ -2,6 +2,7 @@ package com.yunzia.hyperstar.ui.screen.pagers
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
@@ -9,16 +10,15 @@ import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.SuperIntentArrow
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.NavPager
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 
 @Composable
-fun ReferencesScreen(
-    navController: NavController,
-    currentStartDestination: MutableState<String>,
-) {
+fun ReferencesScreen() {
+    val navController = LocalNavigator.current
+    val context = LocalContext.current
     NavPager(
         activityTitle = stringResource(R.string.references_title),
         navController = navController,
-        parentRoute = currentStartDestination,
     ) {
         itemGroup(
             title = "Apache-2.0",
@@ -27,49 +27,49 @@ fun ReferencesScreen(
             SuperIntentArrow(
                 title = "miuix-kotlin-multiplatform",
                 summary = "YuKongA",
-                navController = navController,
+                context = context,
                 url = "https://github.com/miuix-kotlin-multiplatform/miuix"
             )
 
             SuperIntentArrow(
                 title = "Xposed",
                 summary = "rovo89,Tungstwenty",
-                navController = navController,
+                context = context,
                 url = "https://github.com/rovo89/XposedBridge"
             )
 
             SuperIntentArrow(
                 title = "XposedBridge",
                 summary = "rovo89",
-                navController = navController,
+                context = context,
                 url = "https://github.com/rovo89/XposedBridge"
             )
 
             SuperIntentArrow(
                 title = "Haze",
                 summary = "Chris Banes",
-                navController = navController,
+                context = context,
                 url = "https://github.com/chrisbanes/haze"
             )
 
             SuperIntentArrow(
                 title = "Gson",
                 summary = "Android Open Source Project, Google Inc.",
-                navController = navController,
+                context = context,
                 url = "https://github.com/google/gson"
             )
 
             SuperIntentArrow(
                 title = "OkHttp",
                 summary = "squarejesse",
-                navController = navController,
+                context = context,
                 url = "https://github.com/square/okhttp"
             )
 
             SuperIntentArrow(
                 title = "AndroidLiquidGlass",
                 summary = "Kyant",
-                navController = navController,
+                context = context,
                 url = "https://github.com/Kyant0/AndroidLiquidGlass"
             )
         }
@@ -78,7 +78,7 @@ fun ReferencesScreen(
             SuperIntentArrow(
                 title = "HyperCeiler",
                 summary = "ReChronoRain",
-                navController = navController,
+                context = context,
                 url = "https://github.com/ReChronoRain/HyperCeiler"
             )
 
@@ -91,7 +91,7 @@ fun ReferencesScreen(
             SuperIntentArrow(
                 title = "IAmNotADeveloper",
                 summary = "ReChronoRain",
-                navController = navController,
+                context = context,
                 url = "https://github.com/xfqwdsj/IAmNotADeveloper"
             )
 

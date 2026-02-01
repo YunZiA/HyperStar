@@ -8,8 +8,8 @@ android {
         val main by getting
         main.apply {
             manifest.srcFile("service/service/src/main/AndroidManifest.xml")
-            java.setSrcDirs(listOf("service/service/src/main/java"))
-            aidl.setSrcDirs(listOf("service/interface/src/main/aidl"))
+            java.directories.add("service/service/src/main/java")
+            aidl.directories.add("service/interface/src/main/aidl")
         }
     }
 

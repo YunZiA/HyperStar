@@ -46,11 +46,11 @@ abstract class BaseXposedModule(base: XposedInterface, param: XposedModuleInterf
     fun initHooks(vararg hooks: BaseHook?) {
         for (h in hooks) {
             h ?: continue
-            log("${h.className} minVersion ${h.minVersion}")
             if ((h.mPackageName.isEmpty() || EzXposed.hookedPackageName == h.mPackageName) && currentHookChannel in h.minVersion..h.maxVersion && !h.isInit){
                 try {
                     h.init()
                     h.isInit = true
+                    log("initialize hook in currentHookChannel: ${h.className} ")
                 } catch (e: Exception) {
                     log("Failed to initialize hook: ${h.className}", e)
                 }

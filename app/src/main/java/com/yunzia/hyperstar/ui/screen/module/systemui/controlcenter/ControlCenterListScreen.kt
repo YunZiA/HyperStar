@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,13 +32,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.topbar.TopButton
 import com.yunzia.hyperstar.ui.component.XMiuixSlider
-import com.yunzia.hyperstar.ui.component.XSuperDropdown
+import com.yunzia.hyperstar.ui.component.XDropdown
 import com.yunzia.hyperstar.ui.component.XSuperSwitch
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.item.BrightnessItem
@@ -50,6 +53,8 @@ import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.item.MediaIt
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.item.VolumeItem
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.prefs.SPUtils
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import com.yunzia.hyperstar.viewmodel.NotificationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -70,9 +75,9 @@ data class ItemState(
     companion object {
         fun loadFromSP(tag: String): ItemState {
             val defaultColumn = when(tag) {
-                "cards", "deviceControl", "deviceCenter", "list", "edit" -> 4f
-                "media" -> 2f
                 "brightness", "volume" -> 1f
+                "cards", "media" -> 2f
+                "deviceControl", "deviceCenter", "list", "edit" -> 4f
                 else -> 4f
             }
             return ItemState(
@@ -101,6 +106,23 @@ class ControlCenterListViewModel(application: Application) : AndroidViewModel(ap
     private val _itemStates = MutableStateFlow<Map<String, ItemState>>(emptyMap())
     val itemStates: StateFlow<Map<String, ItemState>> = _itemStates
 
+
+    init {// 初始化时从 SPUtils 加载所有项的状态
+        val initialStates = listOf("cards", "media", "brightness", "volume", "deviceControl", "deviceCenter", "list", "edit")
+            .associate { tag ->
+                tag to ItemState.loadFromSP(tag)
+            }
+        _itemStates.value = initialStates
+        loadInitialData()
+    }
+
+    private fun loadInitialData() {
+        val itemList = getLists()
+        originalOrder = itemList
+        viewModelScope.launch {
+            _items.value = initData(getApplication(), itemList)
+        }
+    }
 
     fun updateCardItemSpan(
         index: Int,
@@ -165,24 +187,6 @@ class ControlCenterListViewModel(application: Application) : AndroidViewModel(ap
 
         }
     }
-
-    init {// 初始化时从 SPUtils 加载所有项的状态
-        val initialStates = listOf("cards", "media", "brightness", "volume", "deviceControl", "deviceCenter", "list", "edit")
-            .associate { tag ->
-                tag to ItemState.loadFromSP(tag)
-            }
-        _itemStates.value = initialStates
-        loadInitialData()
-    }
-
-    private fun loadInitialData() {
-        val itemList = getLists()
-        originalOrder = itemList
-        viewModelScope.launch {
-            _items.value = initData(getApplication(), itemList)
-        }
-    }
-
     fun updateSwitch(enabled: Boolean) {
         _switchEnabled.value = enabled
         SPUtils.putBoolean("controlCenter_priority_enable", enabled)
@@ -235,9 +239,9 @@ class ControlCenterListViewModel(application: Application) : AndroidViewModel(ap
 
         return itemLists.mapIndexed { index, tag ->
             val column = when(tag) {
-                "cards", "deviceControl", "deviceCenter", "list", "edit" -> 4
-                "media" -> 2
+                "cards", "media" -> 2
                 "brightness", "volume" -> 1
+                "deviceControl", "deviceCenter", "list", "edit" -> 4
                 else -> 4
             }
             Card(index, tag, column, cardMap.getValue(tag))
@@ -247,12 +251,17 @@ class ControlCenterListViewModel(application: Application) : AndroidViewModel(ap
 
 
 @Composable
-fun ControlCenterListScreen(
-    navController: NavController,
-    currentStartDestination: MutableState<String>
-) {
+fun ControlCenterListScreen() {
 
-    val viewModel: ControlCenterListViewModel = viewModel()
+    val context = LocalContext.current
+    val viewModel = viewModel<ControlCenterListViewModel>(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return ControlCenterListViewModel(context.applicationContext as Application) as T
+            }
+        }
+    )
+    val navController = LocalNavigator.current
 
     val items by viewModel.items.collectAsState()
     val orderChanged by viewModel.orderChanged.collectAsState()
@@ -260,7 +269,6 @@ fun ControlCenterListScreen(
 
     ModuleNavPagers(
         activityTitle = stringResource(R.string.control_center_edit),
-        parentRoute = currentStartDestination,
         navController = navController,
         endIcon = {
 
@@ -416,14 +424,13 @@ fun EnableItemDropdown(
         insideMargin = insideMargin
     )
 
-    XSuperDropdown(
+    XDropdown(
         title = stringResource(R.string.land_rightOrLeft),
         enabled = state.value,
         insideMargin = insideMargin,
         key = key,
         dfOpt = dfOpt,
         option = R.array.land_rightOrLeft_entire
-
     )
 
 //    XSuperDialogDropdown(
@@ -459,10 +466,9 @@ fun EnableItemSlider(
         isDialog = true,
         enabled = state.value,
         paddingValues = insideMargin,
-        maxValue = 4f,
-        minValue = 1f,
+        valueRange = 1f..4f,
         defValue = progress,
-        progress = progressState
+        value = progressState
     )
 
 }

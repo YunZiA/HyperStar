@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import com.kyant.shapes.RoundedRectangle
 
 @Composable
 fun TabRow(
@@ -41,7 +41,7 @@ fun TabRow(
     onTabSelected: ((Int) -> Unit)? = null,
 ) {
     val currentOnTabSelected by rememberUpdatedState(onTabSelected)
-    val shape = remember(cornerRadius) { G2RoundedCornerShape(cornerRadius) }
+    val shape = remember(cornerRadius) { RoundedRectangle(cornerRadius) }
 
     Row(
         modifier = modifier

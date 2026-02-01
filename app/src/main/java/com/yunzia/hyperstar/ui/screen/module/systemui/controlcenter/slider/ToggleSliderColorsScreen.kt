@@ -10,16 +10,14 @@ import com.yunzia.hyperstar.ui.component.ContentFolder
 import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import com.yunzia.hyperstar.utils.Helper
 
 @Composable
-fun ToggleSliderColorsScreen(
-    navController: NavController,
-    currentStartDestination: MutableState<String>
-) {
+fun ToggleSliderColorsScreen() {
+    val navController = LocalNavigator.current
     ModuleNavPagers(
         activityTitle = stringResource(R.string.toggle_slider_color),
-        parentRoute = currentStartDestination,
         navController = navController,
         endClick = {
             Helper.rootShell("killall com.android.systemui")

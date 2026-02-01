@@ -14,7 +14,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.yunzia.hyperstar.prefs.SPUtils
+import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
+import top.yukonga.miuix.kmp.extra.SuperSwitch
 
 @Composable
 fun XMiuixSuperSliderSwitch(
@@ -34,7 +36,7 @@ fun XMiuixSuperSliderSwitch(
     //var MiuixSuperProgressState by remember { mutableStateOf(SPUtils.getFloat(key,progress)) }
 
     SuperSwitch(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = switchTitle,
         summary = switchSummary,
         checked = MiuixSuperSwitchState,
@@ -53,8 +55,7 @@ fun XMiuixSuperSliderSwitch(
             title = title,
             key = key,
             defValue = progress,
-            maxValue = maxValue,
-            minValue = minValue,
+            valueRange = minValue..maxValue,
             unit = unit,
             decimalPlaces = decimalPlaces
         )
@@ -74,7 +75,7 @@ fun SwitchContentFolder(
     var MiuixSuperSwitchState by remember { mutableStateOf(SPUtils.getBoolean(switchKey,false)) }
 
     SuperSwitch(
-        modifier = Modifier,
+        modifier = Modifier.bounceAnim(),
         title = switchTitle,
         checked = MiuixSuperSwitchState,
         insideMargin = insideMargin,

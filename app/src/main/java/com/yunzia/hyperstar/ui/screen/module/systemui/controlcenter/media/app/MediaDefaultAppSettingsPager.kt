@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -28,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
@@ -44,18 +42,17 @@ import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import com.kyant.shapes.RoundedRectangle
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import kotlin.collections.forEachIndexed
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
-fun MediaAppSettingsPager(
-    navController: NavController,
-    parentRoute: MutableState<String>
-) {
+fun MediaAppSettingsPager() {
     val activity = LocalActivity.current as MainActivity
+    val navController = LocalNavigator.current
     val context = LocalContext.current
-    val viewModel: MediaAppSettingsViewModel = viewModel(
+    val viewModel = viewModel<MediaAppSettingsViewModel>(
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return MediaAppSettingsViewModel(context.applicationContext as Application) as T
@@ -96,7 +93,6 @@ fun MediaAppSettingsPager(
         activityTitle = stringResource(R.string.media_default_app_settings),
         searchStatus = searchStatus.value,
         navController = navController,
-        parentRoute = parentRoute,
         endClick = {
             Helper.rootShell("killall com.android.systemui")
         },
@@ -162,20 +158,20 @@ fun AppItem(
             .padding(horizontal = 12.dp)
             .padding(top = 10.dp)
             .bounceAnimN()
-            .clip(G2RoundedCornerShape(CardDefaults.CornerRadius))
+            .clip(RoundedRectangle(CardDefaults.CornerRadius))
             .background(if (isSelected) colorScheme.tertiaryContainer else colorScheme.surfaceVariant),
         title = app.label,
         titleColor = titleColor(isSelected),
         summary = app.packageName,
         summaryColor = summaryColor(isSelected),
-        leftAction = {
+        startAction = {
             AppIcon(
                 icon = app.icon,
                 label = app.label,
                 modifier = Modifier.padding(end = 12.dp)
             )
         },
-        rightActions = {
+        endActions = {
             Checkbox(
                 checked = isSelected,
                 onCheckedChange = {

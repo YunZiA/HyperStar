@@ -1,5 +1,0 @@
-io.github.libxposed.service.test.service-updated_navigation_xml-0 C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\build\generated\updated_navigation_xml\debugAndroidTest
-io.github.libxposed.service.test.service-mergeDebugAndroidTestResources-1 C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
-io.github.libxposed.service.test.service-mergeDebugAndroidTestResources-2 C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
-io.github.libxposed.service.test.service-debugAndroidTest-3 C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
-io.github.libxposed.service.test.service-debug-4 C:\Users\25748\StudioProjects\HyperStar_it\lsp\service\build\intermediates\packaged_res\debug\packageDebugResources

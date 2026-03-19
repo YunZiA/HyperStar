@@ -19,7 +19,6 @@ import com.yunzia.hyperstar.ui.component.dialog.CancelBottomSheet
 import com.yunzia.hyperstar.ui.component.modifier.elevation
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.EnableItemDropdown
 import top.yukonga.miuix.kmp.basic.Card
-import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.WindowBottomSheetDefaults
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -58,8 +57,6 @@ fun MediaItem(
         )
     }
 
-
-
     CancelBottomSheet(
         title = item.name,
         show = showDialog,
@@ -69,17 +66,12 @@ fun MediaItem(
     ) {
 
         Card(
-            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width),
-            colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
+            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width)
         ) {
             EnableItemDropdown(
                 key = "media_land_rightOrLeft",
                 dfOpt = 1
             )
-
         }
-
     }
-
-
 }

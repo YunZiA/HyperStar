@@ -198,6 +198,7 @@ object QSListView : BasePluginHook() {
                 Int::class.java
             ) {
                 val contentResolver = this.getObjectFieldAs<ContentResolver>("contentResolver")
+                logD("resetWordlessMode","getSettings")
                 when (labelMode) {
                     1 -> {
                         Settings.Secure.putInt(contentResolver, "wordless_mode", 0)

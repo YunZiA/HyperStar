@@ -51,9 +51,7 @@
 
 # 保留 LibXposed / LSPosed 的注解类
 -keep class io.github.libxposed.** { *; }
-#-keep class io.github.libxposed.api.** { *; }
 
-# 保留你的 BaseHook 类及其注解方法（关键！）
 -keepclassmembers class * {
     @io.github.libxposed.api.annotations.BeforeInvocation <methods>;
     @io.github.libxposed.api.annotations.AfterInvocation <methods>;

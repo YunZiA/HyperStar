@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateSetOf
@@ -155,8 +156,8 @@ class NotificationViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-    fun onSearchStatusChanged(status: SearchStatus.Status) {
-        if (status == SearchStatus.Status.COLLAPSED) {
+    fun onSearchStatusChanged(status: MutableTransitionState<Boolean>) {
+        if (!status.currentState) {
             _searchStatus.value.searchText = ""
         }
     }

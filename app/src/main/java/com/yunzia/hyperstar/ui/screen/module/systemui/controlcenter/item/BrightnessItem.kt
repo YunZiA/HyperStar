@@ -23,13 +23,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.dialog.CancelBottomSheet
 import com.yunzia.hyperstar.ui.component.modifier.elevation
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.EnableItemDropdown
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
+import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.extra.WindowBottomSheet
 import top.yukonga.miuix.kmp.extra.WindowBottomSheetDefaults
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -48,8 +48,7 @@ fun BrightnessItem(
         }
     ) {
         Card(
-            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width),
-            colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
+            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width)
         ){
             EnableItemDropdown(
                 key = "brightness_land_rightOrLeft",
@@ -57,8 +56,6 @@ fun BrightnessItem(
             )
         }
     }
-
-
 
     Box(
         modifier = Modifier

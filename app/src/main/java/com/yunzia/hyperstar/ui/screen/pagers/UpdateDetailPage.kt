@@ -232,7 +232,6 @@ fun PagerState.UpdateDetailPage(
                             Modifier
                         }
                     )
-
                 ,
                 state = listState,
                 userScrollEnabled = uiState.value.newPageState.expand

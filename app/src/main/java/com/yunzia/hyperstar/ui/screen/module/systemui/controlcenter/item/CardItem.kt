@@ -130,8 +130,7 @@ fun CardItem(
     ) {
 
         Card(
-            Modifier.padding(bottom = 10.dp),
-            colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
+            Modifier.padding(bottom = 10.dp)
         ) {
 
             EnableItemDropdown(
@@ -140,8 +139,7 @@ fun CardItem(
             )
         }
         Card(
-            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width),
-            colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
+            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width)
         ) {
             EnableItemSlider(
                 key = "cards_span_size",

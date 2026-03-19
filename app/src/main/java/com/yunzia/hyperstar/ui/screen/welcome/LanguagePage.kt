@@ -135,9 +135,6 @@ private fun LanguageItem(
     isSelected: State<Boolean>,
     onCheckedChange: ((Boolean) -> Unit)
 ){
-
-
-
     SuperCheckbox(
         title = language,
         titleColor =  titleColor(isSelected.value),

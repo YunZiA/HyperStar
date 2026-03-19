@@ -40,15 +40,15 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.Button
-import androidx.wear.compose.material.ButtonDefaults.buttonColors
-import androidx.wear.compose.material.Icon
 import com.kyant.shapes.RoundedRectangle
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseButton
 import com.yunzia.hyperstar.ui.component.MTextField
 import com.yunzia.hyperstar.ui.component.dialog.SuperDialog
 import com.yunzia.hyperstar.ui.component.tool.FilterColorHex
+import top.yukonga.miuix.kmp.basic.Button
+import top.yukonga.miuix.kmp.basic.ButtonDefaults.buttonColors
+import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 
@@ -137,11 +137,10 @@ fun ColorPickerDialog(
                                     doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
                                 },
                                 //contentPadding = PaddingValues(10.dp,16.dp),
-                                shape = RoundedRectangle(12.dp),
+                                cornerRadius = 12.dp,
                                 colors = buttonColors(
-                                    backgroundColor = Color.Transparent,
-                                    contentColor = Color.Transparent,
-                                    disabledContentColor = Color.Transparent
+                                    color = Color.Transparent,
+                                    disabledColor = Color.Transparent
                                 )
                             ) {
                                 Icon(

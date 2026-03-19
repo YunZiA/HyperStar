@@ -1,5 +1,35 @@
 package com.yunzia.hyperstar.ui.component.window
 
+import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.unit.dp
+
+
+@Composable
+fun shouldShowSplitPane(): State<Boolean> {
+    val windowInfo = LocalWindowInfo.current
+    val density = LocalDensity.current
+    val shouldShowSplitPane = remember(windowInfo, density) {
+        derivedStateOf {
+            with(density) {
+                val widthDp = windowInfo.containerSize.width.toDp()
+                val heightDp = windowInfo.containerSize.height.toDp()
+                val ratio = heightDp / widthDp
+                widthDp >= 840.dp || (widthDp >= 600.dp && ratio < 1.2f)
+            }
+        }
+    }
+    return shouldShowSplitPane
+}
+
 class WindowSizeClass(
     /** Returns the lower bound for the width of the size class in dp. */
     val minWidthDp: Int,

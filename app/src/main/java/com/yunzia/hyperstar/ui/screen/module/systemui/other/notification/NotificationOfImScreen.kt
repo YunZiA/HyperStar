@@ -75,6 +75,7 @@ fun NotificationOfImScreen() {
     val searchApps = viewModel.searchApp
     val selectedApps = viewModel.selectedApps
     val unselectedApps = viewModel.unselectedApps
+    val searchTransition = searchStatus.value.transition()
 
     LaunchedEffect(loadStatus.value.isLoading()) {
         if (loadStatus.value.isLoading()) {
@@ -92,9 +93,9 @@ fun NotificationOfImScreen() {
         viewModel.onSearchTextChanged(searchStatus.value.searchText)
     }
 
-    SearchModuleNavPager(
+    searchStatus.value.SearchModuleNavPager(
         activityTitle = stringResource(R.string.icon_stacking_whitelist),
-        searchStatus = searchStatus.value,
+        searchTransition = searchTransition,
         navController = navController,
         endClick = {
             Helper.rootShell("killall com.android.systemui")
@@ -132,7 +133,7 @@ fun NotificationOfImScreen() {
                 }
             }
         }
-    ) { topAppBarScrollBehavior, padding ->
+    ) { topAppBarScrollBehavior, contentTopPadding ->
         LoadBox(
             loadStatus = loadStatus.value,
             modifier = Modifier.fillMaxSize(),
@@ -142,12 +143,11 @@ fun NotificationOfImScreen() {
                     .fillMaxSize()
                     .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
                 contentPadding = PaddingValues(
-                    bottom = padding.calculateBottomPadding()
+                    top = contentTopPadding
                 )
             ) {
                 selectedApps.forEach { app ->
                     item {
-
                         AppNotifItem(
                             notificationInfo = app,
                             navController = navController,

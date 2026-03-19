@@ -32,7 +32,7 @@ object VolumeBarLayoutParams: BasePluginHook() {
         dimenReplaceByValue(
             "miui_volume_dialog_shadow_height_no_footer",plugin
         ) {
-            if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 if (ShadowHeightNoFooterP == -1f) return@dimenReplaceByValue null
                 DensityUtil.Companion.dpToPx(displayMetrics, ShadowHeightNoFooterP)
             } else {
@@ -43,7 +43,7 @@ object VolumeBarLayoutParams: BasePluginHook() {
         dimenReplaceByValue(
             "miui_volume_dialog_shadow_height",plugin
         ) {
-            if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 if (ShadowHeightP == -1f) return@dimenReplaceByValue null
                 DensityUtil.Companion.dpToPx(displayMetrics, ShadowHeightP)
             } else {
@@ -55,7 +55,7 @@ object VolumeBarLayoutParams: BasePluginHook() {
         dimenReplaceByValue(
             "miui_volume_offset_top_collapsed", plugin
         ){
-            if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 if (VolumeOffsetTopCollapsedP == -1f) return@dimenReplaceByValue null
                 DensityUtil.Companion.dpToPx(displayMetrics, VolumeOffsetTopCollapsedP)
             } else {
@@ -68,7 +68,7 @@ object VolumeBarLayoutParams: BasePluginHook() {
         dimenReplaceByValue(
             "miui_volume_dialog_shadow_margin_top", plugin
         ){
-            if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 if (ShadowMarginTopP == -1f) return@dimenReplaceByValue null
                 DensityUtil.Companion.dpToPx(displayMetrics, ShadowMarginTopP)
             } else {
@@ -81,7 +81,7 @@ object VolumeBarLayoutParams: BasePluginHook() {
         dimenReplaceByValue(
             "miui_volume_column_height",plugin
         ){
-            if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 if (VolumeHeightCollapsedP == -1f) return@dimenReplaceByValue null
                 DensityUtil.Companion.dpToPx(displayMetrics, VolumeHeightCollapsedP)
             } else {

@@ -16,6 +16,7 @@ import com.yunzia.hyperstar.hook.core.Log
 import com.yunzia.hyperstar.hook.core.Log.logD
 import com.yunzia.hyperstar.hook.core.helper.afterHookAllMethods
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.hook.core.helper.callMethod
 import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
 import com.yunzia.hyperstar.hook.util.base.ResourcesImpl
 import io.github.kyuubiran.ezxhelper.android.util.ViewUtil.findViewByIdName
@@ -38,6 +39,9 @@ object BaseHookHelper {
 
     fun Resources.getId(name: String, defPackage: String) = this.getIdentifier(name,"id",defPackage)
     fun Resources.getId(name: String, type: String, defPackage: String) = this.getIdentifier(name,type,defPackage)
+
+    fun Any.getIdentifier(name: String, type: String, defPackage: String) = this.callMethod("getIdentifier", name, type, defPackage) as Int
+    fun Any.getId(name: String, type: String, defPackage: String) = this.callMethod("getIdentifier", name, "id", defPackage) as Int
 
 
     fun Resources.getColorBy(name: String, defPackage: String): Int {

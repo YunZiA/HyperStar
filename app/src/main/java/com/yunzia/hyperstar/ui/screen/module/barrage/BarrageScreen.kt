@@ -13,7 +13,6 @@ import com.yunzia.hyperstar.utils.Helper
 
 @Composable
 fun BarrageScreen() {
-
     val navController = LocalNavigator.current
     ModuleNavPagers(
         activityTitle = stringResource(R.string.barrage),
@@ -30,7 +29,6 @@ fun BarrageScreen() {
                 title = stringResource(R.string.disable_click_events),
                 key = "is_disable_barrage_click"
             )
-
         }
     }
 

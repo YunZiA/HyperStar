@@ -60,7 +60,7 @@ fun NeedMessageScreen() {
     val navController = LocalNavigator.current
     val activity = LocalActivity.current as MainActivity
     val debugInfo = "Debug Info of HyperStar\n\n" +
-            "ModuleActive = ${activity.isActive}\n" +
+            "ModuleActive = ${activity.appViewModel.isActive}\n" +
             "HookChannel =  OS${getSettingChannel()}\n" +
             "VersionCode = ${getVersionCode(context)}\n" +
             "VersionName = ${getVerName(context)}\n\n" +

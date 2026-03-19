@@ -64,27 +64,6 @@ class LanguageHelper {
             resources.updateConfiguration(configuration, resources.displayMetrics)
         }
 
-        fun setIndexLanguage(activity: Activity, index: Int) {
-            when (index) {
-                0 -> {
-                    setSystemLanguage(activity)
-
-                }
-
-                1 -> {
-                    setLanguage(activity, "zh", "CN")
-
-                }
-
-                2 -> {
-                    setLanguage(activity, "en")
-
-                }
-
-
-            }
-        }
-
         private fun getSystemLanguage():Locale {
             val config = Resources.getSystem().configuration;
             return config.locales[0]

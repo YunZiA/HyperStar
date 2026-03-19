@@ -2,6 +2,7 @@ package com.yunzia.hyperstar.ui.navigation
 
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
@@ -11,7 +12,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.navigation3.runtime.NavKey
 
-val LocalNavigator = staticCompositionLocalOf<Navigator> {
+val LocalNavigator = compositionLocalOf<Navigator> {
     error("LocalNavigator not provided")
 }
 

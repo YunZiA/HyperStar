@@ -256,6 +256,7 @@
     <string name="title_adb_enabled">Ocultar Depuração USB</string>
     <string name="title_adb_wifi_enabled">Ocultar Depuração Sem Fio</string>
     <string name="not_developer">Eu não sou um desenvolvedor</string>
+    <string name="fun_scope">Scope</string>
     <string name="title_log_level">Nível de Log</string>
     <string name="summary_log_level">Reinicie para ativar alterações no escopo</string>
     <string name="no_active_des_sum">Por favor, vá para o LSPosed Module Manager para ativá-lo.</string>

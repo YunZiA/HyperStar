@@ -37,7 +37,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.Button
@@ -50,6 +49,7 @@ import com.yunzia.hyperstar.utils.JBUtil.openFile
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
+import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
@@ -89,15 +89,15 @@ fun ProviderPage(
         Spacer(modifier = Modifier.height(20.dp))
 
         Box(
-            modifier = Modifier
-        ) {
-            Icon(
-                ImageVector.vectorResource(R.drawable.provision_perview_view),
-                contentDescription = "language",
-                tint = Color(0xFF3482FF)
-            )
+            modifier = Modifier, content = {
+                Icon(
+                    ImageVector.vectorResource(R.drawable.provision_perview_view),
+                    contentDescription = "language",
+                    tint = Color(0xFF3482FF)
+                )
 
-        }
+            }
+        )
         Text(
             text = stringResource(R.string.data_import),
             modifier = Modifier.padding(vertical = 10.dp),

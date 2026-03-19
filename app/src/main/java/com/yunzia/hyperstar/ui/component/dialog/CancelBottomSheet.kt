@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
-import androidx.wear.compose.material.Icon
+import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -20,7 +20,7 @@ fun CancelBottomSheet(
     show: MutableState<Boolean>,
     modifier: Modifier = Modifier,
     title: String? = null,
-    backgroundColor: Color = WindowBottomSheetDefaults.backgroundColor(),
+    backgroundColor: Color = colorScheme.surface,
     enableWindowDim: Boolean = true,
     cornerRadius: Dp = WindowBottomSheetDefaults.cornerRadius,
     sheetMaxWidth: Dp = WindowBottomSheetDefaults.maxWidth,

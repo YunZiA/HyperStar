@@ -27,8 +27,7 @@ fun ControlCenterColorScreen() {
         itemGroup(
             title = R.string.control_center_background_color,
             position = SuperGroupPosition.FIRST
-        ){
-
+        ) {
             ColorPickerTool(
                 title = stringResource(R.string.disabled_advanced_textures),
                 key = "background_color"
@@ -44,10 +43,7 @@ fun ControlCenterColorScreen() {
                     key = "background_blend_color_secondary"
                 )
             }
-
-
         }
-
         itemGroup(
             title = R.string.card_tile
         ){
@@ -90,7 +86,6 @@ fun ControlCenterColorScreen() {
 
             }
         }
-
         itemGroup(
             title = R.string.volume_or_brightness
         ){
@@ -122,7 +117,6 @@ fun ControlCenterColorScreen() {
                 navController = navController,
                 route = ColorEditRoutes.DeviceCenterColor
             )
-
         }
         itemGroup(
             title = R.string.tile
@@ -149,7 +143,6 @@ fun ControlCenterColorScreen() {
                     key = "edit_background_color"
                 )
                 ContentFolder(stringResource(R.string.advanced_textures)){
-
                     ColorPickerTool(
                         title = stringResource(R.string.color_mix_main),
                         key = "edit_background_blend_color_main"
@@ -159,16 +152,11 @@ fun ControlCenterColorScreen() {
                         key = "edit_background_blend_color_secondary"
                     )
                 }
-
             }
-
             ColorPickerTool(
                 title = stringResource(R.string.title),
                 key = "edit_title_color"
             )
-
         }
-
-
     }
 }

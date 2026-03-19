@@ -1,12 +1,15 @@
 package com.yunzia.hyperstar.hook.core
 
 import android.app.Application
+import android.content.Context
 import com.yunzia.hyperstar.hook.core.Log.logE
+import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper
+import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.addModuleAssetPath
+import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.loadResAboveApi30
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.prefs.loadPref
 import com.yunzia.hyperstar.utils.getHookChannel
 import io.github.kyuubiran.ezxhelper.xposed.EzXposed
-import io.github.kyuubiran.ezxhelper.xposed.EzXposed.addModuleAssetPath
 import io.github.kyuubiran.ezxhelper.xposed.EzXposed.initAppContext
 import io.github.libxposed.api.XposedInterface
 import io.github.libxposed.api.XposedModule
@@ -19,17 +22,17 @@ abstract class BaseXposedModule(base: XposedInterface, param: XposedModuleInterf
 
     init {
         EzXposed.initXposedModule(base)
-        EzXposed.initModuleResources()
+        ResourcesHelper.initModuleResources(base)
     }
     override fun onPackageLoaded(param: XposedModuleInterface.PackageLoadedParam) {
         super.onPackageLoaded(param)
         log("ModuleMain at " + param.applicationInfo.packageName)
         EzXposed.initOnPackageLoaded(param)
+
         Application::class.java.apply {
-            afterHookMethod("onCreate"){
-                this as Application
+            afterHookMethod("attach", Context::class.java){
                 try {
-                    addModuleAssetPath(this.applicationContext)
+                    loadResAboveApi30((it.args[0] as Context))
                 }catch (e: Exception){
                     logE("attach $e")
                 }

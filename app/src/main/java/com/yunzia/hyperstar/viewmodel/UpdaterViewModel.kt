@@ -212,11 +212,11 @@ private fun rememberUpdateDetailAnimations(
 
     val animatedValues = AnimatedValues(
         color = animateColorAsState(
-            if (newPageState.expand) colorScheme.background else colorScheme.surface,
+            if (newPageState.expand) colorScheme.surface else colorScheme.surfaceContainer,
             animationSpec = tween(durationMillis = durationMillis, easing = SlowEasing)
         ).value,
         radius = animateDpAsState(
-            if (newPageState.expand) myRadius else 16.dp,
+            if (newPageState.expand) myRadius else 20.dp,
             animationSpec = tween(durationMillis = durationMillis, easing = SlowEasing)
         ).value,
         cardHeight = animateDpAsState(

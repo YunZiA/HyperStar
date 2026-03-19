@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Using: C:\\Users\\25748\\AppData\\Local\\Android\\Sdk\\build-tools\\36.0.0\\aidl.exe -pC:\\Users\\25748\\AppData\\Local\\Android\\Sdk\\platforms\\android-34\\framework.aidl -oC:\\Users\\25748\\StudioProjects\\HyperStar_it\\lsp\\service\\build\\generated\\aidl_source_output_dir\\debug\\out -IC:\\Users\\25748\\StudioProjects\\HyperStar_it\\lsp\\service\\src\\main\\aidl -IC:\\Users\\25748\\StudioProjects\\HyperStar_it\\lsp\\service\\service\\interface\\src\\main\\aidl -IC:\\Users\\25748\\StudioProjects\\HyperStar_it\\lsp\\service\\src\\debug\\aidl -dC:\\Users\\25748\\AppData\\Local\\Temp\\aidl3969224653102932401.d C:\\Users\\25748\\StudioProjects\\HyperStar_it\\lsp\\service\\service\\interface\\src\\main\\aidl\\io\\github\\libxposed\\service\\IXposedService.aidl
+ * Using: C:\\Users\\25748\\AppData\\Local\\Android\\Sdk\\build-tools\\36.0.0\\aidl.exe -pC:\\Users\\25748\\AppData\\Local\\Android\\Sdk\\platforms\\android-34\\framework.aidl -oC:\\Users\\25748\\StudioProjects\\HyperStar_it\\lsp\\service\\build\\generated\\aidl_source_output_dir\\debug\\out -IC:\\Users\\25748\\StudioProjects\\HyperStar_it\\lsp\\service\\src\\main\\aidl -IC:\\Users\\25748\\StudioProjects\\HyperStar_it\\lsp\\service\\service\\interface\\src\\main\\aidl -IC:\\Users\\25748\\StudioProjects\\HyperStar_it\\lsp\\service\\src\\debug\\aidl -dC:\\Users\\25748\\AppData\\Local\\Temp\\aidl5296026505000723909.d C:\\Users\\25748\\StudioProjects\\HyperStar_it\\lsp\\service\\service\\interface\\src\\main\\aidl\\io\\github\\libxposed\\service\\IXposedService.aidl
  *
  * DO NOT CHECK THIS FILE INTO A CODE TREE (e.g. git, etc..).
  * ALWAYS GENERATE THIS FILE FROM UPDATED AIDL COMPILER
@@ -42,6 +42,10 @@ public interface IXposedService extends android.os.IInterface
     {
     }
     @Override public java.lang.String removeScope(java.lang.String packageName) throws android.os.RemoteException
+    {
+      return null;
+    }
+    @Override public java.util.List<io.github.libxposed.service.HookedProcess> getRunningTargets() throws android.os.RemoteException
     {
       return null;
     }
@@ -172,6 +176,13 @@ public interface IXposedService extends android.os.IInterface
           java.lang.String _result = this.removeScope(_arg0);
           reply.writeNoException();
           reply.writeString(_result);
+          break;
+        }
+        case TRANSACTION_getRunningTargets:
+        {
+          java.util.List<io.github.libxposed.service.HookedProcess> _result = this.getRunningTargets();
+          reply.writeNoException();
+          _Parcel.writeTypedList(reply, _result, android.os.Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
           break;
         }
         case TRANSACTION_requestRemotePreferences:
@@ -383,6 +394,23 @@ public interface IXposedService extends android.os.IInterface
         }
         return _result;
       }
+      @Override public java.util.List<io.github.libxposed.service.HookedProcess> getRunningTargets() throws android.os.RemoteException
+      {
+        android.os.Parcel _data = android.os.Parcel.obtain();
+        android.os.Parcel _reply = android.os.Parcel.obtain();
+        java.util.List<io.github.libxposed.service.HookedProcess> _result;
+        try {
+          _data.writeInterfaceToken(DESCRIPTOR);
+          boolean _status = mRemote.transact(Stub.TRANSACTION_getRunningTargets, _data, _reply, 0);
+          _reply.readException();
+          _result = _reply.createTypedArrayList(io.github.libxposed.service.HookedProcess.CREATOR);
+        }
+        finally {
+          _reply.recycle();
+          _data.recycle();
+        }
+        return _result;
+      }
       // remote preference utilities
       @Override public android.os.Bundle requestRemotePreferences(java.lang.String group) throws android.os.RemoteException
       {
@@ -496,6 +524,7 @@ public interface IXposedService extends android.os.IInterface
     static final int TRANSACTION_getScope = (android.os.IBinder.FIRST_CALL_TRANSACTION + 10);
     static final int TRANSACTION_requestScope = (android.os.IBinder.FIRST_CALL_TRANSACTION + 11);
     static final int TRANSACTION_removeScope = (android.os.IBinder.FIRST_CALL_TRANSACTION + 12);
+    static final int TRANSACTION_getRunningTargets = (android.os.IBinder.FIRST_CALL_TRANSACTION + 13);
     static final int TRANSACTION_requestRemotePreferences = (android.os.IBinder.FIRST_CALL_TRANSACTION + 20);
     static final int TRANSACTION_updateRemotePreferences = (android.os.IBinder.FIRST_CALL_TRANSACTION + 21);
     static final int TRANSACTION_deleteRemotePreferences = (android.os.IBinder.FIRST_CALL_TRANSACTION + 22);
@@ -522,6 +551,7 @@ public interface IXposedService extends android.os.IInterface
   public java.util.List<java.lang.String> getScope() throws android.os.RemoteException;
   public void requestScope(java.lang.String packageName, io.github.libxposed.service.IXposedScopeCallback callback) throws android.os.RemoteException;
   public java.lang.String removeScope(java.lang.String packageName) throws android.os.RemoteException;
+  public java.util.List<io.github.libxposed.service.HookedProcess> getRunningTargets() throws android.os.RemoteException;
   // remote preference utilities
   public android.os.Bundle requestRemotePreferences(java.lang.String group) throws android.os.RemoteException;
   public void updateRemotePreferences(java.lang.String group, android.os.Bundle diff) throws android.os.RemoteException;
@@ -548,6 +578,20 @@ public interface IXposedService extends android.os.IInterface
         value.writeToParcel(parcel, parcelableFlags);
       } else {
         parcel.writeInt(0);
+      }
+    }
+    static private <T extends android.os.Parcelable> void writeTypedList(
+        android.os.Parcel parcel, java.util.List<T> value, int parcelableFlags) {
+      if (value == null) {
+        parcel.writeInt(-1);
+      } else {
+        int N = value.size();
+        int i = 0;
+        parcel.writeInt(N);
+        while (i < N) {
+    writeTypedObject(parcel, value.get(i), parcelableFlags);
+          i++;
+        }
       }
     }
   }

@@ -58,14 +58,12 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseButton
 import com.yunzia.hyperstar.ui.component.Button
 import com.yunzia.hyperstar.ui.component.SuperIntentArrow
 import com.yunzia.hyperstar.ui.component.XScaffold
-import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
 import com.yunzia.hyperstar.utils.getVerName
@@ -91,6 +89,8 @@ import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import com.yunzia.hyperstar.ui.navigation.MainRoutes
 import com.yunzia.hyperstar.ui.navigation.Navigator
 import top.yukonga.miuix.kmp.basic.DropdownImpl
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.extra.WindowListPopup
 import top.yukonga.miuix.kmp.icon.extended.More
 import java.io.File
@@ -224,7 +224,7 @@ fun UpdaterScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .blur(hazeState),
-            beyondViewportPageCount = PagerDefaults.BeyondViewportPageCount+1,
+            beyondViewportPageCount = PagerDefaults.BeyondViewportPageCount + 1,
             state = pagerState,
             userScrollEnabled = isNeedUpdate.value && uiState.value.isScrollEnabled,
         ) { page ->
@@ -505,7 +505,7 @@ private fun ChannelDialog(
     navController: Navigator
 ) {
     val context = LocalContext.current
-    SuperXDialog(
+    SuperDialog(
         title = stringResource(R.string.go_channel_discuss),
         show = show,
         onDismissRequest = {

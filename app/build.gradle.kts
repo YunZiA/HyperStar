@@ -91,6 +91,7 @@ configure<ApplicationExtension> {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            matchingFallbacks.add("release")
         }
 
         debug {
@@ -106,6 +107,7 @@ configure<ApplicationExtension> {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            matchingFallbacks.add("dev")
         }
         create("cc") {
         }
@@ -118,6 +120,7 @@ configure<ApplicationExtension> {
     buildFeatures {
         compose = true
         aidl = true
+        buildConfig = true
     }
     packaging {
         resources {
@@ -126,10 +129,7 @@ configure<ApplicationExtension> {
     }
 
     androidResources {
-        additionalParameters.clear() // 清空已有参数
-        additionalParameters.add("--allow-reserved-package-id")
-        additionalParameters.add("--package-id")
-        additionalParameters.add("0x66")
+        androidResources.additionalParameters += listOf("--allow-reserved-package-id", "--package-id", "0x39")
     }
 }
 
@@ -141,6 +141,8 @@ dependencies {
     compileOnly(project(":lsp:annotations"))
     compileOnly(project(":lsp:api"))
     implementation(project(":lsp:service"))
+    implementation("io.github.kyant0:backdrop:2.0.0-alpha03")
+
     implementation(libs.ezxhelper.core)
     implementation(libs.ezxhelper.xposed.api)
     implementation(libs.ezxhelper.android.utils)
@@ -152,7 +154,7 @@ dependencies {
     implementation(libs.miuix)
     implementation(libs.miuix.icons)
     implementation(libs.miuix.navigation3.ui)
-    implementation(libs.miuix.navigation3.adaptive)
+//    implementation(libs.miuix.navigation3.adaptive)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigationevent.compose)
@@ -164,7 +166,7 @@ dependencies {
     implementation(libs.androidx.profileinstaller)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.accompanist.drawablepainter)
-    implementation(libs.androidx.compose.material)
+//    implementation(libs.androidx.compose.material)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     androidTestImplementation(libs.androidx.ui.test.junit4)

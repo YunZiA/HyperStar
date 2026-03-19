@@ -17,6 +17,7 @@ import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
 import com.yunzia.hyperstar.ui.navigation.Navigator
 import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.rememberHazeState
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 
@@ -30,7 +31,7 @@ fun NavPager(
     content: (LazyListScope.() -> Unit)? = null
 ) {
 
-    val hazeState = remember { HazeState() }
+    val hazeState = rememberHazeState()
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
 
 

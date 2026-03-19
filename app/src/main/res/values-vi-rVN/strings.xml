@@ -226,6 +226,7 @@
     <string name="wechat">Wechat</string>
     <string name="widget_advanced_textures">Hoạ tiết nâng cao của Widget</string>
     <string name="xposed_desc">Hãy tin Hyper, bạn sẽ sống mãi mãi!</string>
+    <string name="fun_scope">Scope</string>
     <string name="title_log_level">Log level</string>
     <string name="summary_log_level">Restart to activate changes in scope</string>
     <string name="menu_style_1">Style 1</string>

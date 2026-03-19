@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.LocalTextStyle
 import kotlinx.coroutines.delay
 import top.yukonga.miuix.kmp.basic.Text
 
@@ -69,7 +68,7 @@ fun MarqueeText(
     overflow: TextOverflow = TextOverflow.Clip,
     softWrap: Boolean = true,
     onTextLayout: (TextLayoutResult) -> Unit = {},
-    style: TextStyle = LocalTextStyle.current,
+    style: TextStyle ,//=  LocalTextStyles.current.main,
 ) {
     // 创建Text控件方法，相当于@Composable fun createText(localModifier: Modifier)
     val createText = @Composable { localModifier: Modifier ->

@@ -194,7 +194,7 @@ object JBUtil {
         if ( b1 && b2 ){
             Toast.makeText(activity,
                 context.getString(R.string.clear_success),Toast.LENGTH_SHORT).show()
-            activity.updateUI()
+            activity.recreate()
         }else{
             if (b1 || b2) {
                 Toast.makeText(activity,

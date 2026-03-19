@@ -3,6 +3,7 @@ package com.yunzia.hyperstar.ui.screen.module.screenshot
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.res.stringResource
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
@@ -18,7 +19,7 @@ fun ScreenshotScreen() {
     val navController = LocalNavigator.current
     val activity = LocalActivity.current as MainActivity
     ModuleNavPagers(
-        activityTitle = activity.appInfo["com.miui.screenshot"]!!.appName,
+        activityTitle = activity.appViewModel.appInScope.collectAsState().value["com.miui.screenshot"]!!.appName,
         navController = navController,
         endClick = {
             Helper.rootShell("killall com.miui.screenshot")

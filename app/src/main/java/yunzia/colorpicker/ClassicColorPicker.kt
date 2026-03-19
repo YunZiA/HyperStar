@@ -39,10 +39,6 @@ fun ClassicColorPicker(
     onColorChanged: (HsvColor) -> Unit
 ) {
 
-    val width = LocalView.current.width
-    val res = LocalContext.current.resources
-
-    Log.d("ggc", "ClassicColorPicker: $width + ${DensityUtil.pxToDp(res,1006f)}")
     val coroutineScope = rememberCoroutineScope()
 
     val pagerState = rememberPagerState(pageCount = { 2 })
@@ -57,8 +53,6 @@ fun ClassicColorPicker(
                 .padding(bottom = 10.dp),
             listOf(stringResource(R.string.Grid), stringResource(R.string.Slider)),
             pagerState.currentPage,
-            tabColor = colorScheme.surfaceVariant,
-            tabBgColor = colorResource(R.color.tab_bg_color),
             titleColor = colorScheme.onSurfaceSecondary,
             titleSelectColor = colorScheme.onSurface
 

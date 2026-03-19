@@ -11,9 +11,9 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.prefs.SPUtils
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
-import top.yukonga.miuix.kmp.extra.SpinnerColors
-import top.yukonga.miuix.kmp.extra.SpinnerDefaults
-import top.yukonga.miuix.kmp.extra.SpinnerEntry
+import top.yukonga.miuix.kmp.basic.SpinnerColors
+import top.yukonga.miuix.kmp.basic.SpinnerDefaults
+import top.yukonga.miuix.kmp.basic.SpinnerEntry
 import top.yukonga.miuix.kmp.extra.WindowSpinner
 
 @Composable
@@ -28,7 +28,7 @@ fun WindowSpinner(
     titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
     summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
-    spinnerColors: SpinnerColors = SpinnerDefaults.spinnerColors(),
+    spinnerColors: SpinnerColors = SpinnerDefaults.dialogSpinnerColors(),
     startAction: @Composable (() -> Unit)? = null,
     bottomAction: (@Composable () -> Unit)? = null,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,

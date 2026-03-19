@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
+import android.util.Log
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -25,27 +26,29 @@ import top.yukonga.miuix.kmp.theme.lightColorScheme
 fun BaseActivity.HyperStarTheme(
     content: @Composable () -> Unit
 ) {
-    isDarkMode = colorMode.intValue == 2 || (isSystemInDarkTheme() && colorMode.intValue == 0)
-    DisposableEffect(isDarkMode) {
+
+    val isDark = isSystemInDarkTheme()
+    DisposableEffect(colorMode.intValue) {
+        isDarkMode = when(colorMode.intValue){
+            2, 5 -> true
+            0, 3 -> isDark
+            else -> false
+        }
+
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.auto(
                 Color.TRANSPARENT,
-                Color.TRANSPARENT,
-                { isDarkMode }
-            ) ,
+                Color.TRANSPARENT
+            ) { isDarkMode },
             navigationBarStyle = SystemBarStyle.auto(
                 Color.TRANSPARENT,
-                Color.TRANSPARENT,
-                { false }
-            )
+                Color.TRANSPARENT
+            ) { isDarkMode },
         )
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-        }
         window.isNavigationBarContrastEnforced = false
-        onDispose {}
+        onDispose {  }
     }
 
-    val isDark = isSystemInDarkTheme()
     val controller = when (colorMode.intValue) {
         1 -> ThemeController(ColorSchemeMode.Light)
         2 -> ThemeController(ColorSchemeMode.Dark)
@@ -68,17 +71,18 @@ fun BaseActivity.HyperStarTheme(
         else -> ThemeController(ColorSchemeMode.System)
     }
 
+    val context = LocalContext.current
+    val newContext = context.createConfigurationContext(Configuration(context.resources.configuration).apply {
+        setLocale(getIndexLanguage(language.intValue))
+    })
 
-    return MiuixTheme(
-        controller = controller
-    ){
-        val context = LocalContext.current
-        val newContext = context.createConfigurationContext(Configuration(context.resources.configuration).apply {
-            setLocale(getIndexLanguage(language.intValue))
-        })
-        CompositionLocalProvider(
-            LocalConfiguration provides newContext.resources.configuration
-        ) {
+    CompositionLocalProvider(
+        LocalConfiguration provides newContext.resources.configuration
+    ) {
+        Log.d("HyperStarTheme", "HyperStarTheme: LocalConfiguration")
+        MiuixTheme(
+            controller = controller
+        ){
             content()
         }
     }

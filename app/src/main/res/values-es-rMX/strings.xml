@@ -216,6 +216,7 @@
     <string name="title_adb_enabled">Ocultar la depuración USB</string>
     <string name="title_adb_wifi_enabled">Ocultar la depuración inalámbrica</string>
     <string name="not_developer">No soy desarrollador</string>
+    <string name="fun_scope">Scope</string>
     <string name="title_log_level">Nivel de registro</string>
     <string name="summary_log_level">Reiniciar para activar los cambios</string>
     <string name="no_active_des_sum">Vaya al Administrador de módulos XP para activarlo.</string>

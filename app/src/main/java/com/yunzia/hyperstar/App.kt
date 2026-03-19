@@ -2,8 +2,10 @@ package com.yunzia.hyperstar
 
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
+import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -11,27 +13,32 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.yunzia.hyperstar.prefs.PreferencesUtil
-import com.yunzia.hyperstar.ui.component.XScaffold
+import com.yunzia.hyperstar.ui.component.window.shouldShowSplitPane
 import com.yunzia.hyperstar.ui.navigation.ColorEditRoutes
 import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import com.yunzia.hyperstar.ui.navigation.MainRoutes
@@ -39,8 +46,7 @@ import com.yunzia.hyperstar.ui.navigation.MediaRoutes
 import com.yunzia.hyperstar.ui.navigation.PowerMenuRoutes
 import com.yunzia.hyperstar.ui.navigation.SystemUIRoutes
 import com.yunzia.hyperstar.ui.navigation.rememberNavigator
-import com.yunzia.hyperstar.ui.navigation.rememberTwoPaneSceneStrategy
-import com.yunzia.hyperstar.ui.screen.module.NotDeveloperScreen
+import com.yunzia.hyperstar.ui.screen.module.notDeveloper.NotDeveloperScreen
 import com.yunzia.hyperstar.ui.screen.module.barrage.BarrageScreen
 import com.yunzia.hyperstar.ui.screen.module.home.HomeScreen
 import com.yunzia.hyperstar.ui.screen.module.mms.MMSScreen
@@ -67,8 +73,10 @@ import com.yunzia.hyperstar.ui.screen.pagers.FPSMonitor
 import com.yunzia.hyperstar.ui.screen.pagers.GoRootPager
 import com.yunzia.hyperstar.ui.screen.pagers.LanguagePager
 import com.yunzia.hyperstar.ui.screen.pagers.LogHistoryScreen
-import com.yunzia.hyperstar.ui.screen.pagers.MainPager
+import com.yunzia.hyperstar.ui.screen.pagers.main.MainPager
+import com.yunzia.hyperstar.ui.screen.pagers.main.MainPagerInLand
 import com.yunzia.hyperstar.ui.screen.pagers.NeedMessageScreen
+import com.yunzia.hyperstar.ui.screen.pagers.main.RebootDialog
 import com.yunzia.hyperstar.ui.screen.pagers.ReferencesScreen
 import com.yunzia.hyperstar.ui.screen.pagers.SettingsShowScreen
 import com.yunzia.hyperstar.ui.screen.pagers.TranslatorScreen
@@ -80,8 +88,19 @@ import com.yunzia.hyperstar.utils.isPad
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.MiuixPopupHost
 
+
+val LocalMainPagerState = compositionLocalOf<PagerState> {
+    error("LocalMainPagerState not provider")
+}
+val LocalRebootDialogState = compositionLocalOf<MutableState<Boolean>> {
+    error("LocalMainPagerState not provider")
+}
+
+@OptIn(ExperimentalAnimationApi::class)
 @SuppressLint("SourceLockedOrientationActivity", "UnusedBoxWithConstraintsScope",
     "LocalContextConfigurationRead"
 )
@@ -90,20 +109,19 @@ fun App(){
     val context = LocalContext.current
     val activity = LocalActivity.current as MainActivity
 
-    XScaffold(
+    Scaffold(
         modifier = Modifier
     ) {
-        val isUpdate = remember { mutableStateOf(false) }
-        if (!activity.isActive){
+        Log.d("MainPageContent", "MainPageContent XScaffold: init")
+
+        if (!activity.appViewModel.isActive){
             if (!isFold() && !isPad()){
                 activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             }
             ActivePage()
-            return@XScaffold
+            return@Scaffold
         }
         val navigator = rememberNavigator(MainRoutes.Key)
-        val configuration = LocalConfiguration.current
-
         val welcome = remember { mutableStateOf(PreferencesUtil.getBoolean("is_first_use",true)) }
         val easing  = CubicBezierEasing(.42f,0f,0.26f,.85f)
         val coroutineScope = rememberCoroutineScope()
@@ -115,92 +133,121 @@ fun App(){
                 enter = fadeIn(animationSpec = tween(300, easing = easing)) + scaleIn(animationSpec = tween(300, easing = easing),initialScale = 0.9f),
                 exit = fadeOut() + scaleOut()
             ) {
-                val twoPaneSceneStrategy = rememberTwoPaneSceneStrategy<Any>()
-                NavDisplay(
-                    backStack = navigator.backStack,
-                    entryDecorators = listOf(
-                        rememberSaveableStateHolderNavEntryDecorator(),
-                        rememberViewModelStoreNavEntryDecorator()
-                    ),
-                    //sceneStrategy = twoPaneSceneStrategy,
-                    onBack = {
-                        if (navigator.backStack.size >= 2) {
-                            navigator.goBack()
+
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                Log.d("App", "App: layout")
+
+                val rebootStyle = activity.rebootStyle
+                val rebootDialogState = rememberSaveable { mutableStateOf(false) }
+                if (rebootStyle.intValue == 0){ RebootDialog(rebootDialogState) }
+                val pagerState = rememberPagerState(initialPage = 0, pageCount = { 3 })
+
+                Row(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    val showTwoPanes = shouldShowSplitPane()
+                    if(showTwoPanes.value) {
+                        CompositionLocalProvider(
+                            LocalMainPagerState provides pagerState,
+                            LocalRebootDialogState provides rebootDialogState
+                        ) {
+                            MainPagerInLand(
+                                modifier = Modifier
+                                    .weight(0.45f)
+                                    .zIndex(1f),
+                            )
                         }
-                    },
-                    entryProvider = entryProvider {
-
-                        entry<MainRoutes.Key> { MainPager() }
-
-                        entry<SystemUIRoutes.ColorEdit> { ControlCenterColorScreen() }
-
-                        entry<SystemUIRoutes.LayoutArrangement> { ControlCenterListScreen() }
-
-                        entry<SystemUIRoutes.Media> { MediaSettingsScreen() }
-
-                        entry<SystemUIRoutes.CardList> { QSCardListScreen() }
-
-                        entry<SystemUIRoutes.TileLayout> { QsListViewScreen() }
-
-                        entry<MediaRoutes.MediaApp> { MediaAppSettingsPager() }
-
-                        entry<ColorEditRoutes.CardTileColor> { QSCardColorScreen() }
-
-                        entry<ColorEditRoutes.ToggleSliderColor> { ToggleSliderColorsScreen() }
-
-                        entry<ColorEditRoutes.DeviceCenterColor> { DeviceCenterColorScreen() }
-
-                        entry<ColorEditRoutes.ListColor> { QSListColorScreen() }
-
-                        entry<MainRoutes.GoRoot> { GoRootPager() }
-
-                        entry<MainRoutes.NotDeveloper> { NotDeveloperScreen() }
-
-                        entry<MainRoutes.Language> { LanguagePager() }
-
-                        entry<MainRoutes.Translator> { TranslatorScreen() }
-
-                        entry<MainRoutes.SystemUI> { SystemUIScreen() }
-
-                        entry<MainRoutes.Donation> { DonationPage()  }
-
-                        entry<MainRoutes.Show> { SettingsShowScreen() }
-
-                        entry<MainRoutes.Message> { NeedMessageScreen()  }
-
-                        entry<MainRoutes.References> { ReferencesScreen()  }
-
-                        entry<MainRoutes.Home> { HomeScreen() }
-
-                        entry<MainRoutes.Screenshot> { ScreenshotScreen() }
-
-                        entry<MainRoutes.MMS> { MMSScreen() }
-
-                        entry<MainRoutes.Barrage> { BarrageScreen() }
-
-                        entry<MainRoutes.ThemeManager> { ThemeManagerScreen() }
-
-                        entry<MainRoutes.Updater> { UpdaterScreen() }
-
-                        entry<SystemUIRoutes.PowerMenu> { PowerMenuStyleScreen() }
-
-                        entry<SystemUIRoutes.NotificationOfIm> { NotificationOfImScreen() }
-
-                        entry<SystemUIRoutes.NotificationImAppDetail> { NotificationAppDetail() }
-
-                        entry<MainRoutes.CurrentLog> { CurrentVersionLogScreen() }
-
-                        entry<MainRoutes.LogHistory> { LogHistoryScreen() }
-
-                        entry<PowerMenuRoutes.FunSelect>{ SelectFunScreen(it) }
-
-                        entry<MainRoutes.PlaceHolder>{ EmptyPage() }
                     }
-                )
+
+                    NavDisplay(
+                        modifier = Modifier.weight(if (showTwoPanes.value) 0.55f else 1f),
+                        backStack = navigator.backStack,
+                        entryDecorators = listOf(
+                            rememberSaveableStateHolderNavEntryDecorator(),
+                            rememberViewModelStoreNavEntryDecorator()
+                        ),
+                        onBack = {
+                            if (navigator.backStack.size >= 2) {
+                                navigator.goBack()
+                            }
+                        },
+                        entryProvider = entryProvider {
+
+                            entry<MainRoutes.Key> { if (showTwoPanes.value) EmptyPage() else
+                                CompositionLocalProvider(
+                                    LocalMainPagerState provides pagerState,
+                                    LocalRebootDialogState provides rebootDialogState
+                                ) { MainPager() } }
+
+                            entry<SystemUIRoutes.ColorEdit> { ControlCenterColorScreen() }
+
+                            entry<SystemUIRoutes.LayoutArrangement> { ControlCenterListScreen() }
+
+                            entry<SystemUIRoutes.Media> { MediaSettingsScreen() }
+
+                            entry<SystemUIRoutes.CardList> { QSCardListScreen() }
+
+                            entry<SystemUIRoutes.TileLayout> { QsListViewScreen() }
+
+                            entry<MediaRoutes.MediaApp> { MediaAppSettingsPager() }
+
+                            entry<ColorEditRoutes.CardTileColor> { QSCardColorScreen() }
+
+                            entry<ColorEditRoutes.ToggleSliderColor> { ToggleSliderColorsScreen() }
+
+                            entry<ColorEditRoutes.DeviceCenterColor> { DeviceCenterColorScreen() }
+
+                            entry<ColorEditRoutes.ListColor> { QSListColorScreen() }
+
+                            entry<MainRoutes.GoRoot> { GoRootPager() }
+
+                            entry<MainRoutes.NotDeveloper> { NotDeveloperScreen() }
+
+                            entry<MainRoutes.Language> { LanguagePager() }
+
+                            entry<MainRoutes.Translator> { TranslatorScreen() }
+
+                            entry<MainRoutes.SystemUI> { SystemUIScreen() }
+
+                            entry<MainRoutes.Donation> { DonationPage()  }
+
+                            entry<MainRoutes.Show> { SettingsShowScreen() }
+
+                            entry<MainRoutes.Message> { NeedMessageScreen()  }
+
+                            entry<MainRoutes.References> { ReferencesScreen()  }
+
+                            entry<MainRoutes.Home> { HomeScreen() }
+
+                            entry<MainRoutes.Screenshot> { ScreenshotScreen() }
+
+                            entry<MainRoutes.MMS> { MMSScreen() }
+
+                            entry<MainRoutes.Barrage> { BarrageScreen() }
+
+                            entry<MainRoutes.ThemeManager> { ThemeManagerScreen() }
+
+                            entry<MainRoutes.Updater> { UpdaterScreen() }
+
+                            entry<SystemUIRoutes.PowerMenu> { PowerMenuStyleScreen() }
+
+                            entry<SystemUIRoutes.NotificationOfIm> { NotificationOfImScreen() }
+
+                            entry<SystemUIRoutes.NotificationImAppDetail> { NotificationAppDetail() }
+
+                            entry<MainRoutes.CurrentLog> { CurrentVersionLogScreen() }
+
+                            entry<MainRoutes.LogHistory> { LogHistoryScreen() }
+
+                            entry<PowerMenuRoutes.FunSelect>{ SelectFunScreen(it) }
+                        }
+                    )
+
+                }
             }
             AnimatedVisibility(
                 welcome.value,
-                exit = fadeOut(animationSpec = tween(300, easing = easing))+ scaleOut(animationSpec = tween(300, easing = easing),targetScale = 0.9f)
+                exit = fadeOut(animationSpec = tween(300, easing = easing)) + scaleOut(animationSpec = tween(300, easing = easing),targetScale = 0.9f)
             ) {
                 if (!isFold() && !isPad()){
                     activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT

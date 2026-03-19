@@ -29,7 +29,7 @@ fun LazyListScope.emptyClasses(
     bottom : Dp = 0.dp,
     content: @Composable (() -> Unit),
 ){
-    item{
+    item {
         Card(
             Modifier.fillMaxWidth()
                 .padding(horizontal = 16.dp)
@@ -46,7 +46,7 @@ fun LazyListScope.itemGroup(
     content: @Composable (ColumnScope.() -> Unit)
 ){
 
-    item{
+    item(title) {
         SuperGroup(
             title =  when (title){
                 is String -> title
@@ -57,5 +57,4 @@ fun LazyListScope.itemGroup(
             content = content
         )
     }
-
 }

@@ -2,6 +2,7 @@ package com.yunzia.hyperstar.ui.component.pager
 
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Transition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -24,8 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.InputField
@@ -44,12 +45,14 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import com.kyant.shapes.RoundedRectangle
+import com.yunzia.hyperstar.ui.component.search.TopAppBarAnim
 import com.yunzia.hyperstar.ui.navigation.Navigator
+import top.yukonga.miuix.kmp.basic.Icon
 
 @Composable
-fun SearchModuleNavPager(
+fun SearchStatus.SearchModuleNavPager(
     activityTitle: String,
-    searchStatus: SearchStatus,
+    searchTransition: Transition<Boolean>,
     navController: Navigator,
     floatingActionButton: @Composable () -> Unit = {},
     floatingPagerButton: @Composable () -> Unit = {},
@@ -60,7 +63,7 @@ fun SearchModuleNavPager(
     endClick: () -> Unit,
     endIcon: @Composable () -> Unit = {},
     result: LazyListScope.(ScrollBehavior) -> Unit,
-    contents: @Composable (ScrollBehavior, PaddingValues) -> Unit,
+    contents: @Composable (ScrollBehavior, Dp) -> Unit,
 ) {
 
     val hazeState = remember { HazeState() }
@@ -71,9 +74,11 @@ fun SearchModuleNavPager(
         floatingActionButtonPosition = floatingActionButtonPosition,
         floatingPagerButton = floatingPagerButton,
         topBar = {
-            searchStatus.TopAppBarAnim{
+            searchTransition.TopAppBarAnim(
+                hazeState = hazeState
+            ){
                 ModuleNavTopAppBar(
-                    modifier = Modifier.showBlur(hazeState),
+                    modifier = Modifier,
                     color = Color.Transparent,
                     title = activityTitle,
                     scrollBehavior = topAppBarScrollBehavior,
@@ -85,24 +90,24 @@ fun SearchModuleNavPager(
                 )
 
             }
+        },
+        popupHost = {
+            searchTransition.SearchPager(
+                searchStatus = this,
+                {}
+            ) {
+                result(topAppBarScrollBehavior)
+            }
         }
     ) { padding ->
-        searchStatus.SearchBox(
-            modifier = Modifier
-                .blur(hazeState)
-                .padding(top = padding.calculateTopPadding() + 12.dp)
-                .fillMaxSize(),
-        ){
-            contents(topAppBarScrollBehavior, padding)
-
+        searchTransition.SearchBox(
+            searchStatus = this,
+            contentPadding = padding,
+            hazeState = hazeState
+        ){ contentTopPadding ->
+            contents(topAppBarScrollBehavior, contentTopPadding)
         }
 
-    }
-
-    searchStatus.SearchPager(
-        {}
-    ) {
-        result(topAppBarScrollBehavior)
     }
 
 

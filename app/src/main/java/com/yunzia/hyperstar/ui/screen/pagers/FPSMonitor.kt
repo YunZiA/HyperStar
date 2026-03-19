@@ -43,32 +43,8 @@ import kotlin.math.roundToInt
 // This is a simple FPS monitor that displays the current frames per second.
 @Composable
 fun FPSMonitor(visible: Boolean,) {
-    var fps by remember { mutableStateOf(0) }
-    var lastFrameTime by remember { mutableStateOf(0L) }
-    var frameCount by remember { mutableStateOf(0) }
-    var totalFrameTime by remember { mutableStateOf(0L) }
+
     var offset by remember { mutableStateOf(Offset.Zero) }
-
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.Default) {
-            while (true) {
-                withFrameMillis { frameTimeMillis ->
-                    if (lastFrameTime != 0L) {
-                        val frameDuration = frameTimeMillis - lastFrameTime
-                        totalFrameTime += frameDuration
-                        frameCount++
-                        if (totalFrameTime >= 1000L) {
-                            fps = frameCount
-                            frameCount = 0
-                            totalFrameTime = 0L
-                        }
-                    }
-                    lastFrameTime = frameTimeMillis
-                }
-            }
-        }
-    }
-
     AnimatedVisibility(
         visible,
         modifier = Modifier
@@ -107,6 +83,30 @@ fun FPSMonitor(visible: Boolean,) {
             transformOrigin = TransformOrigin(0f, 0f)
         )
     ) {
+        var fps by remember { mutableStateOf(0) }
+        var lastFrameTime by remember { mutableStateOf(0L) }
+        var frameCount by remember { mutableStateOf(0) }
+        var totalFrameTime by remember { mutableStateOf(0L) }
+
+        LaunchedEffect(Unit) {
+            withContext(Dispatchers.Default) {
+                while (true) {
+                    withFrameMillis { frameTimeMillis ->
+                        if (lastFrameTime != 0L) {
+                            val frameDuration = frameTimeMillis - lastFrameTime
+                            totalFrameTime += frameDuration
+                            frameCount++
+                            if (totalFrameTime >= 1000L) {
+                                fps = frameCount
+                                frameCount = 0
+                                totalFrameTime = 0L
+                            }
+                        }
+                        lastFrameTime = frameTimeMillis
+                    }
+                }
+            }
+        }
 
         Box(
             modifier = Modifier

@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -51,7 +52,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import com.kyant.shapes.RoundedRectangle
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.prefs.PreferencesUtil
@@ -64,17 +64,17 @@ import com.yunzia.hyperstar.ui.component.tool.FilterFloat
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.Slider
 import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import kotlin.math.pow
+import kotlin.math.roundToInt
 
 
 enum class Status{
     CLOSE, OPEN
 }
 
-@OptIn(ExperimentalWearMaterialApi::class, ExperimentalComposeUiApi::class,
-    ExperimentalFoundationApi::class
-)
+
 @Composable
 fun XMiuixSlider(
     host:String? = null,
@@ -121,7 +121,6 @@ fun XMiuixSlider(
                             tryAwaitRelease()
                             interactionSource.emit(PressInteraction.Release(press))
                             click.value = false
-
                         }
 
                     }
@@ -191,7 +190,8 @@ fun XMiuixSlider(
                 SPUtils.putFloat(key, value.floatValue)
             },
             valueRange = valueRange,
-            steps = ((valueRange.endInclusive - valueRange.start)*(100f * (10f.pow(decimalPlaces)))).toInt(),
+            steps = calcSteps(valueRange,decimalPlaces),
+//            steps = ((valueRange.endInclusive - valueRange.start)*(100f * (10f.pow(decimalPlaces)))).toInt(),
             modifier = Modifier
                 .padding(
                     start = paddingValues.calculateStartPadding(layoutDirection),
@@ -260,7 +260,8 @@ fun XMiuixSliders(
                     SPUtils.putFloat(key, x_progress)
                 },
                 valueRange = valueRange,
-                steps = ((valueRange.endInclusive - valueRange.start)*(100f * (10f.pow(decimalPlaces)))).toInt(),
+                steps = calcSteps(valueRange,decimalPlaces),
+//                steps = ((valueRange.endInclusive - valueRange.start)*(100f * (10f.pow(decimalPlaces)))).toInt(),
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
                     .padding(top = 10.dp)
@@ -386,7 +387,8 @@ fun XSuperSliders(
                 SPUtils.putFloat(key, value.floatValue)
             },
             valueRange = valueRange,
-            steps = ((valueRange.endInclusive - valueRange.start)*(100f * (10f.pow(decimalPlaces)))).toInt(),
+            steps = calcSteps(valueRange,decimalPlaces),
+//                ((valueRange.endInclusive - valueRange.start)*(100f * (10f.pow(decimalPlaces)))).toInt()
             modifier = Modifier
                 //.padding(start = insideMargin.calculateStartPadding(layoutDirection), end = insideMargin.calculateEndPadding(layoutDirection))
                 .padding(top = 10.dp),
@@ -449,18 +451,18 @@ fun ValueDialog(
 
     val defValues = TextFieldValue("", TextRange(0))
 
-    SuperDialogs(
+    SuperDialog(
         title = title,
         show = showDialog,
-        onFocus = {
-            kc?.hide()
-            focusManager.clearFocus()
-        },
+//        onFocus = {
+//            kc?.hide()
+//            focusManager.clearFocus()
+//        },
         onDismissRequest = {
             if (hasFocus){
                 kc?.hide()
                 focusManager.clearFocus()
-                return@SuperDialogs
+                return@SuperDialog
             }
             filter.setInputValue(String.format("%.${decimalPlaces}f", values.floatValue))
             showDialog.value = false
@@ -564,3 +566,17 @@ fun ValueDialog(
     }
 }
 
+fun calcSteps(
+    range: ClosedFloatingPointRange<Float>,
+    decimals: Int
+): Int {
+    val factor = 10.0.pow(decimals).toInt()
+
+    val points = ((range.endInclusive - range.start).toInt() * factor)
+//        .roundToInt()
+
+    val result =  points - 1  // ✅ steps 定义
+    Log.d("calcSteps", "calcSteps: ${range.endInclusive} - ${range.start} = $result")
+    return  result
+//    return 19
+}

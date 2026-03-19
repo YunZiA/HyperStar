@@ -69,8 +69,7 @@ fun DeviceCenterItem(
     ) {
 
         Card(
-            Modifier.padding(bottom = 10.dp),
-            colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
+            Modifier.padding(bottom = 10.dp)
         ) {
             EnableItemDropdown(
                 key = "deviceCenter_land_rightOrLeft"
@@ -79,8 +78,7 @@ fun DeviceCenterItem(
         }
 
         Card(
-            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width),
-            colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
+            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width)
         ) {
             EnableItemSlider(
                 key = "deviceCenter_span_size",
@@ -88,15 +86,8 @@ fun DeviceCenterItem(
                 progress = 4f,
                 progressState = spanSize
             )
-
-
         }
-
     }
-
-
-
-
 
     Box(
         modifier = Modifier

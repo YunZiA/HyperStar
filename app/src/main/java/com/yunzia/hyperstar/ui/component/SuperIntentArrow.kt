@@ -27,6 +27,8 @@ import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
 import com.yunzia.hyperstar.ui.navigation.Navigator
 import com.yunzia.hyperstar.ui.navigation.Route
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
+import top.yukonga.miuix.kmp.basic.InputField
+import top.yukonga.miuix.kmp.basic.SearchBar
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.SuperArrow
 import top.yukonga.miuix.kmp.extra.SuperDialog
@@ -141,7 +143,6 @@ fun SuperNavHostArrow(
                 Text(
                     text = it,
                     modifier = Modifier
-                        .padding(end = 8.dp)
                         .align(Alignment.CenterVertically)
                         .weight(1f, fill = false),
                     fontSize = MiuixTheme.textStyles.body2.fontSize,
@@ -165,6 +166,7 @@ fun SuperNavHostArrow(
     navController: Navigator,
     route: Route,
 ) {
+
 
     val click = remember { mutableStateOf(false) }
     SuperArrow(
@@ -191,7 +193,6 @@ fun SuperNavHostArrow(
                 Text(
                     text = it,
                     modifier = Modifier
-                        .padding(end = 8.dp)
                         .align(Alignment.CenterVertically)
                         .weight(1f, fill = false),
                     fontSize = MiuixTheme.textStyles.body2.fontSize,

@@ -42,7 +42,8 @@ fun ModuleNavPagers(
     ){ topAppBarScrollBehavior,padding->
         LazyColumn(
             modifier = Modifier.fillMaxSize()
-                .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
+                .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection)
+            ,
             contentPadding = padding
         ) {
             content()

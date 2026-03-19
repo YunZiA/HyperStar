@@ -23,7 +23,7 @@ object QSToggleSliderRadius : BasePluginHook() {
             "miui.systemui.controlcenter.panel.main.recyclerview.ToggleSliderViewHolder",
             pluginClassLoader
         ).afterHookMethod("updateSize"){
-            val mContext = this.callMethodAs<Resources>("getResources")!!
+            val mContext = this.callMethodAs<Resources>("getResources")
             this.setFloatField("progressRadius",dpToPx(mContext,progressRadius))
         }
 

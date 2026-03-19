@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.component
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,23 +26,27 @@ fun SuperGroup(
     content: @Composable ColumnScope.() -> Unit
 ) {
     val cardTopSpace = if (position == SuperGroupPosition.FIRST) 12.dp else 6.dp
-
-    Spacer(modifier= Modifier.fillMaxWidth().height(cardTopSpace))
-    title?.let {
-        SmallTitle(
-            text = it,
-            textColor = titleColor
-        )
-    }
     val cardBottomPadding = if (position == SuperGroupPosition.LAST) 12.dp else 6.dp
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp)
-            .padding(bottom = cardBottomPadding),
-        colors = cardColor,
-        content = content
-    )
+
+    Column(
+        Modifier.fillMaxWidth().padding(top = cardTopSpace)
+    ) {
+        title?.let {
+            SmallTitle(
+                text = it,
+                textColor = titleColor
+            )
+        }
+        Card(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
+                .padding(bottom = cardBottomPadding),
+            colors = cardColor,
+            content = content
+        )
+
+    }
 }
 
 enum class SuperGroupPosition{

@@ -50,7 +50,9 @@ import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import com.kyant.shapes.RoundedRectangle
+import com.yunzia.hyperstar.ui.component.search.TopAppBarAnim
 import com.yunzia.hyperstar.ui.navigation.Navigator
+import dev.chrisbanes.haze.rememberHazeState
 
 @Composable
 fun NotificationOfImAddPage(
@@ -66,10 +68,11 @@ fun NotificationOfImAddPage(
             }
         }
     )
-    val hazeState = remember { HazeState() }
+    val hazeState = rememberHazeState()
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
     val searchStatus by viewModel.searchStatus
     val searchResults by viewModel.searchResults
+    val searchTransition = searchStatus.transition()
 
     LaunchedEffect(unSelectApp) {
         viewModel.updateUnselectedApps(unSelectApp)
@@ -90,9 +93,28 @@ fun NotificationOfImAddPage(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black),
-        popupHost = { },
+        popupHost = {
+            searchTransition.SearchPager(
+                searchStatus = searchStatus,
+                {}
+            ) {
+                searchResults.forEach { app->
+                    item(app.packageName) {
+                        AppNotifItem(
+                            notificationInfo = app,
+                            isSelected = viewModel.isSelected(app),
+                            onSelectionChanged = { isSelected ->
+                                viewModel.toggleAppSelection(app)
+                            }
+                        )
+                    }
+                }
+            }
+        },
         topBar = {
-            searchStatus.TopAppBarAnim{
+            searchTransition.TopAppBarAnim(
+                hazeState = hazeState
+            ){
                 TopAppBar(
                     modifier = Modifier.showBlur(hazeState),
                     color = Color.Transparent,
@@ -106,10 +128,7 @@ fun NotificationOfImAddPage(
                             onClick = {
                                 expand.value = false
                             }
-
                         )
-
-
                     },
                     actions = {
                         TopButton(
@@ -134,18 +153,17 @@ fun NotificationOfImAddPage(
         }
     ){ padding->
 
-        searchStatus.SearchBox(
-            modifier = Modifier
-                .blur(hazeState)
-                .padding(top = padding.calculateTopPadding() + 14.dp)
-                .fillMaxSize(),
-        ){
+        searchTransition.SearchBox(
+            searchStatus = searchStatus,
+            contentPadding = padding,
+            hazeState = hazeState
+        ) { contentTopPadding ->
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
                 contentPadding = PaddingValues(
-                    top = 0.dp,
+                    top = contentTopPadding,
                     bottom = padding.calculateBottomPadding() + 28.dp
                 )
             ) {
@@ -168,21 +186,6 @@ fun NotificationOfImAddPage(
 
     }
 
-    searchStatus.SearchPager(
-        {}
-    ) {
-        searchResults.forEach { app->
-            item(app.packageName) {
-                AppNotifItem(
-                    notificationInfo = app,
-                    isSelected = viewModel.isSelected(app),
-                    onSelectionChanged = { isSelected ->
-                        viewModel.toggleAppSelection(app)
-                    }
-                )
-            }
-        }
-    }
 
 
 }

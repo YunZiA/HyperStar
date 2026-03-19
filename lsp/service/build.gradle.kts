@@ -36,6 +36,7 @@ android {
     }
 
     dependencies {
+        compileOnly(project(":lsp:api"))
         compileOnly(libs.androidx.annotation)
     }
 

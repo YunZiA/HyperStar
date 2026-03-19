@@ -20,8 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseButton
-import com.yunzia.hyperstar.ui.component.dialog.SuperCTDialogDefaults
-import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.prefs.PreferencesUtil
 import top.yukonga.miuix.kmp.basic.Text
@@ -43,6 +41,7 @@ fun checkApplication(context: Context, packageName: String?): Boolean {
     if (packageName == null || "" == packageName) {
         return false
     }
+
 
     try {
         val info: ApplicationInfo = context.packageManager.getApplicationInfo(

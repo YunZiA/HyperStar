@@ -1,4 +1,4 @@
-package com.yunzia.hyperstar.ui.screen.pagers
+package com.yunzia.hyperstar.ui.screen.pagers.main
 
 import android.net.Uri
 import android.util.Log
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -35,7 +34,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseActivity
@@ -47,8 +45,6 @@ import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
 import com.yunzia.hyperstar.ui.component.SuperWarnDialogArrow
 import com.yunzia.hyperstar.ui.component.XDropdown
 import com.yunzia.hyperstar.ui.component.itemGroup
-import com.yunzia.hyperstar.ui.component.dialog.SuperCTDialogDefaults
-import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
@@ -60,7 +56,6 @@ import com.yunzia.hyperstar.utils.JBUtil.saveFile
 import com.yunzia.hyperstar.prefs.PreferencesUtil
 import com.yunzia.hyperstar.prefs.SPUtils
 import com.yunzia.hyperstar.utils.getSettingChannel
-import dev.chrisbanes.haze.HazeState
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.IconButton
@@ -69,35 +64,40 @@ import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
-import top.yukonga.miuix.kmp.extra.SpinnerEntry
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import com.kyant.shapes.RoundedRectangle
+import com.yunzia.hyperstar.LocalMainPagerState
+import com.yunzia.hyperstar.LocalRebootDialogState
 import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import com.yunzia.hyperstar.ui.navigation.MainRoutes
+import dev.chrisbanes.haze.rememberHazeState
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.SpinnerEntry
+import top.yukonga.miuix.kmp.extra.SuperDialog
+import top.yukonga.miuix.kmp.extra.SuperDialogDefaults
 import top.yukonga.miuix.kmp.extra.WindowSpinner
 import top.yukonga.miuix.kmp.icon.extended.More
 
 @Composable
 fun Settings(
-    hazeState: HazeState,
     contentPadding: PaddingValues,
-    showReboot: MutableState<Boolean>,
-    pagerState: PagerState
 ) {
+    val hazeState = rememberHazeState()
+    val pagerState = LocalMainPagerState.current
+    val showReboot = LocalRebootDialogState.current
 
     val context = LocalContext.current
     val navController = LocalNavigator.current
     val activity = LocalActivity.current as MainActivity
-    //if (updateLanguage(activity)) return
 
     val view = LocalView.current
     val rebootStyle = activity.rebootStyle
 
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
-    //val hookedChannel = remember { mutableIntStateOf(if (isOS2()) 1 else 0) }
     val errorDialog = remember { mutableStateOf(false) }
     val results: MutableState<Uri?> = remember { mutableStateOf(null) }
+
 
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { result ->
         if (result == null) return@rememberLauncherForActivityResult
@@ -106,7 +106,7 @@ fun Settings(
         if (!errorDialog.value){
             MiuiStrongToast.showStrongToast(context, context.getString(R.string.restore_success))
         }
-        activity.updateUI()
+        activity.recreate()
 
     }
     val launcher2 = rememberLauncherForActivityResult(contract = ActivityResultContracts.CreateDocument("application/json")) { result ->
@@ -115,8 +115,7 @@ fun Settings(
         errorDialog.value = !JBUtil.saveToLocal(context, result)
     }
 
-
-
+    Log.d("SettingsPager", "Settings: init")
 
     Scaffold(
         modifier = Modifier,
@@ -130,9 +129,7 @@ fun Settings(
                 actions = {
                     if (rebootStyle.intValue == 1 && pagerState.currentPage == 1){
                         RebootPup(showReboot)
-
                     }
-
                     IconButton(
                         modifier = Modifier.padding(end = 12.dp),
                         onClick = {
@@ -155,10 +152,14 @@ fun Settings(
     ) { padding ->
 
 
+        Log.d("SettingsPager", "Scaffold: init")
+
         ErrorDialog(errorDialog, results)
 
         LazyColumn(
-            modifier = Modifier.fillMaxHeight().blur(hazeState)
+            modifier = Modifier
+                .fillMaxHeight()
+                .blur(hazeState)
                 .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
             contentPadding = PaddingValues(
                 top = padding.calculateTopPadding() + 14.dp,
@@ -197,7 +198,7 @@ fun Settings(
 
             }
 
-            this.itemGroup(
+            itemGroup(
                 title = context.getString(R.string.backup_restore)
             ) {
 
@@ -211,7 +212,6 @@ fun Settings(
                     title = stringResource(R.string.restore_settings),
                     onClick = {
                         openFile(activity, launcher)
-
                     }
                 )
 
@@ -225,7 +225,7 @@ fun Settings(
 
             }
 
-            this.itemGroup(
+            itemGroup(
                 title = context.getString(R.string.err_find)
             ) {
 
@@ -235,7 +235,7 @@ fun Settings(
                     key = "is_Hook_Channel",
                     defIndex = getSettingChannel(),
                 ) {
-                    activity.updateUI()
+                    activity.recreate()
                 }
                 XDropdown(
                     title = stringResource(R.string.title_log_level),
@@ -250,8 +250,6 @@ fun Settings(
                     navController = navController,
                     route = MainRoutes.Message
                 )
-
-
             }
 
         }
@@ -299,10 +297,10 @@ fun ChannelSpinner(
         enabled = enabled,
         showValue = showValue,
         //onSelectedIndexChange = onSelectedIndexChange
-    ){
+    ) {
         selected.intValue = it + 1
 
-        Log.d("ggc", "$key: ${selected.intValue}")
+        Log.d("", "$key: ${selected.intValue}")
         SPUtils.putInt(key,selected.intValue)
         onSelectedIndexChange?.invoke(it)
 
@@ -315,7 +313,7 @@ fun ErrorDialog(
     value: MutableState<Uri?>
 ) {
 
-    SuperXDialog(
+    SuperDialog(
         title = stringResource(R.string.error_title),
         show = show,
         onDismissRequest = {}
@@ -327,8 +325,8 @@ fun ErrorDialog(
         ) {
             Text(
                 stringResource(R.string.send_developer),
-                Modifier.padding(bottom = 8.dp),
-                color = SuperCTDialogDefaults.summaryColor(),
+                modifier = Modifier.padding(bottom = 8.dp),
+                color = SuperDialogDefaults.summaryColor(),
                 textAlign = TextAlign.Start,
                 fontSize = 16.sp,
                 style = TextStyle(textIndent = TextIndent(7.sp))

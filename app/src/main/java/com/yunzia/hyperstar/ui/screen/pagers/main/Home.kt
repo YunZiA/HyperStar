@@ -1,4 +1,4 @@
-package com.yunzia.hyperstar.ui.screen.pagers
+package com.yunzia.hyperstar.ui.screen.pagers.main
 
 import android.content.Intent
 import android.util.Log
@@ -6,8 +6,11 @@ import android.view.HapticFeedbackConstants
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,23 +22,27 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.Icon
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import com.yunzia.hyperstar.LocalMainPagerState
+import com.yunzia.hyperstar.LocalRebootDialogState
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.SuperGroup
@@ -57,16 +64,21 @@ import com.yunzia.hyperstar.ui.screen.pagers.dialog.checkApplication
 import com.yunzia.hyperstar.utils.AppInfo
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.Helper.isRoot
+import com.yunzia.hyperstar.utils.LocalScopeManager
+import com.yunzia.hyperstar.utils.ScopeManager.ScopeRequestResult
 import com.yunzia.hyperstar.utils.getSettingChannel
-import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.rememberHazeState
+import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
+import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
+import top.yukonga.miuix.kmp.extra.SuperArrow
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.basic.ArrowRight
 import top.yukonga.miuix.kmp.icon.extended.Close
@@ -76,21 +88,33 @@ import top.yukonga.miuix.kmp.icon.extended.More
 //import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Home(
-    hazeState: HazeState,
     contentPadding: PaddingValues,
-    showReboot: MutableState<Boolean>,
-    pagerState: PagerState
 ) {
+    val pagerState = LocalMainPagerState.current
+    val showReboot = LocalRebootDialogState.current
+    val hazeState = rememberHazeState()
     val context = LocalContext.current
     val view = LocalView.current
     val navController = LocalNavigator.current
     val activity = LocalActivity.current as MainActivity
-    val isModuleActive = activity.isActive
     val rebootStyle = activity.rebootStyle
+    val packageManager = activity.packageManager
+    val appViewModel = activity.appViewModel
+    val appInScope by appViewModel.appInScope.collectAsState()
+    val appNotInScope by appViewModel.appNotInScope.collectAsState()
 
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
+
+    val coroutineScope = rememberCoroutineScope()
+    val scopeManager = LocalScopeManager.current
+    val moduleScope = stringArrayResource(R.array.module_scope)
+
+    LaunchedEffect(scopeManager.currentScope.size) {
+        appViewModel.loadAppInfo(packageManager,moduleScope,scopeManager.currentScope)
+    }
 
     Scaffold(
         modifier = Modifier,
@@ -113,12 +137,10 @@ fun Home(
                             showReboot.value = true
                         }
                     ) {
-
                         Icon(
                             imageVector = MiuixIcons.More,
                             contentDescription = "restart",
                             tint = colorScheme.onBackground)
-
                     }
                 }
             )
@@ -126,7 +148,6 @@ fun Home(
 
         }
     ) { padding ->
-
 
         LazyColumn(
             modifier = Modifier
@@ -136,8 +157,9 @@ fun Home(
             contentPadding = PaddingValues(top = padding.calculateTopPadding(), bottom = contentPadding.calculateBottomPadding()),
         ) {
 
-            item{
-                if (!isModuleActive){
+            item {
+
+                if (!appViewModel.isActive){
                     val go = checkApplication(activity,"org.lsposed.manager")
                     val intent = Intent().apply {
                         setClassName("org.lsposed.manager","org.lsposed.manager.ui.activity.MainActivity")
@@ -229,67 +251,63 @@ fun Home(
 
                     }
                     Spacer(Modifier.height(12.dp))
-
+                }
+            }
+            item {
+                AnimatedVisibility(
+                    visible = appInScope.isNotEmpty(),
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically(),
+                ) {
+                    SuperGroup(
+                        title = stringResource(R.string.basics),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        moduleScope.forEach { packageName,  ->
+                            val appInfo = appInScope[packageName] ?: return@forEach
+                            var visible: (AppInfo) -> Boolean = { true }
+                            var route: Route = MainRoutes.Key
+                            when(packageName) {
+                                "com.android.systemui" -> {
+                                    route = MainRoutes.SystemUI
+                                }
+                                "com.miui.home"-> {
+                                    visible = { getSettingChannel() > 1 }
+                                    route = MainRoutes.Home
+                                }
+                                "com.android.thememanager"-> {
+                                    visible = { it.versionCode >= 7180 }
+                                    route = MainRoutes.ThemeManager
+                                }
+                                "com.android.mms"-> {
+                                    route = MainRoutes.MMS
+                                }
+                                "com.xiaomi.barrage"-> {
+                                    visible = { it.versionName!!.startsWith("3") }
+                                    route = MainRoutes.Barrage
+                                }
+                                "com.miui.screenshot"-> {
+                                    visible = { getSettingChannel() > 1 }
+                                    route = MainRoutes.Screenshot
+                                }
+                                else -> {
+                                    visible = { false }
+                                }
+                            }
+                            AppArrow(
+                                visible = visible,
+                                appInfo = appInfo,
+                                navController = navController,
+                                route = route,
+                            )
+                        }
+                    }
                 }
             }
 
             itemGroup(
-                title = R.string.basics
-            ){
-                AppArrow(
-                    appInfo = activity.appInfo,
-                    packageName = "com.android.systemui",
-                    title = stringResource(R.string.systemui),
-                    navController = navController,
-                    route = MainRoutes.SystemUI,
-                )
-
-                AppArrow(
-                    visible = { getSettingChannel() > 1 },
-                    appInfo = activity.appInfo,
-                    title = stringResource(R.string.hyper_home),
-                    packageName = "com.miui.home",
-                    navController = navController,
-                    route = MainRoutes.Home
-                )
-
-                AppArrow(
-                    visible = { it.versionCode >= 7180 },
-                    appInfo = activity.appInfo,
-                    title = stringResource(R.string.thememanager),
-                    packageName = "com.android.thememanager",
-                    navController = navController,
-                    route = MainRoutes.ThemeManager
-                )
-
-                AppArrow(
-                    appInfo = activity.appInfo,
-                    packageName = "com.android.mms",
-                    navController = navController,
-                    route = MainRoutes.MMS
-                )
-
-                AppArrow(
-                    visible = { it.versionName!!.startsWith("3") },
-                    appInfo = activity.appInfo,
-                    packageName = "com.xiaomi.barrage",
-                    navController = navController,
-                    route = MainRoutes.Barrage,
-                )
-
-                AppArrow(
-                    visible = { getSettingChannel() > 1 },
-                    appInfo = activity.appInfo,
-                    packageName = "com.miui.screenshot",
-                    navController = navController,
-                    route = MainRoutes.Screenshot,
-                )
-
-            }
-            itemGroup(
                 title = R.string.other_settings
             ){
-
                 SuperNavHostArrow(
                     leftIcon = R.drawable.not_developer,
                     title = stringResource(R.string.not_developer),
@@ -297,9 +315,105 @@ fun Home(
                     route = MainRoutes.NotDeveloper
 
                 )
+                SuperArrow(
+                    title = "com.android.settings",
+                    onClick = {
+                        coroutineScope.launch {
+                            scopeManager.addScope("com.android.settings") { finalResult ->
+                                // 在这里处理接收到的最终结果
+                                Log.e("ScopeManager", "Inside onResult callback, result:  $finalResult")
+                                when (finalResult) {
+                                    ScopeRequestResult.Approved -> {
+                                        Log.w("ScopeManager", "add Approved for: com.miui.screenshot")
+                                        // 执行批准后的逻辑
+                                    }
+                                    ScopeRequestResult.Denied -> {
+                                        Log.w("ScopeManager", "add Denied for: com.miui.screenshot")
+                                        // 执行拒绝后的逻辑
+                                    }
+                                    ScopeRequestResult.Timeout -> {
+                                        Log.w("ScopeManager", "add Timeout for: com.miui.screenshot")
+                                        // 执行超时后的逻辑
+                                    }
+                                    ScopeRequestResult.Failed -> {
+                                        Log.w("ScopeManager", "add Failed for: com.miui.screenshot")
+                                        // 执行失败后的逻辑
+                                    }
+                                    else -> {
+                                    }
+                                }
+                            }
+                        }
+                    }
+                )
+                SuperArrow(
+                    title = "com.miui.screenshot",
+                    onClick = {
+                        coroutineScope.launch {
+                            scopeManager.addScope("com.miui.screenshot") { finalResult ->
+                                // 在这里处理接收到的最终结果
+                                Log.e(
+                                    "ScopeManager",
+                                    "Inside onResult callback, result:  $finalResult"
+                                )
+                                when (finalResult) {
+                                    ScopeRequestResult.Approved -> {
+                                        Log.w(
+                                            "ScopeManager",
+                                            "add Approved for: com.miui.screenshot"
+                                        )
+                                        // 执行批准后的逻辑
+                                    }
+
+                                    ScopeRequestResult.Denied -> {
+                                        Log.w("ScopeManager", "add Denied for: com.miui.screenshot")
+                                        // 执行拒绝后的逻辑
+                                    }
+
+                                    ScopeRequestResult.Timeout -> {
+                                        Log.w(
+                                            "ScopeManager",
+                                            "add Timeout for: com.miui.screenshot"
+                                        )
+                                        // 执行超时后的逻辑
+                                    }
+
+                                    ScopeRequestResult.Failed -> {
+                                        Log.w("ScopeManager", "add Failed for: com.miui.screenshot")
+                                        // 执行失败后的逻辑
+                                    }
+
+                                    else -> {
+                                    }
+                                }
+                            }
+                        }
+                    }
+                )
+                SuperArrow(
+                    title = "com.android.settings",
+                    onClick = {
+                        coroutineScope.launch {
+                            scopeManager.removeScope("com.android.settings"){
+                                Log.w("ScopeManager", "remove com.android.settings:$it")
+                            }
+                        }
+                    }
+                )
+
+                SuperArrow(
+                    title = "com.miui.screenshot",
+                    onClick = {
+                        coroutineScope.launch {
+                            scopeManager.removeScope("com.miui.screenshot"){
+                                Log.w("ScopeManager", "remove com.miui.screenshot:$it")
+                            }
+                        }
+                    }
+                )
 
             }
-            if (activity.appNo.isNotEmpty()){
+            if (appNotInScope.isNotEmpty()){
 
                 item {
                     val show = remember { mutableStateOf(false) }
@@ -352,16 +466,13 @@ fun Home(
                                 .fillMaxSize()
                                 .padding(horizontal = 16.dp)
                         ) {
-                            activity.appNo.forEach { (s, throwable) ->
+                            appNotInScope.forEach { (s, throwable) ->
                                 this.itemGroup(s) {
                                     Text(throwable.toString())
                                 }
                             }
 
-
                         }
-
-
 
                     }
                 }
@@ -373,12 +484,11 @@ fun Home(
 
 
 
-
     }
 
-
-
 }
+
+
 
 
 @Composable
@@ -406,6 +516,31 @@ fun AppArrow(
         }
 
     }
+}
+
+
+@Composable
+fun AppArrow(
+    visible: (AppInfo) -> Boolean = { true },
+    appInfo: AppInfo?,
+    route: Route,
+    navController: Navigator
+){
+
+    Log.d("ggc", "AppArrow: ${appInfo != null} &&")
+    AnimatedVisibility(
+        visible = appInfo != null && visible(appInfo),
+        enter = expandVertically() + fadeIn()
+    ) {
+        Log.d("ggc", "AppArrow: ${appInfo != null && visible(appInfo)}")
+        SuperNavHostArrow(
+            leftIcon = rememberDrawablePainter(appInfo!!.appIcon),
+            title = appInfo.appName,
+            navController = navController,
+            route = route
+        )
+    }
+
 }
 
 

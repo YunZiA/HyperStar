@@ -29,39 +29,6 @@ import kotlin.system.exitProcess
 
 abstract class BaseActivity : ComponentActivity() {
 
-
-
-    private val mCallback = object : OnScopeEventListener {
-        override fun onScopeRequestPrompted(packageName: String) {
-            runCatching {
-                Toast.makeText(this@BaseActivity, "onScopeRequestPrompted: $packageName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        override fun onScopeRequestApproved(packageName: String) {
-            runCatching {
-                Toast.makeText(this@BaseActivity, "onScopeRequestApproved: $packageName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        override fun onScopeRequestDenied(packageName: String) {
-            runCatching {
-                Toast.makeText(this@BaseActivity, "onScopeRequestDenied: $packageName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        override fun onScopeRequestTimeout(packageName: String) {
-            runCatching {
-                Toast.makeText(this@BaseActivity, "onScopeRequestTimeout: $packageName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        override fun onScopeRequestFailed(packageName: String, message: String) {
-            runCatching {
-                Toast.makeText(this@BaseActivity, "onScopeRequestFailed: $packageName, $message", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
     val colorMode by lazy {
         mutableIntStateOf(PreferencesUtil.getInt("color_mode",0))
     }
@@ -73,7 +40,6 @@ abstract class BaseActivity : ComponentActivity() {
         mutableIntStateOf(PreferencesUtil.getInt("app_language",0))
     }
     var isDarkMode by mutableStateOf(false)
-    var updateUI by mutableIntStateOf(0)
 
     @Composable abstract fun InitView()
 
@@ -81,17 +47,12 @@ abstract class BaseActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        enableEdgeToEdge()
         setContent {
             HyperStarTheme() {
                 InitData(savedInstanceState)
                 InitView()
             }
         }
-
-
-
     }
 
     override fun attachBaseContext(newBase: Context?) {
@@ -104,8 +65,6 @@ abstract class BaseActivity : ComponentActivity() {
         super.onStart()
         setLocale()
         isDarkMode = colorMode.intValue == 2 || (isNightMode() && colorMode.intValue == 0)
-
-
     }
 
     fun isNightMode(): Boolean {
@@ -113,10 +72,6 @@ abstract class BaseActivity : ComponentActivity() {
             Configuration.UI_MODE_NIGHT_YES -> true
             else -> false
         }
-    }
-
-    fun updateUI(){
-        updateUI += 1
     }
 
     fun setLocale(
@@ -137,10 +92,6 @@ abstract class BaseActivity : ComponentActivity() {
         this.startActivity(intent)
         exitProcess(0)
     }
-
-
-
-
 }
 
 

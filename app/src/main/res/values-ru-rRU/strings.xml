@@ -246,6 +246,7 @@ o(╥﹏╥)o</string>
     <string name="widget_advanced_textures">Расширенные текстуры виджета</string>
     <string name="wordless_mode">Беззвучный режим</string>
     <string name="xposed_desc">Доверьтесь Hyper, вы будете жить вечно!</string>
+    <string name="fun_scope">Scope</string>
     <string name="title_log_level">Log level</string>
     <string name="summary_log_level">Restart to activate changes in scope</string>
     <string name="focus_notification_content">click</string>

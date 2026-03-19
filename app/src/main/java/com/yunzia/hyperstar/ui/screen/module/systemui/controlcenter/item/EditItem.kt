@@ -69,10 +69,8 @@ fun EditItem(
             showDialog.value = false
         }
     ) {
-
         Card(
-            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width),
-            colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
+            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width)
         ){
             EnableItemSlider(
                 key = "edit_span_size",
@@ -84,10 +82,6 @@ fun EditItem(
         }
 
     }
-
-
-
-
 
     Box(
         modifier = Modifier

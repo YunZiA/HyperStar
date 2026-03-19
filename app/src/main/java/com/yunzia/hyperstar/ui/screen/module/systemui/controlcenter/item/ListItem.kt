@@ -63,9 +63,7 @@ fun ListItem(
     ) {
 
         Card(
-            Modifier.padding(bottom = 10.dp),
-            colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
-
+            Modifier.padding(bottom = 10.dp)
         ){
             EnableItemDropdown(
                 key = "list_land_rightOrLeft"
@@ -74,8 +72,7 @@ fun ListItem(
         }
 
         Card(
-            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width),
-            colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
+            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width)
         ){
             EnableItemSlider(
                 key = "list_span_size",

@@ -66,6 +66,8 @@ fun MediaAppSettingsPager() {
     val searchStatus = viewModel.searchStatus
     val currentApp = viewModel.currentApp
 
+    val searchTransition = searchStatus.value.transition()
+
 
     LaunchedEffect(Unit) {
         activity.requestInstalledAppsPermission()
@@ -81,17 +83,17 @@ fun MediaAppSettingsPager() {
     }
 
     // LaunchedEffect for search status
-    LaunchedEffect(searchStatus.value.current) {
-        viewModel.onSearchStatusChanged(searchStatus.value.current)
+    LaunchedEffect(searchStatus.value.expandState) {
+        viewModel.onSearchStatusChanged(searchStatus.value.expandState)
     }
 
     // LaunchedEffect for search text
     LaunchedEffect(searchStatus.value.searchText) {
         viewModel.onSearchTextChanged(searchStatus.value.searchText)
     }
-    SearchModuleNavPager(
+    searchStatus.value.SearchModuleNavPager(
         activityTitle = stringResource(R.string.media_default_app_settings),
-        searchStatus = searchStatus.value,
+        searchTransition = searchTransition,
         navController = navController,
         endClick = {
             Helper.rootShell("killall com.android.systemui")
@@ -108,7 +110,7 @@ fun MediaAppSettingsPager() {
             }
 
         },
-    ){ topAppBarScrollBehavior,padding->
+    ){ topAppBarScrollBehavior,contentTopPadding->
 
         LoadBox(
             loadStatus = loadStatus.value,
@@ -119,8 +121,8 @@ fun MediaAppSettingsPager() {
                     .fillMaxSize()
                     .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
                 contentPadding = PaddingValues(
-                    top = 0.dp,
-                    bottom = padding.calculateBottomPadding() + 28.dp
+                    top = contentTopPadding,
+                    bottom = 28.dp
                 )
             ) {
 

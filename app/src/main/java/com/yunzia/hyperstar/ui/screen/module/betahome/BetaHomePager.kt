@@ -31,7 +31,6 @@ fun BetaHomePager(
                 summary = stringResource(R.string.is_use_beta_home_cc_summary),
                 key = "is_use_beta_home_cc"
             )
-
         }
     }
 

@@ -5,14 +5,15 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.constraintlayout.compose.Transition
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.LoadStatus
 import com.yunzia.hyperstar.ui.component.search.SearchStatus
-import com.yunzia.hyperstar.ui.component.search.SearchStatus.Status
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.media.app.AppInfo
 import com.yunzia.hyperstar.prefs.SPUtils
 import kotlinx.coroutines.Dispatchers
@@ -73,8 +74,8 @@ class MediaAppSettingsViewModel(application: Application) : AndroidViewModel(app
         }
     }
 
-    fun onSearchStatusChanged(status: Status) {
-        if (status == Status.COLLAPSED) {
+    fun onSearchStatusChanged(status: MutableTransitionState<Boolean>) {
+        if (!status.currentState) {
             _searchStatus.value.searchText = ""
         }
     }

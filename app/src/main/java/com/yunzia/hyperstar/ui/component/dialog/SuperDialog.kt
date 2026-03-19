@@ -33,6 +33,7 @@ import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import com.kyant.shapes.RoundedRectangle
 import com.yunzia.hyperstar.ui.component.helper.getWindowSize
+import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.DialogLayout
 import top.yukonga.miuix.kmp.utils.getRoundedCorner
 

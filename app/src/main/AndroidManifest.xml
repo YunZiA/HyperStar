@@ -44,19 +44,6 @@
                 tools:node="remove" />
         </provider>
 
-<!--        <meta-data-->
-<!--            android:name="xposedmodule"-->
-<!--            android:value="true" />-->
-<!--        <meta-data-->
-<!--            android:name="xposedscope"-->
-<!--            android:resource="@array/module_scope" />-->
-<!--        <meta-data-->
-<!--            android:name="xposeddescription"-->
-<!--            android:value="@string/xposed_desc" />-->
-<!--        <meta-data-->
-<!--            android:name="xposedminversion"-->
-<!--            android:value="93" />-->
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.yunzia.hyperstar.fileprovider"
@@ -72,22 +59,7 @@
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.HyperStar"
-            android:windowSoftInputMode="adjustResize"
-            tools:ignore="UnusedAttribute">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
-            </intent-filter>
-        </activity>
-
-        <activity-alias
-            android:name=".MainActivityAlias"
-            android:enabled="true"
-            android:exported="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/app_name"
-            android:targetActivity=".MainActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="UnusedAttribute">
             <intent-filter>
@@ -95,7 +67,24 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity-alias>
+        </activity>
+
+<!--        <activity-alias-->
+<!--            android:name=".MainActivityAlias"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="true"-->
+<!--            android:icon="@mipmap/ic_launcher"-->
+<!--            android:label="@string/app_name"-->
+<!--            android:targetActivity=".MainActivity"-->
+<!--            android:configChanges="orientation|keyboardHidden"-->
+<!--            android:windowSoftInputMode="adjustResize"-->
+<!--            tools:ignore="UnusedAttribute">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity-alias>-->
     </application>
 
 </manifest>

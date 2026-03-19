@@ -12,43 +12,53 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
-import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.profileinstaller.ProfileInstaller
-import androidx.wear.compose.material.Text
 import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.utils.AppInfo
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.prefs.PreferencesUtil
 import com.yunzia.hyperstar.prefs.SPUtils
+import com.yunzia.hyperstar.ui.screen.pagers.FPSMonitor
+import com.yunzia.hyperstar.utils.LocalScopeManager
+import com.yunzia.hyperstar.utils.ScopeManager
+import com.yunzia.hyperstar.utils.ScopeManager.ScopeRequestResult
+import com.yunzia.hyperstar.utils.rememberScopeManager
+import com.yunzia.hyperstar.utils.requestScope
+import com.yunzia.hyperstar.viewmodel.AppViewModel
 import com.yunzia.hyperstar.viewmodel.UpdaterDownloadViewModel
 import io.github.libxposed.service.XposedService
+import io.github.libxposed.service.XposedService.OnScopeEventListener
 import io.github.libxposed.service.XposedServiceHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
+import kotlin.math.log
 
 class MainActivity : BaseActivity() {
-
-    var isActive by mutableStateOf(false)
-    private var mService: XposedService? = null
     val newAppVersion = mutableStateOf("")
     val newAppName = mutableStateOf("")
     val enablePageUserScroll = mutableStateOf(false)
@@ -57,105 +67,51 @@ class MainActivity : BaseActivity() {
     var isRecreate: Boolean = false
     var isGranted = mutableStateOf(false)
 
-    val appInfo = mutableStateMapOf<String, AppInfo?>()
-    val appNo = mutableStateMapOf<String, String?>()
-
-    val themeManager: MutableState<AppInfo?> = mutableStateOf(null)
-    val barrageManager: MutableState<AppInfo?> = mutableStateOf(null)
-    val miuiScreenshot: MutableState<AppInfo?> = mutableStateOf(null)
     val downloadModel: UpdaterDownloadViewModel by viewModels()
+    val appViewModel: AppViewModel by viewModels()
 
     @Composable
     override fun InitView() {
         enablePageUserScroll.value = PreferencesUtil.getBoolean("page_user_scroll", false)
         rebootStyle.intValue = PreferencesUtil.getInt("reboot_menus_style", 0)
-        App()
+
+        XposedServiceHelper.registerListener(object : XposedServiceHelper.OnServiceListener {
+            override fun onServiceBind(service: XposedService) {
+                appViewModel.onXposedServiceBound(service)
+                SPUtils.init(service)
+                service.openRemoteFile("test.txt").use { pfd ->
+                    FileWriter(pfd.fileDescriptor).use {
+                        it.append("Hello World!")
+                    }
+                }
+
+            }
+
+            override fun onServiceDied(service: XposedService) {
+                Log.d("ggc", "onServiceDied: \n$service")
+                appViewModel.onXposedServiceReleased()
+            }
+        })
+
+        CompositionLocalProvider(LocalScopeManager provides appViewModel.scopeManager) {
+            val scopeManager = LocalScopeManager.current
+            LaunchedEffect(scopeManager.currentScope.size) {
+                Log.d("scopeManager", "currentScope: ${scopeManager.currentScope}")
+            }
+            App()
+        }
     }
 
 
     @SuppressLint("MissingPermission", "RemoteViewLayout")
     @Composable
     override fun InitData(savedInstanceState: Bundle?) {
-        isActive = savedInstanceState?.getBoolean(KEY_IS_ACTIVE,false)?:false
-//
-//        TextView(this).setText()
-//        TypedArray().getText()
-        var serviceInfo = ""
-        XposedServiceHelper.registerListener(object : XposedServiceHelper.OnServiceListener {
-            override fun onServiceBind(service: XposedService) {
-                isActive = true
-                mService = service
-                SPUtils.init(service)
-                serviceInfo += "Binder acquired"
-                serviceInfo += "\nAPI " + service.apiVersion
-                serviceInfo += "\nFramework " + service.frameworkName
-                serviceInfo += "\nFramework version " + service.frameworkVersion
-                serviceInfo += "\nFramework version code " + service.frameworkVersionCode
-                serviceInfo += "\nScope: " + service.scope
-                Log.d("ggc", "onServiceBind: \n$serviceInfo")
 
-//                binding.requestScope.setOnClickListener {
-//                    service.requestScope("com.android.settings", mCallback)
-//                }
+        ProfileInstaller.writeProfile(this)
+//        if (isModuleActive()) {
+//            toggleLauncherIconVisibility(PreferencesUtil.getBoolean("is_hide_icon", false))
+//        }
 
-                service.openRemoteFile("test.txt").use { pfd ->
-                    FileWriter(pfd.fileDescriptor).use {
-                        it.append("Hello World!")
-                    }
-                }
-
-                service.openRemoteFile("test.txt").use { pfd ->
-                    FileWriter(pfd.fileDescriptor).use {
-                        it.append("Hello World!")
-                    }
-                }
-
-                this@MainActivity.resources.getDrawable(R.drawable.ic_bootloader)
-
-            }
-
-            override fun onServiceDied(service: XposedService) {
-                Log.d("ggc", "onServiceDied: \n$service")
-
-            }
-        })
-
-        val handler = Handler(Looper.getMainLooper())
-        handler.postDelayed({
-            if (mService == null) {
-                Log.d("BaseActivity", "onCreate: Binder is null")
-            }
-        }, 5000)
-        val packageManager = this.packageManager
-
-        // Load theme and barrage manager info
-        LaunchedEffect(Unit) {
-            appInfo.putAll(
-                coroutineScope {
-                    this@MainActivity.resources.getStringArray(R.array.module_scope).associateWith { packageName ->
-                        async {
-                            try {
-                                val packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA)
-                                AppInfo(
-                                    appIcon = packageInfo.applicationInfo?.loadIcon(packageManager),
-                                    appName = packageManager.getApplicationLabel(packageInfo.applicationInfo!!).toString(),
-                                    versionName = packageInfo.versionName,
-                                    versionCode = packageInfo.longVersionCode
-                                )
-                            } catch (e: PackageManager.NameNotFoundException) {
-                                Log.w("ggc", "Package not found: $packageName")
-                                appNo[packageName] = e.message
-                                null
-                            }
-                        }
-                    }
-                }.mapValues { (_, deferred) -> deferred.await() }
-
-
-            )
-        }
-
-        // Fetch new app version and name
         LaunchedEffect(Unit) {
             val downloadsDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
             clearDirectory(downloadsDir)
@@ -171,10 +127,6 @@ class MainActivity : BaseActivity() {
         }
 
         // Initialize profile installer and module settings
-        ProfileInstaller.writeProfile(this)
-        if (isModuleActive()) {
-            toggleLauncherIconVisibility(PreferencesUtil.getBoolean("is_hide_icon", false))
-        }
     }
 
     /**
@@ -210,7 +162,6 @@ class MainActivity : BaseActivity() {
         val rawFileUrl = "https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/apk_name.m3u"
         val client = OkHttpClient()
         val request = Request.Builder().url(rawFileUrl).build()
-
         try {
             val response = client.newCall(request).execute()
             if (response.isSuccessful) {
@@ -243,9 +194,10 @@ class MainActivity : BaseActivity() {
         super.onSaveInstanceState(outState)
         outState.apply {
             putBoolean(KEY_IS_RECREATE, true)
-            putBoolean(KEY_IS_ACTIVE, isActive)
+//            putBinder()
         }
     }
+
 
     /**
      * Toggle the visibility of the launcher icon.
@@ -299,7 +251,7 @@ class MainActivity : BaseActivity() {
     }
 
     companion object {
-        private const val TAG = "MainActivity"
+        private const val TAG = "TAG"
         private const val REQUEST_CODE_INSTALLED_APPS = 999
         private const val KEY_IS_RECREATE = "isRecreate"
         private const val KEY_IS_ACTIVE = "isActive"

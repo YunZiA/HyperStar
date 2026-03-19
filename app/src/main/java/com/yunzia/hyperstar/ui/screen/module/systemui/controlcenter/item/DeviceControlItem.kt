@@ -62,8 +62,6 @@ fun DeviceControlItem(
         )
     }
 
-
-
     CancelBottomSheet(
         title = item.name,
         show = showDialog,
@@ -73,19 +71,14 @@ fun DeviceControlItem(
     ) {
 
         Card(
-            Modifier.padding(bottom = 10.dp),
-            colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
-
+            Modifier.padding(bottom = 10.dp)
         ) {
             EnableItemDropdown(
                 key = "deviceControl_land_rightOrLeft"
             )
-
         }
-
         Card(
-            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width),
-            colors = CardDefaults.defaultColors(colorScheme.secondaryContainer)
+            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width)
         ) {
             EnableItemSlider(
                 key = "deviceControl_span_size",

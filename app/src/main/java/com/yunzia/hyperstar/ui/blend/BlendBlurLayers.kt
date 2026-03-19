@@ -46,7 +46,6 @@ class BlendBlurLayers(
                 try {
                     layerCoordinates.localPositionOf(coordinates)
                 } catch (_: Exception) {
-                    // TODO: outer transformations lead to wrong position calculation
                     coordinates.positionInWindow() - layerCoordinates.positionInWindow()
                 }
             translate(-offset.x, -offset.y)

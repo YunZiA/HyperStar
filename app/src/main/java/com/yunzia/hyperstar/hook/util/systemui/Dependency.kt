@@ -1,8 +1,7 @@
 package com.yunzia.hyperstar.hook.util.systemui
 
 import com.yunzia.hyperstar.hook.core.finder.findClass
-import com.yunzia.hyperstar.hook.core.Log
-import com.yunzia.hyperstar.hook.core.Log.logE
+import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.helper.callMethod
 import com.yunzia.hyperstar.hook.core.helper.getStaticObjectField
 

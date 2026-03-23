@@ -1,6 +1,6 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 
 object QSVolumeMute: BasePluginHook() {
 
@@ -12,7 +12,7 @@ object QSVolumeMute: BasePluginHook() {
 //            "setInMirror",
 //            Boolean::class.java
 //        ){
-//            this.setObjectField("inMirror",false)
+//            thisObject.setObjectField("inMirror",false)
 //        }
     }
 }

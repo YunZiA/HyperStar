@@ -7,7 +7,7 @@ import android.widget.SeekBar
 import android.widget.TextView
 import com.yunzia.hyperstar.hook.base.BaseHookHelper.getColorBy
 import com.yunzia.hyperstar.hook.base.BaseHookHelper.getIntArrayBy
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.findViewByIdNameAs
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
@@ -18,7 +18,7 @@ import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
 import com.yunzia.hyperstar.hook.util.plugin.ControlCenterUtils
 import com.yunzia.hyperstar.hook.util.plugin.MiBlurCompat
 import com.yunzia.hyperstar.prefs.XSPUtils
-import io.github.kyuubiran.ezxhelper.android.util.ViewUtil.findViewByIdName
+import com.yunzia.hyperstar.hook.util.android.findViewByIdName
 
 
 object VolumeOrQSBrightnessValue : BasePluginHook() {
@@ -44,13 +44,13 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
                 pluginClassLoader
             ).afterHookMethod(
                 "updateIconProgress",
-                Boolean::class.java
-            ){
-                val sliderHolder = this.callMethod("getHolder") ?: return@afterHookMethod
+                Boolean::class .java
+            ) { args, result ->
+                val sliderHolder = thisObject.callMethod("getHolder") ?: return@afterHookMethod
                 val item = sliderHolder.getObjectField("itemView") as View
                 val seekBar = item.findViewByIdNameAs<SeekBar>("slider")
                 val max = seekBar.max
-                val value = this.callMethodAs<Int>("getTargetValue")
+                val value = thisObject.callMethodAs<Int>("getTargetValue")
                 val topValue = item.findViewByIdNameAs<TextView>("top_text")
                 topValue.visibility = View.VISIBLE
                 topValue.text = ((value * 100) / max).toString() + "%"
@@ -63,10 +63,10 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
                 pluginClassLoader
             ).afterHookMethod(
                 "updateIconProgress"
-            ){
-                val sliderHolder = this.callMethod("getSliderHolder") ?: return@afterHookMethod
+            ) { args, result ->
+                val sliderHolder = thisObject.callMethod("getSliderHolder") ?: return@afterHookMethod
                 val item = sliderHolder.getObjectFieldAs<View>("itemView")
-                val seekBar = this.callMethodAs<SeekBar>("getSlider")!!
+                val seekBar = thisObject.callMethodAs<SeekBar>("getSlider")!!
                 val max = seekBar.max
                 val value: Int = seekBar.progress
                 val topValue = item.findViewByIdNameAs<TextView>("top_text")
@@ -85,9 +85,9 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
             pluginClassLoader
         ).afterHookMethod(
             "updateBlendBlur"
-        ) {
-            val context = this.callMethodAs<Context>("getContext")
-            val item = this.getObjectFieldAs<View>("itemView")
+        ) { args, result ->
+            val context = thisObject.callMethodAs<Context>("getContext")
+            val item = thisObject.getObjectFieldAs<View>("itemView")
             val topValue = item.findViewByIdNameAs<TextView>("top_text")
             val icon = item.findViewByIdName("icon")
 

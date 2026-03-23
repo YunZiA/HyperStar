@@ -5,7 +5,7 @@ import android.util.TypedValue
 import android.widget.RelativeLayout
 import android.widget.SeekBar
 import android.widget.TextView
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.getColor
 import com.yunzia.hyperstar.hook.base.getDimension
@@ -25,11 +25,12 @@ object QSMiplayDetailVolumeBar: BasePluginHook() {
     }
 
     private fun starMethodHook() {
-        val QSControlMiPlayDetailHeader = findClass("com.android.systemui.QSControlMiPlayDetailHeader",pluginClassLoader)
-
-        QSControlMiPlayDetailHeader.apply {
-            afterHookMethod("initUI"){
-                val volumeBarContainer = this.getObjectFieldAs<RelativeLayout>("volumeBarContainer")
+         findClass(
+             "com.android.systemui.QSControlMiPlayDetailHeader",
+             pluginClassLoader
+         ).apply {
+            afterHookMethod("initUI") { args, result ->
+                val volumeBarContainer = thisObject.getObjectFieldAs<RelativeLayout>("volumeBarContainer")
                 val context = volumeBarContainer.context
                 val res = context.resources
 
@@ -50,9 +51,9 @@ object QSMiplayDetailVolumeBar: BasePluginHook() {
                 volumeBarContainer.addView(value,lp)
 
             }
-            afterHookAllMethods("addObservers\$lambda-29"){
-                val qSControlMiPlayDetailHeader = it.args[0]
-                val num = it.args[1] as Int
+            afterHookAllMethods("addObservers\$lambda-29") { args, result ->
+                val qSControlMiPlayDetailHeader = args[0]
+                val num = args[1] as Int
                 val volumeBarContainer = qSControlMiPlayDetailHeader.getObjectFieldAs<RelativeLayout>("volumeBarContainer")
                 if (volumeBarContainer.childCount < 3) return@afterHookAllMethods
                 val seekBar = qSControlMiPlayDetailHeader.getObjectFieldAs<SeekBar>("volumeBar")

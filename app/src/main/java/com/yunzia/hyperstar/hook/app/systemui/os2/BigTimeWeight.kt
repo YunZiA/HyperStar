@@ -1,11 +1,8 @@
 package com.yunzia.hyperstar.hook.app.systemui.os2
 
 import android.graphics.Typeface
-import android.view.ViewGroup
 import android.widget.TextView
-import com.yunzia.hyperstar.hook.core.BaseHook
-import com.yunzia.hyperstar.hook.core.finder.findClass
-import com.yunzia.hyperstar.hook.core.Log
+import com.yunzia.hyperstar.hook.core.base.BaseHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.afterHookAllMethods
 import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
@@ -74,12 +71,12 @@ object Test : BaseHook() {
 //            afterHookAllMethods(
 //                "bind"
 //            ){
-//                val mTitleView  = this.getObjectFieldAs<TextView>("mTitleView")
+//                val mTitleView  = thisObject.getObjectFieldAs<TextView>("mTitleView")
 //                mTitleView.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
 //
 //            }
 //            afterHookMethod("onFinishInflate"){
-//                val mTitleView  = this.getObjectFieldAs<TextView>("mTitleView")
+//                val mTitleView  = thisObject.getObjectFieldAs<TextView>("mTitleView")
 //                mTitleView.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
 //            }
 //        }
@@ -87,9 +84,9 @@ object Test : BaseHook() {
         findClass(
             "com.android.systemui.statusbar.notification.row.HybridGroupManager"
         ).apply {
-            afterHookAllMethods("bindFromNotification"){
+            afterHookAllMethods("bindFromNotification") { args, result ->
 
-                val hybridNotificationView  = it.result
+                val hybridNotificationView  = result.value
                 hybridNotificationView.callMethodAs<TextView>("getTitleView").typeface = Typeface.defaultFromStyle(Typeface.BOLD)
 
             }
@@ -101,7 +98,7 @@ object Test : BaseHook() {
 
 //        findClass("com.android.systemui.statusbar.notification.row.NotificationContentInflaterInjector",classLoader).apply {
 //            afterHookAllMethods("handleTitle"){
-//                val builderRemoteViews = it.args[0] as RemoteViews
+//                val builderRemoteViews = args[0] as RemoteViews
 //                builderRemoteViews.
 //
 //            }
@@ -126,10 +123,10 @@ object Test : BaseHook() {
         ).beforeHookMethod(
             "updateWeight",
             Float::class.java
-        ) {
-            this.setObjectField(
+        ) { args, result ->
+            thisObject.setObjectField(
                 "miproNormal",
-                this.getObjectField("miproMedium")!!
+                thisObject.getObjectField("miproMedium")!!
             )
 
         }

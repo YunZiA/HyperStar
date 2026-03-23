@@ -1,12 +1,13 @@
 package com.yunzia.hyperstar.hook.util
 
 import com.yunzia.hyperstar.hook.core.finder.findClass
-import com.yunzia.hyperstar.hook.core.Log
-import com.yunzia.hyperstar.hook.core.Log.logE
+import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.helper.callMethod
 
 
 class ConstraintSet(classLoader: ClassLoader?) {
+
+    private val TAG = "ConstraintSet"
     val constraintSet: Any? by lazy { getConstraintSet(classLoader) }
 
     private fun getConstraintSet(classLoader: ClassLoader?):Any? {
@@ -16,7 +17,7 @@ class ConstraintSet(classLoader: ClassLoader?) {
                 constraintSet = getConstructor().newInstance()
             }
         } catch (e: Throwable) {
-            logE(e.message)
+            logE(TAG, e.message)
             e.printStackTrace()
         }
         return constraintSet

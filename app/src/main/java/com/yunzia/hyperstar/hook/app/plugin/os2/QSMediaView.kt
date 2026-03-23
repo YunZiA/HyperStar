@@ -5,7 +5,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.marginTop
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.findViewByIdNameAs
 import com.yunzia.hyperstar.hook.core.helper.afterHookAllConstructors
@@ -34,8 +34,8 @@ object QSMediaView : BasePluginHook() {
         MediaPlayerViewHolder.apply {
             beforeHookMethod(
                 "updateSize"
-            ){
-                val itemView = this.getObjectFieldAs<View>("itemView")
+            ) { args, result ->
+                val itemView = thisObject.getObjectFieldAs<View>("itemView")
 
                 val title = itemView.findViewByIdNameAs<TextView>("title")
                 val artist = itemView.findViewByIdNameAs<TextView>("artist")
@@ -63,8 +63,8 @@ object QSMediaView : BasePluginHook() {
                 }
 
             }
-            afterHookAllConstructors {
-                val itemView = it.args[0] as View
+            afterHookAllConstructors { args, result ->
+                val itemView = args[0] as View
                 val title = itemView.findViewByIdNameAs<TextView>("title")
                 val artist = itemView.findViewByIdNameAs<TextView>("artist")
                 val emptyState = itemView.findViewByIdNameAs<TextView>("empty_state")
@@ -120,7 +120,7 @@ object QSMediaView : BasePluginHook() {
 //                "miui.systemui.controlcenter.media.MediaPlayerIconsInfo",
 //                Boolean::class.java
 //            ){
-//                val itemView : View = this.getObjectFieldAs<View>("itemView")
+//                val itemView : View = thisObject.getObjectFieldAs<View>("itemView")
 //
 //                val deviceIcon = itemView.findViewByIdNameAs<ImageView>("device_icon")
 //

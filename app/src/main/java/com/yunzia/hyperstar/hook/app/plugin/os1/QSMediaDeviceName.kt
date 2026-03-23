@@ -1,6 +1,6 @@
 package com.yunzia.hyperstar.hook.app.plugin.os1
 
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.afterHookAllMethods
 import com.yunzia.hyperstar.hook.core.helper.callMethod
@@ -18,12 +18,12 @@ object QSMediaDeviceName : BasePluginHook() {
 
     private fun startMethodsHook() {
         val MiPlayExtentionsKt  = findClass("com.android.systemui.MiPlayExtentionsKt",pluginClassLoader)
-        MiPlayExtentionsKt.afterHookAllMethods("getFullName"){
-            val p0Vars = it.args[0]
+        MiPlayExtentionsKt.afterHookAllMethods("getFullName") { args, result ->
+            val p0Vars = args[0]
             if (MiPlayExtentionsKt.callStaticMethodAs("isLocalSpeaker",p0Vars)){
                 val dd = p0Vars.callMethod("d")
                 val roomName = dd.callMethodAs<String>("getName")
-                it.result = roomName
+                result.replace(roomName)
             }
         }
     }

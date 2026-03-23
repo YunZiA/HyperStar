@@ -1,19 +1,18 @@
 package com.yunzia.hyperstar.hook.core.helper
 
-import com.yunzia.hyperstar.hook.core.Log
-import com.yunzia.hyperstar.hook.core.Log.logD
-import com.yunzia.hyperstar.hook.core.Log.logE
+import com.yunzia.hyperstar.hook.core.StarLog
+import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.MethodHelper.TAG
 import com.yunzia.hyperstar.hook.core.helper.MethodHelper.findMethodBestMatch
-import io.github.kyuubiran.ezxhelper.xposed.common.AfterHookParam
-import io.github.kyuubiran.ezxhelper.xposed.common.BeforeHookParam
-import java.lang.invoke.MethodHandles
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.util.concurrent.ConcurrentHashMap
 
 object MethodHelper {
+
+    const val TAG = "MethodHelper"
 
     private val methodCache = ConcurrentHashMap<String, Method>()
 
@@ -80,7 +79,7 @@ object MethodHelper {
             try {
                 clazz.getDeclaredMethod(methodName, *paramTypes).apply { isAccessible = true }
             } catch (e: NoSuchMethodException) {
-                Log.logE("Method not found: $key | ${e.message}")
+                StarLog.logE("Method not found: $key | ${e.message}")
                 null
             }
         }
@@ -141,7 +140,6 @@ object MethodHelper {
                 considerPrivate = false
                 currentClass = currentClass.superclass
             }
-
             bestMatch?.apply { isAccessible = true }
         }
     }
@@ -155,7 +153,7 @@ object MethodHelper {
         vararg args: Any?
     ): Method? {
         clazz ?: return null
-        val paramTypes = args.map { it?.javaClass ?: Any::class.java }.toTypedArray()
+        val paramTypes = args.map { it.toParamType() }.toTypedArray()
         return findMethodBestMatch(clazz, methodName, *paramTypes)
     }
 
@@ -228,11 +226,56 @@ object MethodHelper {
     private fun getParametersString(parameterTypes: Array<out Class<*>>): String =
         parameterTypes.joinToString(",") { it.name }
 
-    private fun isAssignable(actual: Array<out Class<*>>, formal: Array<out Class<*>>): Boolean {
+    private val primitiveWrapperMap = mapOf(
+        Boolean::class.javaPrimitiveType to Boolean::class.java,
+        Int::class.javaPrimitiveType to Int::class.java,
+        Float::class.javaPrimitiveType to Float::class.java,
+        Long::class.javaPrimitiveType to Long::class.java,
+        Double::class.javaPrimitiveType to Double::class.java,
+        Short::class.javaPrimitiveType to Short::class.java,
+        Byte::class.javaPrimitiveType to Byte::class.java,
+        Char::class.javaPrimitiveType to Char::class.java
+    )
+
+    private val wrapperPrimitiveMap =
+        primitiveWrapperMap.entries.associate { it.value to it.key!! }
+
+    private fun isAssignable(
+        actual: Array<out Class<*>>,
+        formal: Array<out Class<*>>
+    ): Boolean {
+
         if (actual.size != formal.size) return false
-        return actual.zip(formal).all { (a, f) -> f.isAssignableFrom(a) }
+
+        return actual.indices.all {
+
+            isAssignable(actual[it], formal[it])
+
+        }
     }
 
+    private fun isAssignable(
+        actual: Class<*>,
+        formal: Class<*>
+    ): Boolean {
+
+        if (formal.isAssignableFrom(actual))
+            return true
+
+        if (primitiveWrapperMap[formal] == actual)
+            return true
+
+        if (primitiveWrapperMap[actual] == formal)
+            return true
+
+        if (wrapperPrimitiveMap[formal] == actual)
+            return true
+
+        if (wrapperPrimitiveMap[actual] == formal)
+            return true
+
+        return false
+    }
     private fun compareParameterTypes(
         m1: Array<out Class<*>>,
         m2: Array<out Class<*>>,
@@ -250,20 +293,43 @@ object MethodHelper {
         }
         return 0
     }
+    private fun Any?.toParamType(): Class<*> {
+
+        return when (this) {
+
+            is Boolean -> Boolean::class.javaPrimitiveType!!
+
+            is Int -> Int::class.javaPrimitiveType!!
+
+            is Float -> Float::class.javaPrimitiveType!!
+
+            is Long -> Long::class.javaPrimitiveType!!
+
+            is Double -> Double::class.javaPrimitiveType!!
+
+            is Short -> Short::class.javaPrimitiveType!!
+
+            is Byte -> Byte::class.javaPrimitiveType!!
+
+            is Char -> Char::class.javaPrimitiveType!!
+
+            else -> this?.javaClass ?: Any::class.java
+        }
+    }
 
 }
 
 
 
-fun  Any?.callMethod(methodName: String, vararg args: Any?):Any? {
+fun  Any?.callMethod(methodName: String, vararg args: Any?): Any? {
     try {
         return findMethodBestMatch(this?.javaClass, methodName, *args)?.invoke(this, *args)
     } catch (e: IllegalAccessException) {
-        logE(e.message)
+        logE(TAG, e.message)
     } catch (e: java.lang.IllegalArgumentException) {
-        logE(e.message)
+        logE(TAG, e.message)
     } catch (e: InvocationTargetException) {
-        logE(e.message)
+        logE(TAG, e.message)
     }
     return null
 }
@@ -280,11 +346,11 @@ fun Class<*>?.callStaticMethods(methodName: String, parameterTypes: Array<Class<
     try {
         return findMethodBestMatch(this, methodName,parameterTypes, *args)?.invoke(null, *args)
     } catch (e: IllegalAccessException) {
-        logE(e.message)
+        logE(TAG, e.message)
     } catch (e: java.lang.IllegalArgumentException) {
-        logE(e.message)
+        logE(TAG, e.message)
     } catch (e: InvocationTargetException) {
-        logE(e.message)
+        logE(TAG, e.message)
     }
     return null
 }
@@ -293,31 +359,31 @@ fun Class<*>?.callStaticMethod(methodName: String, vararg args: Any?):Any? {
     try {
         return findMethodBestMatch(this, methodName, *args)?.invoke(null, *args)
     } catch (e: IllegalAccessException) {
-        logE(e.message)
+        logE(TAG, e.message)
     } catch (e: java.lang.IllegalArgumentException) {
-        logE(e.message)
+        logE(TAG, e.message)
     } catch (e: InvocationTargetException) {
-        logE(e.message)
+        logE(TAG, e.message)
     }
     return null
 }
 
-fun AfterHookParam.callSuperMethod(): Any? {
-    val thisObj = this.thisObject
-    val parameterTypes = this.args.map { it?.javaClass }.toTypedArray()
-    val superClass = thisObj.javaClass.superclass
-    val superMethod = findMethodBestMatch(superClass,this.member.name,*parameterTypes)
-    //MethodHandles.privateLookupIn(superClass,MethodHandles.lookup()).findSpecial(superClass,this.method.name,*parameterTypes,this.javaClass)
-    val methodHandle = MethodHandles.lookup().unreflectSpecial(superMethod, thisObj.javaClass)
-    return methodHandle.invokeWithArguments(thisObj, *this.args)
-}
-
-fun BeforeHookParam.callSuperMethod(): Any? {
-    val thisObj = this.thisObject
-    val parameterTypes = this.args.map { it?.javaClass }.toTypedArray()
-    val superClass = thisObj.javaClass.superclass
-    val superMethod = findMethodBestMatch(superClass,this.member.name,*parameterTypes)
-    //MethodHandles.privateLookupIn(superClass,MethodHandles.lookup()).findSpecial(superClass,this.method.name,*parameterTypes,this.javaClass)
-    val methodHandle = MethodHandles.lookup().unreflectSpecial(superMethod, thisObj.javaClass)
-    return methodHandle.invokeWithArguments(thisObj, *this.args)
-}
+//fun AfterHookParam.callSuperMethod(): Any? {
+//    val thisObj = this.thisObject
+//    val parameterTypes = this.args.map { it?.javaClass }.toTypedArray()
+//    val superClass = thisObj.javaClass.superclass
+//    val superMethod = findMethodBestMatch(superClass,this.member.name,*parameterTypes)
+//    //MethodHandles.privateLookupIn(superClass,MethodHandles.lookup()).findSpecial(superClass,this.method.name,*parameterTypes,this.javaClass)
+//    val methodHandle = MethodHandles.lookup().unreflectSpecial(superMethod, thisObj.javaClass)
+//    return methodHandle.invokeWithArguments(thisObj, *this.args)
+//}
+//
+//fun BeforeHookParam.callSuperMethod(): Any? {
+//    val thisObj = this.thisObject
+//    val parameterTypes = this.args.map { it?.javaClass }.toTypedArray()
+//    val superClass = thisObj.javaClass.superclass
+//    val superMethod = findMethodBestMatch(superClass,this.member.name,*parameterTypes)
+//    //MethodHandles.privateLookupIn(superClass,MethodHandles.lookup()).findSpecial(superClass,this.method.name,*parameterTypes,this.javaClass)
+//    val methodHandle = MethodHandles.lookup().unreflectSpecial(superMethod, thisObj.javaClass)
+//    return methodHandle.invokeWithArguments(thisObj, *this.args)
+//}

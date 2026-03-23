@@ -33,8 +33,8 @@ import com.yunzia.hyperstar.hook.app.plugin.os3.QSListView
 import com.yunzia.hyperstar.hook.app.plugin.os3.QSTileAutoCollapse
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenuHook
 import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
-import com.yunzia.hyperstar.hook.core.BasePluginHooks
-import com.yunzia.hyperstar.hook.core.Log.logD
+import com.yunzia.hyperstar.hook.core.base.BasePluginHooks
+import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.provider.PluginClassLoaderProvider
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.finder.loadClass
@@ -44,8 +44,8 @@ import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 object PluginHooksForOS3 : BasePluginHooks() {
 
     override fun init() {
-        "com.android.systemui.shared.plugins.PluginInstance\$PluginFactory".loadClass().afterHookMethod("createPluginContext"){
-            val mPluginContext = it.result as ContextWrapper
+        "com.android.systemui.shared.plugins.PluginInstance\$PluginFactory".loadClass().afterHookMethod("createPluginContext") { args, result ->
+            val mPluginContext = result.value as ContextWrapper
             if (mPluginContext.packageName != plugin){
                 logD("检测到非目标应用包名: 当前包名为 " + mPluginContext.packageName + ", 目标插件包名为 " + plugin)
                 return@afterHookMethod
@@ -120,8 +120,8 @@ object PluginHooksForOS3 : BasePluginHooks() {
             }
             replaceHookMethod(
                 "isTinyScreen",
-                Context::class.java
-            ){
+                Context::class .java
+            ) { args ->
                 return@replaceHookMethod true
             }
         }

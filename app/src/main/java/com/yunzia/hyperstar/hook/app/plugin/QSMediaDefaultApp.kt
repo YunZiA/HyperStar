@@ -1,6 +1,6 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.afterHookAllMethods
 import com.yunzia.hyperstar.prefs.XSPUtils
@@ -19,11 +19,8 @@ object QSMediaDefaultApp : BasePluginHook() {
         findClass(
             "com.android.systemui.QSControlMiPlayDetailHeader\$Companion\$getLastPlayingAppPackageName\$2",
             pluginClassLoader
-        ).afterHookAllMethods("invokeSuspend"){
-            it.result = apps
+        ).afterHookAllMethods("invokeSuspend") { args, result ->
+            result.replace(apps)
         }
-
     }
-
-
 }

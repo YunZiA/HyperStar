@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.hook.init
 
-import android.content.Context
 import android.content.ContextWrapper
 import com.yunzia.hyperstar.hook.app.plugin.HideVolumeCollpasedFootButton
 import com.yunzia.hyperstar.hook.app.plugin.QSCardAutoCollapse
@@ -33,12 +32,10 @@ import com.yunzia.hyperstar.hook.app.plugin.os1.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeOrQSBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenuHook
-import com.yunzia.hyperstar.hook.core.BasePluginHooks
-import com.yunzia.hyperstar.hook.core.Log.logD
+import com.yunzia.hyperstar.hook.core.base.BasePluginHooks
+import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.finder.loadClass
-import com.yunzia.hyperstar.hook.core.helper.afterHookAllMethods
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
-import com.yunzia.hyperstar.hook.core.helper.beforeHookAllMethods
 
 object PluginHookForOS1 : BasePluginHooks() {
 
@@ -50,8 +47,8 @@ object PluginHookForOS1 : BasePluginHooks() {
 
 
     private fun startSystemUIPluginHook(){
-        "com.android.systemui.shared.plugins.PluginInstance\$PluginFactory".loadClass().afterHookMethod("createPluginContext"){
-            val mPluginContext = it.result as ContextWrapper
+        "com.android.systemui.shared.plugins.PluginInstance\$PluginFactory".loadClass().afterHookMethod("createPluginContext") { args, result ->
+            val mPluginContext = result.value as ContextWrapper
             if (mPluginContext.packageName != plugin){
                 logD("检测到非目标应用包名: 当前包名为 " + mPluginContext.packageName + ", 目标插件包名为 " + plugin)
                 return@afterHookMethod

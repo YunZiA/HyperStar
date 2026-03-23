@@ -33,7 +33,7 @@ class AppViewModel: ViewModel()  {
 
     // 当 Xposed 服务绑定成功时调用
     fun onXposedServiceBound(service: XposedService) {
-        isActive = true
+        isActive = service.apiVersion >= 101
         _xposedServiceInfo.value = XposedServiceInfo(
             apiVersion = service.apiVersion,
             frameworkName = service.frameworkName,
@@ -42,19 +42,18 @@ class AppViewModel: ViewModel()  {
             scope = service.scope
         )
         Log.d("AppViewModel", "onXposedServiceBound: \n${_xposedServiceInfo.value}")
-        scopeManager.init(service.scope)
-        scopeManager.onServiceBound(service)
+        scopeManager.attachService(service)
     }
 
     // 当 Xposed 服务断开连接或需要清理时调用
     fun onXposedServiceReleased() {
-        scopeManager.onServiceReleased()
+//        scopeManager.onServiceReleased()
     }
 
     fun loadAppInfo(
         packageManager: PackageManager,
         moduleScope: Array<String>,
-        scopeManagerCurrentScope: List<String>
+        scopeManagerCurrentScope: Set<String>
     ) {
         if (scopeManagerCurrentScope.isEmpty()) {
             clearAppInfo()

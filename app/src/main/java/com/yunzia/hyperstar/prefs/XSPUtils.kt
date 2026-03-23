@@ -1,7 +1,8 @@
 package com.yunzia.hyperstar.prefs
 
 import android.content.SharedPreferences
-import com.yunzia.hyperstar.hook.core.BaseXposedModule
+import com.yunzia.hyperstar.hook.core.StarLog.log
+import com.yunzia.hyperstar.hook.core.base.BaseXposedModule
 
 fun BaseXposedModule.loadPref(){
     XSPUtils.init(getRemotePreferences(SPUtils.PREFERENCE_NAME))

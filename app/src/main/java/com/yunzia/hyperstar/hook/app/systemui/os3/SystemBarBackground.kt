@@ -11,12 +11,10 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.core.graphics.alpha
-import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.hook.core.BaseHook
+import com.yunzia.hyperstar.hook.core.base.BaseHook
 import com.yunzia.hyperstar.hook.core.helper.afterHookConstructor
 import com.yunzia.hyperstar.hook.core.finder.findClass
-import com.yunzia.hyperstar.hook.core.Log
-import com.yunzia.hyperstar.hook.core.Log.logD
+import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.hook.core.helper.callMethodAs
 import com.yunzia.hyperstar.hook.core.helper.getIntField
@@ -39,15 +37,15 @@ object SystemBarBackground : BaseHook() {
         ).afterHookConstructor(
             Int::class.java,
             View::class.java
-        ) {
-            val view = it.args[1] as View
+        ) { args, result ->
+            val view = args[1] as View
 
             val name = view.context.resources.getResourceEntryName(view.id)
 
             if ((isTransparentNavigationBarBackground && name == "navigation_bar_view") ||
                 (isTransparentStatusBarBackground && name == "status_bar_container")
             ) {
-                this.getObjectField("mBarBackground")?.setIntField("mSemiTransparent", 0)
+                thisObject.getObjectField("mBarBackground")?.setIntField("mSemiTransparent", 0)
             }
 
         }
@@ -64,20 +62,20 @@ object SystemBarBackground : BaseHook() {
         ).afterHookMethod(
             "draw",
             Canvas::class.java
-        ) {
-            val mMode = this.getIntField("mMode")
-            val mColor = this.getIntField("mColor")!!
+        ) { args, result ->
+            val mMode = thisObject.getIntField("mMode")
+            val mColor = thisObject.getIntField("mColor")!!
             logD("SystemBarBackground","mColor = $mColor")
             if (mColor.alpha == 0) return@afterHookMethod
             when (mMode){
                 1,2->{
-                    val canvas = it.args[0] as Canvas
-                    val mPaint = this.getObjectFieldAs<Paint>("mPaint")
-                    val mFrame = this.getObjectFieldAs<Rect>("mFrame")
-                    val mGradient = this.getObjectFieldAs<Drawable>("mGradient")
-                    val mGradientAlpha = this.getIntField("mGradientAlpha")!!
-                    val mSemiTransparent = this.getIntField("mSemiTransparent")
-                    val bounds: Rect = if (mFrame != null) mFrame else this.callMethodAs<Rect>("getBounds")
+                    val canvas = args[0] as Canvas
+                    val mPaint = thisObject.getObjectFieldAs<Paint>("mPaint")
+                    val mFrame = thisObject.getObjectFieldAs<Rect>("mFrame")
+                    val mGradient = thisObject.getObjectFieldAs<Drawable>("mGradient")
+                    val mGradientAlpha = thisObject.getIntField("mGradientAlpha")!!
+                    val mSemiTransparent = thisObject.getIntField("mSemiTransparent")
+                    val bounds: Rect = if (mFrame != null) mFrame else thisObject.callMethodAs<Rect>("getBounds")
                     if (bounds.isEmpty) {
                         return@afterHookMethod
                     }

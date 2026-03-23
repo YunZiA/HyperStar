@@ -2,19 +2,17 @@ package com.yunzia.hyperstar.hook.app
 
 import android.content.ContentResolver
 import android.provider.Settings
-import com.yunzia.hyperstar.hook.core.BaseHook
-import com.yunzia.hyperstar.hook.core.Log
-import com.yunzia.hyperstar.hook.core.Log.log
-import com.yunzia.hyperstar.hook.core.Log.logD
-import com.yunzia.hyperstar.hook.core.Log.logE
+import com.yunzia.hyperstar.hook.core.base.BaseHook
+import com.yunzia.hyperstar.hook.core.StarLog.log
+import com.yunzia.hyperstar.hook.core.StarLog.logD
+import com.yunzia.hyperstar.hook.core.StarLog.logE
+import com.yunzia.hyperstar.hook.core.XposedCore
 import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.HookResult
 import com.yunzia.hyperstar.hook.core.helper.afterHookAllMethods
 import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
-import com.yunzia.hyperstar.hook.core.helper.hookMethod
 import com.yunzia.hyperstar.prefs.XSPUtils
-import io.github.kyuubiran.ezxhelper.xposed.EzXposed
-import io.github.kyuubiran.ezxhelper.xposed.common.BeforeHookParam
-import io.github.kyuubiran.ezxhelper.xposed.dsl.HookFactory
+import io.github.libxposed.api.XposedInterface
 
 //From "https://github.com/xfqwdsj/IAmNotADeveloper/blob/main/app/src/main/kotlin/xyz/xfqlittlefan/notdeveloper/xposed/Hook.kt"
 
@@ -26,7 +24,7 @@ object NotDeveloperHook : BaseHook() {
     val ADB_WIFI_ENABLED = "adb_wifi_enabled"
 
     override fun init() {
-        val packageName = EzXposed.hookedPackageName
+        val packageName = XposedCore.hookedPackageName
         if (packageName.startsWith("android")
             || packageName.startsWith("com.android")
             || packageName.startsWith("com.miui")
@@ -37,8 +35,8 @@ object NotDeveloperHook : BaseHook() {
 
         logD("$tag: processing $packageName")
 
-        val newApiCallback :Any?.(BeforeHookParam) -> Unit = { hookResultToZero(it, DEVELOPMENT_SETTINGS_ENABLED, ADB_ENABLED, ADB_WIFI_ENABLED) }
-        val oldApiCallback: Any?.(BeforeHookParam) -> Unit = { hookResultToZero(it, DEVELOPMENT_SETTINGS_ENABLED, ADB_ENABLED) }
+        val newApiCallback : XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit = { args, result -> hookResultToZero(args, result, DEVELOPMENT_SETTINGS_ENABLED, ADB_ENABLED, ADB_WIFI_ENABLED) }
+        val oldApiCallback:  XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit = { args, result -> hookResultToZero(args, result, DEVELOPMENT_SETTINGS_ENABLED, ADB_ENABLED) }
 
         Settings.Global::class.java.apply {
             beforeHookMethod(
@@ -103,55 +101,58 @@ object NotDeveloperHook : BaseHook() {
         val overridesvcadbd = "stopped"
         clazz.apply {
             listOf(methodGet, methodGetProp, methodGetBoolean, methodGetInt, methodGetLong).forEach {
-                this.afterHookAllMethods(it) {param ->
-                    val arg = param.args[0] as String
-                    logD("$tag: processing ${param.member.name} from ${EzXposed.hookedPackageName} with arg $arg")
+                this.afterHookAllMethods(it) { args, result ->
+                    val arg = args[0] as String
+                    val memberName = executable.name
+                    logD("$tag: processing $memberName from ${XposedCore.hookedPackageName} with arg $arg")
 
-                    if (arg != ffsReady && param.member.name != methodGet) {
-                        logE("$tag:  props processed ${param.member.name} from ${EzXposed.hookedPackageName} receiving invalid arg $arg")
+                    if (arg != ffsReady && memberName != it) {
+                        logE("$tag:  props processed $memberName from ${XposedCore.hookedPackageName} receiving invalid arg $arg")
                         return@afterHookAllMethods
                     }
 
                     when (arg) {
                         ffsReady -> {
-                            when (param.member.name) {
-                                methodGet -> param.result = "0"
-                                methodGetProp -> param.result = "0"
-                                methodGetBoolean -> param.result = false
-                                methodGetInt -> param.result = 0
-                                methodGetLong -> param.result = 0L
+                            when (memberName) {
+                                methodGet -> result.replace("0")
+                                methodGetProp -> result.replace("0")
+                                methodGetBoolean -> result.replace("false")
+                                methodGetInt -> result.replace(0)
+                                methodGetLong -> result.replace(0L)
                             }
                         }
 
-                        usbState -> param.result = overrideAdb
-                        usbConfig -> param.result = overrideAdb
-                        rebootFunc -> param.result = overrideAdb
-                        svcadbd -> param.result = overridesvcadbd
+                        usbState -> result.replace(overrideAdb)
+                        usbConfig -> result.replace(overrideAdb)
+                        rebootFunc -> result.replace(overrideAdb)
+                        svcadbd -> result.replace(overridesvcadbd)
 
                     }
 
-                    logD("$tag: hooked ${param.member.name}($arg): ${param.result}")
+                    logD("$tag: hooked $memberName($arg): ${result.value}")
 
                 }
             }
         }
     }
 
-    private fun Any?.hookResultToZero(
-        param: BeforeHookParam,
+    private fun XposedInterface.Chain.hookResultToZero(
+        args: MutableList<Any?>,
+        result: HookResult<Any?>,
         vararg keys: String
     ) {
-        val arg = param.args[1] as String
-        logD("$tag: processing ${param.member.name} from ${EzXposed.hookedPackageName} with arg $arg")
+        val arg = args[1] as String
+        val memberName = executable.name
+        logD("$tag: processing $memberName from ${XposedCore.hookedPackageName} with arg $arg")
 
         keys.forEach { key ->
             if (XSPUtils.getBoolean(key, true) && arg == key) {
-                param.result = 0
-                log("$tag: hooked ${param.member.name}($arg): ${param.result}")
+                result.replace(0)
+                log("$tag: hooked $memberName($arg): ${result.value}")
                 return
             }
         }
 
-        logD("$tag: processed ${param.member.name} without changing result")
+        logD("$tag: processed $memberName without changing result")
     }
 }

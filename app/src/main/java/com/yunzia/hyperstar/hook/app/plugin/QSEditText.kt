@@ -1,6 +1,6 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.stringReplaceByValue
 import com.yunzia.hyperstar.prefs.XSPUtils
 

@@ -144,7 +144,7 @@ sealed interface PowerMenuRoutes : Route {
 
     @Parcelize
     @Serializable
-    data class FunSelect(val titleRes : Int, val key : String) : PowerMenuRoutes
+    data class FunSelect(val index : Int, val key : String) : PowerMenuRoutes
 }
 
 sealed interface MediaRoutes : Route {

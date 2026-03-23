@@ -13,13 +13,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.yunzia.hyperstar.hook.base.BaseHookHelper.findMethodExactIfExists
 import com.yunzia.hyperstar.hook.base.BaseHookHelper.findMethodExt
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.helper.afterHookConstructor
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.findViewByIdNameAs
 import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
-import com.yunzia.hyperstar.hook.core.Log
-import com.yunzia.hyperstar.hook.core.Log.logD
+import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.helper.afterHookAllMethods
 import com.yunzia.hyperstar.hook.core.helper.beforeHookAllMethods
 import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
@@ -36,7 +35,7 @@ import com.yunzia.hyperstar.hook.core.helper.setIntField
 import com.yunzia.hyperstar.hook.util.plugin.CommonUtils
 import com.yunzia.hyperstar.hook.util.startMarqueeOfFading
 import com.yunzia.hyperstar.prefs.XSPUtils
-import io.github.kyuubiran.ezxhelper.android.util.ViewUtil.findViewByIdName
+import com.yunzia.hyperstar.hook.util.android.findViewByIdName
 import yunzia.utils.DensityUtil.Companion.dpToPx
 
 
@@ -89,8 +88,8 @@ object QSListView : BasePluginHook() {
         QSItemViewHolder.findMethodExt(
             "getTarget",
             { isBridge && isSynthetic }
-        ).replaceHook {
-            val itemView = this.getObjectField("itemView")
+        )?.replaceHook {
+            val itemView = thisObject.getObjectField("itemView")
             return@replaceHook itemView
         }
     }
@@ -201,8 +200,8 @@ object QSListView : BasePluginHook() {
             QSItemViewHolder.afterHookConstructor(
                 QSItemView,
                 MainPanelController
-            ) {
-                val qSItemView = this.callMethodAs<FrameLayout>("getQsItemView")!!
+            ) { args, result ->
+                val qSItemView = thisObject.callMethodAs<FrameLayout>("getQsItemView")!!
                 val label = qSItemView.findViewByIdNameAs<TextView>("tile_label")
                 val icon = qSItemView.findViewByIdNameAs<FrameLayout>("icon_frame")
 
@@ -255,8 +254,8 @@ object QSListView : BasePluginHook() {
             ).beforeHookMethod(
                 "getSettings",
                 Int::class.java
-            ) {
-                val contentResolver = this.getObjectFieldAs<ContentResolver>("contentResolver")
+            ) { args, result ->
+                val contentResolver = thisObject.getObjectFieldAs<ContentResolver>("contentResolver")
                 when (labelMode) {
                     1 -> {
                         Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
@@ -283,8 +282,8 @@ object QSListView : BasePluginHook() {
             ).apply {
                 beforeHookMethod(
                     "updateTextMode"
-                ){
-                    val contentResolver = this.getObjectFieldAs<ContentResolver>("contentResolver")
+                ) { args, result ->
+                    val contentResolver = thisObject.getObjectFieldAs<ContentResolver>("contentResolver")
                     when (labelMode) {
                         1 -> {
                             Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
@@ -308,8 +307,8 @@ object QSListView : BasePluginHook() {
                 beforeHookMethod(
                     "updateTextMode",
                     Boolean::class.java
-                ){
-                    val contentResolver = this.getObjectFieldAs<ContentResolver>("contentResolver")
+                ) { args, result ->
+                    val contentResolver = thisObject.getObjectFieldAs<ContentResolver>("contentResolver")
                     when (labelMode) {
                         1 -> {
                             Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
@@ -333,43 +332,45 @@ object QSListView : BasePluginHook() {
             }
             QSTileItemView.replaceHookMethod(
                 "changeExpand"
-            ) { this as FrameLayout
-                val icon = this.getObjectField("icon")
-                val isDetailTile = icon.getBooleanField("isDetailTile")!!
-                val res = this.resources
-                val label = this.findViewByIdName("tile_label") as TextView
-                val isShowLabel = this.callMethod("getShowLabel") as Boolean
-                var space : Int = this.getIntField("containerHeight")!!
-                val labelHeight = this.getIntField("labelHeight")!!
-                val y : Float
-                if (isShowLabel){
-                    if (isDetailTile){
-                        y = 0f
-                        space += labelHeight
-                    }else{
-                        when (labelMode) {
-                            2 -> {
-                                y = dpToPx(res, listLabelTop)
-                                space += labelHeight
-                                space = (space * listLabelSpacingY).toInt()
+            ) {
+                (thisObject as FrameLayout).apply {
+                    val icon = thisObject.getObjectField("icon")
+                    val isDetailTile = icon.getBooleanField("isDetailTile")!!
+                    val res = this.resources
+                    val label = this.findViewByIdName("tile_label") as TextView
+                    val isShowLabel = thisObject.callMethod("getShowLabel") as Boolean
+                    var space : Int = thisObject.getIntField("containerHeight")!!
+                    val labelHeight = thisObject.getIntField("labelHeight")!!
+                    val y : Float
+                    if (isShowLabel){
+                        if (isDetailTile){
+                            y = 0f
+                            space += labelHeight
+                        }else{
+                            when (labelMode) {
+                                2 -> {
+                                    y = dpToPx(res, listLabelTop)
+                                    space += labelHeight
+                                    space = (space * listLabelSpacingY).toInt()
+                                }
+                                1 -> {
+                                    y = - 4f
+                                }
+                                else -> {
+                                    return@replaceHookMethod null
+                                }
                             }
-                            1 -> {
-                                y = - 4f
-                            }
-                            else -> {
-                                return@replaceHookMethod null
-                            }
-                        }
 
+                        }
+                    }else{
+                        y = labelHeight.toFloat()
+                        if (!isDetailTile){
+                            space = (space * listSpacingY).toInt()
+                        }
                     }
-                }else{
-                    y = labelHeight.toFloat()
-                    if (!isDetailTile){
-                        space = (space * listSpacingY).toInt()
-                    }
+                    label.translationY = y
+                    commonUtils.setLayoutHeightDefault(this, space, false, 2, null)
                 }
-                label.translationY = y
-                commonUtils.setLayoutHeightDefault(this, space, false, 2, null)
                 return@replaceHookMethod null
             }
 
@@ -379,16 +380,19 @@ object QSListView : BasePluginHook() {
             QSTileItemView.apply {
                 replaceHookMethod(
                     "updateTextAppearance"
-                ) { this as FrameLayout
-                    val icon = this.getObjectField("icon")
-                    val isDetailTile = icon.getBooleanField("isDetailTile")!!
-                    if (isDetailTile) return@replaceHookMethod null
-                    val label = this.findViewByIdNameAs<TextView>("tile_label")
-                    label.apply {
-                        if (labelMode == 1){
-                            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9f)
-                        } else if (labelMode == 2){
-                            setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
+                ) {
+                    (thisObject as FrameLayout).apply {
+
+                        val icon = thisObject.getObjectField("icon")
+                        val isDetailTile = icon.getBooleanField("isDetailTile")!!
+                        if (isDetailTile) return@replaceHookMethod null
+                        val label = this.findViewByIdNameAs<TextView>("tile_label")
+                        label.apply {
+                            if (labelMode == 1){
+                                setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9f)
+                            } else if (labelMode == 2){
+                                setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
+                            }
                         }
                     }
                     return@replaceHookMethod null
@@ -410,59 +414,55 @@ object QSListView : BasePluginHook() {
             QSTileItemView.beforeHookMethod(
                 "onStateUpdated",
                 Boolean::class.java
-            ) { this as FrameLayout
-                val mode = this.getObjectFieldAs<Enum<*>>("mode")
-                val Companion = QSItemView.getStaticObjectField("Companion")
-                val sta = this.getObjectField("state")
-                val copy: Any
+            ) {  args, result ->
+                (thisObject as FrameLayout).apply {
+                    val mode = thisObject.getObjectFieldAs<Enum<*>>("mode")
+                    val Companion = QSItemView.getStaticObjectField("Companion")
+                    val sta = thisObject.getObjectField("state")
+                    val copy: Any
 
-                if (mode.ordinal == 0){
-                    if (sta == null) return@beforeHookMethod
-                    copy = sta
-                }else{
-                    var customizeState = this.getObjectField("customizeState")
-                    if (customizeState == null){
-                        customizeState = sta
+                    if (mode.ordinal == 0){
+                        if (sta == null) return@beforeHookMethod
+                        copy = sta
+                    }else{
+                        var customizeState = thisObject.getObjectField("customizeState")
                         if (customizeState == null){
-                            return@beforeHookMethod
+                            customizeState = sta
+                            if (customizeState == null){
+                                return@beforeHookMethod
+                            }
                         }
+                        copy = customizeState.callMethod("copy")!!
+                        copy.setIntField("state",1)
+                        Companion.callMethod("setRestrictedCompat", copy,false)
                     }
-                    copy = customizeState.callMethod("copy")!!
-                    copy.setIntField("state",1)
-                    Companion.callMethod("setRestrictedCompat", copy,false)
-                }
-                val state:Int = copy.getIntField("state")!!
-                val states = Companion.callMethodAs<Boolean>("isRestrictedCompat",copy)!!
-                val label = this.findViewByIdNameAs<TextView>("tile_label")
-                val icon = this.callMethod("getIcon")
-                var off = icon.getIntField("iconColorOff")!!
-                var enable = icon.getIntField("iconColor")!!
-                var unavailable = icon.getIntField("iconColorUnavailable")!!
-                var restrict = icon.getIntField("iconColorRestrict")!!
-                if (tileColorForState == 2){
-                    if (disableColor != "null")  off = Color.parseColor(disableColor)
-                    if (enableColor != "null")  enable = Color.parseColor(enableColor)
-                    if (restrictedColor != "null")  unavailable = Color.parseColor(restrictedColor)
-                    if (unavailableColor != "null")  restrict = Color.parseColor(unavailableColor)
-                }
+                    val state:Int = copy.getIntField("state")!!
+                    val states = Companion.callMethodAs<Boolean>("isRestrictedCompat",copy)!!
+                    val label = this.findViewByIdNameAs<TextView>("tile_label")
+                    val icon = thisObject.callMethod("getIcon")
+                    var off = icon.getIntField("iconColorOff")!!
+                    var enable = icon.getIntField("iconColor")!!
+                    var unavailable = icon.getIntField("iconColorUnavailable")!!
+                    var restrict = icon.getIntField("iconColorRestrict")!!
+                    if (tileColorForState == 2){
+                        if (disableColor != "null")  off = Color.parseColor(disableColor)
+                        if (enableColor != "null")  enable = Color.parseColor(enableColor)
+                        if (restrictedColor != "null")  unavailable = Color.parseColor(restrictedColor)
+                        if (unavailableColor != "null")  restrict = Color.parseColor(unavailableColor)
+                    }
 
-                if (state == 0) {
-                    label.setTextColor(unavailable)
-                } else if (state == 1 && states) {
-                    label.setTextColor(restrict)
-                } else if (state != 2) {
-                    label.setTextColor(off)
-                } else {
-                    label.setTextColor(enable)
+                    if (state == 0) {
+                        label.setTextColor(unavailable)
+                    } else if (state == 1 && states) {
+                        label.setTextColor(restrict)
+                    } else if (state != 2) {
+                        label.setTextColor(off)
+                    } else {
+                        label.setTextColor(enable)
+                    }
                 }
-
             }
-
         }
-
-
-
-
     }
 
     private fun qsTileRadius() {
@@ -478,20 +478,20 @@ object QSListView : BasePluginHook() {
         var tileSize = 0
 
         QSTileItemIconView.apply {
-            beforeHookAllMethods("updateIcon"){
-                isDetailTile = this.getBooleanField("isDetailTile")!!
+            beforeHookAllMethods("updateIcon") { args, result ->
+                isDetailTile = thisObject.getBooleanField("isDetailTile")!!
                 if ( labelMode != 0 ) {
-                    tileSize = this.getFloatField("tileSize")!!.toInt()
+                    tileSize = thisObject.getFloatField("tileSize")!!.toInt()
                 }
 
             }
-            afterHookAllMethods("updateIcon"){
+            afterHookAllMethods("updateIcon") { args, result ->
                 if (isDetailTile || labelMode == 0) return@afterHookAllMethods
 
-                val z = it.args[1] as Boolean
+                val z = args[1] as Boolean
 
                 if (z) {
-                    val icon = this.getObjectFieldAs<ImageView>("icon")
+                    val icon = thisObject.getObjectFieldAs<ImageView>("icon")
                     val combine = icon.drawable
                     if (combine !is LayerDrawable) return@afterHookAllMethods
                     val num = combine.numberOfLayers
@@ -500,8 +500,8 @@ object QSListView : BasePluginHook() {
                         //icons = LayerDrawable(arrayOf(disabledBg, invisibleDrawableCompat))
                         2 -> return@afterHookAllMethods
                         3 -> {
-                            val disabledBg = this.getObjectFieldAs<Drawable>( "disabledBg")
-                            val enabledBg = this.getObjectFieldAs<Drawable>( "enabledBg")
+                            val disabledBg = thisObject.getObjectFieldAs<Drawable>( "disabledBg")
+                            val enabledBg = thisObject.getObjectFieldAs<Drawable>( "enabledBg")
                             val invisibleDrawableCompat = combine.getDrawable(2)
                             val iconDrawable = LayerDrawable(
                                 arrayOf(
@@ -511,7 +511,7 @@ object QSListView : BasePluginHook() {
                                 )
                             )
 
-                            val size = this.callMethodAs<Int>("getProperIconSize", invisibleDrawableCompat)!!
+                            val size = thisObject.callMethodAs<Int>("getProperIconSize", invisibleDrawableCompat)!!
 
                             iconDrawable.apply {
                                 setLayerGravity(2, Gravity.CENTER)
@@ -541,9 +541,8 @@ object QSListView : BasePluginHook() {
                 "combine",
                 Drawable::class.java,
                 Drawable::class.java,
-                Int::class.java
-            ){
-                val args = it.args
+                Int::class .java
+            ) { args ->
                 val dra = args[0] as Drawable
                 val dra2 = args[1] as Drawable
                 val i = args[2] as Int

@@ -1,7 +1,7 @@
 package com.yunzia.hyperstar.hook.app.plugin.os3
 
 import android.widget.TextView
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.hook.core.helper.callMethod
@@ -20,8 +20,8 @@ object QSListTileLabelMarquee : BasePluginHook() {
         ).afterHookMethod(
             "init",
             "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView"
-        ) {
-            val binding = this.callMethod("getBinding")
+        ) { args, result ->
+            val binding = thisObject.callMethod("getBinding")
             val label = binding.getObjectFieldAs<TextView>("tileLabel")
             label.startMarqueeOfFading(25)
         }

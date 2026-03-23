@@ -66,18 +66,18 @@ fun SelectFunScreen(select: PowerMenuRoutes.FunSelect) {
     val funTypes = stringArrayResource(R.array.power_fun_types).toList()
     val funTitles = stringArrayResource(R.array.power_fun_titles).toList()
 
-    val key = select.key
+    val key = remember { select.key }
 
     val selectFun = remember { mutableStateOf(SPUtils.getString(key, "null")) }
 
 
     ModuleNavPager(
-        activityTitle = stringResource(select.titleRes),
+        activityTitle = stringResource(R.string.button) + select.index,
         navController = navController,
         endClick = {
             Helper.rootShell("killall com.android.systemui")
         },
-    ) {topAppBarScrollBehavior,padding->
+    ) { topAppBarScrollBehavior,padding->
 
         LazyColumn(
             modifier = Modifier.fillMaxSize()

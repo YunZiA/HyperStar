@@ -1,8 +1,7 @@
 package com.yunzia.hyperstar.hook.app.systemui.os2
 
-import com.yunzia.hyperstar.hook.core.BaseHook
+import com.yunzia.hyperstar.hook.core.base.BaseHook
 import com.yunzia.hyperstar.hook.core.helper.afterHookConstructor
-import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.hook.core.helper.getIntField
@@ -29,12 +28,12 @@ object SystemBarBackground : BaseHook() {
 //        )
         findClass(
             "com.android.systemui.dagger.DaggerReferenceGlobalRootComponent\$StatusBarFragmentComponentImpl\$SwitchingProvider"
-        ).afterHookMethod("get"){
-            val id = this.getIntField("id")
+        ).afterHookMethod("get") { args, result ->
+            val id = thisObject.getIntField("id")
             when(id){
                 4->{
 
-                    val mBarBackground = it.result.getObjectField("mBarBackground")
+                    val mBarBackground = result.value.getObjectField("mBarBackground")
 
                     mBarBackground.setIntField("mSemiTransparent", 0)
 
@@ -74,9 +73,9 @@ object SystemBarBackground : BaseHook() {
             NavigationBarView,
             SwitchingProvider9,
             DisplayTracker
-        ){
-            val mView = this.getObjectField( "mView")
-            val mBarBackground = this.getObjectField("mBarBackground")
+        ) { args, result ->
+            val mView = thisObject.getObjectField( "mView")
+            val mBarBackground = thisObject.getObjectField("mBarBackground")
             //Object mSemiTransparent = XposedHelpers.getIntField(thisObject,"mSemiTransparent");
             mBarBackground.setIntField("mSemiTransparent", 0)
 

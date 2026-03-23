@@ -35,7 +35,7 @@
 //    methodName: String,
 //): MutableSet<Method> {
 //    val unhooks: MutableSet<Method> = HashSet()
-//    for (method in this.getDeclaredMethods()){
+//    for (method in thisObject.getDeclaredMethods()){
 //        if (method.name == methodName) {
 //            unhooks.add(method)
 //        }

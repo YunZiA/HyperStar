@@ -9,12 +9,11 @@ import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import androidx.core.graphics.drawable.toDrawable
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.findViewByIdNameAs
 import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
-import com.yunzia.hyperstar.hook.core.Log
-import com.yunzia.hyperstar.hook.core.Log.logE
+import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.helper.afterHookAllConstructors
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.hook.core.helper.callMethod
@@ -53,10 +52,10 @@ object QSMediaCoverBackground: BasePluginHook() {
 //        val controlCenterUtils = ControlCenterUtils(pluginClassLoader)
 //        val miBlurCompat = MiBlurCompat(pluginClassLoader)
 
-        MediaPlayerViewHolder.afterHookMethod("updateMetaData",MediaPlayerMetaData!!){
+        MediaPlayerViewHolder.afterHookMethod("updateMetaData",MediaPlayerMetaData!!) { args, result ->
 
-            val mediaPlayerMetaData = it.args[0]
-            val itemView : View = this.getObjectFieldAs<View>("itemView")
+            val mediaPlayerMetaData = args[0]
+            val itemView : View = thisObject.getObjectFieldAs<View>("itemView")
             val cover = itemView.findViewByIdNameAs<ImageView>("cover")
             val res = itemView.resources
             cover.post(object : Runnable{
@@ -84,7 +83,7 @@ object QSMediaCoverBackground: BasePluginHook() {
 
                     if (art !is Bitmap){
                         logE("mediaPlayerMetaData:art is not get!!!")
-                        this.callMethod("updateResources")
+                        thisObject.callMethod("updateResources")
                         return
 
                     }
@@ -127,9 +126,9 @@ object QSMediaCoverBackground: BasePluginHook() {
             val HapticFeedback = findClass("miui.systemui.util.HapticFeedback",pluginClassLoader)
 
             MediaPlayerViewHolder.apply {
-                afterHookAllConstructors {
-                    val itemView = this.getObjectFieldAs<View>("itemView")
-                    val _cornerRadius = this.getFloatField("_cornerRadius")!!
+                afterHookAllConstructors { args, result ->
+                    val itemView = thisObject.getObjectFieldAs<View>("itemView")
+                    val _cornerRadius = thisObject.getFloatField("_cornerRadius")!!
                     itemView.outlineProvider = object : ViewOutlineProvider(){
                         override fun getOutline(view: View?, outline: Outline?) {
                             if (view == null) return
@@ -140,9 +139,9 @@ object QSMediaCoverBackground: BasePluginHook() {
                     itemView.clipToOutline = true
 
                 }
-                afterHookMethod("updateSize") {
-                    val itemView = this.getObjectFieldAs<View>("itemView")
-                    val _cornerRadius = this.getFloatField("_cornerRadius")!!
+                afterHookMethod("updateSize") { args, result ->
+                    val itemView = thisObject.getObjectFieldAs<View>("itemView")
+                    val _cornerRadius = thisObject.getFloatField("_cornerRadius")!!
                     itemView.outlineProvider = object : ViewOutlineProvider(){
                         override fun getOutline(view: View?, outline: Outline?) {
                             if (view == null) return
@@ -165,14 +164,14 @@ object QSMediaCoverBackground: BasePluginHook() {
             MediaPanelContentController.afterHookMethod(
                 "updateFromViewSize",
                 "miui.systemui.controlcenter.panel.main.media.MediaFromView"
-            ){
-                val mediaFromView = it.args[0]
+            ) { args, result ->
+                val mediaFromView = args[0]
                 val view = mediaFromView.callMethod("getViewHolder")
             }
 
-            MediaPanelParams.afterHookAllConstructors {
-                val fromView  = this.getObjectField("fromView")
-                val fromView2  = this.getObjectField("fromView2")
+            MediaPanelParams.afterHookAllConstructors { args, result ->
+                val fromView  = thisObject.getObjectField("fromView")
+                val fromView2  = thisObject.getObjectField("fromView2")
 
             }
 

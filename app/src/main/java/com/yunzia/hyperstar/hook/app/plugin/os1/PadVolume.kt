@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.hook.app.plugin.os1
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -15,13 +14,11 @@ import android.widget.FrameLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.helper.afterHookConstructor
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.getDimensionPixelSize
-import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper
 import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.dimenReplaceById
-import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.dimenReplaceByValue
 import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.hookLayout
 import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.integerReplaceById
 import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
@@ -30,7 +27,7 @@ import com.yunzia.hyperstar.hook.core.helper.callMethod
 import com.yunzia.hyperstar.hook.core.helper.getObjectField
 import com.yunzia.hyperstar.hook.core.helper.setObjectField
 import com.yunzia.hyperstar.prefs.XSPUtils
-import io.github.kyuubiran.ezxhelper.android.util.ViewUtil.findViewByIdName
+import com.yunzia.hyperstar.hook.util.android.findViewByIdName
 import kotlin.math.roundToInt
 import androidx.core.graphics.withSave
 
@@ -49,8 +46,8 @@ object PadVolume : BasePluginHook() {
             pluginClassLoader
         ).beforeHookMethod(
             "updateDrawables"
-        ){
-            this.setObjectField( "mIsVerticalSeekBar", false)
+        ) { args, result ->
+            thisObject.setObjectField( "mIsVerticalSeekBar", false)
         }
 
         findClass(
@@ -61,23 +58,23 @@ object PadVolume : BasePluginHook() {
                 Context::class.java,
                 AttributeSet::class.java,
                 Int::class.java,
-            ){
-                this.callMethod( "setLayoutDirection", 0)
-                val mInjector = this.getObjectField( "mInjector")
+            ) { args, result ->
+                thisObject.callMethod( "setLayoutDirection", 0)
+                val mInjector = thisObject.getObjectField( "mInjector")
                 mInjector.callMethod("setVertical", true)
 
             }
             replaceHookMethod(
                 "transformTouchEvent",
                 MotionEvent::class.java
-            ){
+            ) {
                 return@replaceHookMethod null
             }
             replaceHookMethod(
                 "onDraw",
                 Canvas::class.java
-            ){
-                val canvas = it.args[0] as Canvas
+            ) {
+                val canvas = it[0] as Canvas
                 val progressDrawable: Drawable = (
                         callMethod( "getProgressDrawable") ?: return@replaceHookMethod null
                         ) as Drawable

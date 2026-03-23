@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.yunzia.hyperstar.hook.base.BaseHookHelper.setColorField
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.helper.afterHookConstructor
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.findViewByIdNameAs
@@ -27,7 +27,7 @@ import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
 import com.yunzia.hyperstar.hook.core.helper.getStaticObjectField
 import com.yunzia.hyperstar.hook.util.plugin.ConfigUtils
 import com.yunzia.hyperstar.prefs.XSPUtils
-import io.github.kyuubiran.ezxhelper.android.util.ViewUtil.findViewByIdName
+import com.yunzia.hyperstar.hook.util.android.findViewByIdName
 
 object QSControlCenterColor : BasePluginHook() {
 
@@ -75,8 +75,8 @@ object QSControlCenterColor : BasePluginHook() {
             if (editTitleColor != "null") {
                 afterHookConstructor(
                     View::class.java
-                ){
-                    val itemView = this.getObjectFieldAs<View>("itemView")
+                ) { args, result ->
+                    val itemView = thisObject.getObjectFieldAs<View>("itemView")
                     val text =  itemView.findViewByIdName("text") as TextView
                     text.setTextColor(Color.parseColor(editTitleColor))
 
@@ -86,13 +86,13 @@ object QSControlCenterColor : BasePluginHook() {
                 afterHookMethod(
                     "onConfigurationChanged",
                     Int::class.java
-                ){
-                    val p1 = it.args[0]
+                ) { args, result ->
+                    val p1 = args[0]
                     val INSTANCE = ConfigUtils.getStaticObjectField("INSTANCE")
                     val textAppearanceChanged = INSTANCE.callMethodAs<Boolean>("textAppearanceChanged",p1)!!
 
                     if (textAppearanceChanged){
-                        val itemView = this.getObjectFieldAs<View>("itemView")
+                        val itemView = thisObject.getObjectFieldAs<View>("itemView")
                         val text =  itemView.findViewByIdName("text") as TextView
                         text.setTextColor(Color.parseColor(editTitleColor))
                     }
@@ -115,8 +115,8 @@ object QSControlCenterColor : BasePluginHook() {
             if (deviceCenterTitleColor != "null" || deviceCenterIconColor != "null"){
                 afterHookConstructor(
                     View::class.java
-                ){
-                    val itemView = this.getObjectFieldAs<View>("itemView")
+                ) {  args, result ->
+                    val itemView = thisObject.getObjectFieldAs<View>("itemView")
                     if (deviceCenterIconColor != "null"){
                         val icon = itemView.findViewByIdName("icon") as ImageView
                         icon.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceCenterIconColor),PorterDuff.Mode.SRC_IN)
@@ -132,11 +132,11 @@ object QSControlCenterColor : BasePluginHook() {
                 afterHookMethod(
                     "onConfigurationChanged",
                     Int::class.java
-                ){
+                ) { args, result ->
 
-                    if (configUtils.textAppearanceChanged(it.args[0])){
+                    if (configUtils.textAppearanceChanged(args[0])){
 
-                        val itemView = this.getObjectFieldAs<View>("itemView")
+                        val itemView = thisObject.getObjectFieldAs<View>("itemView")
                         val title =  itemView.findViewByIdNameAs<TextView>("title")
                         title.setTextColor(Color.parseColor(deviceCenterTitleColor))
 
@@ -156,8 +156,8 @@ object QSControlCenterColor : BasePluginHook() {
             if (deviceControlTitleColor != "null" || deviceControlIconColor != "null"){
                 afterHookConstructor(
                     View::class.java
-                ){
-                    val itemView = this.getObjectFieldAs<View>("itemView")
+                ) { args, result ->
+                    val itemView = thisObject.getObjectFieldAs<View>("itemView")
                     if (deviceCenterIconColor != "null"){
                         val entryIcon = itemView.findViewByIdNameAs<ImageView>("entry_icon")
                         entryIcon.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceControlIconColor),PorterDuff.Mode.SRC_IN)
@@ -172,10 +172,10 @@ object QSControlCenterColor : BasePluginHook() {
                 afterHookMethod(
                     "onConfigurationChanged",
                     Int::class.java
-                ){
-                    if (configUtils.textAppearanceChanged(it.args[0])){
+                ) { args, result ->
+                    if (configUtils.textAppearanceChanged(args[0])){
 
-                        val itemView = this.getObjectFieldAs<View>("itemView")
+                        val itemView = thisObject.getObjectFieldAs<View>("itemView")
                         val entryTitle =  itemView.findViewByIdNameAs<TextView>("entry_title")
                         entryTitle.setTextColor(Color.parseColor(deviceControlTitleColor))
 
@@ -350,8 +350,8 @@ object QSControlCenterColor : BasePluginHook() {
 
             BrightnessSliderController.afterHookConstructor(
                 "updateIconB"
-            ){
-                val sliderHolder = this.callMethod("getSliderHolder")
+            ) { args, result ->
+                val sliderHolder = thisObject.callMethod("getSliderHolder")
                 val itemView = sliderHolder.getObjectFieldAs<View>("itemView")
                 val icon = itemView.findViewByIdNameAs<ImageView>("icon")
                 val drawable = icon.drawable
@@ -363,8 +363,8 @@ object QSControlCenterColor : BasePluginHook() {
 
             VolumeSliderController.afterHookMethod(
                 "updateIconB"
-            ){
-                val sliderHolder = this.callMethod("getSlider")
+            ) { args, result ->
+                val sliderHolder = thisObject.callMethod("getSlider")
                 val itemView = sliderHolder.getObjectFieldAs<View>("itemView")
                 val icon = itemView.findViewByIdNameAs<ImageView>("icon")
                 val drawable = icon.drawable
@@ -394,8 +394,8 @@ object QSControlCenterColor : BasePluginHook() {
         MediaPlayerViewHolder.apply {
             afterHookConstructor(
                 View::class.java
-            ){
-                val itemView = this.getObjectFieldAs<View>("itemView")
+            ) { args, result ->
+                val itemView = thisObject.getObjectFieldAs<View>("itemView")
                 if (deviceIconColor != "null"){
                     val deviceIcon = itemView.findViewByIdNameAs<ImageView>("device_icon")
                     deviceIcon.alpha = 1f
@@ -425,13 +425,13 @@ object QSControlCenterColor : BasePluginHook() {
                     "updateIconsInfo",
                     MediaPlayerIconsInfo,
                     Boolean::class.java
-                ){
-                    val deviceRes = this.getObjectField("deviceRes")
-                    val mediaPlayerIconsInfo = it.args[0]
-                    val boolean = it.args[1] as Boolean
+                ) { args, result ->
+                    val deviceRes = thisObject.getObjectField("deviceRes")
+                    val mediaPlayerIconsInfo = args[0]
+                    val boolean = args[1] as Boolean
                     val getDeviceRes = mediaPlayerIconsInfo.callMethodAs<Int>("getDeviceRes")
                     if (deviceRes != getDeviceRes || boolean){
-                        val itemView = this.getObjectFieldAs<View>("itemView")
+                        val itemView = thisObject.getObjectFieldAs<View>("itemView")
                         val deviceIcon = itemView.findViewByIdNameAs<ImageView>("device_icon")
                         deviceIcon.alpha = 1f
                         deviceIcon.colorFilter = PorterDuffColorFilter(Color.parseColor(deviceIconColor), PorterDuff.Mode.SRC_IN)
@@ -443,9 +443,9 @@ object QSControlCenterColor : BasePluginHook() {
             afterHookMethod(
                 "onConfigurationChanged",
                 Int::class.java
-            ){
-                val itemView = this.getObjectFieldAs<View>("itemView")
-                val configuration = it.args[0]
+            ) { args, result ->
+                val itemView = thisObject.getObjectFieldAs<View>("itemView")
+                val configuration = args[0]
 
                 if (configUtils.textAppearanceChanged(configuration)){
                     if (titleColor != "null"){
@@ -470,8 +470,8 @@ object QSControlCenterColor : BasePluginHook() {
             }
             afterHookMethod(
                 "disableMediaController"
-            ){
-                val itemView = this.getObjectFieldAs<View>("itemView")
+            ) { args, result ->
+                val itemView = thisObject.getObjectFieldAs<View>("itemView")
                 if (disabledIconColor != "null"){
                     val prev = itemView.findViewByIdNameAs<ImageView>("prev")
                     val next = itemView.findViewByIdNameAs<ImageView>("next")
@@ -488,8 +488,8 @@ object QSControlCenterColor : BasePluginHook() {
             if (enabledIconColor != "null"){
                 afterHookMethod(
                     "enableMediaController"
-                ){
-                    val itemView = this.getObjectFieldAs<View>("itemView")
+                ) { args, result ->
+                    val itemView = thisObject.getObjectFieldAs<View>("itemView")
                     val prev = itemView.findViewByIdNameAs<ImageView>("prev")
                     val play = itemView.findViewByIdNameAs<ImageView>("play")
                     val next = itemView.findViewByIdNameAs<ImageView>("next")
@@ -521,34 +521,33 @@ object QSControlCenterColor : BasePluginHook() {
 
         QSCardItemView.beforeHookMethod(
             "updateBackground"
-        ){
-            this  as LinearLayout
+        ) { args, result ->
+            (thisObject  as LinearLayout).apply {
+                val Companion = QSItemView.getStaticObjectField("Companion")
+                val sta = thisObject.getObjectField("state")
 
-            val Companion = QSItemView.getStaticObjectField("Companion")
-            val sta = this.getObjectField("state")
+                val states = Companion.callMethodAs<Boolean>("isRestrictedCompat",sta)!!
 
-            val states = Companion.callMethodAs<Boolean>("isRestrictedCompat",sta)!!
+                val state = sta.getObjectField("state")
+                val title = this.findViewByIdNameAs<TextView>("title")
 
-            val state = sta.getObjectField("state")
-            val title = this.findViewByIdNameAs<TextView>("title")
+                val status = this.findViewByIdNameAs<TextView>("status")
 
-            val status = this.findViewByIdNameAs<TextView>("status")
-
-            if (state == 0) {
-                if (disablePrimaryColor != "null") title.setTextColor(Color.parseColor(disablePrimaryColor))
-                if (disableSecondaryColor != "null") status.setTextColor(Color.parseColor(disableSecondaryColor))
-            } else if (state == 1 && states) {
-                if (restrictedPrimaryColor != "null") title.setTextColor(Color.parseColor(restrictedPrimaryColor))
-                if (restrictedSecondaryColor != "null") status.setTextColor(Color.parseColor(restrictedSecondaryColor))
-            } else if (state != 2) {
-                if (unavailablePrimaryColor != "null") title.setTextColor(Color.parseColor(unavailablePrimaryColor))
-                if (unavailableSecondaryColor != "null") status.setTextColor(Color.parseColor(unavailableSecondaryColor))
-            } else {
-                if (enablePrimaryColor != "null") title.setTextColor(Color.parseColor(enablePrimaryColor))
-                if (enableSecondaryColor != "null") status.setTextColor(Color.parseColor(enableSecondaryColor))
+                if (state == 0) {
+                    if (disablePrimaryColor != "null") title.setTextColor(Color.parseColor(disablePrimaryColor))
+                    if (disableSecondaryColor != "null") status.setTextColor(Color.parseColor(disableSecondaryColor))
+                } else if (state == 1 && states) {
+                    if (restrictedPrimaryColor != "null") title.setTextColor(Color.parseColor(restrictedPrimaryColor))
+                    if (restrictedSecondaryColor != "null") status.setTextColor(Color.parseColor(restrictedSecondaryColor))
+                } else if (state != 2) {
+                    if (unavailablePrimaryColor != "null") title.setTextColor(Color.parseColor(unavailablePrimaryColor))
+                    if (unavailableSecondaryColor != "null") status.setTextColor(Color.parseColor(unavailableSecondaryColor))
+                } else {
+                    if (enablePrimaryColor != "null") title.setTextColor(Color.parseColor(enablePrimaryColor))
+                    if (enableSecondaryColor != "null") status.setTextColor(Color.parseColor(enableSecondaryColor))
+                }
             }
         }
-
     }
 
     private fun startListIconColor() {
@@ -560,19 +559,19 @@ object QSControlCenterColor : BasePluginHook() {
 
         QSTileItemIconView.afterHookMethod(
             "updateResources"
-        ){
+        ) { args, result ->
 
             if (onColor != "null"){
-                setColorField(this,"iconColor",onColor)
+                setColorField(thisObject,"iconColor",onColor)
             }
             if (offColor != "null"){
-                setColorField(this,"iconColorOff",offColor)
+                setColorField(thisObject,"iconColorOff",offColor)
             }
             if (restrictedColor != "null"){
-                setColorField(this,"iconColorRestrict",restrictedColor)
+                setColorField(thisObject,"iconColorRestrict",restrictedColor)
             }
             if (unavailableColor != "null"){
-                setColorField(this,"iconColorUnavailable",unavailableColor)
+                setColorField(thisObject,"iconColorUnavailable",unavailableColor)
             }
         }
 
@@ -590,18 +589,18 @@ object QSControlCenterColor : BasePluginHook() {
             pluginClassLoader
         ).afterHookMethod(
             "updateResources"
-        ){
+        ) { args, result ->
             if (onColor != "null"){
-                setColorField(this,"iconColor",onColor)
+                setColorField(thisObject,"iconColor",onColor)
             }
             if (offColor != "null"){
-                setColorField(this,"iconColorOff",offColor)
+                setColorField(thisObject,"iconColorOff",offColor)
             }
             if (restrictedColor != "null"){
-                setColorField(this,"iconColorRestricted",restrictedColor)
+                setColorField(thisObject,"iconColorRestricted",restrictedColor)
             }
             if (unavailableColor != "null"){
-                setColorField(this,"iconColorUnavailable",unavailableColor)
+                setColorField(thisObject,"iconColorUnavailable",unavailableColor)
             }
         }
 

@@ -1,6 +1,6 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
 import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
@@ -109,8 +109,8 @@ object QSControlCenterList : BasePluginHook() {
         val QSRecord = findClass("miui.systemui.controlcenter.panel.main.qs.QSRecord",pluginClassLoader)
         if (cardSpanSizeEnable || listSpanSizeEnable){
             QSRecord.replaceHookMethod("getSpanSize"){
-                val isCard = this.getObjectFieldAs<Boolean>("isCard")
-                val spanSize = this.getObjectFieldAs<Int>("spanSize")
+                val isCard = thisObject.getObjectFieldAs<Boolean>("isCard")
+                val spanSize = thisObject.getObjectFieldAs<Int>("spanSize")
                 return@replaceHookMethod if(isCard){
                     if (cardSpanSizeEnable) cardSpanSize else spanSize
                 } else{

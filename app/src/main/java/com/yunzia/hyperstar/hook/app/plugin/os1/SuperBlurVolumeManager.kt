@@ -1,7 +1,7 @@
 package com.yunzia.hyperstar.hook.app.plugin.os1
 
 import android.content.Context
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.prefs.XSPUtils
@@ -20,11 +20,11 @@ object SuperBlurVolumeManager : BasePluginHook() {
         findClass(
             "miui.systemui.util.MiBlurCompat",
             pluginClassLoader
-        ).afterHookMethod("getBackgroundBlurOpened",Context::class.java){
+        ).afterHookMethod("getBackgroundBlurOpened",Context::class.java) { args, result ->
             if (superBlurVolume == 1){
-                it.result = false
+                result.replace(false)
             }else if (superBlurVolume == 2){
-                it.result = true
+                result.replace(true)
             }
         }
     }

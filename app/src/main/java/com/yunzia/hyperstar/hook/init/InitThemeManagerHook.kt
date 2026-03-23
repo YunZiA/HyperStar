@@ -3,8 +3,7 @@ package com.yunzia.hyperstar.hook.init
 //import com.yunzia.annotations.Init
 import com.yunzia.hyperstar.hook.core.annotation.Init
 import com.yunzia.hyperstar.hook.core.finder.findClass
-import com.yunzia.hyperstar.hook.core.BaseHooks
-import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.base.BaseHooks
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.prefs.XSPUtils
 
@@ -19,14 +18,12 @@ object InitThemeManagerHook: BaseHooks() {
                 "com.android.thememanager.basemodule.utils.wvg"
             ).afterHookMethod(
                 "jk"
-            ){
-                if (it.result == false){
-                    it.result = true
+            ) { args, result ->
+                if (result.value == false){
+                    result.replace(true)
                 }
             }
         }
-
-
 
     }
 

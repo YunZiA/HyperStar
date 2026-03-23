@@ -2,7 +2,7 @@ package com.yunzia.hyperstar.hook.app.screenshot
 
 import android.content.ContentResolver
 import android.provider.Settings
-import com.yunzia.hyperstar.hook.core.BaseHook
+import com.yunzia.hyperstar.hook.core.base.BaseHook
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.prefs.XSPUtils
 
@@ -17,9 +17,9 @@ object EnableClipboardWriteOnScreenshot : BaseHook() {
             ContentResolver::class.java,
             String::class.java,
             Int::class.java
-        ){
-            if (it.args[1] == "mi_screen_shots_write_clipboard_enable"){
-                it.result = 1
+        ) { args, result ->
+            if (args[1] == "mi_screen_shots_write_clipboard_enable"){
+                result.replace(1)
             }
 
         }

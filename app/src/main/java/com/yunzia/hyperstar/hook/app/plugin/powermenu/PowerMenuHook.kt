@@ -11,7 +11,7 @@ import com.yunzia.hyperstar.hook.app.plugin.powermenu.action.Action
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.base.MenuItem
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.menu.menuB
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.menu.menuA
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.hook.core.helper.getObjectField
@@ -32,13 +32,13 @@ object PowerMenuHook : BasePluginHook() {
         if (isPowerMenuNavShow) {
             MiuiGlobalActionsDialog.afterHookMethod(
                 "initViews"
-            ) {
+            ) { args, result ->
                 val flags = (
                         View.SYSTEM_UI_FLAG_VISIBLE or
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                         View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         )
-                this.getObjectFieldAs<FrameLayout>("mRoot").systemUiVisibility = flags
+                thisObject.getObjectFieldAs<FrameLayout>("mRoot").systemUiVisibility = flags
 
             }
         }
@@ -49,11 +49,11 @@ object PowerMenuHook : BasePluginHook() {
         MiuiGlobalActionsDialog.apply {
             afterHookMethod(
                 "initViews"
-            ) {
-                val mContext = this.getObjectFieldAs<Context>("mContext")
+            ) { args, result ->
+                val mContext = thisObject.getObjectFieldAs<Context>("mContext")
                 val res = mContext.resources
-                val mTalkbackLayout = this.getObjectFieldAs<FrameLayout>("mTalkbackLayout")
-                val mSliderView = this.getObjectFieldAs<FrameLayout>("mSliderView")
+                val mTalkbackLayout = thisObject.getObjectFieldAs<FrameLayout>("mTalkbackLayout")
+                val mSliderView = thisObject.getObjectFieldAs<FrameLayout>("mSliderView")
 
                 val s = mSliderView.layoutParams as FrameLayout.LayoutParams
                 //mSliderView.translationX = 250f
@@ -83,18 +83,18 @@ object PowerMenuHook : BasePluginHook() {
             }
             afterHookMethod(
                 "dismiss",
-                Int::class.java
-            ){
+                Int::class .java
+            ) { args, result ->
                 group?.apply {
-                    val mSliderView = this@afterHookMethod.getObjectFieldAs<FrameLayout>("mSliderView")
+                    val mSliderView = thisObject.getObjectFieldAs<FrameLayout>("mSliderView")
                     visibility = View.GONE
                     mSliderView.removeView(group)
 
                 }
             }
-            afterHookMethod("sliderViewDismiss") {
-                this.getObjectField("mDialog")?.apply {
-                    if (this.callMethodAs<Boolean>("isShowing")){
+            afterHookMethod("sliderViewDismiss") { args, result ->
+                thisObject.getObjectField("mDialog")?.apply {
+                    if (thisObject.callMethodAs<Boolean>("isShowing")){
                         group = null
                     }
                 }
@@ -107,9 +107,9 @@ object PowerMenuHook : BasePluginHook() {
         ).afterHookMethod(
             "handleActionMoveForAlpha",
             Float::class.java
-        ) {
+        ) { args, result ->
             group?.apply {
-                val mDark = this@afterHookMethod.getObjectFieldAs<View>("mDark")
+                val mDark = thisObject.getObjectFieldAs<View>("mDark")
                 alpha = (1 - mDark.alpha)
 
             }

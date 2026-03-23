@@ -110,7 +110,7 @@ fun NavTopAppBar(
     modifier: Modifier,
     navController: Navigator,
     title: String,
-    largeTitle: String? = null,
+    largeTitle: String = "",
     scrollBehavior: ScrollBehavior? = null,
     color: Color,
     actions: @Composable() (RowScope.() -> Unit) = {},

@@ -1,8 +1,7 @@
 package com.yunzia.hyperstar.hook.core.finder
 
-import com.yunzia.hyperstar.hook.core.Log.logE
-import io.github.kyuubiran.ezxhelper.core.ClassLoaderProvider
-import io.github.kyuubiran.ezxhelper.core.finder.ClassFinder
+import com.yunzia.hyperstar.hook.core.StarLog.logE
+import com.yunzia.hyperstar.hook.core.provider.ClassLoaderProvider
 
 fun String.loadClass(): Class<*>? {
     return findClass(this)

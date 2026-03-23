@@ -4,12 +4,12 @@ import android.graphics.Color
 import android.util.Log
 import android.view.ViewGroup
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.dimenReplaceById
 import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.hookLayout
 import com.yunzia.hyperstar.hook.core.helper.callMethod
 import com.yunzia.hyperstar.prefs.XSPUtils
-import io.github.kyuubiran.ezxhelper.android.util.ViewUtil.findViewByIdName
+import com.yunzia.hyperstar.hook.util.android.findViewByIdName
 
 object QSMiplayAppIconRadius: BasePluginHook() {
 
@@ -18,7 +18,7 @@ object QSMiplayAppIconRadius: BasePluginHook() {
 
     override fun init() {
         if (disableAppIconRadius) {
-            hookLayout("qs_control_detail_header_metainfo_layout",plugin){
+            hookLayout("qs_control_detail_header_metainfo_layout",plugin) {
                 this as ViewGroup
                 val icon = findViewByIdName("app_icon")
                 val card = icon?.parent

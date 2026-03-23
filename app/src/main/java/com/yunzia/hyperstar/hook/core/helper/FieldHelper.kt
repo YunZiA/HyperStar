@@ -1,11 +1,12 @@
 package com.yunzia.hyperstar.hook.core.helper
 
 import com.yunzia.hyperstar.hook.base.runCatchingOrNull
-import com.yunzia.hyperstar.hook.core.Log.logE
+import com.yunzia.hyperstar.hook.core.StarLog.logE
 import java.lang.reflect.Field
 import java.util.concurrent.ConcurrentHashMap
 
 object FieldHelper {
+    const val TAG = "FieldHelper"
     private val fieldCache = ConcurrentHashMap<String, Field>()
 
     // 假设 findField 已存在（返回 Field 并 setAccessible(true)）
@@ -28,7 +29,7 @@ object FieldHelper {
             fieldCache[fullFieldName] = field
             field
         } catch (e: NoSuchFieldException) {
-            logE("Field not found: '$fieldName' in class '${clazz.name}'", e)
+            logE(TAG,"Field not found: '$fieldName' in class '${clazz.name}'", e)
             null
         }
     }
@@ -110,7 +111,7 @@ object FieldHelper {
                 isAccessible = true
             } catch (e: IllegalAccessException) {
                 // 可选：记录日志
-                logE("Failed to set field '$fieldName' in ${clazz.name} accessible", e)
+                logE(TAG, "Failed to set field '$fieldName' in ${clazz.name} accessible", e)
                 // 抛出运行时异常，避免强制 checked exception
                 throw RuntimeException("Cannot access field '$fieldName' in ${clazz.simpleName}", e)
             }
@@ -234,7 +235,7 @@ object FieldHelper {
                 }
             }
         } catch (e: IllegalAccessException) {
-            logE("Field access error: ${e.message}", e)
+            logE(TAG, "Field access error: ${e.message}", e)
             throw IllegalAccessError(e.message)
         } catch (e: IllegalArgumentException) {
             throw e

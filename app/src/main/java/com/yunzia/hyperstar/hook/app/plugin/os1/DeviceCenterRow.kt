@@ -2,16 +2,16 @@ package com.yunzia.hyperstar.hook.app.plugin.os1
 
 import android.view.View
 import android.view.ViewGroup
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
-import com.yunzia.hyperstar.hook.core.Log.logD
+import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.hookLayout
 import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
 import com.yunzia.hyperstar.hook.core.helper.replaceHookAllConstructors
 import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
 import com.yunzia.hyperstar.hook.core.helper.setObjectField
+import com.yunzia.hyperstar.hook.util.android.findViewByIdName
 import com.yunzia.hyperstar.prefs.XSPUtils
-import io.github.kyuubiran.ezxhelper.android.util.ViewUtil.findViewByIdName
 
 object DeviceCenterRow: BasePluginHook() {
 
@@ -54,41 +54,41 @@ object DeviceCenterRow: BasePluginHook() {
             }
         }
         if (isDeviceCenterMode != 0 || deviceCenterSpanSize !=4){
-            a.replaceHookAllConstructors {
-                this.setObjectField("a", it.args[0])
-                val list = it.args[1] as List<*>
+            a.replaceHookAllConstructors { args ->
+                thisObject.setObjectField("a", args[0])
+                val list = args[1] as List<*>
 
                 if (deviceCenterSpanSize == 1 || isDeviceCenterMode == 1){
                     val lists = list.subList(0,0 )
-                    this.setObjectField("f", lists)
+                    thisObject.setObjectField("f", lists)
                     return@replaceHookAllConstructors null
                 }
                 if (isDeviceCenterMode == 2){
                     val size = deviceCenterSpanSize-1
                     if (list.size <= size){
-                        this.setObjectField("f", list)
+                        thisObject.setObjectField("f", list)
 
                     }else{
                         val lists = list.subList(0,size)
-                        this.setObjectField("f", lists)
+                        thisObject.setObjectField("f", lists)
 
                     }
                     return@replaceHookAllConstructors null
                 }
                 val size = deviceCenterSpanSize*2-1
                 if (list.size <= size){
-                    this.setObjectField("f", list)
+                    thisObject.setObjectField("f", list)
                 }else{
                     val lists = list.subList(0,size )
-                    this.setObjectField("f", lists)
+                    thisObject.setObjectField("f", lists)
                 }
 
 
                 return@replaceHookAllConstructors null
 
             }
-            DeviceCenterCardController.replaceHookMethod("getMode"){
-                val deviceItems = this.getObjectFieldAs<ArrayList<*>>("deviceItems")
+            DeviceCenterCardController.replaceHookMethod("getMode") {
+                val deviceItems = thisObject.getObjectFieldAs<ArrayList<*>>("deviceItems")
                 val rowMode: Array<out Any> = DeviceCenterEntryViewHolderMode?.getEnumConstants()!!
 
                 if (deviceItems.size == 1 || deviceCenterSpanSize == 1 || isDeviceCenterMode == 1){

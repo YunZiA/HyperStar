@@ -5,11 +5,10 @@ import android.provider.Settings
 import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.ViewGroup
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
-import com.yunzia.hyperstar.hook.core.Log
-import com.yunzia.hyperstar.hook.core.Log.logD
-import com.yunzia.hyperstar.hook.core.Log.logE
+import com.yunzia.hyperstar.hook.core.StarLog.logD
+import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.helper.afterHookAllConstructors
 import com.yunzia.hyperstar.hook.core.helper.callMethod
 import com.yunzia.hyperstar.hook.core.helper.callMethodAs
@@ -33,10 +32,9 @@ object QSHeaderViewListener : BasePluginHook() {
         val MainPanelModeController = findClass("miui.systemui.controlcenter.panel.main.MainPanelController\$Mode",pluginClassLoader)
         val MainPanelHeaderController  = findClass("miui.systemui.controlcenter.panel.main.header.MainPanelHeaderController",pluginClassLoader)
 
-        MainPanelHeaderController.afterHookAllConstructors {
-            this
-            val context = this.callMethodAs<Context>("getContext")!!
-            val controlCenterHeader = this.getObjectField("controlCenterHeader")
+        MainPanelHeaderController.afterHookAllConstructors { args, result ->
+            val context = thisObject.callMethodAs<Context>("getContext")!!
+            val controlCenterHeader = thisObject.getObjectField("controlCenterHeader")
             val controlCenterHeaderView = controlCenterHeader.getObjectFieldAs<ViewGroup>("controlCenterHeaderView")
 
             val editId = Settings.System.getInt(context.contentResolver,"cc_edit_Id",0)
@@ -65,8 +63,8 @@ object QSHeaderViewListener : BasePluginHook() {
         findClass(
             "miui.systemui.controlcenter.panel.main.qs.EditButtonController_Factory",
             pluginClassLoader
-        ).afterHookAllConstructors {
-            val qsListControllerProvider = this.getObjectField("qsListControllerProvider")
+        ).afterHookAllConstructors { args, result ->
+            val qsListControllerProvider = thisObject.getObjectField("qsListControllerProvider")
             if (qsListControllerProvider == null){
                 logE("qsListControllerProviders == null")
                 return@afterHookAllConstructors

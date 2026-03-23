@@ -13,13 +13,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.updateLayoutParams
 import com.yunzia.hyperstar.hook.base.BaseHookHelper.findMethodExactIfExists
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.findViewByIdNameAs
 import com.yunzia.hyperstar.hook.base.getDimensionPixelSize
 import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
-import com.yunzia.hyperstar.hook.core.Log
-import com.yunzia.hyperstar.hook.core.Log.logD
+import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
 import com.yunzia.hyperstar.hook.core.helper.callMethod
@@ -130,57 +129,60 @@ object QSListView : BasePluginHook() {
             ).apply {
                 replaceHookMethod(
                     "changeExpand"
-                ) { this as FrameLayout
-                    val binding = this.callMethod("getBinding")
-                    val icon = this.getObjectField("icon")
-                    val isDetailTile = icon.getBooleanField("isDetailTile")!!
-                    val res = this.resources
-                    val label = binding.getObjectFieldAs<TextView>("tileLabel")
-                    val isShowLabel = this.callMethod("getShowLabel") as Boolean
-                    var space : Int = this.getIntField("containerHeight")!!
-                    val labelHeight = this.getIntField("labelHeight")!!
-                    var y : Float = 0f
-                    label.visibility = View.VISIBLE
-                    logD("isShowLabel == $isShowLabel")
-                    if (isShowLabel){
-                        if (isDetailTile){
-                            y = 0f
-                            space += labelHeight
-                        }else{
-                            when (labelMode) {
-                                2 -> {
-                                    y = dpToPx(res, listLabelTop)
-                                    space += labelHeight
-                                    space = (space * listLabelSpacingY).toInt()
+                ) {
+                    (thisObject as FrameLayout).apply {
+                        val binding = thisObject.callMethod("getBinding")
+                        val icon = thisObject.getObjectField("icon")
+                        val isDetailTile = icon.getBooleanField("isDetailTile")!!
+                        val res = this.resources
+                        val label = binding.getObjectFieldAs<TextView>("tileLabel")
+                        val isShowLabel = thisObject.callMethod("getShowLabel") as Boolean
+                        var space : Int = thisObject.getIntField("containerHeight")!!
+                        val labelHeight = thisObject.getIntField("labelHeight")!!
+                        var y : Float = 0f
+                        label.visibility = View.VISIBLE
+                        logD("isShowLabel == $isShowLabel")
+                        if (isShowLabel){
+                            if (isDetailTile){
+                                y = 0f
+                                space += labelHeight
+                            }else{
+                                when (labelMode) {
+                                    2 -> {
+                                        y = dpToPx(res, listLabelTop)
+                                        space += labelHeight
+                                        space = (space * listLabelSpacingY).toInt()
+                                    }
+                                    1 -> {
+                                        y = - 4f
+                                    }
+                                    else -> {
+                                        return@replaceHookMethod null
+                                    }
                                 }
-                                1 -> {
-                                    y = - 4f
-                                }
-                                else -> {
-                                    return@replaceHookMethod null
-                                }
-                            }
 
+                            }
+                        }else{
+                            y = labelHeight.toFloat()
+                            if (!isDetailTile){
+                                space = (space * listSpacingY).toInt()
+                            }
                         }
-                    }else{
-                        y = labelHeight.toFloat()
-                        if (!isDetailTile){
-                            space = (space * listSpacingY).toInt()
-                        }
+                        label.translationY = y
+                        commonUtils.setLayoutHeightDefault(this, space, false, 2, null)
+
                     }
-                    label.translationY = y
-                    commonUtils.setLayoutHeightDefault(this, space, false, 2, null)
                     return@replaceHookMethod null
                 }
 
                 afterHookMethod(
                     "init",
                     "miui.systemui.controlcenter.qs.tileview.QSTileItemIconView"
-                ) {
-                    this.set()
+                ) { args, result ->
+                    thisObject.set()
                 }
-                afterHookMethod("updateSize"){
-                    this.set()
+                afterHookMethod("updateSize") { args, result ->
+                    thisObject.set()
                 }
             }
         }
@@ -196,8 +198,8 @@ object QSListView : BasePluginHook() {
             ).beforeHookMethod(
                 "getSettings",
                 Int::class.java
-            ) {
-                val contentResolver = this.getObjectFieldAs<ContentResolver>("contentResolver")
+            ) { args, result ->
+                val contentResolver = thisObject.getObjectFieldAs<ContentResolver>("contentResolver")
                 logD("resetWordlessMode","getSettings")
                 when (labelMode) {
                     1 -> {
@@ -234,17 +236,19 @@ object QSListView : BasePluginHook() {
 //                }
                 replaceHookMethod(
                     "updateTextAppearance"
-                ) { this as FrameLayout
-                    val icon = this.callMethod("getIcon")
-                    val isDetailTile = icon.getBooleanField("isDetailTile")!!
-                    if (isDetailTile) return@replaceHookMethod null
-                    val label = this.findViewByIdNameAs<TextView>("tile_label")
-                    label.updateLayoutParams {  }
-                    label.apply {
-                        if (labelMode == 1){
-                            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9f)
-                        } else if (labelMode == 2){
-                            setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
+                ) {
+                    (thisObject as FrameLayout).apply {
+                        val icon = thisObject.callMethod("getIcon")
+                        val isDetailTile = icon.getBooleanField("isDetailTile")!!
+                        if (isDetailTile) return@replaceHookMethod null
+                        val label = this.findViewByIdNameAs<TextView>("tile_label")
+                        label.updateLayoutParams {  }
+                        label.apply {
+                            if (labelMode == 1){
+                                setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9f)
+                            } else if (labelMode == 2){
+                                setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
+                            }
                         }
                     }
 
@@ -256,9 +260,6 @@ object QSListView : BasePluginHook() {
             }
 
         }
-
-        logD("tileState = ${labelColorFollowTileState}")
-
         if (labelColorFollowTileState != 0){
 
             val disableColor = XSPUtils.getString("list_title_off_color", "null")
@@ -269,76 +270,76 @@ object QSListView : BasePluginHook() {
             QSTileItemView.afterHookMethod(
                 "onStateUpdated",
                 Boolean::class.java
-            ) { this as FrameLayout
-                val binding = this.callMethod("getBinding")
-                val Companion = QSItemView.getStaticObjectField("Companion")
-                val icon = this.callMethod("getIcon")
-                val state = icon.getObjectField("state")?:return@afterHookMethod
-                val states = state.getIntField("state")
-                val isRestrictedCompat = Companion.callMethodAs<Boolean>("isRestrictedCompat",state)!!
-                val label = binding.getObjectFieldAs<TextView>("tileLabel")
-                var off = icon.getIntField("defaultIconColorOff")!!
-                var enable = icon.getIntField("defaultIconColor")!!
-                var unavailable = icon.getIntField("defaultIconColorUnavailable")!!
-                var restrict = icon.getIntField("defaultIconColorRestrict")!!
-                if (labelColorFollowTileState == 2){
-                    if (disableColor != "null")  off = Color.parseColor(disableColor)
-                    if (enableColor != "null")  enable = Color.parseColor(enableColor)
-                    if (restrictedColor != "null")  unavailable = Color.parseColor(restrictedColor)
-                    if (unavailableColor != "null")  restrict = Color.parseColor(unavailableColor)
-                }
+            ) { args, result ->
+                (thisObject as FrameLayout).apply {
+                    val binding = thisObject.callMethod("getBinding")
+                    val Companion = QSItemView.getStaticObjectField("Companion")
+                    val icon = thisObject.callMethod("getIcon")
+                    val state = icon.getObjectField("state")?:return@afterHookMethod
+                    val states = state.getIntField("state")
+                    val isRestrictedCompat = Companion.callMethodAs<Boolean>("isRestrictedCompat",state)!!
+                    val label = binding.getObjectFieldAs<TextView>("tileLabel")
+                    var off = icon.getIntField("defaultIconColorOff")!!
+                    var enable = icon.getIntField("defaultIconColor")!!
+                    var unavailable = icon.getIntField("defaultIconColorUnavailable")!!
+                    var restrict = icon.getIntField("defaultIconColorRestrict")!!
+                    if (labelColorFollowTileState == 2){
+                        if (disableColor != "null")  off = Color.parseColor(disableColor)
+                        if (enableColor != "null")  enable = Color.parseColor(enableColor)
+                        if (restrictedColor != "null")  unavailable = Color.parseColor(restrictedColor)
+                        if (unavailableColor != "null")  restrict = Color.parseColor(unavailableColor)
+                    }
 
-                when(states) {
-                    0 -> {
-                        label.setTextColor(unavailable)
-                    }
-                    1 -> {
-                        if (isRestrictedCompat){
-                            label.setTextColor(restrict)
-                        }else{
-                            label.setTextColor(off)
+                    when(states) {
+                        0 -> {
+                            label.setTextColor(unavailable)
                         }
-                    }
-                    2 -> {
-                        val spec = state.getStringField("spec")
-                        when(spec) {
-                            "batterysaver" -> {
-                                label.setTextColor(icon.getIntField("powerSaferTileIconColor")!!)
-                            }
-                            "flashlight" -> {
-                                label.setTextColor(icon.getIntField("miuiFlashlightTileIconColor")!!)
-                            }
-                            "autobrightness" -> {
-                                label.setTextColor(icon.getIntField("autoBrightnessTileIconColor")!!)
-                            }
-                            "cell" -> {
-                                label.setTextColor(icon.getIntField("miuiCellularTileIconColor")!!)
-                            }
-                            "mute" -> {
-                                label.setTextColor(icon.getIntField("muteTileIconColor")!!)
-                            }
-                            "papermode" -> {
-                                label.setTextColor(icon.getIntField("paperModeTileIconColor")!!)
-                            }
-                            "quietmode" -> {
-                                label.setTextColor(icon.getIntField("quietModeTileIconColor")!!)
-                            }
-                            else -> {
-                                label.setTextColor(enable)
+                        1 -> {
+                            if (isRestrictedCompat){
+                                label.setTextColor(restrict)
+                            }else{
+                                label.setTextColor(off)
                             }
                         }
-                    }
-                    else -> {
-                        return@afterHookMethod
+                        2 -> {
+                            val spec = state.getStringField("spec")
+                            when(spec) {
+                                "batterysaver" -> {
+                                    label.setTextColor(icon.getIntField("powerSaferTileIconColor")!!)
+                                }
+                                "flashlight" -> {
+                                    label.setTextColor(icon.getIntField("miuiFlashlightTileIconColor")!!)
+                                }
+                                "autobrightness" -> {
+                                    label.setTextColor(icon.getIntField("autoBrightnessTileIconColor")!!)
+                                }
+                                "cell" -> {
+                                    label.setTextColor(icon.getIntField("miuiCellularTileIconColor")!!)
+                                }
+                                "mute" -> {
+                                    label.setTextColor(icon.getIntField("muteTileIconColor")!!)
+                                }
+                                "papermode" -> {
+                                    label.setTextColor(icon.getIntField("paperModeTileIconColor")!!)
+                                }
+                                "quietmode" -> {
+                                    label.setTextColor(icon.getIntField("quietModeTileIconColor")!!)
+                                }
+                                else -> {
+                                    label.setTextColor(enable)
+                                }
+                            }
+                        }
+                        else -> {
+                            return@afterHookMethod
+                        }
+
                     }
                 }
 
             }
 
         }
-
-
-
 
     }
 
@@ -356,17 +357,17 @@ object QSListView : BasePluginHook() {
                 Boolean::class.java,
                 Boolean::class.java,
                 Boolean::class.java,
-                Boolean::class.java
-            ){
-                if (this.getBooleanField("isDetailTile")!!) return@afterHookMethod
-                val icon = this.getObjectFieldAs<ImageView>("icon")
+                Boolean::class .java
+            ) { args, result ->
+                if (thisObject.getBooleanField("isDetailTile")!!) return@afterHookMethod
+                val icon = thisObject.getObjectFieldAs<ImageView>("icon")
                 val drawable = icon.drawable
                 if (drawable is LayerDrawable) {
                     icon.post {
                         logD("updateIconInternal","${drawable.numberOfLayers}")
                         val num = drawable.numberOfLayers
                         val last = num - 1
-                        val properIconSize = this@afterHookMethod.callMethodAs<Int>("getProperIconSize", drawable.getDrawable(last))
+                        val properIconSize = thisObject.callMethodAs<Int>("getProperIconSize", drawable.getDrawable(last))
                         val array = Array(num) { index -> drawable.getDrawable(index) }
                         val imageDrawable = LayerDrawable(array)
                         imageDrawable.apply {
@@ -387,10 +388,4 @@ object QSListView : BasePluginHook() {
         }
 
     }
-
-
-
-
-
-
 }

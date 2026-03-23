@@ -8,14 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.getDimensionPixelOffset
 import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
-import com.yunzia.hyperstar.hook.core.Log
-import com.yunzia.hyperstar.hook.core.Log.log
-import com.yunzia.hyperstar.hook.core.Log.logD
-import com.yunzia.hyperstar.hook.core.Log.logE
+import com.yunzia.hyperstar.hook.core.StarLog.log
+import com.yunzia.hyperstar.hook.core.StarLog.logD
+import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.hook.core.helper.callMethod
 import com.yunzia.hyperstar.hook.core.helper.callMethodAs
@@ -53,9 +52,8 @@ object QSHeaderView : BasePluginHook() {
         ).apply {
             afterHookMethod(
                 "get"
-            ) {
-
-                val qsListControllerProviders = this.getObjectField("qsListControllerProvider")
+            ) { args, result ->
+                val qsListControllerProviders = thisObject.getObjectField("qsListControllerProvider")
                 if (qsListControllerProviders == null) {
                     logE("qsListControllerProviders == null")
                     return@afterHookMethod
@@ -77,10 +75,9 @@ object QSHeaderView : BasePluginHook() {
         ).apply {
             afterHookMethod(
                 "createStatusBarViews"
-            ) {
-
-                val sysUIContext = this.getObjectFieldAs<Context>("sysUIContext")
-                val view = this.callMethodAs<ViewGroup>("getView")!!
+            ) { args, result ->
+                val sysUIContext = thisObject.getObjectFieldAs<Context>("sysUIContext")
+                val view = thisObject.callMethodAs<ViewGroup>("getView")!!
                 val mContext = view.context
                 val res = mContext.resources
 
@@ -169,11 +166,11 @@ object QSHeaderView : BasePluginHook() {
             afterHookMethod(
                 "onExpandChange",
                 Float::class.java
-            ) {
+            ) { args, result ->
                 if (viewId == 0) return@afterHookMethod
 
-                val y = it.args[0] as Float
-                val view = this.callMethodAs<ViewGroup>("getView")!!
+                val y = args[0] as Float
+                val view = thisObject.callMethodAs<ViewGroup>("getView")!!
 
                 view.findViewById<LinearLayout>(viewId).apply {
                     translationY = y
@@ -195,10 +192,10 @@ object QSHeaderView : BasePluginHook() {
             "updateConstraint"
         ) {
 
-            val fakeStatusBarViewController = this.getObjectField("fakeStatusBarViewController")
-            val sysUIContext: Context = this.getObjectField("sysUIContext") as Context
-            val parent = this.callMethod("getView") as ViewGroup
-            val mContext = this.callMethod("getContext") as Context
+            val fakeStatusBarViewController = thisObject.getObjectField("fakeStatusBarViewController")
+            val sysUIContext: Context = thisObject.getObjectField("sysUIContext") as Context
+            val parent = thisObject.callMethod("getView") as ViewGroup
+            val mContext = thisObject.callMethod("getContext") as Context
 
             if (fakeStatusBarViewController == null) return@replaceHookMethod null
 

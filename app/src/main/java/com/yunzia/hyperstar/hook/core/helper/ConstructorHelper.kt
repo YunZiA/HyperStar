@@ -1,11 +1,9 @@
 package com.yunzia.hyperstar.hook.core.helper
 
 import com.yunzia.hyperstar.hook.core.finder.findClass
-import com.yunzia.hyperstar.hook.core.Log.log
-import com.yunzia.hyperstar.hook.core.Log.logE
-import com.yunzia.hyperstar.hook.core.Log.logW
-import com.yunzia.hyperstar.hook.core.helper.ConstructorHelper.findConstructorExact
-import io.github.kyuubiran.ezxhelper.core.ClassLoaderProvider
+import com.yunzia.hyperstar.hook.core.StarLog.logE
+import com.yunzia.hyperstar.hook.core.StarLog.logW
+import com.yunzia.hyperstar.hook.core.provider.ClassLoaderProvider
 import java.lang.reflect.Constructor
 import java.util.concurrent.ConcurrentHashMap
 

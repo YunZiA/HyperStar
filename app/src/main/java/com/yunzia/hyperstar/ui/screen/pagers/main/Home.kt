@@ -65,7 +65,6 @@ import com.yunzia.hyperstar.utils.AppInfo
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.Helper.isRoot
 import com.yunzia.hyperstar.utils.LocalScopeManager
-import com.yunzia.hyperstar.utils.ScopeManager.ScopeRequestResult
 import com.yunzia.hyperstar.utils.getSettingChannel
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
@@ -93,6 +92,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 fun Home(
     contentPadding: PaddingValues,
 ) {
+    val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
     val pagerState = LocalMainPagerState.current
     val showReboot = LocalRebootDialogState.current
     val hazeState = rememberHazeState()
@@ -103,17 +103,17 @@ fun Home(
     val rebootStyle = activity.rebootStyle
     val packageManager = activity.packageManager
     val appViewModel = activity.appViewModel
-    val appInScope by appViewModel.appInScope.collectAsState()
-    val appNotInScope by appViewModel.appNotInScope.collectAsState()
-
-    val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
 
     val coroutineScope = rememberCoroutineScope()
     val scopeManager = LocalScopeManager.current
     val moduleScope = stringArrayResource(R.array.module_scope)
 
-    LaunchedEffect(scopeManager.currentScope.size) {
-        appViewModel.loadAppInfo(packageManager,moduleScope,scopeManager.currentScope)
+    val appInScope by appViewModel.appInScope.collectAsState()
+    val appNotInScope by appViewModel.appNotInScope.collectAsState()
+    val currentScope by scopeManager.scopeFlow.collectAsState()
+
+    LaunchedEffect(currentScope.size) {
+        appViewModel.loadAppInfo(packageManager, moduleScope, currentScope)
     }
 
     Scaffold(
@@ -316,98 +316,54 @@ fun Home(
 
                 )
                 SuperArrow(
-                    title = "com.android.settings",
+                    title = "request com.miui.screenshot",
                     onClick = {
                         coroutineScope.launch {
-                            scopeManager.addScope("com.android.settings") { finalResult ->
-                                // 在这里处理接收到的最终结果
-                                Log.e("ScopeManager", "Inside onResult callback, result:  $finalResult")
-                                when (finalResult) {
-                                    ScopeRequestResult.Approved -> {
-                                        Log.w("ScopeManager", "add Approved for: com.miui.screenshot")
-                                        // 执行批准后的逻辑
-                                    }
-                                    ScopeRequestResult.Denied -> {
-                                        Log.w("ScopeManager", "add Denied for: com.miui.screenshot")
-                                        // 执行拒绝后的逻辑
-                                    }
-                                    ScopeRequestResult.Timeout -> {
-                                        Log.w("ScopeManager", "add Timeout for: com.miui.screenshot")
-                                        // 执行超时后的逻辑
-                                    }
-                                    ScopeRequestResult.Failed -> {
-                                        Log.w("ScopeManager", "add Failed for: com.miui.screenshot")
-                                        // 执行失败后的逻辑
-                                    }
-                                    else -> {
-                                    }
+                            scopeManager.addScope("com.miui.screenshot") {
+                                onSuccess {
+                                    Toast.makeText(context,"Request Success!", Toast.LENGTH_SHORT).show()
+                                }
+                                onFailure {
+                                    Toast.makeText(context,"Request Failure!", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }
                     }
                 )
+
                 SuperArrow(
-                    title = "com.miui.screenshot",
+                    title = "remove com.miui.screenshot",
                     onClick = {
                         coroutineScope.launch {
-                            scopeManager.addScope("com.miui.screenshot") { finalResult ->
-                                // 在这里处理接收到的最终结果
-                                Log.e(
-                                    "ScopeManager",
-                                    "Inside onResult callback, result:  $finalResult"
-                                )
-                                when (finalResult) {
-                                    ScopeRequestResult.Approved -> {
-                                        Log.w(
-                                            "ScopeManager",
-                                            "add Approved for: com.miui.screenshot"
-                                        )
-                                        // 执行批准后的逻辑
-                                    }
+                            scopeManager.removeScope("com.miui.screenshot")
 
-                                    ScopeRequestResult.Denied -> {
-                                        Log.w("ScopeManager", "add Denied for: com.miui.screenshot")
-                                        // 执行拒绝后的逻辑
-                                    }
+                        }
+                    }
+                )
 
-                                    ScopeRequestResult.Timeout -> {
-                                        Log.w(
-                                            "ScopeManager",
-                                            "add Timeout for: com.miui.screenshot"
-                                        )
-                                        // 执行超时后的逻辑
-                                    }
-
-                                    ScopeRequestResult.Failed -> {
-                                        Log.w("ScopeManager", "add Failed for: com.miui.screenshot")
-                                        // 执行失败后的逻辑
-                                    }
-
-                                    else -> {
-                                    }
+                SuperArrow(
+                    title = "request default scope",
+                    onClick = {
+                        coroutineScope.launch {
+                            scopeManager.addScope(moduleScope.toList()) {
+                                onSuccess {
+                                    Toast.makeText(context,"Request Success!", Toast.LENGTH_SHORT).show()
+                                }
+                                onFailure {
+                                    Toast.makeText(context,"Request Failure!", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }
                     }
                 )
-                SuperArrow(
-                    title = "com.android.settings",
-                    onClick = {
-                        coroutineScope.launch {
-                            scopeManager.removeScope("com.android.settings"){
-                                Log.w("ScopeManager", "remove com.android.settings:$it")
-                            }
-                        }
-                    }
-                )
+
 
                 SuperArrow(
-                    title = "com.miui.screenshot",
+                    title = "remove default scope",
                     onClick = {
                         coroutineScope.launch {
-                            scopeManager.removeScope("com.miui.screenshot"){
-                                Log.w("ScopeManager", "remove com.miui.screenshot:$it")
-                            }
+                            scopeManager.removeScope(moduleScope.toList())
+
                         }
                     }
                 )

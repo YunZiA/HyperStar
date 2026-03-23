@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
 import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
@@ -24,31 +24,31 @@ object QSListTileRadius : BasePluginHook() {
             pluginClassLoader
         ).apply {
             replaceHookMethod("getCornerRadius"){
-                val pluginContext = this.getObjectFieldAs<Context>( "pluginContext")
+                val pluginContext = thisObject.getObjectFieldAs<Context>( "pluginContext")
                 return@replaceHookMethod dpToPx(pluginContext.resources,qsListTileRadius)
             }
-            beforeHookMethod("setDisabledBg", Drawable::class.java){
-                val drawable = it.args[0] as Drawable
+            beforeHookMethod("setDisabledBg", Drawable::class.java) { args, result ->
+                val drawable = args[0] as Drawable
                 if (drawable is GradientDrawable){
                     val cc = drawable.cornerRadius
-                    val pluginContext = this.getObjectFieldAs<Context>( "pluginContext")
+                    val pluginContext = thisObject.getObjectFieldAs<Context>( "pluginContext")
                     val mRadius = dpToPx(pluginContext.resources,qsListTileRadius)
                     if (cc != mRadius){
                         drawable.cornerRadius = mRadius
-                        it.args[0] = drawable
+                        args[0] = drawable
                     }
                 }
 
             }
-            beforeHookMethod("setEnabledBg", Drawable::class.java){
-                val drawable = it.args[0] as Drawable
+            beforeHookMethod("setEnabledBg", Drawable::class.java) { args, result ->
+                val drawable = args[0] as Drawable
                 if (drawable is GradientDrawable){
                     val cc = drawable.cornerRadius
-                    val pluginContext = this.getObjectFieldAs<Context>("pluginContext")
+                    val pluginContext = thisObject.getObjectFieldAs<Context>("pluginContext")
                     val mRadius = dpToPx(pluginContext.resources,qsListTileRadius)
                     if (cc != mRadius){
                         drawable.cornerRadius = mRadius
-                        it.args[0] = drawable
+                        args[0] = drawable
                     }
                 }
 

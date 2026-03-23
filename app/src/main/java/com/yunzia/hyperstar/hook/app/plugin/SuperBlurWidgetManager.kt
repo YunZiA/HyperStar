@@ -1,7 +1,7 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
 import android.content.Context
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.prefs.XSPUtils
@@ -19,13 +19,13 @@ object SuperBlurWidgetManager : BasePluginHook() {
 
     private fun startMethodsHook() {
         val controlCenterUtils  = findClass("miui.systemui.controlcenter.utils.ControlCenterUtils",pluginClassLoader)
-        controlCenterUtils.afterHookMethod("getBackgroundBlurOpenedInDefaultTheme",Context::class.java){
+        controlCenterUtils.afterHookMethod("getBackgroundBlurOpenedInDefaultTheme",Context::class.java) { args, result ->
 
             if (superBlurWidget == 1){
-                it.result = false
+                result.replace(false)
 
             }else if (superBlurWidget == 2){
-                it.result = true
+                result.replace(true)
 
             }
         }

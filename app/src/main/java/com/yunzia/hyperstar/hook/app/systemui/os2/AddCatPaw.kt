@@ -6,15 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.yunzia.hyperstar.hook.core.BaseHook
+import com.yunzia.hyperstar.hook.core.base.BaseHook
 import com.yunzia.hyperstar.hook.base.getDimensionPixelOffset
-import com.yunzia.hyperstar.hook.core.Log
-import com.yunzia.hyperstar.hook.core.Log.log
-import com.yunzia.hyperstar.hook.core.Log.logD
+import com.yunzia.hyperstar.hook.core.StarLog.log
+import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
-import io.github.kyuubiran.ezxhelper.android.util.ViewUtil.findViewByIdName
-import io.github.kyuubiran.ezxhelper.xposed.EzXposed
+import com.yunzia.hyperstar.hook.util.android.findViewByIdName
+import com.yunzia.hyperstar.hook.core.XposedCore
 
 
 object AddCatPaw:BaseHook() {
@@ -39,8 +38,8 @@ object AddCatPaw:BaseHook() {
             LayoutInflater::class.java,
             ViewGroup::class.java,
             Bundle::class.java
-        ){
-            val view = it.result as ViewGroup
+        ) { args, result ->
+            val view = result.value as ViewGroup
             val context = view.context
             val clock = view.findViewByIdName("clock")
             val phoneStatusBarLeftContainer = view.findViewByIdName("phone_status_bar_left_container") as LinearLayout
@@ -49,7 +48,7 @@ object AddCatPaw:BaseHook() {
                 log("getChildAt $i is $child")
             }
             val paw = context.resources.getDrawable(catPaw)
-            val size = getDimensionPixelOffset(context.resources,"status_bar_clock_size", EzXposed.hookedPackageName).toInt()
+            val size = getDimensionPixelOffset(context.resources,"status_bar_clock_size", XposedCore.hookedPackageName)
             val icon = View(context).apply {
                 background = paw
             }

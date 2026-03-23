@@ -37,10 +37,6 @@ import com.yunzia.hyperstar.prefs.PreferencesUtil
 import com.yunzia.hyperstar.prefs.SPUtils
 import com.yunzia.hyperstar.ui.screen.pagers.FPSMonitor
 import com.yunzia.hyperstar.utils.LocalScopeManager
-import com.yunzia.hyperstar.utils.ScopeManager
-import com.yunzia.hyperstar.utils.ScopeManager.ScopeRequestResult
-import com.yunzia.hyperstar.utils.rememberScopeManager
-import com.yunzia.hyperstar.utils.requestScope
 import com.yunzia.hyperstar.viewmodel.AppViewModel
 import com.yunzia.hyperstar.viewmodel.UpdaterDownloadViewModel
 import io.github.libxposed.service.XposedService
@@ -94,10 +90,6 @@ class MainActivity : BaseActivity() {
         })
 
         CompositionLocalProvider(LocalScopeManager provides appViewModel.scopeManager) {
-            val scopeManager = LocalScopeManager.current
-            LaunchedEffect(scopeManager.currentScope.size) {
-                Log.d("scopeManager", "currentScope: ${scopeManager.currentScope}")
-            }
             App()
         }
     }

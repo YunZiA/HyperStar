@@ -27,12 +27,10 @@ import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
 import com.yunzia.hyperstar.ui.navigation.Navigator
 import com.yunzia.hyperstar.ui.navigation.Route
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
-import top.yukonga.miuix.kmp.basic.InputField
-import top.yukonga.miuix.kmp.basic.SearchBar
 import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.extra.DialogDefaults
 import top.yukonga.miuix.kmp.extra.SuperArrow
 import top.yukonga.miuix.kmp.extra.SuperDialog
-import top.yukonga.miuix.kmp.extra.SuperDialogDefaults
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
@@ -275,7 +273,7 @@ fun SuperWarnDialogArrow(
 
     SuperDialog(
         title = warnTitle,
-        show = show,
+        show = show.value,
         onDismissRequest = {
             show.value = false
 
@@ -287,7 +285,7 @@ fun SuperWarnDialogArrow(
             Modifier
                 .padding(horizontal = 5.dp)
                 .padding(top = 8.dp, bottom = 24.dp),
-            color = SuperDialogDefaults.summaryColor(),
+            color = DialogDefaults.summaryColor(),
             textAlign = TextAlign.Start,
             fontSize = 16.sp
         )

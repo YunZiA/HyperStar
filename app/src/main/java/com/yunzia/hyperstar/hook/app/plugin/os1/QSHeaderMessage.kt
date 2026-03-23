@@ -1,7 +1,7 @@
 package com.yunzia.hyperstar.hook.app.plugin.os1
 
 import android.os.Handler
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.callMethod
 import com.yunzia.hyperstar.hook.core.helper.getObjectField
@@ -26,8 +26,7 @@ object QSHeaderMessage : BasePluginHook() {
                 replaceHookMethod(
                     "showMessage",
                     CharSequence::class.java
-                ){
-
+                ) {
                     return@replaceHookMethod null
                 }
 
@@ -35,8 +34,8 @@ object QSHeaderMessage : BasePluginHook() {
                 replaceHookMethod(
                     "handleShowMessage",
                     CharSequence::class.java
-                ){
-                    val message = it.args[0]
+                ) {
+                    val message = it[0]
                     val headerMsgController = getObjectField("headerMsgController")
                     headerMsgController.callMethod("changeMsg",message)
                     callMethod("changeTarget",headerMsgController,true)
@@ -45,7 +44,6 @@ object QSHeaderMessage : BasePluginHook() {
                     uiHandler.postDelayed(hideMsgCallback,showMessageMillis.toLong())
                     return@replaceHookMethod null
                 }
-
             }
         }
 

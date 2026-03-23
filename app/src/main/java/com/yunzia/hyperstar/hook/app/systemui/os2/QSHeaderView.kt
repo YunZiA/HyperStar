@@ -16,13 +16,12 @@ import com.yunzia.hyperstar.hook.app.plugin.HideVolumeCollpasedFootButton.plugin
 import com.yunzia.hyperstar.hook.base.BaseHookHelper.findMethodBestMatchIfExist
 import com.yunzia.hyperstar.hook.base.BaseHookHelper.findMethodExactIfExists
 import com.yunzia.hyperstar.hook.base.BaseHookHelper.getId
-import com.yunzia.hyperstar.hook.core.BaseHook
+import com.yunzia.hyperstar.hook.core.base.BaseHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.getDimensionPixelOffset
-import com.yunzia.hyperstar.hook.core.Log
-import com.yunzia.hyperstar.hook.core.Log.log
-import com.yunzia.hyperstar.hook.core.Log.logD
-import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.StarLog.log
+import com.yunzia.hyperstar.hook.core.StarLog.logD
+import com.yunzia.hyperstar.hook.core.XposedCore
 import com.yunzia.hyperstar.hook.core.helper.afterHookAllConstructors
 import com.yunzia.hyperstar.hook.core.helper.afterHookAllMethods
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
@@ -37,8 +36,7 @@ import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
 import com.yunzia.hyperstar.hook.core.helper.getStaticObjectField
 import com.yunzia.hyperstar.hook.util.ConstraintSet
 import com.yunzia.hyperstar.prefs.XSPUtils
-import io.github.kyuubiran.ezxhelper.core.ClassLoaderProvider
-import io.github.kyuubiran.ezxhelper.xposed.EzXposed
+import com.yunzia.hyperstar.hook.core.provider.ClassLoaderProvider
 import java.util.Locale
 import kotlin.math.pow
 
@@ -67,16 +65,16 @@ object QSHeaderView : BaseHook() {
         val MiuiConfigs = findClass("com.miui.utils.configs.MiuiConfigs")
 
         ControlCenterHeaderController.apply {
-            afterHookAllConstructors {
-                val combinedHeaderController = it.args[0]
+            afterHookAllConstructors { args, result ->
+                val combinedHeaderController = args[0]
                 val controlCenterHeaderView = combinedHeaderController.getObjectFieldAs<ViewGroup>("controlCenterHeaderView")
                 header = addButton(controlCenterHeaderView)
 
             }
             afterHookAllMethods(
                 "updateDateVisibility"
-            ) {
-                val mView = this.getObjectFieldAs<View>("mView")
+            ) { args, result ->
+                val mView = thisObject.getObjectFieldAs<View>("mView")
                 val context = mView.context
                 val localId = Settings.System.getInt(context.contentResolver,"cc_edit_Id",0)
                 if (localId != R.id.cc_header_edit){
@@ -105,10 +103,10 @@ object QSHeaderView : BaseHook() {
                 "onAppearanceChanged",
                 Boolean::class.java,
                 Boolean::class.java
-            ) {
-                val z = it.args[0] as Boolean
-                val z2 = it.args[1] as Boolean
-                val controlCenterHeaderExpandController = this.getObjectField("this\$0")
+            ) { args, result ->
+                val z = args[0] as Boolean
+                val z2 = args[1] as Boolean
+                val controlCenterHeaderExpandController = thisObject.getObjectField("this\$0")
                 val context =
                     controlCenterHeaderExpandController.getObjectFieldAs<Context>("context")
                 val controlCenterCarrierViewFolme = Folme.callStaticMethod("useAt", arrayOf(header))
@@ -242,10 +240,10 @@ object QSHeaderView : BaseHook() {
             afterHookMethod(
                 "onExpansionChanged",
                 Float::class.java
-            ) {
-                val f = it.args[0] as Float
+            ) { args, result ->
+                val f = args[0] as Float
                 if (f in 0f..1f){
-                    val controlCenterHeaderExpandController = this.getObjectField("this\$0")
+                    val controlCenterHeaderExpandController = thisObject.getObjectField("this\$0")
                     val context = controlCenterHeaderExpandController.getObjectFieldAs<Context>("context")
 
                     val headerController = controlCenterHeaderExpandController.getObjectField("headerController")
@@ -275,20 +273,20 @@ object QSHeaderView : BaseHook() {
             "com.android.systemui.controlcenter.shade.CombinedHeaderController").afterHookMethod(
             "onSwitchProgressChanged",
             Float::class.java
-        ){
-            val f = it.args[0] as Float
-            val context = this.getObjectFieldAs<Context>("context")
-            val controlCenterExpandController = this.getObjectField("controlCenterExpandController")
+        ) { args, result ->
+            val f = args[0] as Float
+            val context = thisObject.getObjectFieldAs<Context>("context")
+            val controlCenterExpandController = thisObject.getObjectField("controlCenterExpandController")
             val getAppearance = PanelExpandControllerExt.findMethodExactIfExists("getAppearance")
             if (!(getAppearance?.invoke(controlCenterExpandController) as Boolean)) {
                 return@afterHookMethod
             }
 
             if ( f <= 0.5f ){
-                val controlLocationX =  this.getFloatField("controlLocationX")!!
-                val notificationLocationY =  this.getFloatField("notificationLocationY")!!
-                val notificationLocationX =  this.getFloatField("notificationLocationX")!!
-                val controlLocationY =  this.getFloatField("controlLocationY")!!
+                val controlLocationX =  thisObject.getFloatField("controlLocationX")!!
+                val notificationLocationY =  thisObject.getFloatField("notificationLocationY")!!
+                val notificationLocationX =  thisObject.getFloatField("notificationLocationX")!!
+                val controlLocationY =  thisObject.getFloatField("controlLocationY")!!
                 val f2 = 1f
                 val f3 = 2f
                 val pow = (f2-(f2 - (f * f3)).coerceIn(0.0f, 1.0f)).pow(2.0f)
@@ -328,13 +326,13 @@ object QSHeaderView : BaseHook() {
             "com.android.systemui.controlcenter.shade.ControlCenterHeaderController"
         ).afterHookMethod(
             "updateConstraint"
-        ) {
+        ) { args, result ->
 
-            val fakeStatusBarViewController  = this.getObjectField("fakeStatusBarViewController")?:return@afterHookMethod
+            val fakeStatusBarViewController  = thisObject.getObjectField("fakeStatusBarViewController")?:return@afterHookMethod
 
-            val sysUIContext   = this.getObjectField("sysUIContext") as Context
-            val parent = this.callMethod("getView") as ViewGroup
-            val mContext = this.callMethod("getContext") as Context
+            val sysUIContext   = thisObject.getObjectField("sysUIContext") as Context
+            val parent = thisObject.callMethod("getView") as ViewGroup
+            val mContext = thisObject.callMethod("getContext") as Context
             val res = mContext.resources
 
             val constraintSet = ConstraintSet(ClassLoaderProvider.safeClassLoader)
@@ -398,8 +396,8 @@ object QSHeaderView : BaseHook() {
         val context = controlCenterHeaderView.context
         val res = controlCenterHeaderView.resources
 
-        val size = (getDimensionPixelOffset(res,"shade_header_control_center_carrier_text_size", EzXposed.hookedPackageName))/2*3.toInt()
-        val bottom = (getDimensionPixelOffset(res,"shade_header_bottom_padding", EzXposed.hookedPackageName)*2.85).toInt()
+        val size = (getDimensionPixelOffset(res,"shade_header_control_center_carrier_text_size", XposedCore.hookedPackageName))/ 2 * 3
+        val bottom = (getDimensionPixelOffset(res,"shade_header_bottom_padding", XposedCore.hookedPackageName)*2.85).toInt()
         //dpToPx(res,21.4f).toInt()
         val lp = ViewGroup.MarginLayoutParams(size, size).apply {
             bottomMargin = bottom

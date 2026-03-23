@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.hook.core.helper
 
-import com.yunzia.hyperstar.hook.core.Log.log
 import com.yunzia.hyperstar.hook.core.finder.findClass
 
 abstract class CoreHelper {

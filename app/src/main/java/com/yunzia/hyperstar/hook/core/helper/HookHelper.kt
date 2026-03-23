@@ -1,226 +1,233 @@
 package com.yunzia.hyperstar.hook.core.helper
 
-import com.yunzia.hyperstar.hook.core.Log.log
-import com.yunzia.hyperstar.hook.core.Log.logD
-import com.yunzia.hyperstar.hook.core.Log.logE
-import com.yunzia.hyperstar.hook.core.Log.logW
-import com.yunzia.hyperstar.hook.core.helper.ConstructorHelper.getParameterClasses
+import com.yunzia.hyperstar.hook.core.StarLog.log
+import com.yunzia.hyperstar.hook.core.StarLog.logE
+import com.yunzia.hyperstar.hook.core.StarLog.logW
+import com.yunzia.hyperstar.hook.core.XposedCore
 import com.yunzia.hyperstar.hook.core.helper.MethodHelper.findMethodExact
-import io.github.kyuubiran.ezxhelper.xposed.common.AfterHookParam
-import io.github.kyuubiran.ezxhelper.xposed.common.BeforeHookParam
-import io.github.kyuubiran.ezxhelper.xposed.dsl.HookFactory
-import io.github.kyuubiran.ezxhelper.xposed.dsl.HookFactory.`-Static`.createAfterHook
-import io.github.kyuubiran.ezxhelper.xposed.dsl.HookFactory.`-Static`.createBeforeHook
-import io.github.kyuubiran.ezxhelper.xposed.dsl.HookFactory.`-Static`.createHook
+import io.github.libxposed.api.XposedInterface
+import java.lang.reflect.Executable
 import java.lang.reflect.Method
+
+
+data class HookResult<T>(
+    val originalValue: T
+) {
+    private var _value: T = originalValue
+    private var _replaced: Boolean = false
+
+    var value: T
+        get() = _value
+        set(newValue) {
+            _value = newValue
+            _replaced = true
+        }
+
+    val isReplaced: Boolean
+        get() = _replaced
+
+    fun replace(newValue: T) {
+        value = newValue
+    }
+}
+
+@JvmSynthetic
+private fun <T : Executable> T.createHook(): XposedInterface.HookBuilder = XposedCore.base.hook(this)
+
+fun XposedInterface.HookBuilder.replace(block: XposedInterface.Chain.(List<Any?>) -> Any?): XposedInterface.HookHandle  = intercept { chain ->
+    try {
+        return@intercept chain.block(chain.args)
+    } catch (t: Throwable) {
+        logE("HookError", "Error in after-hook: ${chain.executable.declaringClass.name}#${chain.executable.name}", t)
+        return@intercept chain.proceed()
+    }
+}
+fun XposedInterface.HookBuilder.before(block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit): XposedInterface.HookHandle  = intercept { chain ->
+    val result: HookResult<Any?> = HookResult(Unit)
+    val args: MutableList<Any?> = chain.args.toMutableList()
+    try {
+        chain.block(args, result)
+    } catch (t: Throwable) {
+        logE("HookError", "Error in before-hook: ${chain.executable.declaringClass.name}#${chain.executable.name}", t)
+    }
+    val oldResult = chain.proceed(args.toTypedArray())
+    if (result.isReplaced) {
+        return@intercept result.value
+    }
+    return@intercept oldResult
+}
+
+fun XposedInterface.HookBuilder.after(block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit): XposedInterface.HookHandle  = intercept { chain ->
+    val result = HookResult(chain.proceed())
+    try {
+        chain.block(chain.args, result)
+    } catch (t: Throwable) {
+        logE("HookError", "Error in after-hook: ${chain.executable.declaringClass.name}#${chain.executable.name}", t)
+    }
+    return@intercept result.value
+}
+
+fun <T : Executable> T.replaceHook(
+    block: XposedInterface.Chain.(List<Any?>) -> Any?
+) {
+    this.createHook().replace(block)
+}
+fun <T : Executable> T.beforeHook(
+    block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit
+) {
+    this.createHook().before(block)
+}
+fun <T : Executable> T.afterHook(
+    block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit
+) {
+    this.createHook().after(block)
+}
 
 fun Class<*>?.hookAllMethods(
     methodName: String,
-    block: HookFactory.() -> Unit
+    block: XposedInterface.HookBuilder.() -> Unit
 ) {
     this?: run {
         logW("hookAllMethod","$methodName in null class")
         return
     }
-    try {
-        for (method in this.getDeclaredMethods()){
-            if (method.name == methodName) {
-                method.createHook(block = block)
-            }
+    for (method in this.getDeclaredMethods()){
+        if (method.name == methodName) {
+            method.createHook().block()
         }
-    }catch (e : Exception){
-        logE("${this.simpleName}","${e.cause}")
     }
+
 }
 
 fun Class<*>?.beforeHookAllMethods(
     methodName: String,
-    block: Any?.(BeforeHookParam) -> Unit
+    block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit
 ) {
-    this?: run {
-        logW("hookAllMethod","$methodName in null class")
+    this ?: run {
+        logW("hookAllMethod", "$methodName in null class")
         return
     }
-    try {
-        for (method in this.getDeclaredMethods()){
-            if (method.name == methodName) {
-                method.createBeforeHook { it.thisObjectOrNull.block(it) }
-            }
+    for (method in this.getDeclaredMethods()) {
+        if (method.name == methodName) {
+            method.beforeHook(block)
         }
-    }catch (e : Exception){
-        logE("${this.simpleName}","${e.cause}")
     }
 }
 
 fun Class<*>?.afterHookAllMethods(
     methodName: String,
-    block: Any?.(AfterHookParam) -> Unit
+    block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit
 ) {
     this?: run {
         logW("hookAllMethod","$methodName in null class")
         return
     }
-    try {
-        for (method in this.getDeclaredMethods()){
-            if (method.name == methodName) {
-                method.createAfterHook { it.thisObjectOrNull.block(it) }
-            }
+    for (method in this.getDeclaredMethods()){
+        if (method.name == methodName) {
+            method.afterHook(block)
         }
-    }catch (e : Exception){
-        logE("${this.simpleName}","${e.cause}")
     }
+
 }
 
 fun Class<*>?.hookMethod(
     methodName: String,
     vararg paramTypes: Any?,
-    block: HookFactory.() -> Unit
+    block: XposedInterface.HookBuilder.() -> Unit
 ) {
-    try {
-        findMethodExact(
-            this,
-            methodName,
-            paramTypes
-        )?.createHook(block = block)
-    }catch (e : Exception){
-        logE("${this?.simpleName}","${e.cause}")
-    }
+
+    findMethodExact(
+        this,
+        methodName,
+        paramTypes
+    )?.createHook()
+
 }
 
 fun Class<*>?.beforeHookMethod(
     methodName: String,
     vararg paramTypes: Any?,
-    block: Any?.(BeforeHookParam) -> Unit
+    block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit
 ) {
-    try {
-        findMethodExact(this, methodName, *paramTypes)?.createBeforeHook { it.thisObjectOrNull.block(it) }
-    }catch (e : Exception){
-        logE("${this?.simpleName}","${e.cause}")
-    }
+    findMethodExact(this, methodName, *paramTypes)?.beforeHook(block)
 }
 
 fun Class<*>?.afterHookMethod(
     methodName: String,
     vararg paramTypes: Any?,
-    block: Any?.(AfterHookParam) -> Unit
+    block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit
 ) {
-    try {
-        findMethodExact(this, methodName, *paramTypes)?.createAfterHook { it.thisObjectOrNull.block(it) }
-    }catch (e : Exception){
-        logE("${this?.simpleName}","${e.cause}")
-    }
+    findMethodExact(this, methodName, *paramTypes)?.afterHook(block)
+
 }
 
 fun Class<*>?.replaceHookMethod(
     methodName: String,
     vararg paramTypes: Any?,
-    block: Any?.(BeforeHookParam) -> Any?
+    block: XposedInterface.Chain.(List<Any?>) -> Any?
 ) {
-    try {
-        findMethodExact(this, methodName, *paramTypes).replaceHook(block)
-    }catch (e : Exception){
-        logE("${this?.simpleName}","${e.cause}")
-    }
-}
-
-fun Method?.replaceHook(
-    block: Any?.(BeforeHookParam) -> Any?
-) {
-    try {
-        this?.createHook { replace { it.thisObjectOrNull.block(it) } }
-    } catch (e : Exception){
-        logE("${this?.name}","${e.cause}")
-    }
+    findMethodExact(this, methodName, *paramTypes)?.replaceHook(block)
 }
 
 
 fun Class<*>?.hookAllConstructors(
-    block: HookFactory.() -> Unit
+    block: XposedInterface.HookBuilder.() -> Unit
 ) {
     this?: return
 
-    try {
-        for (constructor in this.declaredConstructors) {
-            constructor.createHook(block = block)
-        }
-    }catch (e : Exception){
-        logE("${this.simpleName}","${e.cause}")
+    for (constructor in this.declaredConstructors) {
+        constructor.createHook()
     }
 }
 
 fun Class<*>?.beforeHookAllConstructors(
-    block: Any?.(BeforeHookParam) -> Unit
+    block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit
 ) {
     this?: return
 
-    try {
-        for (constructor in this.declaredConstructors) {
-            constructor.createBeforeHook { it.thisObjectOrNull.block(it) }
-        }
-    }catch (e : Exception){
-        logE("${this.simpleName}","${e.cause}")
+    for (constructor in this.declaredConstructors) {
+        constructor.beforeHook(block)
     }
 }
 
 fun Class<*>?.afterHookAllConstructors(
-    block: Any?.(AfterHookParam) -> Unit
+    block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit
 ) {
     this?: return
 
-    try {
-        for (constructor in this.declaredConstructors) {
-            constructor.createAfterHook { it.thisObjectOrNull.block(it) }
-        }
-    }catch (e : Exception){
-        logE("${this.simpleName}","${e.cause}")
+    for (constructor in this.declaredConstructors) {
+        constructor.afterHook(block)
     }
 }
 fun Class<*>?.replaceHookAllConstructors(
-    block: Any?.(BeforeHookParam) -> Any?
+    block: XposedInterface.Chain.(List<Any?>) -> Any?
 ) {
     this?: return
 
-    try {
-        for (constructor in this.declaredConstructors) {
-            constructor.createHook { replace { it.thisObjectOrNull.block(it) } }
-        }
-    }catch (e : Exception){
-        logE("${this.simpleName}","${e.cause}")
+    for (constructor in this.declaredConstructors) {
+        constructor.replaceHook(block)
     }
 }
 
 fun Class<*>?.hookConstructor(
     vararg parameterTypes: Any?,
-    block: HookFactory.() -> Unit
+    block: XposedInterface.HookBuilder.() -> Unit
 ) {
-    try {
-        findConstructorExact(*parameterTypes)?.createHook(block = block)
-    } catch (e : Exception){
-        logE("${this?.simpleName}","${e.cause}")
-    }
+    findConstructorExact(*parameterTypes)?.createHook()
 }
 
 fun Class<*>?.beforeHookConstructor(
     vararg parameterTypes: Any?,
-    block: Any?.(BeforeHookParam) -> Unit
+    block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit
 ) {
-    try {
-        findConstructorExact(*parameterTypes)?.createBeforeHook { it.thisObjectOrNull.block(it) }
-    } catch (e : Exception){
-        logE("${this?.simpleName}","${e.cause}")
-    }
+    findConstructorExact(*parameterTypes)?.beforeHook(block)
 }
 
 fun Class<*>?.afterHookConstructor(
     vararg parameterTypes: Any?,
-    block: Any?.(AfterHookParam) -> Unit
+    block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit
 ) {
-    try {
-        log("${parameterTypes}")
-        findConstructorExact(*parameterTypes)?.createAfterHook { it.thisObjectOrNull.block(it) }
-    } catch (e : Exception){
-        logE("${this?.simpleName}","${e.cause}")
-    }
+    findConstructorExact(*parameterTypes)?.afterHook(block)
 }
 
 

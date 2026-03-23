@@ -4,14 +4,12 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
-import com.yunzia.hyperstar.hook.core.Log.logD
+import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.helper.afterHookConstructor
 import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
-import com.yunzia.hyperstar.hook.core.Log
-import com.yunzia.hyperstar.hook.core.Log.logE
+import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.helper.callMethod
 import com.yunzia.hyperstar.hook.core.helper.getFloatField
 import com.yunzia.hyperstar.hook.core.helper.getIntField
@@ -49,9 +47,8 @@ object QSCardTileList : BasePluginHook() {
             pluginClassLoader
         ).beforeHookMethod(
             "getCardStyleTileSpecs"
-        ){
-            it.result = cardStyleTiles
-
+        ) { args, result ->
+            result.replace(cardStyleTiles)
         }
 
         findClass(
@@ -61,69 +58,40 @@ object QSCardTileList : BasePluginHook() {
             afterHookConstructor(
                 Context::class.java,
                 AttributeSet::class.java
-            ){
-                this as LinearLayout
-                idEnable = this.context.resources.getIdentifier(
-                    "qs_card_wifi_background_enabled",
-                    "drawable", plugin
-                )
-                idDisabled = this.context.resources.getIdentifier(
-                    "qs_card_wifi_background_disabled",
-                    "drawable", plugin
-                )
-                idUnavailable = this.context.resources.getIdentifier(
-                    "qs_card_cell_background_unavailable",
-                    "drawable", plugin)
-
-            }
-            beforeHookMethod("setCornerRadius",Float::class.java){
-                this as LinearLayout
-                val cornerRadius = this.getFloatField("_cornerRadius")
-                it.args[0] = cornerRadius
-
-            }
-            beforeHookMethod("updateBackground"){
-                this as LinearLayout
-                val state = this.getObjectField("state")
-                if (state == null){
-                    logE("state == null")
-                    return@beforeHookMethod
+            ) { args, result ->
+                (thisObject as LinearLayout).apply {
+                    idEnable = this.context.resources.getIdentifier(
+                        "qs_card_wifi_background_enabled",
+                        "drawable", plugin
+                    )
+                    idDisabled = this.context.resources.getIdentifier(
+                        "qs_card_wifi_background_disabled",
+                        "drawable", plugin
+                    )
+                    idUnavailable = this.context.resources.getIdentifier(
+                        "qs_card_cell_background_unavailable",
+                        "drawable", plugin)
                 }
-                val i = state.getIntField("state")
-                val spec = state.getObjectField("spec")
-                val cornerRadius = this.getObjectField("_cornerRadius")
-                if(spec == null){
-                    val id :Int = when (i) {
-                        0 -> {
-                            idUnavailable
-                        }
-                        2 -> {
-                            idEnable
-                        }
-                        1 -> {
-                            idDisabled
-                        }
-                        else -> {
-                            return@beforeHookMethod
-                        }
-                    }
-                    if (id == -1 ) {
-                        logE("updateBackground", "id is -1!!")
+
+            }
+            beforeHookMethod("setCornerRadius",Float::class.java) { args, result ->
+                thisObject as LinearLayout
+                val cornerRadius = thisObject.getFloatField("_cornerRadius")
+                args[0] = cornerRadius
+
+            }
+            beforeHookMethod("updateBackground") { args, result ->
+                thisObject.apply {
+                    this as LinearLayout
+                    val state = thisObject.getObjectField("state")
+                    if (state == null){
+                        logE("state == null")
                         return@beforeHookMethod
                     }
-                    val background: Drawable = this.context.theme.resources.getDrawable(id, this.context.theme)
-                    this.background = background
-                    this.callMethod(
-                        "setCornerRadius",
-                        cornerRadius
-                    )
-                    return@beforeHookMethod
-                }
-                when (spec.toString()) {
-                    "bt", "cell", "flashlight", "wifi", "vowifi1", "vowifi2" -> {
-
-                    }
-                    else -> {
+                    val i = state.getIntField("state")
+                    val spec = state.getObjectField("spec")
+                    val cornerRadius = thisObject.getObjectField("_cornerRadius")
+                    if(spec == null){
                         val id :Int = when (i) {
                             0 -> {
                                 idUnavailable
@@ -144,11 +112,37 @@ object QSCardTileList : BasePluginHook() {
                         }
                         val background: Drawable = this.context.theme.resources.getDrawable(id, this.context.theme)
                         this.background = background
+                        thisObject.callMethod("setCornerRadius", cornerRadius)
+                        return@beforeHookMethod
+                    }
+                    when (spec.toString()) {
+                        "bt", "cell", "flashlight", "wifi", "vowifi1", "vowifi2" -> {
 
-                        this.callMethod(
-                            "setCornerRadius",
-                            cornerRadius
-                        )
+                        }
+                        else -> {
+                            val id :Int = when (i) {
+                                0 -> {
+                                    idUnavailable
+                                }
+                                2 -> {
+                                    idEnable
+                                }
+                                1 -> {
+                                    idDisabled
+                                }
+                                else -> {
+                                    return@beforeHookMethod
+                                }
+                            }
+                            if (id == -1 ) {
+                                logE("updateBackground", "id is -1!!")
+                                return@beforeHookMethod
+                            }
+                            val background: Drawable = this.context.theme.resources.getDrawable(id, this.context.theme)
+                            this.background = background
+
+                            thisObject.callMethod("setCornerRadius", cornerRadius)
+                        }
                     }
                 }
             }

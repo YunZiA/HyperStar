@@ -16,7 +16,7 @@ import android.media.ImageReader
 import android.util.Log
 import androidx.core.graphics.ColorUtils
 import androidx.palette.graphics.Palette
-import com.yunzia.hyperstar.hook.core.Log.logE
+import com.yunzia.hyperstar.hook.core.StarLog.logE
 
 class BitmapUtils {
     companion object {

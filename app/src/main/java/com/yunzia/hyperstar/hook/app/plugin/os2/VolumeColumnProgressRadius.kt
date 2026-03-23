@@ -2,7 +2,7 @@ package com.yunzia.hyperstar.hook.app.plugin.os2
 
 import android.content.Context
 import android.util.AttributeSet
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.helper.afterHookConstructor
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.getDimensionPixelOffset
@@ -30,12 +30,12 @@ object VolumeColumnProgressRadius : BasePluginHook() {
             Context::class.java,
             AttributeSet::class.java,
             Int::class.java
-        ){
-            val mContext = this.getObjectFieldAs<Context>("mContext")
+        ) { args, result ->
+            val mContext = thisObject.getObjectFieldAs<Context>("mContext")
             val res = mContext.resources
             val maxRadius = getDimensionPixelOffset(res,"miui_volume_bg_radius",plugin).toFloat()
             val radius = DensityUtil.dpToPx(res, volumeProgressRadius)
-            this.setFloatField("mProgressRadius",
+            thisObject.setFloatField("mProgressRadius",
                 if (radius >= maxRadius){
                     maxRadius
                 }else{

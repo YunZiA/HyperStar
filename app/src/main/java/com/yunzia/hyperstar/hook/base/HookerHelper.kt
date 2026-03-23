@@ -1,29 +1,18 @@
 package com.yunzia.hyperstar.hook.base
 
 import android.content.res.Resources
-import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.SeekBar
 import androidx.core.graphics.toColorInt
-import com.yunzia.hyperstar.hook.core.Log.logE
+import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.helper.FieldHelper
 import com.yunzia.hyperstar.hook.core.helper.MethodHelper
 import com.yunzia.hyperstar.hook.core.helper.MethodHelper.findMethodBestMatch
-import com.yunzia.hyperstar.hook.help.ClassHelper
-import com.yunzia.hyperstar.hook.core.Log
-import com.yunzia.hyperstar.hook.core.Log.logD
-import com.yunzia.hyperstar.hook.core.helper.afterHookAllMethods
-import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.helper.callMethod
-import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
-import com.yunzia.hyperstar.hook.util.base.ResourcesImpl
-import io.github.kyuubiran.ezxhelper.android.util.ViewUtil.findViewByIdName
-import io.github.kyuubiran.ezxhelper.core.ClassLoaderProvider
-import io.github.kyuubiran.ezxhelper.core.finder.ClassFinder
-import io.github.kyuubiran.ezxhelper.xposed.common.AfterHookParam
-import java.lang.invoke.MethodHandles
+import com.yunzia.hyperstar.hook.util.android.findViewByIdName
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 object BaseHookHelper {
@@ -66,7 +55,6 @@ object BaseHookHelper {
                 return method.invoke(o,*objects)
             }
         }
-        logE("$this can't invoke")
         return null
 
     }

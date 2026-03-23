@@ -74,8 +74,8 @@ import com.yunzia.hyperstar.ui.navigation.MainRoutes
 import dev.chrisbanes.haze.rememberHazeState
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.SpinnerEntry
+import top.yukonga.miuix.kmp.extra.DialogDefaults
 import top.yukonga.miuix.kmp.extra.SuperDialog
-import top.yukonga.miuix.kmp.extra.SuperDialogDefaults
 import top.yukonga.miuix.kmp.extra.WindowSpinner
 import top.yukonga.miuix.kmp.icon.extended.More
 
@@ -315,7 +315,7 @@ fun ErrorDialog(
 
     SuperDialog(
         title = stringResource(R.string.error_title),
-        show = show,
+        show = show.value,
         onDismissRequest = {}
     ) {
         Column(
@@ -326,7 +326,7 @@ fun ErrorDialog(
             Text(
                 stringResource(R.string.send_developer),
                 modifier = Modifier.padding(bottom = 8.dp),
-                color = SuperDialogDefaults.summaryColor(),
+                color = DialogDefaults.summaryColor(),
                 textAlign = TextAlign.Start,
                 fontSize = 16.sp,
                 style = TextStyle(textIndent = TextIndent(7.sp))

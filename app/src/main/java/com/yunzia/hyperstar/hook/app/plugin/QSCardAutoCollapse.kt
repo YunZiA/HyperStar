@@ -3,7 +3,7 @@ package com.yunzia.hyperstar.hook.app.plugin
 import android.content.Context
 import android.view.View
 import android.widget.LinearLayout
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.hook.core.helper.getObjectField
@@ -32,8 +32,8 @@ object QSCardAutoCollapse : BasePluginHook() {
         findClass(
             "miui.systemui.controlcenter.qs.tileview.QSCardItemView\$onFinishInflate\$1",
             pluginClassLoader
-        ).afterHookMethod("invoke",View::class.java) {
-            val qsCardItemView = this.getObjectFieldAs<LinearLayout>("this$0")
+        ).afterHookMethod("invoke",View::class.java) { args, result ->
+            val qsCardItemView = thisObject.getObjectFieldAs<LinearLayout>("this$0")
             qsCardItemView.getObjectField("clickAction") ?: return@afterHookMethod
             collapseStatusBar(qsCardItemView.context)
         }

@@ -2,7 +2,7 @@ package com.yunzia.hyperstar.hook.app.plugin.os1
 
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.hook.core.helper.getBooleanField
@@ -21,15 +21,15 @@ object FixTileIconSize : BasePluginHook() {
         ).apply {
             afterHookMethod(
                 "getProperIconSize",
-                Drawable::class.java
-            ){
-                val drawable = it.args[0] as Drawable
-                val isCustomTile = this.getBooleanField("isCustomTile")?:return@afterHookMethod
+                Drawable::class .java
+            ) { args, result ->
+                val drawable = args[0] as Drawable
+                val isCustomTile = thisObject.getBooleanField("isCustomTile")?:return@afterHookMethod
                 if (isCustomTile) return@afterHookMethod
                 if(drawable !is AnimatedVectorDrawable) return@afterHookMethod
-                val customTileSize = this.getFloatField("customTileSize")?.toInt()?:return@afterHookMethod
+                val customTileSize = thisObject.getFloatField("customTileSize")?.toInt()?:return@afterHookMethod
                 if (drawable.intrinsicHeight < customTileSize){
-                    it.result = customTileSize
+                    result.replace(customTileSize)
                 }
             }
         }

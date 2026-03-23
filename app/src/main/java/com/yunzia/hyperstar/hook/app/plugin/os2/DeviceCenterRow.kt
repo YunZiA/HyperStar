@@ -3,12 +3,11 @@ package com.yunzia.hyperstar.hook.app.plugin.os2
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.getDimensionPixelSize
 import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
-import com.yunzia.hyperstar.hook.core.Log
-import com.yunzia.hyperstar.hook.core.Log.logD
+import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.hookLayout
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
@@ -16,7 +15,7 @@ import com.yunzia.hyperstar.hook.core.helper.replaceHookAllConstructors
 import com.yunzia.hyperstar.hook.core.helper.setObjectField
 import com.yunzia.hyperstar.hook.util.plugin.CommonUtils
 import com.yunzia.hyperstar.prefs.XSPUtils
-import io.github.kyuubiran.ezxhelper.android.util.ViewUtil.findViewByIdName
+import com.yunzia.hyperstar.hook.util.android.findViewByIdName
 
 
 object DeviceCenterRow: BasePluginHook() {
@@ -53,9 +52,9 @@ object DeviceCenterRow: BasePluginHook() {
 
             val commonUtils = CommonUtils(pluginClassLoader)
 
-            DetailViewHolder.afterHookMethod("onConfigurationChanged",Int::class.java){
+            DetailViewHolder.afterHookMethod("onConfigurationChanged",Int::class.java) { args, result ->
 
-                val itemView = this.getObjectFieldAs<View>("itemView")
+                val itemView = thisObject.getObjectFieldAs<View>("itemView")
                 val res = itemView.resources
                 val size = getDimensionPixelSize(res,"device_center_item_height",plugin)
 
@@ -69,9 +68,9 @@ object DeviceCenterRow: BasePluginHook() {
                 )
             }
 
-            DeviceItemViewHolder.afterHookMethod("onConfigurationChanged",Int::class.java){
+            DeviceItemViewHolder.afterHookMethod("onConfigurationChanged",Int::class.java) { args, result ->
 
-                val itemView =  this.getObjectFieldAs<View>("itemView")
+                val itemView =  thisObject.getObjectFieldAs<View>("itemView")
                 val res = itemView.resources
                 val size = getDimensionPixelSize(res,"device_center_item_height",plugin)
 
@@ -96,35 +95,35 @@ object DeviceCenterRow: BasePluginHook() {
 
         if (isDeviceCenterMode != 0 || deviceCenterSpanSize !=4){
             a.replaceHookAllConstructors{
-                this.setObjectField("a", it.args[0])
-                val list = it.args[1] as List<*>
+                thisObject.setObjectField("a", args[0])
+                val list = args[1] as List<*>
 
                 if (deviceCenterSpanSize == 1 || isDeviceCenterMode == 1){
                     val lists = list.subList(0,0 )
-                    this.setObjectField("b", lists)
+                    thisObject.setObjectField("b", lists)
                     return@replaceHookAllConstructors null
                 }
                 if (isDeviceCenterMode == 2){
                     val size = deviceCenterSpanSize-1
                     if (list.size <= size){
                         logD("list.size <= size")
-                        this.setObjectField("b", list)
+                        thisObject.setObjectField("b", list)
 
                     }else{
                         logD("list.size  size")
                         val lists = list.subList(0,size)
-                        this.setObjectField("b", lists)
+                        thisObject.setObjectField("b", lists)
 
                     }
                     return@replaceHookAllConstructors null
                 }
                 val size = deviceCenterSpanSize*2-1
                 if (list.size <= size){
-                    this.setObjectField("b", list)
+                    thisObject.setObjectField("b", list)
 
                 }else{
                     val lists = list.subList(0,size )
-                    this.setObjectField("b", lists)
+                    thisObject.setObjectField("b", lists)
 
                 }
 
@@ -133,7 +132,7 @@ object DeviceCenterRow: BasePluginHook() {
             }
 
             DeviceCenterCardController.replaceHookMethod("getMode"){
-                val deviceItems = this.getObjectFieldAs<ArrayList<*>>("deviceItems")
+                val deviceItems = thisObject.getObjectFieldAs<ArrayList<*>>("deviceItems")
                 val rowMode: Array<out Any> = DeviceCenterEntryViewHolderMode?.getEnumConstants()!!
 
                 if (deviceItems.size == 1 || deviceCenterSpanSize == 1 || isDeviceCenterMode == 1){

@@ -4,12 +4,10 @@ import android.content.Context
 import android.os.SystemClock
 import android.view.View
 import android.widget.FrameLayout
-import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
-import com.yunzia.hyperstar.hook.core.Log
-import com.yunzia.hyperstar.hook.core.Log.logD
-import com.yunzia.hyperstar.hook.core.Log.logE
+import com.yunzia.hyperstar.hook.core.StarLog.logD
+import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
 import com.yunzia.hyperstar.hook.core.helper.getLongField
 import com.yunzia.hyperstar.hook.core.helper.getObjectField
@@ -41,10 +39,10 @@ object QSTileAutoCollapse : BasePluginHook() {
 
             QSTileItemView.beforeHookMethod(
                 "onFinishInflate\$lambda$0",
-                QSTileItemView,View::class.java
-            ){
+                QSTileItemView,View::class .java
+            ) { args, result ->
                 logD("QSTileAutoCollapse onFinishInflate")
-                val qSTileItemView = it.args[0] as FrameLayout
+                val qSTileItemView = args[0] as FrameLayout
                 val lastTriggeredTime = qSTileItemView.getLongField("lastTriggeredTime")!!
                 val elapsedRealtime = SystemClock.elapsedRealtime()
 

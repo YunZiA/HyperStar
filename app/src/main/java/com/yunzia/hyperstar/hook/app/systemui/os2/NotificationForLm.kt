@@ -4,12 +4,10 @@ import android.app.Notification
 import android.content.pm.ApplicationInfo
 import android.os.Parcelable
 import android.text.TextUtils
-import com.yunzia.hyperstar.hook.core.BaseHook
+import com.yunzia.hyperstar.hook.core.base.BaseHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
-import com.yunzia.hyperstar.hook.core.Log
-import com.yunzia.hyperstar.hook.core.Log.logD
-import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.prefs.XSPUtils
 
 
@@ -21,8 +19,8 @@ object NotificationForLm:BaseHook() {
 
         if (appList == "||") return
 
-        miuiBaseNotifUtil.replaceHookMethod("getNotificationTypeForIm",Notification::class.java){
-            val notification = it.args[0] as Notification
+        miuiBaseNotifUtil.replaceHookMethod("getNotificationTypeForIm",Notification::class.java) { args ->
+            val notification = args[0] as Notification
             val notifExtras = notification.extras
 
             if (!TextUtils.isEmpty(notifExtras.getCharSequence("hyperOs.category"))) {

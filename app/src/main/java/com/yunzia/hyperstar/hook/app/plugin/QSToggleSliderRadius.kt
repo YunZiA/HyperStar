@@ -1,7 +1,7 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
 import android.content.res.Resources
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.hook.core.helper.callMethodAs
@@ -22,9 +22,9 @@ object QSToggleSliderRadius : BasePluginHook() {
         findClass(
             "miui.systemui.controlcenter.panel.main.recyclerview.ToggleSliderViewHolder",
             pluginClassLoader
-        ).afterHookMethod("updateSize"){
-            val mContext = this.callMethodAs<Resources>("getResources")
-            this.setFloatField("progressRadius",dpToPx(mContext,progressRadius))
+        ).afterHookMethod("updateSize") { args, result ->
+            val mContext = thisObject.callMethodAs<Resources>("getResources")
+            thisObject.setFloatField("progressRadius",dpToPx(mContext,progressRadius))
         }
 
     }

@@ -1,7 +1,7 @@
 package com.yunzia.hyperstar.hook.app.plugin.os2
 
 import android.os.Handler
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.getObjectField
 import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
@@ -37,8 +37,8 @@ object QSHeaderMessage : BasePluginHook() {
                 "onComplete",
                 Any::class.java
             ) {
-                val messageHeaderController = this.getObjectField("this\$0")
-                val msg = this.getObjectField("this\$1")
+                val messageHeaderController = thisObject.getObjectField("this\$0")
+                val msg = thisObject.getObjectField("this\$1")
                 val uiHandler = messageHeaderController.getObjectFieldAs<Handler>("uiHandler")
                 val hideMsgCallback = msg.getObjectFieldAs<Runnable>("hideRunnable")
                 uiHandler.postDelayed(hideMsgCallback,showMessageMillis.toLong())

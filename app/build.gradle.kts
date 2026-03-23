@@ -138,14 +138,10 @@ base {
 }
 
 dependencies {
-    compileOnly(project(":lsp:annotations"))
-    compileOnly(project(":lsp:api"))
-    implementation(project(":lsp:service"))
+    compileOnly(libs.api)
+    implementation(libs.service)
     implementation("io.github.kyant0:backdrop:2.0.0-alpha03")
 
-    implementation(libs.ezxhelper.core)
-    implementation(libs.ezxhelper.xposed.api)
-    implementation(libs.ezxhelper.android.utils)
 
     implementation(libs.okhttp)
     implementation(libs.gson)

@@ -1,7 +1,7 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
 import android.content.res.Configuration
-import com.yunzia.hyperstar.hook.core.BasePluginHook
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.dimenReplaceByValue
 import com.yunzia.hyperstar.prefs.XSPUtils
 import yunzia.utils.DensityUtil

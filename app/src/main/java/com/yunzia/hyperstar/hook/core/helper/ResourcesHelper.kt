@@ -8,7 +8,6 @@ import android.content.res.loader.ResourcesLoader
 import android.content.res.loader.ResourcesProvider
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.os.Looper
 import android.os.ParcelFileDescriptor
 import android.view.LayoutInflater
 import android.view.View
@@ -22,12 +21,10 @@ import androidx.annotation.IntegerRes
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import com.yunzia.hyperstar.hook.base.BaseHookHelper.getId
-import com.yunzia.hyperstar.hook.core.Log.logD
-import com.yunzia.hyperstar.hook.core.Log.logE
-import com.yunzia.hyperstar.hook.util.base.ResourcesImpl
+import com.yunzia.hyperstar.hook.core.StarLog.logD
+import com.yunzia.hyperstar.hook.core.StarLog.logE
 import io.github.libxposed.api.XposedInterface
 import java.io.File
-import java.io.IOException
 import java.util.concurrent.ConcurrentHashMap
 
 
@@ -38,7 +35,7 @@ object ResourcesHelper {
 
     @JvmStatic
     fun initModuleResources(base: XposedInterface) {
-        this.modulePath = base.applicationInfo.sourceDir
+        this.modulePath = base.moduleApplicationInfo.sourceDir
     }
     @JvmStatic
     fun addModuleAssetPath(context: Context) {
@@ -86,22 +83,18 @@ object ResourcesHelper {
         }
     }
 
-    private fun Any.getResources(): Resources {
-        return this as Resources
-    }
-
     fun colorReplaceById(
         name: String,
         packageName: String,
         @ColorRes newId: Int
     ) {
         val key = "$packageName color:$name"
-        Resources::class.java.beforeHookMethod("getColor") {
-            this ?: return@beforeHookMethod
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "color", packageName) }
+        Resources::class.java.beforeHookAllMethods("getColor") { args, result ->
+            thisObject ?: return@beforeHookAllMethods
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "color", packageName) }
             if (currentId == targetId) {
-                it.args[0] = newId
+                args[0] = newId
             }
 
         }
@@ -114,13 +107,13 @@ object ResourcesHelper {
     ) {
         val key = "$packageName color:$name"
         val newKey = "$packageName color:$newName"
-        Resources::class.java.beforeHookAllMethods("getColor") {
-            this ?: return@beforeHookAllMethods
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "color", packageName) }
+        Resources::class.java.beforeHookAllMethods("getColor") { args, result ->
+            thisObject ?: return@beforeHookAllMethods
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "color", packageName) }
             if (currentId == targetId) {
-                val newId = getCachedIdBy(newKey) { getId(newName, "color", packageName) }
-                it.args[0] = newId
+                val newId = getCachedIdBy(newKey) { thisObject.getId(newName, "color", packageName) }
+                args[0] = newId
             }
 
         }
@@ -133,13 +126,13 @@ object ResourcesHelper {
     ) {
         val key = "$packageName color:$name"
         val newKey = "$newPackageName color:$newName"
-        Resources::class.java.beforeHookAllMethods("getColor") {
-            this ?: return@beforeHookAllMethods
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "color", packageName) }
+        Resources::class.java.beforeHookAllMethods("getColor") { args, result ->
+            thisObject ?: return@beforeHookAllMethods
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "color", packageName) }
             if (currentId == targetId) {
-                val newId = getCachedIdBy(newKey) { getId(newName, "color", newPackageName) }
-                it.args[0] = newId
+                val newId = getCachedIdBy(newKey) { thisObject.getId(newName, "color", newPackageName) }
+                args[0] = newId
             }
 
         }
@@ -151,12 +144,13 @@ object ResourcesHelper {
         @ColorInt newColor: Int
     ) {
         val key = "$packageName color:$name"
-        Resources::class.java.beforeHookMethod("getColor") {
-            this ?: return@beforeHookMethod
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "color", packageName) }
+        Resources::class.java.beforeHookAllMethods("getColor") { args, result ->
+            thisObject ?: return@beforeHookAllMethods
+            val currentId = args[0] as Int
+
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "color", packageName) }
             if (currentId == targetId) {
-                it.result = newColor
+                result.replace(newColor)
             }
         }
     }
@@ -167,12 +161,12 @@ object ResourcesHelper {
         newColor: String
     ) {
         val key = "$packageName color:$name"
-        Resources::class.java.beforeHookMethod("getColor") {
-            this ?: return@beforeHookMethod
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "color", packageName) }
+        Resources::class.java.beforeHookAllMethods("getColor") { args, result ->
+            thisObject ?: return@beforeHookAllMethods
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "color", packageName) }
             if (currentId == targetId) {
-                it.result = Color.parseColor(newColor)
+                result.replace(Color.parseColor(newColor))
             }
         }
     }
@@ -185,30 +179,32 @@ object ResourcesHelper {
         val key = "$packageName dimen:$name"
         // hook Resources 的 dimension 获取方法
         fun hookDimensionMethod(methodName: String) {
-            Resources::class.java.beforeHookMethod(methodName, Int::class.java) {
-                this ?: return@beforeHookMethod
-                val currentId = it.args[0] as Int
-                val targetId = getCachedIdBy(key) { getId(name, "dimen", packageName) }
+            Resources::class.java.beforeHookMethod(methodName, Int::class.java) { args, result ->
+                thisObject ?: return@beforeHookMethod
+                val currentId = args[0] as Int
+                val targetId = getCachedIdBy(key) { thisObject.getId(name, "dimen", packageName) }
                 if (currentId == targetId) {
-                    it.args[0] = newId
+                    args[0] = newId
                 }
             }
         }
         // hook TypedArray 的 dimension 获取方法
         fun hookTADimensionMethod(methodName: String) {
-            TypedArray::class.java.beforeHookAllMethods(methodName) {
-                this as TypedArray
-                val index = it.args[0] as Int
-                val currentId = this.getResourceId(index, 0)
-                if (currentId == 0) return@beforeHookAllMethods
-                val mResources = this.getObjectFieldAs<Resources>("mResources")
-                val targetId = getCachedIdBy(key) { getId(name, "dimen", packageName) }
-                if (currentId == targetId) {
-                    when (it.member.name) {
-                        "getDimension" -> it.result = mResources.getDimension(newId)
-                        "getDimensionPixelSize" -> it.result = mResources.getDimensionPixelSize(newId)
-                        "getDimensionPixelOffset" -> it.result = mResources.getDimensionPixelOffset(newId)
+            TypedArray::class.java.beforeHookAllMethods(methodName) { args, result ->
+                (thisObject as TypedArray).apply {
+                    val index = args[0] as Int
+                    val currentId = getResourceId(index, 0)
+                    if (currentId == 0) return@beforeHookAllMethods
+                    val mResources = thisObject.getObjectFieldAs<Resources>("mResources")
+                    val targetId = getCachedIdBy(key) { thisObject.getId(name, "dimen", packageName) }
+                    if (currentId == targetId) {
+                        when (this@beforeHookAllMethods.executable.name) {
+                            "getDimension" -> result.replace(mResources.getDimension(newId))
+                            "getDimensionPixelSize" -> result.replace(mResources.getDimensionPixelSize(newId))
+                            "getDimensionPixelOffset" -> result.replace(mResources.getDimensionPixelOffset(newId))
+                        }
                     }
+
                 }
             }
         }
@@ -231,13 +227,13 @@ object ResourcesHelper {
         val key = "$packageName dimen:$name"
         // hook Resources 的 dimension 获取方法
         fun hookDimensionMethod(methodName: String, resultSetter: (Float) -> Any) {
-            Resources::class.java.beforeHookMethod(methodName, Int::class.java) {
-                val currentId = it.args[0] as Int
-                val resources = getResources()
-                val targetId = getCachedIdBy(key) { getId(name, "dimen", packageName) }
+            Resources::class.java.beforeHookMethod(methodName, Int::class.java) { args, result ->
+                val currentId = args[0] as Int
+                val resources = thisObject as Resources
+                val targetId = getCachedIdBy(key) { resources.getId(name, "dimen", packageName) }
                 if (currentId == targetId) {
                     resources.replace()?.let { value ->
-                        it.result = resultSetter(value)
+                        result.replace(resultSetter(value))
                     }
                 }
             }
@@ -245,17 +241,20 @@ object ResourcesHelper {
 
         // hook TypedArray 的 dimension 获取方法
         fun hookTADimensionMethod(methodName: String, resultSetter: (Float) -> Any) {
-            TypedArray::class.java.beforeHookAllMethods(methodName) { this as TypedArray
-                val index = it.args[0] as Int
-                val currentId = this.getResourceId(index, 0)
-                if (currentId == 0) return@beforeHookAllMethods
-                val resources = this.getObjectFieldAs<Resources>("mResources")
-                val targetId = getCachedIdBy(key) { resources.getId(name, "dimen", packageName) }
-                if (currentId == targetId) {
-                    resources.replace()?.let { value ->
-                        logD(methodName, "replace $name -> $value")
-                        it.result = resultSetter(value)
+            TypedArray::class.java.beforeHookAllMethods(methodName) {  args, result ->
+                (thisObject as TypedArray).apply {
+                    val index = args[0] as Int
+                    val currentId = getResourceId(index, 0)
+                    if (currentId == 0) return@beforeHookAllMethods
+                    val resources = thisObject.getObjectFieldAs<Resources>("mResources")
+                    val targetId = getCachedIdBy(key) { resources.getId(name, "dimen", packageName) }
+                    if (currentId == targetId) {
+                        resources.replace()?.let { value ->
+                            logD(methodName, "replace $name -> $value")
+                            result.replace(resultSetter(value))
+                        }
                     }
+
                 }
             }
         }
@@ -277,12 +276,12 @@ object ResourcesHelper {
         @DrawableRes newId: Int
     ){
         val key = "$packageName drawable: $name"
-        Resources::class.java.beforeHookAllMethods("getDrawableForDensity") {
-            this ?: return@beforeHookAllMethods
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "drawable", packageName) }
+        Resources::class.java.beforeHookAllMethods("getDrawableForDensity") { args, result ->
+            thisObject ?: return@beforeHookAllMethods
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "drawable", packageName) }
             if (currentId == targetId && targetId != 0) {
-                it.args[0] = newId
+                args[0] = newId
             }
         }
     }
@@ -293,12 +292,14 @@ object ResourcesHelper {
         newDrawable: Drawable.() -> Unit
     ){
         val key = "$packageName drawable: $name"
-        Resources::class.java.beforeHookMethod("getDrawableForDensity") {
-            this ?: return@beforeHookMethod
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "drawable", packageName) }
+        Resources::class.java.beforeHookMethod("getDrawableForDensity") { args, result ->
+            thisObject ?: return@beforeHookMethod
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "drawable", packageName) }
             if (currentId == targetId && targetId != 0) {
-                it.result = (it.result as Drawable).apply(newDrawable)
+                (result.value as Drawable).apply{
+                    result.replace(newDrawable())
+                }
             }
         }
     }
@@ -309,12 +310,12 @@ object ResourcesHelper {
         @IntegerRes newId: Int
     ) {
         val key = "$packageName integer: $name"
-        Resources::class.java.beforeHookAllMethods("getInteger") {
-            this ?: return@beforeHookAllMethods
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "integer", packageName) }
+        Resources::class.java.beforeHookAllMethods("getInteger") { args, result ->
+            thisObject ?: return@beforeHookAllMethods
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "integer", packageName) }
             if (currentId == targetId && targetId != 0) {
-                it.args[0] = newId
+                args[0] = newId
             }
         }
     }
@@ -325,12 +326,12 @@ object ResourcesHelper {
         @LayoutRes newId: Int
     ) {
         val key = "$packageName layout: $name"
-        Resources::class.java.beforeHookMethod("getLayout", Int::class.java) {
-            this ?: return@beforeHookMethod
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "layout", packageName) }
+        Resources::class.java.beforeHookMethod("getLayout", Int::class.java) { args, result ->
+            thisObject ?: return@beforeHookMethod
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "layout", packageName) }
             if (currentId == targetId && targetId != 0) {
-                it.args[0] = newId
+                args[0] = newId
             }
         }
     }
@@ -341,12 +342,12 @@ object ResourcesHelper {
         value: Int
     ) {
         val key = "$packageName integer: $name"
-        Resources::class.java.beforeHookAllMethods("getInteger") {
-            this ?: return@beforeHookAllMethods
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "integer", packageName) }
+        Resources::class.java.beforeHookAllMethods("getInteger") { args, result ->
+            thisObject ?: return@beforeHookAllMethods
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "integer", packageName) }
             if (currentId == targetId && targetId != 0) {
-                it.result = value
+                result.replace(value)
             }
         }
     }
@@ -359,14 +360,15 @@ object ResourcesHelper {
         val key = "$packageName layout: $name"
         LayoutInflater::class.java.beforeHookMethod(
             "inflate", Int::class.java, ViewGroup::class.java, Boolean::class.java
-        ) {
-            this as LayoutInflater
-            val currentId = it.args[0] as Int
-            val resources = this.context.resources
-            val targetId = getCachedIdBy(key) { resources.getId(name, "layout", packageName) }
-            if (currentId == targetId && targetId != 0) {
-                val inflatedView: View = it.result as? View ?: return@beforeHookMethod
-                inflatedView.block()
+        ) { args, result ->
+            (thisObject as LayoutInflater).apply {
+                val currentId = args[0] as Int
+                val resources = this.context.resources
+                val targetId = getCachedIdBy(key) { resources.getId(name, "layout", packageName) }
+                if (currentId == targetId && targetId != 0) {
+                    val inflatedView: View = result.value as? View ?: return@beforeHookMethod
+                    inflatedView.block()
+                }
             }
 
         }
@@ -378,27 +380,29 @@ object ResourcesHelper {
         @StringRes newId: Int
     ) {
         val key = "$packageName string: $name"
-        Resources::class.java.beforeHookMethod("getText", Int::class.java) {
-            this ?: return@beforeHookMethod
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "string", packageName) }
+        Resources::class.java.beforeHookMethod("getText", Int::class.java) { args, result ->
+            thisObject ?: return@beforeHookMethod
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "string", packageName) }
             if (currentId == targetId && targetId != 0) {
-                it.args[0] = newId
+                args[0] = newId
             }
         }
         listOf( "getText", "getString").forEach { methodName ->
-            TypedArray::class.java.beforeHookAllMethods(methodName) {
-                this as TypedArray
-                val index = it.args[0] as Int
-                val currentId = this.getResourceId(index, 0)
-                if (currentId == 0) return@beforeHookAllMethods
-                val mResources = this.getObjectFieldAs<Resources>("mResources")
-                val targetId = getCachedIdBy(key) { mResources.getId(name, "string", packageName) }
-                if (currentId == targetId) {
-                    when(it.member.name){
-                        "getText" -> it.result = mResources.getText(newId)
-                        "getString" -> it.result = mResources.getString(newId)
+            TypedArray::class.java.beforeHookAllMethods(methodName) { args, result ->
+                (thisObject as TypedArray).apply {
+                    val index = args[0] as Int
+                    val currentId = getResourceId(index, 0)
+                    if (currentId == 0) return@beforeHookAllMethods
+                    val mResources = thisObject.getObjectFieldAs<Resources>("mResources")
+                    val targetId = getCachedIdBy(key) { mResources.getId(name, "string", packageName) }
+                    if (currentId == targetId) {
+                        when(this@beforeHookAllMethods.executable.name){
+                            "getText" -> result.replace(mResources.getText(newId))
+                            "getString" -> result.replace(mResources.getString(newId))
+                        }
                     }
+
                 }
             }
         }
@@ -410,26 +414,28 @@ object ResourcesHelper {
         value: CharSequence
     ) {
         val key = "$packageName string: $name"
-        Resources::class.java.beforeHookMethod("getText", Int::class.java) {
-            this ?: return@beforeHookMethod
-            val currentId = it.args[0] as Int
+        Resources::class.java.beforeHookMethod("getText", Int::class.java) { args, result ->
+            thisObject ?: return@beforeHookMethod
+            val currentId = args[0] as Int
             val targetId =
-                getCachedIdBy(key) { getId(name, "string", packageName) }
+                getCachedIdBy(key) { thisObject.getId(name, "string", packageName) }
             if (currentId == targetId && targetId != 0) {
                 logE("stringReplaceByValue ${targetId} $currentId")
-                it.result = value
+                result.replace(value)
             }
         }
         listOf("getText", "getString").forEach { methodName ->
-            TypedArray::class.java.beforeHookAllMethods(methodName) {
-                this as TypedArray
-                val index = it.args[0] as Int
-                val currentId = this.getResourceId(index, 0)
-                if (currentId == 0) return@beforeHookAllMethods
-                val mResources = this.getObjectFieldAs<Resources>("mResources")
-                val targetId = getCachedIdBy(key) { mResources.getId(name, "string", packageName) }
-                if (currentId == targetId) {
-                    it.result = value
+            TypedArray::class.java.beforeHookAllMethods(methodName) { args, result ->
+                (thisObject as TypedArray).apply {
+                    val index = args[0] as Int
+                    val currentId = getResourceId(index, 0)
+                    if (currentId == 0) return@beforeHookAllMethods
+                    val mResources = thisObject.getObjectFieldAs<Resources>("mResources")
+                    val targetId = getCachedIdBy(key) { mResources.getId(name, "string", packageName) }
+                    if (currentId == targetId) {
+                        result.replace(value)
+                    }
+
                 }
             }
         }
@@ -441,12 +447,12 @@ object ResourcesHelper {
         @ArrayRes newId: Int
     ){
         val key = "$packageName intArray: $name"
-        Resources::class.java.beforeHookMethod("getIntArray", Int::class.java) {
-            this ?: return@beforeHookMethod
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "array", packageName) }
+        Resources::class.java.beforeHookMethod("getIntArray", Int::class.java) { args, result ->
+            thisObject ?: return@beforeHookMethod
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "array", packageName) }
             if (currentId == targetId && targetId != 0) {
-                it.args[0] = newId
+                args[0] = newId
             }
         }
     }
@@ -457,13 +463,13 @@ object ResourcesHelper {
         newName: String
     ) {
         val key = "$packageName intArray:$name"
-        Resources::class.java.beforeHookMethod("getIntArray", Int::class.java) {
-            this ?: return@beforeHookMethod
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "array", packageName) }
+        Resources::class.java.beforeHookMethod("getIntArray", Int::class.java) { args, result ->
+            thisObject ?: return@beforeHookMethod
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "array", packageName) }
             if (currentId == targetId) {
-                val newId = getCachedIdBy(key) { getId(newName, "array", packageName) }
-                it.args[0] = newId
+                val newId = getCachedIdBy(key) { thisObject.getId(newName, "array", packageName) }
+                args[0] = newId
             }
 
         }
@@ -477,13 +483,13 @@ object ResourcesHelper {
     ) {
         val key = "$packageName intArray:$name"
         val newKey = "$newPackageName intArray:$newName"
-        Resources::class.java.beforeHookMethod("getIntArray", Int::class.java) {
-            this ?: return@beforeHookMethod
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "array", packageName) }
+        Resources::class.java.beforeHookMethod("getIntArray", Int::class.java) { args, result ->
+            thisObject ?: return@beforeHookMethod
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "array", packageName) }
             if (currentId == targetId) {
-                val newId = getCachedIdBy(newKey) { getId(newName, "array", newPackageName) }
-                it.args[0] = newId
+                val newId = getCachedIdBy(newKey) { thisObject.getId(newName, "array", newPackageName) }
+                args[0] = newId
             }
 
         }
@@ -495,12 +501,12 @@ object ResourcesHelper {
         value: Array<Int>
     ){
         val key = "$packageName intArray: $name"
-        Resources::class.java.beforeHookMethod("getIntArray", Int::class.java) {
-            this ?: return@beforeHookMethod
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "array", packageName) }
+        Resources::class.java.beforeHookMethod("getIntArray", Int::class.java) { args, result ->
+            thisObject ?: return@beforeHookMethod
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "array", packageName) }
             if (currentId == targetId && targetId != 0) {
-                it.result = value
+                result.replace(value)
             }
         }
     }
@@ -510,12 +516,12 @@ object ResourcesHelper {
         value: Array<Int>.()-> Unit
     ){
         val key = "$packageName intArray: $name"
-        Resources::class.java.beforeHookMethod("getIntArray", Int::class.java) {
-            this ?: return@beforeHookMethod
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "array", packageName) }
+        Resources::class.java.beforeHookMethod("getIntArray", Int::class.java) { args, result ->
+            thisObject ?: return@beforeHookMethod
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "array", packageName) }
             if (currentId == targetId && targetId != 0) {
-                it.result = (it.result as Array<Int>).apply { value() }
+                (result.value as Array<Int>).apply { result.replace(value()) }
             }
         }
     }
@@ -527,12 +533,12 @@ object ResourcesHelper {
         @ArrayRes newId: Int
     ){
         val key = "$packageName textArray: $name"
-        Resources::class.java.beforeHookMethod("getTextArray", Int::class.java) {
-            this ?: return@beforeHookMethod
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "array", packageName) }
+        Resources::class.java.beforeHookMethod("getTextArray", Int::class.java) { args, result ->
+            thisObject ?: return@beforeHookMethod
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "array", packageName) }
             if (currentId == targetId && targetId != 0) {
-                it.args[0] = newId
+                args[0] = newId
             }
         }
     }
@@ -543,13 +549,13 @@ object ResourcesHelper {
         value: Array<CharSequence>
     ){
         val key = "$packageName textArray: $name"
-        Resources::class.java.beforeHookMethod("getTextArray", Int::class.java) {
-            this ?: return@beforeHookMethod
-            val currentId = it.args[0] as Int
+        Resources::class.java.beforeHookMethod("getTextArray", Int::class.java) { args, result ->
+            thisObject ?: return@beforeHookMethod
+            val currentId = args[0] as Int
             val targetId =
-                getCachedIdBy(key) { getId(name, "array", packageName) }
+                getCachedIdBy(key) { thisObject.getId(name, "array", packageName) }
             if (currentId == targetId && targetId != 0) {
-                it.result = value
+                result.replace(value)
             }
         }
     }
@@ -560,12 +566,12 @@ object ResourcesHelper {
         @ArrayRes newId: Int
     ){
         val key = "$packageName stringArray: $name"
-        Resources::class.java.beforeHookMethod("getStringArray", Int::class.java) {
-            this ?: return@beforeHookMethod
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "array", packageName) }
+        Resources::class.java.beforeHookMethod("getStringArray", Int::class.java) { args, result ->
+            thisObject ?: return@beforeHookMethod
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "array", packageName) }
             if (currentId == targetId && targetId != 0) {
-                it.args[0] = newId
+                args[0] = newId
             }
         }
 
@@ -577,12 +583,12 @@ object ResourcesHelper {
         value: Array<String>
     ){
         val key = "$packageName stringArray: $name"
-        Resources::class.java.beforeHookMethod("getStringArray", Int::class.java) {
-            this ?: return@beforeHookMethod
-            val currentId = it.args[0] as Int
-            val targetId = getCachedIdBy(key) { getId(name, "array", packageName) }
+        Resources::class.java.beforeHookMethod("getStringArray", Int::class.java) { args, result ->
+            thisObject ?: return@beforeHookMethod
+            val currentId = args[0] as Int
+            val targetId = getCachedIdBy(key) { thisObject.getId(name, "array", packageName) }
             if (currentId == targetId && targetId != 0) {
-                it.result = value
+                result.replace(value)
             }
         }
     }

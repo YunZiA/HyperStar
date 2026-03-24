@@ -160,7 +160,7 @@ fun Home(
                 .fillMaxSize()
                 .blur(hazeState)
                 .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
-            contentPadding = PaddingValues(top = padding.calculateTopPadding(), bottom = contentPadding.calculateBottomPadding()),
+            contentPadding = PaddingValues(top = padding.calculateTopPadding() + 12.dp, bottom = contentPadding.calculateBottomPadding() + 12.dp),
         ) {
 
             item {

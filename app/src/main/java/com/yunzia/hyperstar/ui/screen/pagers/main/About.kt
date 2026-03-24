@@ -357,8 +357,8 @@ fun ThirdPage(
                 flingBehavior = ScrollableDefaults.flingBehavior(),
                 state = scroll,
                 contentPadding = PaddingValues(
-                    top = padding.calculateTopPadding(),
-                    bottom = contentPadding.calculateBottomPadding()
+                    top = padding.calculateTopPadding() + 12.dp,
+                    bottom = contentPadding.calculateBottomPadding() + 12.dp
                 ),
             ) {
                 item {

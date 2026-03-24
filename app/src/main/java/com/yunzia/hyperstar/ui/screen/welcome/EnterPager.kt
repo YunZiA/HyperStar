@@ -121,9 +121,9 @@ fun EnterPager(show: MutableState<Boolean>, pagerState: PagerState) {
                 view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                 show.value = false
                 PreferencesUtil.putBoolean("is_first_use",false)
-                notification{
-                    Text("wcnm")
-                }.show()
+//                notification{
+//                    Text("wcnm")
+//                }.show()
             }
         ) {
             Text(

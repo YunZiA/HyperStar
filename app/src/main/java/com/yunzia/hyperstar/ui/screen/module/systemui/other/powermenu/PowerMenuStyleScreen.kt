@@ -265,7 +265,7 @@ fun PowerMenuStyleScreen() {
                             endText = getFunTitle("power_menu_style_b_0", funTypes, funTitles)
                         )
                         SuperNavHostArrow(
-                            title = stringResource(R.string.button)+1,
+                            title = stringResource(R.string.button)+ 1,
                             navController = navController,
                             route = PowerMenuRoutes.FunSelect(1, "power_menu_style_b_1"),
                             endText = getFunTitle("power_menu_style_b_1", funTypes, funTitles)
@@ -280,7 +280,7 @@ fun PowerMenuStyleScreen() {
                             title = stringResource(R.string.button) + 3,
                             navController = navController,
                             route = PowerMenuRoutes.FunSelect(3, "power_menu_style_b_3"),
-                            endText = getFunTitle("power_menu_style_b_7", funTypes, funTitles)
+                            endText = getFunTitle("power_menu_style_b_3", funTypes, funTitles)
                         )
                         SuperNavHostArrow(
                             title = stringResource(R.string.button) + 4,

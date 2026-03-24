@@ -5,6 +5,7 @@ import android.provider.Settings
 import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.ViewGroup
+import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.StarLog.logD
@@ -33,16 +34,11 @@ object QSHeaderViewListener : BasePluginHook() {
         val MainPanelHeaderController  = findClass("miui.systemui.controlcenter.panel.main.header.MainPanelHeaderController",pluginClassLoader)
 
         MainPanelHeaderController.afterHookAllConstructors { args, result ->
-            val context = thisObject.callMethodAs<Context>("getContext")!!
+            val context = thisObject.callMethodAs<Context>("getContext")
             val controlCenterHeader = thisObject.getObjectField("controlCenterHeader")
             val controlCenterHeaderView = controlCenterHeader.getObjectFieldAs<ViewGroup>("controlCenterHeaderView")
 
-            val editId = Settings.System.getInt(context.contentResolver,"cc_edit_Id",0)
-            if (editId == 0){
-                logE("ControlCenterHeaderController editId == null")
-                return@afterHookAllConstructors
-            }
-            val editButton = controlCenterHeaderView.findViewById<View>(editId)
+            val editButton = controlCenterHeaderView.findViewById<View>(R.id.cc_header_edit)
             editButton.setOnClickListener {
                 if(controlCenterHeaderView.alpha == 0f) return@setOnClickListener
                 it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
@@ -55,7 +51,7 @@ object QSHeaderViewListener : BasePluginHook() {
                     }
 
                     logD(""+mainPanelMode[0])
-                    qsListController.callMethod("startQuery",mainPanelMode[2])
+                    qsListController.callMethod("startQuery", mainPanelMode[2])
                 }
             }
         }

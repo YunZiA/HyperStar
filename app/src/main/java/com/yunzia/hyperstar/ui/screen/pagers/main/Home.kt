@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.yunzia.hyperstar.LocalMainPagerState
 import com.yunzia.hyperstar.LocalRebootDialogState
@@ -61,13 +63,17 @@ import com.yunzia.hyperstar.ui.navigation.MainRoutes
 import com.yunzia.hyperstar.ui.navigation.Navigator
 import com.yunzia.hyperstar.ui.navigation.Route
 import com.yunzia.hyperstar.ui.screen.pagers.dialog.checkApplication
+import com.yunzia.hyperstar.ui.screen.pagers.main.home.AppEntryList
+import com.yunzia.hyperstar.ui.screen.pagers.main.home.buildVisibleCache
 import com.yunzia.hyperstar.utils.AppInfo
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.Helper.isRoot
 import com.yunzia.hyperstar.utils.LocalScopeManager
 import com.yunzia.hyperstar.utils.getSettingChannel
 import dev.chrisbanes.haze.rememberHazeState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Icon
@@ -254,51 +260,26 @@ fun Home(
                 }
             }
             item {
-                AnimatedVisibility(
-                    visible = appInScope.isNotEmpty(),
-                    enter = fadeIn() + expandVertically(),
-                    exit = fadeOut() + shrinkVertically(),
+                SuperGroup(
+                    title = stringResource(R.string.basics),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    SuperGroup(
-                        title = stringResource(R.string.basics),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        moduleScope.forEach { packageName,  ->
-                            val appInfo = appInScope[packageName] ?: return@forEach
-                            var visible: (AppInfo) -> Boolean = { true }
-                            var route: Route = MainRoutes.Key
-                            when(packageName) {
-                                "com.android.systemui" -> {
-                                    route = MainRoutes.SystemUI
-                                }
-                                "com.miui.home"-> {
-                                    visible = { getSettingChannel() > 1 }
-                                    route = MainRoutes.Home
-                                }
-                                "com.android.thememanager"-> {
-                                    visible = { it.versionCode >= 7180 }
-                                    route = MainRoutes.ThemeManager
-                                }
-                                "com.android.mms"-> {
-                                    route = MainRoutes.MMS
-                                }
-                                "com.xiaomi.barrage"-> {
-                                    visible = { it.versionName!!.startsWith("3") }
-                                    route = MainRoutes.Barrage
-                                }
-                                "com.miui.screenshot"-> {
-                                    visible = { getSettingChannel() > 1 }
-                                    route = MainRoutes.Screenshot
-                                }
-                                else -> {
-                                    visible = { false }
-                                }
-                            }
+                    AppEntryList.entries.forEach { entry ->
+                        val appInfo = appInScope[entry.packageName] ?: return@forEach
+                        val shouldShow = entry.isVisible(appInfo)
+                        var animatedVisible by remember(entry.packageName) { mutableStateOf(false) }
+                        LaunchedEffect(shouldShow) {
+                            animatedVisible = shouldShow
+                        }
+                        AnimatedVisibility(
+                            visible = animatedVisible,
+                            enter = fadeIn() + expandVertically(),
+                            exit = fadeOut() + shrinkVertically()
+                        ) {
                             AppArrow(
-                                visible = visible,
                                 appInfo = appInfo,
                                 navController = navController,
-                                route = route,
+                                route = entry.route
                             )
                         }
                     }
@@ -313,18 +294,29 @@ fun Home(
                     title = stringResource(R.string.not_developer),
                     navController = navController,
                     route = MainRoutes.NotDeveloper
-
                 )
+
                 SuperArrow(
                     title = "request com.miui.screenshot",
                     onClick = {
                         coroutineScope.launch {
                             scopeManager.addScope("com.miui.screenshot") {
                                 onSuccess {
+                                    Log.d("com.miui.screenshot", "onSuccess")
+                                    context.mainExecutor.execute {
+
                                     Toast.makeText(context,"Request Success!", Toast.LENGTH_SHORT).show()
+
+                                        }
+
                                 }
                                 onFailure {
-                                    Toast.makeText(context,"Request Failure!", Toast.LENGTH_SHORT).show()
+                                    Log.d("com.miui.screenshot", "onFailure")
+                                    context.mainExecutor.execute {
+                                        Toast.makeText(context,"Request Failure!", Toast.LENGTH_SHORT).show()
+
+                                    }
+
                                 }
                             }
                         }

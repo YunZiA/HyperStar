@@ -53,17 +53,24 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import com.kyant.shapes.RoundedRectangle
 import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import androidx.compose.runtime.collectAsState
 
 @Composable
 fun NeedMessageScreen() {
     val context = LocalContext.current
     val navController = LocalNavigator.current
     val activity = LocalActivity.current as MainActivity
+    val appViewModel = activity.appViewModel
+    val xposedServiceInfo = appViewModel.xposedServiceInfo.collectAsState().value
     val debugInfo = "Debug Info of HyperStar\n\n" +
-            "ModuleActive = ${activity.appViewModel.isActive}\n" +
+            "ModuleActive = ${appViewModel.isActive}\n" +
             "HookChannel =  OS${getSettingChannel()}\n" +
             "VersionCode = ${getVersionCode(context)}\n" +
             "VersionName = ${getVerName(context)}\n\n" +
+            "ApiVersion = ${xposedServiceInfo.apiVersion}\n" +
+            "FrameworkName = ${xposedServiceInfo.frameworkName}\n" +
+            "FrameworkVersion = ${xposedServiceInfo.frameworkVersion}\n" +
+            "FrameworkVersionCode = ${xposedServiceInfo.frameworkVersionCode}\n\n" +
             "MarketName = $marketName\n" +
             "DeviceName = $deviceName\n" +
             "isFold = ${isFold()}\n" +

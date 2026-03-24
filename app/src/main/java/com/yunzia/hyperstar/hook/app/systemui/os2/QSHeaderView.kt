@@ -407,7 +407,7 @@ object QSHeaderView : BaseHook() {
         val setting = Button(context).apply {
             setBackgroundResource(R.drawable.ic_header_settings)
             layoutParams = lp
-            setOnClickListener{
+            setOnClickListener {
                 if(controlCenterHeaderView.alpha == 0f) return@setOnClickListener
                 it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                 val intent = Intent()
@@ -424,7 +424,6 @@ object QSHeaderView : BaseHook() {
             layoutParams =lp
         }
         logD("id = ${edit.id}\nedit = ${R.id.cc_header_edit}")
-        Settings.System.putInt(context.contentResolver,"cc_edit_Id",R.id.cc_header_edit)
 
         val spaceLp = LinearLayout.LayoutParams(-1,-1).apply {
             weight = 1f

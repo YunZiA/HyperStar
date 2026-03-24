@@ -22,6 +22,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun SystemUIScreen(){
     val navController = LocalNavigator.current
+    val coroutineScope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(initialPage = 0 ,pageCount = { 3 })
+    val tabs = listOf(
+        stringResource(R.string.control_center),
+        stringResource(R.string.sound_settings),
+        stringResource(R.string.more),
+    )
     ModuleNavPager(
         activityTitle = stringResource(R.string.systemui),
         navController = navController,
@@ -30,18 +37,8 @@ fun SystemUIScreen(){
         },
     ) { scrollBehavior, paddingValue ->
 
-        val coroutineScope = rememberCoroutineScope()
-
-        val tabs = listOf(
-            stringResource(R.string.control_center),
-            stringResource(R.string.sound_settings),
-            stringResource(R.string.more),
-        )
-        val pagerState = rememberPagerState(initialPage = 0 ,pageCount = { 3 })
-
         Column(
-            modifier = Modifier
-                .padding(top = paddingValue.calculateTopPadding() + 12.dp)
+            modifier = Modifier.padding(top = paddingValue.calculateTopPadding() + 12.dp)
         ) {
 
             TabRow(

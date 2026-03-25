@@ -16,6 +16,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -36,6 +38,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -133,8 +136,8 @@ fun App(){
         AnimatedVisibility (
             showInactivePage && !activity.appViewModel.isActive,
             modifier = Modifier.background(colorScheme.surface),
-            enter = fadeIn() + expandVertically(expandFrom = Alignment.Bottom) { it / 3 * 2 },
-            exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom) { it / 3 * 2 },
+            enter = slideInVertically { it / 10 } + fadeIn() + scaleIn(initialScale = 0.9f, transformOrigin = TransformOrigin(0.5f, 1f)),
+            exit = slideOutVertically { it / 10 } + fadeOut() + scaleOut(transformOrigin = TransformOrigin(0.5f, 1f)),
         ) {
             if (!isFold() && !isPad()) {
                 activity.requestedOrientation =

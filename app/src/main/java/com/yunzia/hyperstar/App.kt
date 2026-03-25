@@ -132,9 +132,8 @@ fun App(){
                 }
             }
         }
-
         AnimatedVisibility (
-            showInactivePage && !activity.appViewModel.isActive,
+            showInactivePage,
             modifier = Modifier.background(colorScheme.surface),
             enter = slideInVertically { it / 10 } + fadeIn() + scaleIn(initialScale = 0.9f, transformOrigin = TransformOrigin(0.5f, 1f)),
             exit = slideOutVertically { it / 10 } + fadeOut() + scaleOut(transformOrigin = TransformOrigin(0.5f, 1f)),
@@ -145,7 +144,8 @@ fun App(){
             }
             ActivePage()
         }
-        if (showInactivePage && !activity.appViewModel.isActive) return@Scaffold
+        if (showInactivePage) return@Scaffold
+
         val navigator = rememberNavigator(MainRoutes.Key)
         val welcome = remember { mutableStateOf(PreferencesUtil.getBoolean("is_first_use",true)) }
         val easing  = CubicBezierEasing(.42f,0f,0.26f,.85f)

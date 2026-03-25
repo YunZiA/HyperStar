@@ -164,62 +164,6 @@ fun Home(
         ) {
 
             item {
-
-                if (!appViewModel.isActive){
-                    val go = checkApplication(activity,"org.lsposed.manager")
-                    val intent = Intent().apply {
-                        setClassName("org.lsposed.manager","org.lsposed.manager.ui.activity.MainActivity")
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    }
-                    SuperGroup(
-                        modifier = Modifier.bounceAnimN(),
-                        position = SuperGroupPosition.FIRST
-                    ){
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    if (go) {
-                                        activity.startActivity(intent)
-                                    } else {
-                                        val result =
-                                            Helper.rootShell("am start -c 'org.lsposed.manager.LAUNCH_MANAGER' 'com.android.shell/.BugreportWarningActivity'")
-                                        if (result != "0") {
-                                            Toast.makeText(activity, result, Toast.LENGTH_SHORT)
-                                                .show()
-                                        }
-                                    }
-                                },
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-
-                            Text(
-                                text = stringResource(R.string.not_activated_toast_description),
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(vertical = 16.dp)
-                                    .padding(start = 24.dp, end = 8.dp),
-                                color = Color.Red,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 15.sp
-                            )
-
-
-                            Image(
-                                modifier = Modifier
-                                    .padding(end = 24.dp)
-                                    .size(10.dp, 14.dp),
-                                imageVector = MiuixIcons.Basic.ArrowRight,
-                                contentDescription = null,
-                                colorFilter = ColorFilter.tint(colorScheme.onSurfaceVariantActions),
-                            )
-
-                        }
-
-                    }
-                    Spacer(Modifier.height(12.dp))
-
-                }
                 if (!isRoot()){
                     SuperGroup(
                         modifier = Modifier.bounceAnimN()

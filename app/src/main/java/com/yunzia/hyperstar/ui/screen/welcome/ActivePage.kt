@@ -70,7 +70,6 @@ fun ActivePage(
 ) {
 
     val view = LocalView.current
-    val isActive = isModuleActive()
     val activity = LocalActivity.current as MainActivity
     val context = LocalContext.current
 

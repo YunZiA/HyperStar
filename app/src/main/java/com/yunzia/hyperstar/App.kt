@@ -23,10 +23,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -113,11 +115,23 @@ fun App(){
         modifier = Modifier
     ) {
         Log.d("MainPageContent", "MainPageContent XScaffold: init")
-
-        if (!activity.appViewModel.isActive){
-            if (!isFold() && !isPad()){
-                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        var showInactivePage by remember { mutableStateOf(false) }
+        LaunchedEffect(Unit) {
+            if (!activity.appViewModel.isActive) {
+                delay(120)
+                if (!activity.appViewModel.isActive) {
+                    showInactivePage = true
+                }
             }
+        }
+
+        if (showInactivePage && !activity.appViewModel.isActive) {
+
+            if (!isFold() && !isPad()) {
+                activity.requestedOrientation =
+                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            }
+
             ActivePage()
             return@Scaffold
         }

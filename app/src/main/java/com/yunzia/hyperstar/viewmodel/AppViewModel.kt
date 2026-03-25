@@ -47,6 +47,7 @@ class AppViewModel: ViewModel()  {
 
     // 当 Xposed 服务断开连接或需要清理时调用
     fun onXposedServiceReleased() {
+        Log.d("AppViewModel", "onXposedServiceReleased: ")
 //        scopeManager.onServiceReleased()
     }
 

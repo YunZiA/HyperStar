@@ -4,14 +4,19 @@ import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.util.Log
 import androidx.activity.compose.LocalActivity
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -125,16 +130,19 @@ fun App(){
             }
         }
 
-        if (showInactivePage && !activity.appViewModel.isActive) {
-
+        AnimatedVisibility (
+            showInactivePage && !activity.appViewModel.isActive,
+            modifier = Modifier.background(colorScheme.surface),
+            enter = fadeIn() + expandVertically(expandFrom = Alignment.Bottom) { it / 3 * 2 },
+            exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom) { it / 3 * 2 },
+        ) {
             if (!isFold() && !isPad()) {
                 activity.requestedOrientation =
                     ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             }
-
             ActivePage()
-            return@Scaffold
         }
+        if (showInactivePage && !activity.appViewModel.isActive) return@Scaffold
         val navigator = rememberNavigator(MainRoutes.Key)
         val welcome = remember { mutableStateOf(PreferencesUtil.getBoolean("is_first_use",true)) }
         val easing  = CubicBezierEasing(.42f,0f,0.26f,.85f)

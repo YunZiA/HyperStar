@@ -2,71 +2,98 @@ package com.yunzia.hyperstar.hook.core.helper
 
 import com.yunzia.hyperstar.hook.base.runCatchingOrNull
 import com.yunzia.hyperstar.hook.core.StarLog.logE
+import java.lang.invoke.VarHandle
 import java.lang.reflect.Field
 import java.util.concurrent.ConcurrentHashMap
 
 object FieldHelper {
     const val TAG = "FieldHelper"
-    private val fieldCache = ConcurrentHashMap<String, Field>()
+    private val NULL = Any()
 
-    // 假设 findField 已存在（返回 Field 并 setAccessible(true)）
+    private val fieldCache = ConcurrentHashMap<FieldCacheKey, Any>()
+    private val fieldTypeCache = ConcurrentHashMap<String, Field>()
+
+    private inline fun getCachedOrFind(
+        key: FieldCacheKey,
+        crossinline loader: () -> Field?
+    ): Field? {
+
+        fieldCache[key]?.let {
+            return if (it === NULL) null else it as Field
+        }
+        val result = loader()
+
+        fieldCache.putIfAbsent(key, result ?: NULL)
+
+        return result
+    }
+
     /**
      * 查找字段（精确名称），找不到则抛 NoSuchFieldError。
      */
-    fun findField(clazz: Class<*>, fieldName: String): Field? {
-        val fullFieldName = "${clazz.name}#$fieldName"
+    fun findField(
+        clazz: Class<*>,
+        fieldName: String
+    ): Field? {
 
-        // 检查缓存
-        fieldCache[fullFieldName]?.let { cached ->
-            return cached // 可能是 Field 或 null（表示已知不存在）
-        }
-
-        // 未缓存，尝试查找
-        return try {
-            val field = findFieldRecursiveImpl(clazz, fieldName).apply {
-                isAccessible = true
+        val key = FieldCacheKey(System.identityHashCode(clazz.classLoader),clazz.name, fieldName)
+        return getCachedOrFind(key) {
+            var current: Class<*>? = clazz
+            while (current != null && current != Any::class.java) {
+                try {
+                    val field = current.getDeclaredField(fieldName)
+                    field.isAccessible = true
+                    return@getCachedOrFind field
+                } catch (_: NoSuchFieldException) {
+                    current = current.superclass
+                }
             }
-            fieldCache[fullFieldName] = field
-            field
-        } catch (e: NoSuchFieldException) {
-            logE(TAG,"Field not found: '$fieldName' in class '${clazz.name}'", e)
             null
         }
+    }
+
+
+    fun requireField(
+        clazz: Class<*>,
+        fieldName: String
+    ): Field {
+        return findField(clazz, fieldName) ?: throw NoSuchFieldError("${clazz.name}#$fieldName")
     }
 
     /**
      * 递归查找字段：从 clazz 开始，向上遍历继承链（不含 Object）。
      */
     @Throws(NoSuchFieldException::class)
-    private fun findFieldRecursiveImpl(clazz: Class<*>, fieldName: String): Field {
-        // 先尝试当前类
-        try {
-            return clazz.getDeclaredField(fieldName)
-        } catch (ignored: NoSuchFieldException) {
-            // 继续向上找父类
-        }
-
-        var current = clazz.superclass
-        while (current != null && current != Any::class.java) { // Any::class.java == Object.class
+    private fun findFieldRecursiveImpl(
+        clazz: Class<*>,
+        fieldName: String
+    ): Field {
+        var current: Class<*>? = clazz
+        while (current != null && current != Any::class.java) {
             try {
                 return current.getDeclaredField(fieldName)
-            } catch (ignored: NoSuchFieldException) {
+            } catch (_: NoSuchFieldException) {
                 current = current.superclass
             }
         }
-
-        throw NoSuchFieldException("$clazz#$fieldName")
+        throw NoSuchFieldException("${clazz.name}#$fieldName")
     }
 
     /**
      * 查找第一个类型完全匹配的字段（递归父类），找不到抛 NoSuchFieldError。
      */
-    fun findFirstFieldByExactType(clazz: Class<*>, type: Class<*>): Field {
+    fun findFirstFieldByExactType(
+        clazz: Class<*>,
+        type: Class<*>
+    ): Field {
+        val key = "${System.identityHashCode(clazz.classLoader)}:${clazz.name}#type:${type.name}"
+        fieldTypeCache[key]?.let { return it }
         var current: Class<*>? = clazz
-        while (current != null) {
+        while (current != null && current != Any::class.java) {
             for (field in current.declaredFields) {
                 if (field.type == type) {
                     field.isAccessible = true
+                    fieldTypeCache[key] = field
                     return field
                 }
             }
@@ -75,47 +102,40 @@ object FieldHelper {
         throw NoSuchFieldError("Field of type ${type.name} in class ${clazz.name}")
     }
 
-    @Suppress("UNCHECKED_CAST")
+    @JvmSynthetic
     internal inline fun <reified T> getObjectField(obj: Any, fieldName: String): T {
         return getField(obj::class.java, fieldName).get(obj) as T
     }
+    private inline fun <T> getPrimitiveField(
+        obj: Any,
+        fieldName: String,
+        getter: Field.(Any) -> T
+    ): T {
+        return getter(
+            getField(obj::class.java, fieldName),
+            obj
+        )
+    }
 
-    fun getBooleanField(obj: Any, fieldName: String): Boolean =
-        getField(obj::class.java, fieldName).getBoolean(obj)
+    fun getBooleanField(obj: Any, fieldName: String): Boolean = getPrimitiveField(obj, fieldName, Field::getBoolean)
 
-    fun getByteField(obj: Any, fieldName: String): Byte =
-        getField(obj::class.java, fieldName).getByte(obj)
+    fun getByteField(obj: Any, fieldName: String): Byte = getPrimitiveField(obj, fieldName, Field::getByte)
 
-    fun getCharField(obj: Any, fieldName: String): Char =
-        getField(obj::class.java, fieldName).getChar(obj)
+    fun getCharField(obj: Any, fieldName: String): Char = getPrimitiveField(obj, fieldName, Field::getChar)
 
-    fun getDoubleField(obj: Any, fieldName: String): Double =
-        getField(obj::class.java, fieldName).getDouble(obj)
+    fun getDoubleField(obj: Any, fieldName: String): Double = getPrimitiveField(obj, fieldName, Field::getDouble)
 
-    fun getFloatField(obj: Any, fieldName: String): Float =
-        getField(obj::class.java, fieldName).getFloat(obj)
+    fun getFloatField(obj: Any, fieldName: String): Float = getPrimitiveField(obj, fieldName, Field::getFloat)
 
-    fun getIntField(obj: Any, fieldName: String): Int =
-        getField(obj::class.java, fieldName).getInt(obj)
+    fun getIntField(obj: Any, fieldName: String) = getPrimitiveField(obj, fieldName, Field::getInt)
 
-    fun getLongField(obj: Any, fieldName: String): Long =
-        getField(obj::class.java, fieldName).getLong(obj)
+    fun getLongField(obj: Any, fieldName: String): Long = getPrimitiveField(obj, fieldName, Field::getLong)
 
-    fun getShortField(obj: Any, fieldName: String): Short =
-        getField(obj::class.java, fieldName).getShort(obj)
+    fun getShortField(obj: Any, fieldName: String): Short = getPrimitiveField(obj, fieldName, Field::getShort)
 
     // Helper to reduce duplication
     private fun getField(clazz: Class<*>, fieldName: String): Field {
-        return findField(clazz, fieldName)?.apply {
-            try {
-                isAccessible = true
-            } catch (e: IllegalAccessException) {
-                // 可选：记录日志
-                logE(TAG, "Failed to set field '$fieldName' in ${clazz.name} accessible", e)
-                // 抛出运行时异常，避免强制 checked exception
-                throw RuntimeException("Cannot access field '$fieldName' in ${clazz.simpleName}", e)
-            }
-        } ?: throw NoSuchFieldError("Field '$fieldName' not found in ${clazz.simpleName}")
+        return findField(clazz, fieldName) ?: throw NoSuchFieldError("Field '$fieldName' not found in ${clazz.simpleName}")
     }
 
     // Setters
@@ -220,17 +240,16 @@ object FieldHelper {
     ) {
         val targetClass = clazz ?: obj!!::class.java
         try {
-            findField(targetClass, fieldName)?.apply {
-                isAccessible = true
-                when (value) {
-                    is Boolean -> setBoolean(obj, value)
-                    is Byte -> setByte(obj, value)
-                    is Char -> setChar(obj, value)
-                    is Double -> setDouble(obj, value)
-                    is Float -> setFloat(obj, value)
-                    is Int -> setInt(obj, value)
-                    is Long -> setLong(obj, value)
-                    is Short -> setShort(obj, value)
+            requireField(targetClass, fieldName).apply {
+                when (type) {
+                    Boolean::class.javaPrimitiveType -> setBoolean(obj, value as Boolean)
+                    Byte::class.javaPrimitiveType -> setByte(obj, value as Byte)
+                    Char::class.javaPrimitiveType -> setChar(obj, value as Char)
+                    Double::class.javaPrimitiveType -> setDouble(obj, value as Double)
+                    Float::class.javaPrimitiveType -> setFloat(obj, value as Float)
+                    Int::class.javaPrimitiveType -> setInt(obj, value as Int)
+                    Long::class.javaPrimitiveType  -> setLong(obj, value as Long)
+                    Short::class.javaPrimitiveType  -> setShort(obj, value as Short)
                     else -> set(obj, value)
                 }
             }
@@ -241,6 +260,12 @@ object FieldHelper {
             throw e
         }
     }
+
+    internal class FieldCacheKey(
+        loaderId: Int,
+        className: String,
+        fieldName: String
+    )
 
 }
 
@@ -260,14 +285,15 @@ fun Any?.getBooleanField(fieldName: String) = this?.let { FieldHelper.getBoolean
 
 fun Any?.setObjectField(fieldName: String, value: Any?) = this?.let { FieldHelper.setObjectField(this, fieldName, value) }
 fun Any?.getObjectField(fieldName: String): Any? = this?.let { FieldHelper.getObjectField(this, fieldName) }
-fun <T> Any?.getObjectFieldAs(fieldName: String): T {
+@JvmSynthetic
+inline fun <reified T> Any?.getObjectFieldAs(fieldName: String): T {
     return this.getObjectField(fieldName) as T
 }
-fun <T> Any?.getObjectFieldOrNullAs(fieldName: String) = runCatchingOrNull {
+@JvmSynthetic
+inline fun <reified T> Any?.getObjectFieldOrNullAs(fieldName: String) = runCatchingOrNull {
     this.getObjectField(fieldName) as T
 }
 
-
 fun Class<*>?.getStaticObjectField(fieldName: String): Any? = this?.let { FieldHelper.getStaticObjectField(it, fieldName) }
 
-fun Class<*>?.getStaticBooleanField(fieldName: String): Any? = this?.let { FieldHelper.getStaticBooleanField(it, fieldName) }
+fun Class<*>?.getStaticBooleanField(fieldName: String): Boolean? = this?.let { FieldHelper.getStaticBooleanField(it, fieldName) }

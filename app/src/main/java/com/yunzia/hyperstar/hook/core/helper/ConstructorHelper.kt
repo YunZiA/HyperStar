@@ -5,11 +5,27 @@ import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.StarLog.logW
 import com.yunzia.hyperstar.hook.core.provider.ClassLoaderProvider
 import java.lang.reflect.Constructor
+import java.lang.reflect.Field
 import java.util.concurrent.ConcurrentHashMap
 
 object ConstructorHelper : CoreHelper() {
     private const val TAG = "ConstructorHelper"
-    private val constructorCache = ConcurrentHashMap<String, Constructor<*>>()
+    private val NULL = Any()
+    private val constructorCache = ConcurrentHashMap<ConstructorCacheKey, Any>()
+
+
+    private inline fun getCachedOrFind(
+        key: ConstructorCacheKey,
+        crossinline loader: () -> Constructor<*>?
+    ): Constructor<*>? {
+        constructorCache[key]?.let {
+            return if (it === NULL) null else it as Constructor<*>
+        }
+        val result = loader()
+        constructorCache.putIfAbsent(key, result ?: NULL)
+
+        return result
+    }
 
     /**
      * 安全查找构造函数：找不到时返回 null 并打日志，不抛异常
@@ -17,23 +33,22 @@ object ConstructorHelper : CoreHelper() {
     fun findConstructorExact(clazz: Class<*>?, vararg parameterTypes: Class<*>): Constructor<*>? {
         clazz?: return null
 
-        val fullConstructorName = "${clazz.name}${getParametersString(parameterTypes)}#exact"
-        // 先查缓存
-        constructorCache[fullConstructorName]?.let { cached ->
-            return cached
-        }
-
-        return try {
-            val constructor = clazz.getDeclaredConstructor(*parameterTypes)
-            constructor.isAccessible = true
-            constructorCache[fullConstructorName] = constructor
-            constructor
-        } catch (e: NoSuchMethodException) {
-            logW(TAG, "Constructor not found: $fullConstructorName", e)
-            null
-        } catch (e: Exception) {
-            logE(TAG, "Unexpected error while finding constructor: $fullConstructorName", e)
-            null
+        val key = ConstructorCacheKey(
+            System.identityHashCode(clazz.classLoader),
+            clazz.name,
+            parameterTypes
+        )
+        return getCachedOrFind(key) {
+            try {
+                clazz.getDeclaredConstructor(*parameterTypes).apply {
+                    isAccessible = true
+                }
+            } catch (_: NoSuchMethodException) {
+                null
+            } catch (t: Throwable) {
+                logE(TAG, "Unexpected error while finding constructor: $key", t)
+                null
+            }
         }
     }
 
@@ -67,6 +82,28 @@ object ConstructorHelper : CoreHelper() {
         } catch (e: Exception) {
             logW(TAG, "Failed to find class or constructor: $className", e)
             null
+        }
+    }
+
+    internal class ConstructorCacheKey(
+        private val loaderId: Int,
+        private val className: String,
+        parameterTypes: Array<out Class<*>>
+    ) {
+        private val params = parameterTypes.copyOf()
+        private val paramsHash = params.contentHashCode()
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is ConstructorCacheKey) return false
+            return loaderId == other.loaderId && className == other.className && params.contentEquals(other.params)
+        }
+
+        override fun hashCode(): Int {
+            var result = loaderId
+            result = 31 * result + className.hashCode()
+            result = 31 * result + paramsHash
+            return result
         }
     }
 }

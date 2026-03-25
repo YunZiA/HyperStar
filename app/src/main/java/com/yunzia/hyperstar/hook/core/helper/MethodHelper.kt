@@ -13,8 +13,8 @@ import java.util.concurrent.ConcurrentHashMap
 object MethodHelper {
 
     const val TAG = "MethodHelper"
-
-    private val methodCache = ConcurrentHashMap<String, Method>()
+    private val NULL = Any()
+    private val methodCache = ConcurrentHashMap<MethodCacheKey, Any>()
 
 
     /**
@@ -111,11 +111,13 @@ object MethodHelper {
         val key = buildKey(clazz, methodName, parameterTypes, "bestmatch")
         return getCachedOrFind(key) {
 
-            runCatching {
+            val exact = runCatching {
                 clazz.getDeclaredMethod(methodName, *parameterTypes)
-            }.onSuccess { method ->
-                method.isAccessible = true
-                return@getCachedOrFind method
+            }.getOrNull()
+
+            if (exact != null) {
+                exact.isAccessible = true
+                return@getCachedOrFind exact
             }
 
             var bestMatch: Method? = null
@@ -124,8 +126,8 @@ object MethodHelper {
 
             while (currentClass != null) {
                 for (method in currentClass.declaredMethods) {
-                    if (!considerPrivate && Modifier.isPrivate(method.modifiers)) continue
                     if (method.name != methodName) continue
+                    if (!considerPrivate && Modifier.isPrivate(method.modifiers)) continue
                     if (!isAssignable(parameterTypes, method.parameterTypes)) continue
 
                     if (bestMatch == null || compareParameterTypes(
@@ -194,20 +196,23 @@ object MethodHelper {
         methodName: String,
         parameterTypes: Array<out Class<*>>,
         tag: String
-    ): String = buildString {
-        append(clazz.name)
-        append('#')
-        append(methodName)
-        append('(')
-        parameterTypes.joinTo(this) { it.name }
-        append(")#$tag")
-    }
+    ) = MethodCacheKey(
+            System.identityHashCode(clazz.classLoader),
+            clazz.name,
+            methodName,
+            parameterTypes,
+            tag
+        )
 
-    private inline fun getCachedOrFind(key: String, crossinline loader: () -> Method?): Method? {
-        methodCache[key]?.let { return it }
-        return loader()?.let { method ->
-            methodCache.putIfAbsent(key, method) ?: method
+
+
+    private inline fun getCachedOrFind(key: MethodCacheKey, crossinline loader: () -> Method?): Method? {
+        methodCache[key]?.let {
+            return if (it === NULL) null else it as Method
         }
+        val result = loader()
+        methodCache.putIfAbsent(key, result ?: NULL)
+        return result
     }
 
     private fun getParameterClasses(
@@ -218,13 +223,9 @@ object MethodHelper {
             null -> Any::class.java
             is Class<*> -> param
             is String -> findClass(param, loader) ?: Any::class.java
-            else -> param.javaClass
+            else -> param.toParamType()
         }
     }.toTypedArray()
-
-
-    private fun getParametersString(parameterTypes: Array<out Class<*>>): String =
-        parameterTypes.joinToString(",") { it.name }
 
     private val primitiveWrapperMap = mapOf(
         Boolean::class.javaPrimitiveType to Boolean::class.java,
@@ -258,22 +259,10 @@ object MethodHelper {
         actual: Class<*>,
         formal: Class<*>
     ): Boolean {
-
         if (formal.isAssignableFrom(actual))
             return true
-
-        if (primitiveWrapperMap[formal] == actual)
+        if (primitiveWrapperMap[formal] == actual || primitiveWrapperMap[actual] == formal)
             return true
-
-        if (primitiveWrapperMap[actual] == formal)
-            return true
-
-        if (wrapperPrimitiveMap[formal] == actual)
-            return true
-
-        if (wrapperPrimitiveMap[actual] == formal)
-            return true
-
         return false
     }
     private fun compareParameterTypes(
@@ -293,27 +282,57 @@ object MethodHelper {
         }
         return 0
     }
+    private val BOOLEAN_PRIMITIVE = Boolean::class.javaPrimitiveType!!
+    private val INT_PRIMITIVE = Int::class.javaPrimitiveType!!
+    private val Float_PRIMITIVE = Float::class.javaPrimitiveType!!
+    private val LONG_PRIMITIVE = Long::class.javaPrimitiveType!!
+    private val DOUBLE_PRIMITIVE = Double::class.javaPrimitiveType!!
+    private val SHORT_PRIMITIVE = Short::class.javaPrimitiveType!!
+    private val BYTE_PRIMITIVE = Byte::class.javaPrimitiveType!!
+    private val CHAR_PRIMITIVE = Char::class.javaPrimitiveType!!
     private fun Any?.toParamType(): Class<*> {
-
         return when (this) {
-
-            is Boolean -> Boolean::class.javaPrimitiveType!!
-
-            is Int -> Int::class.javaPrimitiveType!!
-
-            is Float -> Float::class.javaPrimitiveType!!
-
-            is Long -> Long::class.javaPrimitiveType!!
-
-            is Double -> Double::class.javaPrimitiveType!!
-
-            is Short -> Short::class.javaPrimitiveType!!
-
-            is Byte -> Byte::class.javaPrimitiveType!!
-
-            is Char -> Char::class.javaPrimitiveType!!
-
+            is Boolean -> BOOLEAN_PRIMITIVE
+            is Int -> INT_PRIMITIVE
+            is Float -> Float_PRIMITIVE
+            is Long -> LONG_PRIMITIVE
+            is Double -> DOUBLE_PRIMITIVE
+            is Short -> SHORT_PRIMITIVE
+            is Byte -> BYTE_PRIMITIVE
+            is Char -> CHAR_PRIMITIVE
             else -> this?.javaClass ?: Any::class.java
+        }
+    }
+
+    private data class MethodCacheKey(
+        val loaderId: Int,
+        val className: String,
+        val methodName: String,
+        val paramTypes: Array<out Class<*>>,
+        val tag: String
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as MethodCacheKey
+
+            if (loaderId != other.loaderId) return false
+            if (className != other.className) return false
+            if (methodName != other.methodName) return false
+            if (!paramTypes.contentEquals(other.paramTypes)) return false
+            if (tag != other.tag) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = loaderId
+            result = 31 * result + className.hashCode()
+            result = 31 * result + methodName.hashCode()
+            result = 31 * result + paramTypes.contentHashCode()
+            result = 31 * result + tag.hashCode()
+            return result
         }
     }
 
@@ -324,12 +343,8 @@ object MethodHelper {
 fun  Any?.callMethod(methodName: String, vararg args: Any?): Any? {
     try {
         return findMethodBestMatch(this?.javaClass, methodName, *args)?.invoke(this, *args)
-    } catch (e: IllegalAccessException) {
-        logE(TAG, e.message)
-    } catch (e: java.lang.IllegalArgumentException) {
-        logE(TAG, e.message)
-    } catch (e: InvocationTargetException) {
-        logE(TAG, e.message)
+    } catch (t: Throwable) {
+        logE(TAG, t.message)
     }
     return null
 }
@@ -345,12 +360,8 @@ fun  <T>  Class<*>?.callStaticMethodAs(methodName: String, vararg args: Any?):T 
 fun Class<*>?.callStaticMethods(methodName: String, parameterTypes: Array<Class<*>>, vararg args: Any?):Any? {
     try {
         return findMethodBestMatch(this, methodName,parameterTypes, *args)?.invoke(null, *args)
-    } catch (e: IllegalAccessException) {
-        logE(TAG, e.message)
-    } catch (e: java.lang.IllegalArgumentException) {
-        logE(TAG, e.message)
-    } catch (e: InvocationTargetException) {
-        logE(TAG, e.message)
+    } catch (t: Throwable) {
+        logE(TAG, t.message)
     }
     return null
 }
@@ -358,12 +369,8 @@ fun Class<*>?.callStaticMethods(methodName: String, parameterTypes: Array<Class<
 fun Class<*>?.callStaticMethod(methodName: String, vararg args: Any?):Any? {
     try {
         return findMethodBestMatch(this, methodName, *args)?.invoke(null, *args)
-    } catch (e: IllegalAccessException) {
-        logE(TAG, e.message)
-    } catch (e: java.lang.IllegalArgumentException) {
-        logE(TAG, e.message)
-    } catch (e: InvocationTargetException) {
-        logE(TAG, e.message)
+    } catch (t: Throwable) {
+        logE(TAG, t.message)
     }
     return null
 }

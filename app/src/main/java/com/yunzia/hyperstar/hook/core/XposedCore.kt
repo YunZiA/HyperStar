@@ -7,17 +7,23 @@ import io.github.libxposed.api.XposedModuleInterface.*
 
 object XposedCore {
 
-    internal lateinit var base: XposedInterface
-        private set
+    private lateinit var _base: XposedInterface
+
+    val base: XposedInterface
+        get() = _base
 
     @JvmStatic
     lateinit var hookedPackageName: String
         private set
 
     @JvmStatic
+    lateinit var modulePath: String
+        private set
+
+    @JvmStatic
     fun initXposedModule(base: XposedInterface, param: ModuleLoadedParam) {
-        this.base = base
-        ResourcesHelper.initModuleResources(base)
+        this._base = base
+        this.modulePath = base.moduleApplicationInfo.sourceDir
     }
 
     fun initOnPackageLoaded(param: PackageLoadedParam) {

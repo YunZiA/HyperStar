@@ -9,32 +9,60 @@ import io.github.libxposed.api.XposedInterface
 import java.lang.reflect.Executable
 import java.lang.reflect.Method
 
-
-data class HookResult<T>(
-    val originalValue: T
+class HookResult<T> private constructor(
+    private var _value: T?,
+    private var _hasValue: Boolean
 ) {
-    private var _value: T = originalValue
-    private var _replaced: Boolean = false
 
-    var value: T
-        get() = _value
-        set(newValue) {
-            _value = newValue
-            _replaced = true
+    companion object {
+
+        fun <T> noResult(): HookResult<T> {
+            return HookResult(null, false)
         }
 
-    val isReplaced: Boolean
-        get() = _replaced
+        fun <T> of(value: T): HookResult<T> {
+            return HookResult(value, true)
+        }
+    }
+
+    private var _replaced = false
+    private var _skipOriginal = false
+
+    val hasValue get() = _hasValue
+
+    val isReplaced get() = _replaced
+
+    val isSkipped get() = _skipOriginal
+
+    var value: T
+        get() {
+            check(_hasValue) {
+                "HookResult has no value yet. Accessed before original method execution."
+            }
+            return _value as T
+        }
+        set(newValue) {
+            _value = newValue
+            _hasValue = true
+            _replaced = true
+        }
 
     fun replace(newValue: T) {
         value = newValue
     }
+
+    fun skipOriginal() {
+        _skipOriginal = true
+    }
 }
 
-@JvmSynthetic
-private fun <T : Executable> T.createHook(): XposedInterface.HookBuilder = XposedCore.base.hook(this)
 
-fun XposedInterface.HookBuilder.replace(block: XposedInterface.Chain.(List<Any?>) -> Any?): XposedInterface.HookHandle  = intercept { chain ->
+@JvmSynthetic
+fun <T : Executable> T.createHook(): XposedInterface.HookBuilder = XposedCore.base.hook(this)
+
+inline fun XposedInterface.HookBuilder.replace(
+    crossinline block: XposedInterface.Chain.(List<Any?>) -> Any?
+): XposedInterface.HookHandle  = intercept { chain ->
     try {
         return@intercept chain.block(chain.args)
     } catch (t: Throwable) {
@@ -42,8 +70,10 @@ fun XposedInterface.HookBuilder.replace(block: XposedInterface.Chain.(List<Any?>
         return@intercept chain.proceed()
     }
 }
-fun XposedInterface.HookBuilder.before(block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit): XposedInterface.HookHandle  = intercept { chain ->
-    val result: HookResult<Any?> = HookResult(Unit)
+inline fun XposedInterface.HookBuilder.before(
+    crossinline block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit
+): XposedInterface.HookHandle  = intercept { chain ->
+    val result: HookResult<Any?> = HookResult.noResult()
     val args: MutableList<Any?> = chain.args.toMutableList()
     try {
         chain.block(args, result)
@@ -57,8 +87,10 @@ fun XposedInterface.HookBuilder.before(block: XposedInterface.Chain.(MutableList
     return@intercept oldResult
 }
 
-fun XposedInterface.HookBuilder.after(block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit): XposedInterface.HookHandle  = intercept { chain ->
-    val result = HookResult(chain.proceed())
+inline fun XposedInterface.HookBuilder.after(
+    crossinline block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit
+): XposedInterface.HookHandle  = intercept { chain ->
+    val result = HookResult.of(chain.proceed())
     try {
         chain.block(chain.args, result)
     } catch (t: Throwable) {
@@ -67,121 +99,129 @@ fun XposedInterface.HookBuilder.after(block: XposedInterface.Chain.(List<Any?>, 
     return@intercept result.value
 }
 
-fun <T : Executable> T.replaceHook(
-    block: XposedInterface.Chain.(List<Any?>) -> Any?
+inline fun <T : Executable> T.replaceHook(
+    crossinline block: XposedInterface.Chain.(List<Any?>) -> Any?
 ) {
     this.createHook().replace(block)
 }
-fun <T : Executable> T.beforeHook(
-    block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit
+inline fun <T : Executable> T.beforeHook(
+    crossinline block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit
 ) {
     this.createHook().before(block)
 }
-fun <T : Executable> T.afterHook(
-    block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit
+inline fun <T : Executable> T.afterHook(
+    crossinline block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit
 ) {
     this.createHook().after(block)
 }
 
-fun Class<*>?.hookAllMethods(
+inline fun Class<*>?.forEachMethod(
     methodName: String,
-    block: XposedInterface.HookBuilder.() -> Unit
+    block: (Method) -> Unit
 ) {
-    this?: run {
-        logW("hookAllMethod","$methodName in null class")
-        return
-    }
-    for (method in this.getDeclaredMethods()){
-        if (method.name == methodName) {
-            method.createHook().block()
-        }
-    }
-
-}
-
-fun Class<*>?.beforeHookAllMethods(
-    methodName: String,
-    block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit
-) {
-    this ?: run {
+    if (this == null) {
         logW("hookAllMethod", "$methodName in null class")
         return
     }
-    for (method in this.getDeclaredMethods()) {
-        if (method.name == methodName) {
-            method.beforeHook(block)
-        }
+
+    declaredMethods.forEach {
+        if (it.name == methodName) block(it)
     }
 }
 
-fun Class<*>?.afterHookAllMethods(
+inline fun Class<*>?.hookAllMethods(
     methodName: String,
-    block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit
+    crossinline block: XposedInterface.HookBuilder.() -> Unit
 ) {
-    this?: run {
+    if (this == null) {
         logW("hookAllMethod","$methodName in null class")
         return
     }
-    for (method in this.getDeclaredMethods()){
-        if (method.name == methodName) {
-            method.afterHook(block)
-        }
+    forEachMethod(methodName){
+        it.createHook().block()
     }
 
 }
 
-fun Class<*>?.hookMethod(
+inline fun Class<*>?.beforeHookAllMethods(
+    methodName: String,
+    crossinline block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit
+) {
+    if (this == null) {
+        logW("hookAllMethod", "$methodName in null class")
+        return
+    }
+    forEachMethod(methodName){
+        it.beforeHook(block)
+    }
+}
+
+inline fun Class<*>?.afterHookAllMethods(
+    methodName: String,
+    crossinline block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit
+) {
+    if (this == null) {
+        logW("hookAllMethod","$methodName in null class")
+        return
+    }
+    forEachMethod(methodName){
+        it.afterHook(block)
+    }
+
+}
+
+inline fun Class<*>?.hookMethod(
     methodName: String,
     vararg paramTypes: Any?,
-    block: XposedInterface.HookBuilder.() -> Unit
+    crossinline block: XposedInterface.HookBuilder.() -> Unit
 ) {
 
     findMethodExact(
         this,
         methodName,
-        paramTypes
-    )?.createHook()
+        *paramTypes
+    )?.createHook()?.block()
 
 }
 
-fun Class<*>?.beforeHookMethod(
+inline fun Class<*>?.beforeHookMethod(
     methodName: String,
     vararg paramTypes: Any?,
-    block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit
+    crossinline block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit
 ) {
     findMethodExact(this, methodName, *paramTypes)?.beforeHook(block)
 }
 
-fun Class<*>?.afterHookMethod(
+inline fun Class<*>?.afterHookMethod(
     methodName: String,
     vararg paramTypes: Any?,
-    block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit
+    crossinline block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit
 ) {
     findMethodExact(this, methodName, *paramTypes)?.afterHook(block)
 
 }
 
-fun Class<*>?.replaceHookMethod(
+inline fun Class<*>?.replaceHookMethod(
     methodName: String,
     vararg paramTypes: Any?,
-    block: XposedInterface.Chain.(List<Any?>) -> Any?
+    crossinline block: XposedInterface.Chain.(List<Any?>) -> Any?
 ) {
     findMethodExact(this, methodName, *paramTypes)?.replaceHook(block)
 }
 
 
-fun Class<*>?.hookAllConstructors(
-    block: XposedInterface.HookBuilder.() -> Unit
+inline fun Class<*>?.hookAllConstructors(
+    crossinline block: XposedInterface.HookBuilder.() -> Unit
 ) {
     this?: return
 
     for (constructor in this.declaredConstructors) {
-        constructor.createHook()
+        constructor.createHook().block()
     }
 }
 
-fun Class<*>?.beforeHookAllConstructors(
-    block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit
+inline fun Class<*>?.beforeHookAllConstructors(
+    crossinline block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit
 ) {
     this?: return
 
@@ -190,8 +230,8 @@ fun Class<*>?.beforeHookAllConstructors(
     }
 }
 
-fun Class<*>?.afterHookAllConstructors(
-    block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit
+inline fun Class<*>?.afterHookAllConstructors(
+    crossinline block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit
 ) {
     this?: return
 
@@ -199,8 +239,8 @@ fun Class<*>?.afterHookAllConstructors(
         constructor.afterHook(block)
     }
 }
-fun Class<*>?.replaceHookAllConstructors(
-    block: XposedInterface.Chain.(List<Any?>) -> Any?
+inline fun Class<*>?.replaceHookAllConstructors(
+    crossinline block: XposedInterface.Chain.(List<Any?>) -> Any?
 ) {
     this?: return
 
@@ -209,25 +249,26 @@ fun Class<*>?.replaceHookAllConstructors(
     }
 }
 
-fun Class<*>?.hookConstructor(
+inline fun Class<*>?.hookConstructor(
     vararg parameterTypes: Any?,
-    block: XposedInterface.HookBuilder.() -> Unit
+    crossinline block: XposedInterface.HookBuilder.() -> Unit
 ) {
-    findConstructorExact(*parameterTypes)?.createHook()
+    findConstructorExact(*parameterTypes)?.createHook()?.block()
 }
 
-fun Class<*>?.beforeHookConstructor(
+inline fun Class<*>?.beforeHookConstructor(
     vararg parameterTypes: Any?,
-    block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit
+    crossinline block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit
 ) {
     findConstructorExact(*parameterTypes)?.beforeHook(block)
 }
 
-fun Class<*>?.afterHookConstructor(
+inline fun Class<*>?.afterHookConstructor(
     vararg parameterTypes: Any?,
-    block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit
+    crossinline block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit
 ) {
     findConstructorExact(*parameterTypes)?.afterHook(block)
 }
+
 
 

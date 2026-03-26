@@ -124,12 +124,12 @@ fun App(){
     ) {
         Log.d("MainPageContent", "MainPageContent XScaffold: init")
         var showInactivePage by remember { mutableStateOf(false) }
-        LaunchedEffect(Unit) {
+        LaunchedEffect(activity.appViewModel.isActive) {
             if (!activity.appViewModel.isActive) {
-                delay(120)
-                if (!activity.appViewModel.isActive) {
-                    showInactivePage = true
-                }
+                delay(350)
+                showInactivePage = !activity.appViewModel.isActive
+            } else {
+                showInactivePage = false
             }
         }
         AnimatedVisibility (

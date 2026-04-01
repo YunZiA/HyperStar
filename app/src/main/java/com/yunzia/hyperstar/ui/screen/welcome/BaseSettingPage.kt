@@ -86,7 +86,9 @@ fun BaseSettingPage(pagerState: PagerState) {
                 PMiuixSuperSwitch(
                     title = stringResource(R.string.is_hide_icon_title),
                     key = "is_hide_icon"
-                )
+                ) {
+                    activity.setLauncherIconHidden(it)
+                }
 
                 PDropdown(
                     title = stringResource(R.string.title_reboot_menus_style),

@@ -47,7 +47,7 @@ fun Modifier.showBlur(hazeState: HazeState,canDrawArea: ((HazeArea) -> Boolean)?
         hazeState,
         hazeStyle,
     ){
-        inputScale = HazeInputScale.Fixed(0.5f)
+        inputScale = HazeInputScale.Fixed(0.88f)
         this.canDrawArea = canDrawArea
     }
 

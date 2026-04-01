@@ -14,6 +14,7 @@ object ConstructorHelper : CoreHelper() {
     private val constructorCache = ConcurrentHashMap<ConstructorCacheKey, Any>()
 
 
+    @JvmStatic
     private inline fun getCachedOrFind(
         key: ConstructorCacheKey,
         crossinline loader: () -> Constructor<*>?
@@ -30,13 +31,14 @@ object ConstructorHelper : CoreHelper() {
     /**
      * 安全查找构造函数：找不到时返回 null 并打日志，不抛异常
      */
+    @JvmStatic
     fun findConstructorExact(clazz: Class<*>?, vararg parameterTypes: Class<*>): Constructor<*>? {
         clazz?: return null
 
         val key = ConstructorCacheKey(
             System.identityHashCode(clazz.classLoader),
             clazz.name,
-            parameterTypes
+            parameterTypes.contentDeepHashCode()
         )
         return getCachedOrFind(key) {
             try {
@@ -53,10 +55,12 @@ object ConstructorHelper : CoreHelper() {
     }
 
     // 如果你还想支持 Object... 参数（自动转 Class）
+    @JvmStatic
     fun findConstructorExact(clazz: Class<*>?, vararg parameterTypes: Any?): Constructor<*>? {
         return findConstructorExact(clazz, *getParameterClasses(clazz?.classLoader, parameterTypes))
     }
 
+    @JvmStatic
     fun findConstructorExact(
         className: String,
         classLoader: ClassLoader?,
@@ -71,6 +75,7 @@ object ConstructorHelper : CoreHelper() {
         }
     }
 
+    @JvmStatic
     fun findConstructorExact(
         className: String,
         vararg parameterTypes: Any?
@@ -85,27 +90,12 @@ object ConstructorHelper : CoreHelper() {
         }
     }
 
-    internal class ConstructorCacheKey(
+    internal data  class ConstructorCacheKey(
         private val loaderId: Int,
         private val className: String,
-        parameterTypes: Array<out Class<*>>
-    ) {
-        private val params = parameterTypes.copyOf()
-        private val paramsHash = params.contentHashCode()
+        private val signatureHash: Int,
+    )
 
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other !is ConstructorCacheKey) return false
-            return loaderId == other.loaderId && className == other.className && params.contentEquals(other.params)
-        }
-
-        override fun hashCode(): Int {
-            var result = loaderId
-            result = 31 * result + className.hashCode()
-            result = 31 * result + paramsHash
-            return result
-        }
-    }
 }
 
 fun Class<*>?.findConstructorExact(vararg parameterTypes: Any?): Constructor<*>? = ConstructorHelper.findConstructorExact(this, *parameterTypes)

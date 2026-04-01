@@ -9,56 +9,29 @@ import io.github.libxposed.api.XposedInterface
 import java.lang.reflect.Executable
 import java.lang.reflect.Method
 
-class HookResult<T> private constructor(
-    private var _value: T?,
-    private var _hasValue: Boolean
+class HookResult<T>(
+    var value: T? = null
 ) {
 
-    companion object {
-
-        fun <T> noResult(): HookResult<T> {
-            return HookResult(null, false)
-        }
-
-        fun <T> of(value: T): HookResult<T> {
-            return HookResult(value, true)
-        }
-    }
-
-    private var _replaced = false
-    private var _skipOriginal = false
-
-    val hasValue get() = _hasValue
-
-    val isReplaced get() = _replaced
-
-    val isSkipped get() = _skipOriginal
-
-    var value: T
-        get() {
-            check(_hasValue) {
-                "HookResult has no value yet. Accessed before original method execution."
-            }
-            return _value as T
-        }
-        set(newValue) {
-            _value = newValue
-            _hasValue = true
-            _replaced = true
-        }
+    var hasValue = false
+    var replaced = false
+    var skipOriginal = false
 
     fun replace(newValue: T) {
         value = newValue
+        hasValue = true
+        replaced = true
     }
 
-    fun skipOriginal() {
-        _skipOriginal = true
+    fun skipOriginal(newValue: T) {
+        value = newValue
+        skipOriginal = true
     }
 }
 
 
 @JvmSynthetic
-fun <T : Executable> T.createHook(): XposedInterface.HookBuilder = XposedCore.base.hook(this)
+inline fun <T : Executable> T.createHook(): XposedInterface.HookBuilder = XposedCore.base.hook(this)
 
 inline fun XposedInterface.HookBuilder.replace(
     crossinline block: XposedInterface.Chain.(List<Any?>) -> Any?
@@ -66,35 +39,37 @@ inline fun XposedInterface.HookBuilder.replace(
     try {
         return@intercept chain.block(chain.args)
     } catch (t: Throwable) {
-        logE("HookError", "Error in after-hook: ${chain.executable.declaringClass.name}#${chain.executable.name}", t)
+        val exec = chain.executable
+        logE("HookError", "Error in after-hook: ${exec.declaringClass.name}#${exec.name}", t)
         return@intercept chain.proceed()
     }
 }
+
 inline fun XposedInterface.HookBuilder.before(
     crossinline block: XposedInterface.Chain.(MutableList<Any?>, HookResult<Any?>) -> Unit
 ): XposedInterface.HookHandle  = intercept { chain ->
-    val result: HookResult<Any?> = HookResult.noResult()
-    val args: MutableList<Any?> = chain.args.toMutableList()
+    val result = HookResult<Any?>()
+    val args = chain.args
     try {
         chain.block(args, result)
     } catch (t: Throwable) {
-        logE("HookError", "Error in before-hook: ${chain.executable.declaringClass.name}#${chain.executable.name}", t)
+        val exec = chain.executable
+        logE("HookError", "Error in before-hook: ${exec.declaringClass.name}#${exec.name}", t)
     }
-    val oldResult = chain.proceed(args.toTypedArray())
-    if (result.isReplaced) {
-        return@intercept result.value
-    }
-    return@intercept oldResult
+    if (result.skipOriginal) return@intercept result.value
+    if (!result.replaced) return@intercept chain.proceed(args.toTypedArray())
+    return@intercept result.value
 }
 
 inline fun XposedInterface.HookBuilder.after(
     crossinline block: XposedInterface.Chain.(List<Any?>, HookResult<Any?>) -> Unit
 ): XposedInterface.HookHandle  = intercept { chain ->
-    val result = HookResult.of(chain.proceed())
+    val result = HookResult<Any?>(chain.proceed())
     try {
         chain.block(chain.args, result)
     } catch (t: Throwable) {
-        logE("HookError", "Error in after-hook: ${chain.executable.declaringClass.name}#${chain.executable.name}", t)
+        val exec = chain.executable
+        logE("HookError", "Error in after-hook: ${exec.declaringClass.name}#${exec.name}", t)
     }
     return@intercept result.value
 }

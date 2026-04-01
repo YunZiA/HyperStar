@@ -75,14 +75,21 @@ fun SuperIntentArrow(
     title : String,
     summary : String? = null,
     context: Context,
-    url : String
+    url : Array<String>
 ) {
 
     val click = remember { mutableStateOf(false) }
     SuperArrow(
         modifier = Modifier.bounceAnim {
             if (click.value){
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                url.forEach {
+                    try {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)))
+                        return@forEach
+                    }catch (e: Exception){
+                    }
+
+                }
             }
             click.value = false
         },
@@ -101,6 +108,24 @@ fun SuperIntentArrow(
         onClick = {
             click.value = true
         }
+    )
+}
+
+@Composable
+fun SuperIntentArrow(
+    leftIcon : Int? = null,
+    title : String,
+    summary : String? = null,
+    context: Context,
+    url : String
+) {
+
+    SuperIntentArrow(
+        leftIcon  = leftIcon,
+        title = title,
+        summary  = summary,
+        context = context,
+        url = arrayOf(url)
     )
 }
 

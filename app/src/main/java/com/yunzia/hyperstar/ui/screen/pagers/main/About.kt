@@ -289,24 +289,12 @@ fun ThirdPage(
                 .graphicsLayer {
                     alpha = bgAlpha.floatValue
                 }
-//                .layerBackdrop()
-//                .drawBackdrop(
-//                    backdrop = backdrop,
-//            shape = { CircleShape },
-//            effects = {
-//                vibrancy()
-//                blur(4f.dp.toPx())
-//                lens(16f.dp.toPx(), 32f.dp.toPx())
-//            }
-//        )
         ) {textBrush, versionSize, position->
-            Log.e("ggc", "ThirdPage: BgEffectBackground" )
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(520.dp)
-                    .padding(bottom = paddingTop.value)
-                ,
+                    .padding(bottom = paddingTop.value),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -379,7 +367,7 @@ fun ThirdPage(
                         title = "东东说他舍不得",
                         summary = "@YunZiA | Hook",
                         context = context,
-                        url = "coolmarket://u/8555749"
+                        url = "https://www.coolapk.com/u/8555749"
                     )
                     SuperNavHostArrow(
                         title = stringResource(R.string.translator),
@@ -393,7 +381,10 @@ fun ThirdPage(
                     SuperIntentArrow(
                         title = stringResource(R.string.qq_group_title),
                         context = context,
-                        url = "mqqapi://card/show_pslcard?src_type=internal&version=1&uin=810317966&card_type=group&source=qrcode"
+                        url = arrayOf(
+                            "mqqapi://card/show_pslcard?src_type=internal&version=1&uin=810317966&card_type=group&source=qrcode",
+                            "https://qun.qq.com/universal-share/share?ac=1&authKey=CbXnHNd3K1gLoGTuOqSLYr73q4HCNOgU9t0tmN721ymjb2O3eeF39Zbk8DIbw%2FFE&busi_data=eyJncm91cENvZGUiOiI4MTAzMTc5NjYiLCJ0b2tlbiI6IktiVllNVmNHaGQzUkROdnNBZWZiSnJ5UEhHaktrbDQ4YnUwZWgyMHZKTzUraUxMWG5admNIRGVnK3VXMjduNk0iLCJ1aW4iOiIyNTc0ODIyMDM2In0%3D&data=KY2pZd46IRdUjB_2u59hLvCtAAuyIwLVpg2MtBxASJA1KAiQVJhg0DN1mTb7podfRAZITmpscrKqZtghQgHXyQ&svctype=4&tempid=h5_group_info"
+                        )
                     )
                     SuperIntentArrow(
                         title = stringResource(R.string.telegram_channel),

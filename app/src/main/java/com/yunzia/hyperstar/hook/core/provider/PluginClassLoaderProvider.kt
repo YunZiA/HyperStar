@@ -4,9 +4,11 @@ import com.yunzia.hyperstar.hook.core.StarLog
 
 object PluginClassLoaderProvider {
 
+    @JvmStatic
     var classLoader: ClassLoader? = null
         private set
 
+    @JvmStatic
     fun init(pluginClassLoader: ClassLoader?): Boolean {
         pluginClassLoader?.let {
             if (classLoader == null || classLoader != it){

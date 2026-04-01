@@ -5,54 +5,38 @@ import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.TypedArray
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
-import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.profileinstaller.ProfileInstaller
 import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.utils.AppInfo
-import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.prefs.PreferencesUtil
 import com.yunzia.hyperstar.prefs.SPUtils
-import com.yunzia.hyperstar.ui.screen.pagers.FPSMonitor
 import com.yunzia.hyperstar.utils.LocalScopeManager
 import com.yunzia.hyperstar.viewmodel.AppViewModel
 import com.yunzia.hyperstar.viewmodel.UpdaterDownloadViewModel
 import io.github.libxposed.service.XposedService
-import io.github.libxposed.service.XposedService.OnScopeEventListener
 import io.github.libxposed.service.XposedServiceHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
-import kotlin.math.log
 
 class MainActivity : BaseActivity() {
     val newAppVersion = mutableStateOf("")
@@ -98,11 +82,11 @@ class MainActivity : BaseActivity() {
     @SuppressLint("MissingPermission", "RemoteViewLayout")
     @Composable
     override fun InitData(savedInstanceState: Bundle?) {
+        setLauncherIconHidden(PreferencesUtil.getBoolean("is_hide_icon", false))
 
         ProfileInstaller.writeProfile(this)
-//        if (isModuleActive()) {
-//            toggleLauncherIconVisibility(PreferencesUtil.getBoolean("is_hide_icon", false))
-//        }
+//        toggleLauncherIconVisibility(PreferencesUtil.getBoolean("is_hide_icon", false))
+
 
         LaunchedEffect(Unit) {
             val downloadsDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
@@ -118,7 +102,6 @@ class MainActivity : BaseActivity() {
             isRecreate = it
         }
 
-        // Initialize profile installer and module settings
     }
 
     /**
@@ -191,24 +174,48 @@ class MainActivity : BaseActivity() {
     }
 
 
-    /**
-     * Toggle the visibility of the launcher icon.
-     */
-    private fun toggleLauncherIconVisibility(isHide: Boolean) {
-        val state = if (isHide) {
+
+
+
+    private fun getAliasComponentName(): ComponentName {
+
+        return ComponentName(this, "com.yunzia.hyperstar.MainActivityAlias")
+    }
+
+    fun isLauncherIconHidden(): Boolean {
+        val component = getAliasComponentName()
+
+        val manager = packageManager
+        val intent = Intent().setComponent(component)
+
+        val list = manager.queryIntentActivities(
+                intent,
+                PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong())
+            )
+
+        return list.isEmpty()
+    }
+
+
+    fun setLauncherIconHidden(hide: Boolean) {
+
+        if (isLauncherIconHidden() == hide) return
+
+        val component = getAliasComponentName()
+
+        val newState = if (hide) {
             PackageManager.COMPONENT_ENABLED_STATE_DISABLED
         } else {
             PackageManager.COMPONENT_ENABLED_STATE_ENABLED
         }
-        packageManager.setComponentEnabledSetting(getAliasComponentName(), state, PackageManager.DONT_KILL_APP)
+
+        packageManager.setComponentEnabledSetting(
+            component,
+            newState,
+            PackageManager.DONT_KILL_APP
+        )
     }
 
-    /**
-     * Get the alias component name for the launcher icon.
-     */
-    private fun getAliasComponentName(): ComponentName {
-        return ComponentName(this, "com.yunzia.hyperstar.MainActivityAlias")
-    }
 
     /**
      * Clear the specified directory.

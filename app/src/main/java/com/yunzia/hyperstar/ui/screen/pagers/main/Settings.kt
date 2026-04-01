@@ -137,12 +137,11 @@ fun Settings(
                             showReboot.value = true
                         }
                     ) {
-
                         Icon(
                             imageVector = MiuixIcons.More,
                             contentDescription = "restart",
-                            tint = colorScheme.onBackground)
-
+                            tint = colorScheme.onBackground
+                        )
                     }
                 }
             )
@@ -150,9 +149,6 @@ fun Settings(
 
         }
     ) { padding ->
-
-
-        Log.d("SettingsPager", "Scaffold: init")
 
         ErrorDialog(errorDialog, results)
 
@@ -172,7 +168,9 @@ fun Settings(
                 PMiuixSuperSwitch(
                     title = stringResource(R.string.is_hide_icon_title),
                     key = "is_hide_icon"
-                )
+                ){
+                    activity.setLauncherIconHidden(it)
+                }
                 SuperNavHostArrow(
                     title = stringResource(R.string.language),
                     navController = navController,

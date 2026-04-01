@@ -7,8 +7,10 @@ import io.github.libxposed.api.XposedModuleInterface.*
 
 object XposedCore {
 
+    @JvmStatic
     private lateinit var _base: XposedInterface
 
+    @JvmStatic
     val base: XposedInterface
         get() = _base
 
@@ -26,6 +28,7 @@ object XposedCore {
         this.modulePath = base.moduleApplicationInfo.sourceDir
     }
 
+    @JvmStatic
     fun initOnPackageLoaded(param: PackageLoadedParam) {
         ClassLoaderProvider.classLoader = param.defaultClassLoader
         hookedPackageName = param.packageName

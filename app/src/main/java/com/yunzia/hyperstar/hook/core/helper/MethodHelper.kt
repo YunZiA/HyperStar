@@ -16,10 +16,16 @@ object MethodHelper {
     private val NULL = Any()
     private val methodCache = ConcurrentHashMap<MethodCacheKey, Any>()
 
+    @JvmStatic
+    fun getCacheSize(): Int {
+        return methodCache.size
+    }
+
 
     /**
      * 查找精确方法（参数类型支持 Object...：Class、String、实例等）
      */
+    @JvmStatic
     fun findMethodExact(clazz: Class<*>?, methodName: String, vararg parameterTypes: Any?): Method? {
         clazz ?: return null
         return findMethodExact(
@@ -32,6 +38,7 @@ object MethodHelper {
     /**
      * 安全查找（不抛异常，返回 null 表示未找到）
      */
+    @JvmStatic
     fun findMethodExactIfExists(
         clazz: Class<*>?,
         methodName: String,
@@ -50,6 +57,7 @@ object MethodHelper {
     /**
      * 安全版本（类名 + ClassLoader）
      */
+    @JvmStatic
     fun findMethodExactIfExists(
         className: String,
         classLoader: ClassLoader,
@@ -68,6 +76,7 @@ object MethodHelper {
     /**
      * 精确查找方法（仅当前类，不含继承）
      */
+    @JvmStatic
     fun findMethodExact(
         clazz: Class<*>?,
         methodName: String,
@@ -88,6 +97,7 @@ object MethodHelper {
     /**
      * 通过类名 + ClassLoader 查找（支持字符串类名、Class 对象等参数）
      */
+    @JvmStatic
     fun findMethodExact(
         className: String,
         classLoader: ClassLoader,
@@ -102,6 +112,7 @@ object MethodHelper {
     /**
      * 查找最佳匹配方法（考虑继承链和参数可赋值性）
      */
+    @JvmStatic
     fun findMethodBestMatch(
         clazz: Class<*>?,
         methodName: String,
@@ -149,6 +160,7 @@ object MethodHelper {
     /**
      * 根据实际参数推断类型并查找最佳匹配
      */
+    @JvmStatic
     fun findMethodBestMatch(
         clazz: Class<*>?,
         methodName: String,
@@ -163,6 +175,7 @@ object MethodHelper {
      * 混合显式类型与运行时参数
      */
     @Suppress("UNCHECKED_CAST")
+    @JvmStatic
     fun findMethodBestMatch(
         clazz: Class<*>?,
         methodName: String,
@@ -176,6 +189,7 @@ object MethodHelper {
         return findMethodBestMatch(clazz, methodName, *resolved)
     }
 
+    @JvmStatic
     fun findMethodsByExactParameters(
         clazz: Class<*>?,
         returnType: Class<*>? = null,
@@ -191,21 +205,21 @@ object MethodHelper {
             .toTypedArray()
     }
 
+    @JvmStatic
     private fun buildKey(
         clazz: Class<*>,
         methodName: String,
         parameterTypes: Array<out Class<*>>,
         tag: String
     ) = MethodCacheKey(
-            System.identityHashCode(clazz.classLoader),
-            clazz.name,
-            methodName,
-            parameterTypes,
-            tag
-        )
+        System.identityHashCode(clazz.classLoader),
+        clazz.name,
+        methodName,
+        parameterTypes.contentHashCode(),
+        tag
+    )
 
-
-
+    @JvmStatic
     private inline fun getCachedOrFind(key: MethodCacheKey, crossinline loader: () -> Method?): Method? {
         methodCache[key]?.let {
             return if (it === NULL) null else it as Method
@@ -215,6 +229,7 @@ object MethodHelper {
         return result
     }
 
+    @JvmStatic
     private fun getParameterClasses(
         loader: ClassLoader?,
         params: Array<out Any?>
@@ -227,6 +242,7 @@ object MethodHelper {
         }
     }.toTypedArray()
 
+    @JvmStatic
     private val primitiveWrapperMap = mapOf(
         Boolean::class.javaPrimitiveType to Boolean::class.java,
         Int::class.javaPrimitiveType to Int::class.java,
@@ -238,9 +254,11 @@ object MethodHelper {
         Char::class.javaPrimitiveType to Char::class.java
     )
 
+    @JvmStatic
     private val wrapperPrimitiveMap =
         primitiveWrapperMap.entries.associate { it.value to it.key!! }
 
+    @JvmStatic
     private fun isAssignable(
         actual: Array<out Class<*>>,
         formal: Array<out Class<*>>
@@ -255,6 +273,7 @@ object MethodHelper {
         }
     }
 
+    @JvmStatic
     private fun isAssignable(
         actual: Class<*>,
         formal: Class<*>
@@ -265,6 +284,8 @@ object MethodHelper {
             return true
         return false
     }
+
+    @JvmStatic
     private fun compareParameterTypes(
         m1: Array<out Class<*>>,
         m2: Array<out Class<*>>,
@@ -290,6 +311,8 @@ object MethodHelper {
     private val SHORT_PRIMITIVE = Short::class.javaPrimitiveType!!
     private val BYTE_PRIMITIVE = Byte::class.javaPrimitiveType!!
     private val CHAR_PRIMITIVE = Char::class.javaPrimitiveType!!
+
+    @JvmStatic
     private fun Any?.toParamType(): Class<*> {
         return when (this) {
             is Boolean -> BOOLEAN_PRIMITIVE
@@ -308,39 +331,14 @@ object MethodHelper {
         val loaderId: Int,
         val className: String,
         val methodName: String,
-        val paramTypes: Array<out Class<*>>,
+        val signatureHash: Int,
         val tag: String
-    ) {
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as MethodCacheKey
-
-            if (loaderId != other.loaderId) return false
-            if (className != other.className) return false
-            if (methodName != other.methodName) return false
-            if (!paramTypes.contentEquals(other.paramTypes)) return false
-            if (tag != other.tag) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = loaderId
-            result = 31 * result + className.hashCode()
-            result = 31 * result + methodName.hashCode()
-            result = 31 * result + paramTypes.contentHashCode()
-            result = 31 * result + tag.hashCode()
-            return result
-        }
-    }
+    )
 
 }
 
 
-
-fun  Any?.callMethod(methodName: String, vararg args: Any?): Any? {
+fun Any?.callMethod(methodName: String, vararg args: Any?): Any? {
     try {
         return findMethodBestMatch(this?.javaClass, methodName, *args)?.invoke(this, *args)
     } catch (t: Throwable) {

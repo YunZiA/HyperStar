@@ -3,6 +3,9 @@ package com.yunzia.hyperstar.hook
 import com.yunzia.hyperstar.hook.app.NotDeveloperHook
 import com.yunzia.hyperstar.hook.core.StarLog
 import com.yunzia.hyperstar.hook.core.base.BaseXposedModule
+import com.yunzia.hyperstar.hook.core.helper.FieldHelper
+import com.yunzia.hyperstar.hook.core.helper.MethodHelper
+import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper
 import com.yunzia.hyperstar.hook.init.InitBarrageHook
 import com.yunzia.hyperstar.hook.init.InitMMSHook
 import com.yunzia.hyperstar.hook.init.InitMiuiHomeHook
@@ -44,6 +47,8 @@ class ModuleMain : BaseXposedModule() {
             InitBarrageHook,
             InitThemeManagerHook
         )
+        StarLog.log("HyperStar Cache id ${ResourcesHelper.getCacheSize()} method ${MethodHelper.getCacheSize()} field ${FieldHelper.getCacheSize()}")
+
 
 
     }

@@ -3,6 +3,5 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/api" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/lsp/service/service" vcs="Git" />
   </component>
 </project>

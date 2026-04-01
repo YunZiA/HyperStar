@@ -34,10 +34,12 @@ object ResourcesHelper {
     fun addModuleAssetPath(context: Context) {
         addModuleAssetPath(context.resources)
     }
+    @JvmStatic
     fun loadResAboveApi30(context: Context) {
         loadResAboveApi30(context.resources)
     }
 
+    @JvmStatic
     fun loadResAboveApi30(resources: Resources) {
         ParcelFileDescriptor.open(
             File(XposedCore.modulePath),
@@ -50,6 +52,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     private val mAddAddAssertPath by lazy {
         AssetManager::class.java.getDeclaredMethod("addAssetPath", String::class.java).also { it.isAccessible = true }
     }
@@ -65,8 +68,16 @@ object ResourcesHelper {
         }
 
     }
+    @JvmStatic
     private val idCache = ConcurrentHashMap<String, Int>()
 
+
+    @JvmStatic
+    fun getCacheSize(): Int {
+        return idCache.size
+    }
+
+    @JvmStatic
     private inline fun getCachedIdBy(
         key: String,
         getIdBlock: () -> Int
@@ -81,6 +92,7 @@ object ResourcesHelper {
         return id
     }
 
+    @JvmStatic
     fun colorReplaceById(
         name: String,
         packageName: String,
@@ -98,6 +110,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun colorReplaceByIdName(
         name: String,
         packageName: String,
@@ -116,6 +129,7 @@ object ResourcesHelper {
 
         }
     }
+    @JvmStatic
     fun colorReplaceByIdName(
         name: String,
         packageName: String,
@@ -136,6 +150,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun colorReplaceByValue(
         name: String,
         packageName: String,
@@ -153,6 +168,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun colorReplaceByValue(
         name: String,
         packageName: String,
@@ -169,6 +185,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun dimenReplaceById(
         packageName: String,
         name: String,
@@ -217,6 +234,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun dimenReplaceByValue(
         name: String,
         packageName: String,
@@ -268,6 +286,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun drawableReplaceById(
         packageName: String,
         name: String,
@@ -284,6 +303,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun drawableReplaceByValue(
         packageName: String,
         name: String,
@@ -302,6 +322,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun integerReplaceById(
         packageName: String,
         name: String,
@@ -318,6 +339,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun layoutReplaceById(
         packageName: String,
         name: String,
@@ -334,6 +356,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun integerReplaceByValue(
         name: String,
         packageName: String,
@@ -350,6 +373,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun hookLayout(
         name: String,
         packageName: String,
@@ -372,6 +396,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun stringReplaceById(
         packageName: String,
         name: String,
@@ -406,6 +431,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun stringReplaceByValue(
         name: String,
         packageName: String,
@@ -438,6 +464,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun intArrayReplaceById(
         name: String,
         packageName: String,
@@ -454,6 +481,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun intArrayReplaceByIdName(
         name: String,
         packageName: String,
@@ -472,6 +500,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun intArrayReplaceByIdName(
         name: String,
         packageName: String,
@@ -492,6 +521,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun intArrayReplaceByValue(
         name: String,
         packageName: String,
@@ -507,6 +537,7 @@ object ResourcesHelper {
             }
         }
     }
+    @JvmStatic
     fun intArrayReplaceByValue(
         name: String,
         packageName: String,
@@ -524,6 +555,7 @@ object ResourcesHelper {
     }
 
 
+    @JvmStatic
     fun textArrayReplaceById(
         name: String,
         packageName: String,
@@ -540,6 +572,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun textArrayReplaceByValue(
         name: String,
         packageName: String,
@@ -557,6 +590,7 @@ object ResourcesHelper {
         }
     }
 
+    @JvmStatic
     fun stringArrayReplaceById(
         name: String,
         packageName: String,
@@ -574,6 +608,7 @@ object ResourcesHelper {
 
     }
 
+    @JvmStatic
     fun stringArrayReplaceByValue(
         name: String,
         packageName: String,

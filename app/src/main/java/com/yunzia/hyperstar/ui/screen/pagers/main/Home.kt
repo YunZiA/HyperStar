@@ -26,9 +26,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,6 +72,7 @@ import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.Helper.isRoot
 import com.yunzia.hyperstar.utils.LocalScopeManager
 import com.yunzia.hyperstar.utils.getSettingChannel
+import com.yunzia.hyperstar.viewmodel.EntryUiState
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -114,13 +117,16 @@ fun Home(
     val scopeManager = LocalScopeManager.current
     val moduleScope = stringArrayResource(R.array.module_scope)
 
-    val appInScope by appViewModel.appInScope.collectAsState()
-    val appNotInScope by appViewModel.appNotInScope.collectAsState()
-    val currentScope by scopeManager.scopeFlow.collectAsState()
-
-    LaunchedEffect(currentScope.size) {
-        appViewModel.loadAppInfo(packageManager, moduleScope, currentScope)
+    LaunchedEffect(Unit) {
+        scopeManager.scopeFlow.collect { scope ->
+            appViewModel.loadEntries(
+                packageManager,
+                moduleScope,
+                scope
+            )
+        }
     }
+    Log.d("ggcHome", "Home:")
 
     Scaffold(
         modifier = Modifier,
@@ -209,24 +215,29 @@ fun Home(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     AppEntryList.entries.forEach { entry ->
-                        val appInfo = appInScope[entry.packageName] ?: return@forEach
-                        val shouldShow = entry.isVisible(appInfo)
-                        var animatedVisible by remember(entry.packageName) { mutableStateOf(false) }
-                        LaunchedEffect(shouldShow) {
-                            animatedVisible = shouldShow
+                        val animatedVisible  = remember {
+                            mutableStateOf(appViewModel.visibleEntryMap[entry.packageName])
+                        }
+                        LaunchedEffect(appViewModel.visibleEntryMap.size) {
+                            animatedVisible.value = appViewModel.visibleEntryMap[entry.packageName]
+
                         }
                         AnimatedVisibility(
-                            visible = animatedVisible,
+                            visible = animatedVisible.value != null,
                             enter = fadeIn() + expandVertically(),
                             exit = fadeOut() + shrinkVertically()
                         ) {
-                            AppArrow(
-                                appInfo = appInfo,
-                                navController = navController,
-                                route = entry.route
-                            )
+                            animatedVisible.value?.let {
+                                AppArrow(
+                                    appInfo = it,
+                                    navController = navController,
+                                    route = entry.route
+                                )
+                            }
                         }
+
                     }
+
                 }
             }
 
@@ -249,9 +260,9 @@ fun Home(
                                     Log.d("com.miui.screenshot", "onSuccess")
                                     context.mainExecutor.execute {
 
-                                    Toast.makeText(context,"Request Success!", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context,"Request Success!", Toast.LENGTH_SHORT).show()
 
-                                        }
+                                    }
 
                                 }
                                 onFailure {
@@ -305,13 +316,14 @@ fun Home(
                 )
 
             }
-            if (appNotInScope.isNotEmpty()){
+
+            if (appViewModel.invisibleEntryMap.isNotEmpty()){
 
                 item {
                     val show = remember { mutableStateOf(false) }
                     Card(
                         modifier = Modifier
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = 12.dp)
                             .padding(top = 12.dp)
                             .bounceAnim(cornerSize = CardDefaults.CornerRadius)
                             .clickable {
@@ -323,7 +335,7 @@ fun Home(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 16.dp)
-                                .padding(start = 24.dp, end = 8.dp),
+                                .padding(start = 16.dp, end = 16.dp),
                             fontWeight  = FontWeight.Bold,
                             fontSize = 17.sp,
                             color = colorScheme.primary,
@@ -358,9 +370,9 @@ fun Home(
                                 .fillMaxSize()
                                 .padding(horizontal = 16.dp)
                         ) {
-                            appNotInScope.forEach { (s, throwable) ->
-                                this.itemGroup(s) {
-                                    Text(throwable.toString())
+                            appViewModel.invisibleEntryMap.forEach {
+                                this.itemGroup(it.key) {
+                                    Text(it.value.toString())
                                 }
                             }
 

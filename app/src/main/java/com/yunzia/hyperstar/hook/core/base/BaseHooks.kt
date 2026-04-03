@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.hook.core.base
 
+import com.yunzia.hyperstar.hook.core.StarLog.log
 import com.yunzia.hyperstar.hook.core.StarLog.logE
 
 abstract class BaseHooks: BaseHook() {
@@ -9,6 +10,7 @@ abstract class BaseHooks: BaseHook() {
                 if (h.isInit) continue
                 h.init()
                 h.isInit = true
+                log("initialize hook: ${h.className}\n")
             } catch (e: Exception) {
                 logE("Failed to initialize hook: ${h.className}\n$e")
             }

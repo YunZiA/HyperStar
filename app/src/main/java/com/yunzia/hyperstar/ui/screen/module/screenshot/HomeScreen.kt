@@ -19,7 +19,7 @@ fun ScreenshotScreen() {
     val navController = LocalNavigator.current
     val activity = LocalActivity.current as MainActivity
     ModuleNavPagers(
-        activityTitle = activity.appViewModel.appInScope.collectAsState().value["com.miui.screenshot"]!!.appName,
+        activityTitle = activity.appViewModel.visibleEntryMap["com.android.mms"]!!.appName,
         navController = navController,
         endClick = {
             Helper.rootShell("killall com.miui.screenshot")

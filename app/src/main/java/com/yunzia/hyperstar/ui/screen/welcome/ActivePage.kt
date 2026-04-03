@@ -85,7 +85,7 @@ fun ActivePage(
     val clipboardManager = LocalClipboardManager.current
     val hapticFeedback = LocalHapticFeedback.current
     val appViewModel = activity.appViewModel
-    val xposedServiceInfo = appViewModel.xposedServiceInfo.collectAsState().value
+    val xposedServiceInfo = appViewModel.xposedServiceInfo.value
     val debugInfo = remember {
         "Debug Info of HyperStar\n\n" +
                 "ModuleActive = ${appViewModel.isActive}\n" +

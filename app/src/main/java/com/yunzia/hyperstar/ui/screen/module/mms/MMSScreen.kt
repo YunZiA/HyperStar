@@ -24,7 +24,7 @@ fun MMSScreen() {
     val activity = LocalActivity.current as MainActivity
     val navController = LocalNavigator.current
     ModuleNavPagers(
-        activityTitle = activity.appViewModel.appInScope.collectAsState().value["com.android.mms"]!!.appName,
+        activityTitle = activity.appViewModel.visibleEntryMap["com.android.mms"]!!.appName,
         navController = navController,
         endClick = {
             Helper.rootShell("killall com.android.mms")

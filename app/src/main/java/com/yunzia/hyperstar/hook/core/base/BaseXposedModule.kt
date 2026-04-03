@@ -60,16 +60,32 @@ abstract class BaseXposedModule : XposedModule() {
     }
 
     fun initHooks(vararg hooks: BaseHook?) {
-        for (h in hooks) {
-            h ?: continue
-            if ((h.mPackageName.isEmpty() || XposedCore.hookedPackageName == h.mPackageName) && currentHookChannel in h.minVersion..h.maxVersion && !h.isInit){
-                try {
-                    h.init()
-                    h.isInit = true
-                    StarLog.log("initialize hook in currentHookChannel: ${h.className} ")
-                } catch (e: Exception) {
-                    StarLog.log("Failed to initialize hook: ${h.className}\n $e")
-                }
+        hooks.filterNotNull().forEach { hook ->
+
+            val packageMatch = hook.mPackageName.isEmpty() || XposedCore.hookedPackageName == hook.mPackageName
+
+            if (!packageMatch) return@forEach
+
+            val versionMatch = hook.maxVersion == -1 || (currentHookChannel >= hook.minVersion && currentHookChannel <= hook.maxVersion)
+
+            if (!versionMatch && hook.isInit) {
+                StarLog.log(
+                    buildString {
+                        append("Skip init hook: ${hook.className}\n")
+                        append("packageMatch=$packageMatch ")
+                        append("versionMatch=$versionMatch ")
+                        append("isInit=${hook.isInit}")
+                    }
+                )
+                return@forEach
+            }
+            runCatching {
+                hook.init()
+            }.onSuccess {
+                hook.isInit = true
+                StarLog.log("Initialized hook: ${hook.className}")
+            }.onFailure {
+                StarLog.log("Failed to initialize hook: ${hook.className}\n$it")
             }
         }
     }

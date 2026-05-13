@@ -1,31 +1,27 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
 import android.content.res.Resources
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.hook.core.helper.callMethodAs
+import com.yunzia.hyperstar.hook.core.helper.setFloatField
+import com.yunzia.hyperstar.prefs.XSPUtils
 
 
-class QSToggleSliderRadius : Hooker() {
+object QSToggleSliderRadius : BasePluginHook() {
 
     val progressRadius = XSPUtils.getFloat("qs_progress_radius",2f)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
         if (!XSPUtils.getBoolean("is_change_qs_progress_radius",false)) return
-
-        startMethodsHook()
-    }
-
-    private fun startMethodsHook() {
         findClass(
             "miui.systemui.controlcenter.panel.main.recyclerview.ToggleSliderViewHolder",
-            classLoader
-        ).afterHookMethod("updateSize"){
-            val mContext = this.callMethodAs<Resources>("getResources")!!
-            this.setFloatField("progressRadius",dpToPx(mContext,progressRadius))
+            pluginClassLoader
+        ).afterHookMethod("updateSize") { args, result ->
+            val mContext = thisObject.callMethodAs<Resources>("getResources")
+            thisObject.setFloatField("progressRadius",dpToPx(mContext,progressRadius))
         }
-
     }
 
     fun dpToPx(resources: Resources, dp: Float): Float {

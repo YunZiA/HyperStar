@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 
 @Composable
 fun SuperTextField(
@@ -78,7 +78,7 @@ fun SuperTextField(
     val labelOffsetY by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) -(insideMargin.height / 2) else 0.dp)
     val innerTextOffsetY by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) (insideMargin.height / 2) else 0.dp)
     val labelFontSize by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) 10.dp else 16.dp)
-    val border = Modifier.border(borderWidth, borderColor, G2RoundedCornerShape(cornerRadius))
+    val border = Modifier.border(borderWidth, borderColor, SmoothRoundedCornerShape(cornerRadius))
     val labelOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = labelOffsetY) else Modifier
     val innerTextOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = innerTextOffsetY) else Modifier
 
@@ -99,7 +99,7 @@ fun SuperTextField(
         interactionSource = interactionSource,
         cursorBrush = SolidColor(MiuixTheme.colorScheme.primary),
         decorationBox = { innerTextField ->
-            val shape = remember { derivedStateOf { G2RoundedCornerShape(cornerRadius) } }
+            val shape = remember { derivedStateOf { SmoothRoundedCornerShape(cornerRadius) } }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

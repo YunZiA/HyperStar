@@ -1,35 +1,26 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
 import android.content.Context
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.prefs.XSPUtils
 
-class SuperBlurWidgetManager : Hooker() {
+object SuperBlurWidgetManager : BasePluginHook() {
 
     val superBlurWidget = XSPUtils.getInt("is_super_blur_Widget",0)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
-        if (superBlurWidget != 0){
-            startMethodsHook()
-
-        }
-    }
-
-    private fun startMethodsHook() {
-        val controlCenterUtils  = findClass("miui.systemui.controlcenter.utils.ControlCenterUtils",classLoader)
-        controlCenterUtils.afterHookMethod("getBackgroundBlurOpenedInDefaultTheme",Context::class.java){
-
-            if (superBlurWidget == 1){
-                it.result = false
-
-            }else if (superBlurWidget == 2){
-                it.result = true
-
+    override fun init() {
+        if (superBlurWidget == 0) return
+        findClass(
+            "miui.systemui.controlcenter.utils.ControlCenterUtils",
+            pluginClassLoader
+        ).afterHookMethod("getBackgroundBlurOpenedInDefaultTheme", Context::class.java) { args, result ->
+            if (superBlurWidget == 1) {
+                result.replace(false)
+            } else if (superBlurWidget == 2) {
+                result.replace(true)
             }
         }
-
-
     }
 }

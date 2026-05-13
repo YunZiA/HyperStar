@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.ui.screen.module.systemui.other.notification
 
 import android.app.Application
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,14 +23,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
@@ -45,23 +45,27 @@ import com.yunzia.hyperstar.viewmodel.NotificationViewModel
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Icon
-import top.yukonga.miuix.kmp.basic.ListPopup
 import top.yukonga.miuix.kmp.basic.ListPopupColumn
 import top.yukonga.miuix.kmp.basic.ListPopupDefaults
 import top.yukonga.miuix.kmp.basic.PopupPositionProvider
-import top.yukonga.miuix.kmp.extra.DropdownImpl
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import com.yunzia.hyperstar.ui.navigation.Navigator
+import com.yunzia.hyperstar.ui.navigation.SystemUIRoutes
+import com.yunzia.hyperstar.ui.screen.module.systemui.other.notification.AppNotifItem
+import top.yukonga.miuix.kmp.basic.DropdownImpl
+import SearchRoute
+import top.yukonga.miuix.kmp.window.WindowListPopup
 
 @OptIn(ExperimentalSharedTransitionApi::class)
+@SearchRoute(route = SystemUIRoutes.NotificationOfIm::class)
 @Composable
-fun NotificationOfImScreen(
-    navController: NavHostController,
-    currentStartDestination: MutableState<String>,
-) {
-    val activity = navController.context as MainActivity
-    val context = navController.context
-    val viewModel: NotificationViewModel = viewModel(
+fun NotificationOfImScreen() {
+    val navController = LocalNavigator.current
+    val activity = LocalActivity.current as MainActivity
+    val context = LocalContext.current
+    val viewModel = viewModel<NotificationViewModel>(
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return NotificationViewModel(context.applicationContext as Application) as T
@@ -86,16 +90,10 @@ fun NotificationOfImScreen(
     LaunchedEffect(activity.isGranted.value) {
         viewModel.onPermissionGranted(activity.isGranted.value)
     }
-    // 搜索文本更新
-    LaunchedEffect(searchStatus.value.searchText) {
-        viewModel.onSearchTextChanged(searchStatus.value.searchText)
-    }
-
-    SearchModuleNavPager(
+    searchStatus.value.SearchModuleNavPager(
+        onQueryChange = { viewModel.onSearchTextChanged(it) },
         activityTitle = stringResource(R.string.icon_stacking_whitelist),
-        searchStatus = searchStatus.value,
         navController = navController,
-        parentRoute = currentStartDestination,
         endClick = {
             Helper.rootShell("killall com.android.systemui")
         },
@@ -122,8 +120,7 @@ fun NotificationOfImScreen(
         },
         result = {
             searchApps.value.forEach { app ->
-
-                item(app.appName) {
+                item(app.packageName) {
                     AppNotifItem(
                         notificationInfo = app,
                         navController = navController,
@@ -132,7 +129,7 @@ fun NotificationOfImScreen(
                 }
             }
         }
-    ) { topAppBarScrollBehavior, padding ->
+    ) { topAppBarScrollBehavior, contentTopPadding ->
         LoadBox(
             loadStatus = loadStatus.value,
             modifier = Modifier.fillMaxSize(),
@@ -142,12 +139,11 @@ fun NotificationOfImScreen(
                     .fillMaxSize()
                     .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
                 contentPadding = PaddingValues(
-                    bottom = padding.calculateBottomPadding()
+                    top = contentTopPadding
                 )
             ) {
                 selectedApps.forEach { app ->
-                    item {
-
+                    item(key = app.packageName) {
                         AppNotifItem(
                             notificationInfo = app,
                             navController = navController,
@@ -162,8 +158,8 @@ fun NotificationOfImScreen(
 
 @Composable
 private fun AppNotifItem(
+    navController: Navigator,
     notificationInfo: NotificationInfo,
-    navController: NavHostController,
     onDelete: () -> Unit
 ) {
     val shouldDelete = remember { mutableStateOf(false) }
@@ -190,7 +186,7 @@ private fun AppNotifItem(
                         }
                     )
                 }
-                .clip(G2RoundedCornerShape(CardDefaults.CornerRadius))
+                .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
                 .background(
                     if (shouldDelete.value)
                         colorScheme.tertiaryContainer
@@ -201,16 +197,16 @@ private fun AppNotifItem(
             titleColor = titleColor(false),
             summary = notificationInfo.packageName,
             summaryColor = summaryColor(false),
-            leftAction = {
+            startAction = {
                 Box(modifier = Modifier.padding(end = 12.dp)) {
                     Image(
                         modifier = Modifier.size(40.dp),
-                        painter = DrawablePainter(notificationInfo.icon),
+                        painter = remember(notificationInfo.icon) { DrawablePainter(notificationInfo.icon) },
                         contentDescription = notificationInfo.appName
                     )
                 }
             },
-            rightActions = {
+            endActions = {
                 Image(
                     modifier = Modifier
                         .size(40.dp)
@@ -233,10 +229,10 @@ private fun DeletePopup(
     onDelete: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    ListPopup(
-        show = shouldDelete,
+    WindowListPopup(
+        show = shouldDelete.value,
         popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
-        alignment = PopupPositionProvider.Align.TopRight,
+        alignment = PopupPositionProvider.Align.TopEnd,
         onDismissRequest = onDismiss
     ) {
         ListPopupColumn {

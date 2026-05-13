@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Resources
+import com.yunzia.hyperstar.prefs.PreferencesUtil
 import java.util.Locale
 
 
@@ -61,27 +62,6 @@ class LanguageHelper {
             Locale.setDefault(locale)
             configuration.setLocale(locale)
             resources.updateConfiguration(configuration, resources.displayMetrics)
-        }
-
-        fun setIndexLanguage(activity: Activity, index: Int) {
-            when (index) {
-                0 -> {
-                    setSystemLanguage(activity)
-
-                }
-
-                1 -> {
-                    setLanguage(activity, "zh", "CN")
-
-                }
-
-                2 -> {
-                    setLanguage(activity, "en")
-
-                }
-
-
-            }
         }
 
         private fun getSystemLanguage():Locale {

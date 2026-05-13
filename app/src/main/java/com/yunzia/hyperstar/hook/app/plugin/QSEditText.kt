@@ -1,24 +1,15 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
-import android.content.res.XModuleResources
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.callbacks.XC_InitPackageResources
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
+import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.stringReplaceByValue
+import com.yunzia.hyperstar.prefs.XSPUtils
 
-class QSEditText: Hooker() {
+object QSEditText: BasePluginHook() {
 
-    val mEditTitle = XSPUtils.getString("qs_customize_entry_button_text","null")
+    private val mEditTitle = XSPUtils.getString("qs_customize_entry_button_text","null")
 
-
-    override fun initResources(
-        resparam: XC_InitPackageResources.InitPackageResourcesParam?,
-        modRes: XModuleResources?
-    ) {
-        super.initResources(resparam, modRes)
+    override fun init() {
         if (mEditTitle == "null") return
-
-        resparam?.res?.setReplacement(plugin,"string","qs_customize_entry_button_text",mEditTitle)
-
-
+        stringReplaceByValue("qs_customize_entry_button_text", plugin, mEditTitle)
     }
 }

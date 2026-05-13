@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +30,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
@@ -39,7 +42,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.TextButton
@@ -59,7 +61,8 @@ import com.yunzia.hyperstar.utils.isPad
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.basic.Icon
 
 @Composable
 fun ActivePage(
@@ -67,34 +70,42 @@ fun ActivePage(
 ) {
 
     val view = LocalView.current
-    val isActive = isModuleActive()
-    val mContext = LocalActivity.current as MainActivity
+    val activity = LocalActivity.current as MainActivity
+    val context = LocalContext.current
 
-    val packageName = "org.lsposed.manager"
-    val className = "org.lsposed.manager.ui.activity.MainActivity"
+    val packageName = remember { "org.lsposed.manager" }
+    val className = remember { "org.lsposed.manager.ui.activity.MainActivity" }
 
-    val go = checkApplication(mContext,packageName)
+    val go = remember { checkApplication(context,packageName) }
 
-    val intent = Intent().apply {
+    val intent = remember { Intent().apply {
         setClassName(packageName,className)
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    }
+    } }
     val clipboardManager = LocalClipboardManager.current
     val hapticFeedback = LocalHapticFeedback.current
-    val debugInfo = "Debug Info of HyperStar\n\n" +
-            "ModuleActive = ${isModuleActive()}\n" +
-            "HookChannel =  OS${getSettingChannel()}\n" +
-            "VersionCode = ${getVersionCode(mContext)}\n" +
-            "VersionName = ${getVerName(mContext)}\n\n" +
-            "MarketName = $marketName\n" +
-            "DeviceName = $deviceName\n" +
-            "isFold = ${isFold()}\n" +
-            "isPad = ${isPad()}\n" +
-            "AndroidVersion = $androidVersion\n" +
-            "HyperOSVersion = $OSVersion\n" +
-            "IsBetaVersion = $isBetaOS\n" +
-            "SystemVersion = $systemVersionIncremental"
-    
+    val appViewModel = activity.appViewModel
+    val xposedServiceInfo = appViewModel.xposedServiceInfo.value
+    val debugInfo = remember {
+        "Debug Info of HyperStar\n\n" +
+                "ModuleActive = ${appViewModel.isActive}\n" +
+                "HookChannel =  OS${getSettingChannel()}\n" +
+                "VersionCode = ${getVersionCode(context)}\n" +
+                "VersionName = ${getVerName(context)}\n\n" +
+                "ApiVersion = ${xposedServiceInfo.apiVersion}\n" +
+                "FrameworkName = ${xposedServiceInfo.frameworkName}\n" +
+                "FrameworkVersion = ${xposedServiceInfo.frameworkVersion}\n" +
+                "FrameworkVersionCode = ${xposedServiceInfo.frameworkVersionCode}\n\n" +
+                "MarketName = $marketName\n" +
+                "DeviceName = $deviceName\n" +
+                "isFold = ${isFold()}\n" +
+                "isPad = ${isPad()}\n" +
+                "AndroidVersion = $androidVersion\n" +
+                "HyperOSVersion = $OSVersion\n" +
+                "IsBetaVersion = $isBetaOS\n" +
+                "SystemVersion = $systemVersionIncremental"
+    }
+
     val debugInfoString = buildAnnotatedString {
         withStyle(SpanStyle(color = colorScheme.onSurface)) {
             append(debugInfo)
@@ -143,7 +154,7 @@ fun ActivePage(
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp)
                 .padding(top = 15.dp, bottom = 6.dp)
-                .clip(G2RoundedCornerShape(21.dp))
+                .clip(SmoothRoundedCornerShape(21.dp))
                 .background(colorScheme.surface)
             ,
             verticalAlignment = Alignment.CenterVertically,
@@ -214,10 +225,8 @@ fun ActivePage(
                     .padding(bottom = 10.dp),
                 //colors = Color(0xFF3482FF),
                 onClick = {
-
                     view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                    mContext.startActivity(intent)
-
+                    context.startActivity(intent)
                 }
             )
 

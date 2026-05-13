@@ -1,30 +1,21 @@
 package com.yunzia.hyperstar.hook.app.plugin
 
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.afterHookAllMethods
+import com.yunzia.hyperstar.prefs.XSPUtils
 
-class QSMediaDefaultApp : Hooker() {
+object QSMediaDefaultApp : BasePluginHook() {
 
     val apps = XSPUtils.getString("media_default_app_package","")
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
-        if (apps != ""){
-            startMethodsHook()
-        }
-    }
-
-    private fun startMethodsHook() {
-
+    override fun init() {
+        if (apps.isNullOrEmpty()) return
         findClass(
             "com.android.systemui.QSControlMiPlayDetailHeader\$Companion\$getLastPlayingAppPackageName\$2",
-            classLoader
-        ).afterHookAllMethods("invokeSuspend"){
-            it.result = apps
+            pluginClassLoader
+        ).afterHookAllMethods("invokeSuspend") { args, result ->
+            result.replace(apps)
         }
-
     }
-
-
 }

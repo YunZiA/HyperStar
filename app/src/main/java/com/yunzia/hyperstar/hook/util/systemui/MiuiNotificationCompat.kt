@@ -1,12 +1,13 @@
 package com.yunzia.hyperstar.hook.util.systemui
 
 import android.app.Notification
-import de.robv.android.xposed.XposedHelpers
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.callStaticMethod
 
 class MiuiNotificationCompat(private val classLoader: ClassLoader?) {
-    private val miuiNotificationCompat = XposedHelpers.findClass("com.miui.systemui.notification.MiuiNotificationCompat",classLoader)
+    private val miuiNotificationCompat = findClass("com.miui.systemui.notification.MiuiNotificationCompat",classLoader)
 
-    fun getTargetPkg(notification: Notification) = XposedHelpers.callStaticMethod(miuiNotificationCompat,"getTargetPkg",notification) as? CharSequence
+    fun getTargetPkg(notification: Notification) = miuiNotificationCompat.callStaticMethod("getTargetPkg",notification) as? CharSequence
 
 
 }

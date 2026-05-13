@@ -16,7 +16,7 @@ import android.media.ImageReader
 import android.util.Log
 import androidx.core.graphics.ColorUtils
 import androidx.palette.graphics.Palette
-import com.yunzia.hyperstar.hook.tool.starLog
+import com.yunzia.hyperstar.hook.core.StarLog.logE
 
 class BitmapUtils {
     companion object {
@@ -38,18 +38,23 @@ class BitmapUtils {
             var processedBitmap = bitmap
 
             if (isScale) {
+                val prev = processedBitmap
                 processedBitmap = scaleAndCropCenterBitmap(processedBitmap, scaleFactor)
+                if (prev !== bitmap) prev.recycle()
             }
 
 
             if (isDim) {
+                val prev = processedBitmap
                 processedBitmap = reduceBrightness(processedBitmap,alpha)
-                //processedBitmap = dim(processedBitmap, alpha)
+                if (prev !== bitmap) prev.recycle()
             }
 
 
             if (isBlur) {
+                val prev = processedBitmap
                 processedBitmap = blur(processedBitmap, blurRadius)
+                if (prev !== bitmap) prev.recycle()
             }
             val endTime = System.nanoTime()
 
@@ -69,13 +74,13 @@ class BitmapUtils {
 
             val dominantColor = palette.getDominantColor(Color.TRANSPARENT)
             if (dominantColor == Color.TRANSPARENT){
-                starLog.logE("backgroundColor is null")
+                logE("backgroundColor is null")
                 return bitmap
             }
 
             val outHsl = FloatArray(3)
             ColorUtils.colorToHSL(dominantColor,outHsl)
-            //starLog.log("1 Hue: ${outHsl[0]}, Saturation: ${outHsl[1]}, Lightness: ${outHsl[2]}")
+            //log("1 Hue: ${outHsl[0]}, Saturation: ${outHsl[1]}, Lightness: ${outHsl[2]}")
             outHsl[2] = if (outHsl[2] > 0.5f){
                 0.4f
             }else if (outHsl[2] < 0.11f){
@@ -91,7 +96,7 @@ class BitmapUtils {
                 0.5f
             } else outHsl[1]
 
-            //starLog.log("2 Hue: ${outHsl[0]}, Saturation: ${outHsl[1]}, Lightness: ${outHsl[2]}")
+            //log("2 Hue: ${outHsl[0]}, Saturation: ${outHsl[1]}, Lightness: ${outHsl[2]}")
 
             val backgroundColor = ColorUtils.HSLToColor(outHsl)
 
@@ -214,6 +219,7 @@ class BitmapUtils {
 
             // 绘制裁切后的区域
             canvas.drawBitmap(scaledBitmap, -cropX.toFloat(), -cropY.toFloat(), null)
+            scaledBitmap.recycle()
 
             return resultBitmap
          }
@@ -226,36 +232,48 @@ class BitmapUtils {
                 PixelFormat.RGBA_8888, 1,
                 HardwareBuffer.USAGE_GPU_SAMPLED_IMAGE or HardwareBuffer.USAGE_GPU_COLOR_OUTPUT
             )
-            val renderNode = RenderNode("RenderEffect")
-            val hardwareRenderer = HardwareRenderer()
-            // 将 ImageReader 的surface 设置到 HardwareRenderer 中
-            hardwareRenderer.setSurface(imageReader.surface)
-            hardwareRenderer.setContentRoot(renderNode)
-            renderNode.setPosition(0, 0, imageReader.width, imageReader.height)
-            // 使用 RenderEffect 配置模糊效果，并设置到 RenderNode 中。
-            val blurRenderEffect = RenderEffect.createBlurEffect(
-                radius, radius,
-                Shader.TileMode.MIRROR
-            )
-            renderNode.setRenderEffect(blurRenderEffect)
-            // 通过 RenderNode 的 RenderCanvas 绘制 Bitmap。
-            val renderCanvas = renderNode.beginRecording()
-            renderCanvas.drawBitmap(bitmap, 0f, 0f, null)
-            renderNode.endRecording()
-            // 通过 HardwareRenderer 创建 Render 异步请求。
-            hardwareRenderer.createRenderRequest()
-                .setWaitForPresent(true)
-                .syncAndDraw()
-            // 通过 ImageReader 获取模糊后的 Image 。
-            val image = imageReader.acquireNextImage() ?: throw RuntimeException("No Image")
-            // 将 Image 的 HardwareBuffer 包装为 Bitmap , 也就是模糊后的。
-            val hardwareBuffer =
-                image.hardwareBuffer ?: throw RuntimeException("No HardwareBuffer")
-            val bit = Bitmap.wrapHardwareBuffer(hardwareBuffer, null)
-                ?: throw RuntimeException("Create Bitmap Failed")
-            hardwareBuffer.close()
-            image.close()
-            return bit
+            try {
+                val renderNode = RenderNode("RenderEffect")
+                val hardwareRenderer = HardwareRenderer()
+                try {
+                    // 将 ImageReader 的surface 设置到 HardwareRenderer 中
+                    hardwareRenderer.setSurface(imageReader.surface)
+                    hardwareRenderer.setContentRoot(renderNode)
+                    renderNode.setPosition(0, 0, imageReader.width, imageReader.height)
+                    // 使用 RenderEffect 配置模糊效果，并设置到 RenderNode 中。
+                    val blurRenderEffect = RenderEffect.createBlurEffect(
+                        radius, radius,
+                        Shader.TileMode.MIRROR
+                    )
+                    renderNode.setRenderEffect(blurRenderEffect)
+                    // 通过 RenderNode 的 RenderCanvas 绘制 Bitmap。
+                    val renderCanvas = renderNode.beginRecording()
+                    renderCanvas.drawBitmap(bitmap, 0f, 0f, null)
+                    renderNode.endRecording()
+                    // 通过 HardwareRenderer 创建 Render 异步请求。
+                    hardwareRenderer.createRenderRequest()
+                        .setWaitForPresent(true)
+                        .syncAndDraw()
+                    // 通过 ImageReader 获取模糊后的 Image 。
+                    val image = imageReader.acquireNextImage() ?: throw RuntimeException("No Image")
+                    try {
+                        // 将 Image 的 HardwareBuffer 包装为 Bitmap , 也就是模糊后的。
+                        val hardwareBuffer =
+                            image.hardwareBuffer ?: throw RuntimeException("No HardwareBuffer")
+                        val bit = Bitmap.wrapHardwareBuffer(hardwareBuffer, null)
+                            ?: throw RuntimeException("Create Bitmap Failed")
+                        hardwareBuffer.close()
+                        return bit
+                    } finally {
+                        image.close()
+                    }
+                } finally {
+                    hardwareRenderer.destroy()
+                    renderNode.discardDisplayList()
+                }
+            } finally {
+                imageReader.close()
+            }
         }
 
     }

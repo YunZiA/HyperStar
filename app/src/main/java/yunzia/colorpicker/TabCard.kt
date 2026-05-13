@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun TabCard(
@@ -38,8 +38,8 @@ fun TabCard(
     local : Int,
     titleColor: Color = Color(0xFF666666),
     titleSelectColor : Color = Color(0xFF606060),
-    tabColor: Color = Color.White,
-    tabBgColor : Color = Color(0xFFF0F0F0),
+    tabColor: Color = MiuixTheme.colorScheme.surfaceContainer,
+    tabBgColor : Color = MiuixTheme.colorScheme.secondaryContainer,
     onTabChange : (Int) -> Unit
 ) {
 
@@ -48,8 +48,8 @@ fun TabCard(
     val x =  animateFloatAsState(selectedTab.intValue.toFloat(), label = "")
 
 
-    Box(modifier = modifier
-        .background(tabBgColor,SquircleShape(8.dp))
+    Box(
+        modifier = modifier.background(tabBgColor,RoundedCornerShape(8.dp))
         .padding(5.dp)
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -59,7 +59,7 @@ fun TabCard(
             drawRoundRect(
                 color = tabColor,
                 cornerRadius = CornerRadius(12f,12f),
-                topLeft =  Offset(x.value*width,0f),
+                topLeft =  Offset(x.value * width,0f),
                 size = Size(width,size.height)
             )
 

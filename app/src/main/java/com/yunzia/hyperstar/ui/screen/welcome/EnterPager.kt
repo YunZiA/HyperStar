@@ -37,7 +37,7 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.Button
 import com.yunzia.hyperstar.ui.component.dialog.SuperNotificationUtil.notification
 import com.yunzia.hyperstar.ui.component.dialog.SuperNotificationUtil.show
-import com.yunzia.hyperstar.utils.PreferencesUtil
+import com.yunzia.hyperstar.prefs.PreferencesUtil
 import com.yunzia.hyperstar.utils.getVerName
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -121,9 +121,9 @@ fun EnterPager(show: MutableState<Boolean>, pagerState: PagerState) {
                 view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                 show.value = false
                 PreferencesUtil.putBoolean("is_first_use",false)
-                notification{
-                    Text("wcnm")
-                }.show()
+//                notification{
+//                    Text("wcnm")
+//                }.show()
             }
         ) {
             Text(

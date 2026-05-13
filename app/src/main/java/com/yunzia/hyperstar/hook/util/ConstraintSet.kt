@@ -1,12 +1,13 @@
 package com.yunzia.hyperstar.hook.util
 
-import androidx.constraintlayout.widget.ConstraintSet
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.tool.starLog
-import de.robv.android.xposed.XposedHelpers
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.StarLog.logE
+import com.yunzia.hyperstar.hook.core.helper.callMethod
 
 
 class ConstraintSet(classLoader: ClassLoader?) {
+
+    private val TAG = "ConstraintSet"
     val constraintSet: Any? by lazy { getConstraintSet(classLoader) }
 
     private fun getConstraintSet(classLoader: ClassLoader?):Any? {
@@ -16,7 +17,7 @@ class ConstraintSet(classLoader: ClassLoader?) {
                 constraintSet = getConstructor().newInstance()
             }
         } catch (e: Throwable) {
-            starLog.logE(e.message)
+            logE(TAG, e.message)
             e.printStackTrace()
         }
         return constraintSet
@@ -48,10 +49,10 @@ class ConstraintSet(classLoader: ClassLoader?) {
         weights: FloatArray?,
         style: Int
     ) {
-        callSafeMethod("createHorizontalChainRtl",
-            startId, startSide, endId, endSide,
-            chainIds, weights, style, ConstraintSet.START, ConstraintSet.END
-        )
+//        callSafeMethod("createHorizontalChainRtl",
+//            startId, startSide, endId, endSide,
+//            chainIds, weights, style, ConstraintSet.START, ConstraintSet.END
+//        )
     }
 
     fun applyTo(constraintLayout: Any) {
@@ -60,9 +61,7 @@ class ConstraintSet(classLoader: ClassLoader?) {
 
     private fun callSafeMethod(methodName: String, vararg args: Any?) {
         try {
-            constraintSet?.let {
-                XposedHelpers.callMethod(it, methodName, *args)
-            }
+            constraintSet?.callMethod(methodName, *args)
         } catch (e: Exception) {
             // Log 或打印异常信息
             println("Error calling method $methodName: ${e.message}")

@@ -3,23 +3,29 @@ package com.yunzia.hyperstar.hook.app.plugin.os2
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
+import com.yunzia.hyperstar.hook.core.helper.callMethod
+import com.yunzia.hyperstar.hook.core.helper.getBooleanField
+import com.yunzia.hyperstar.hook.core.helper.getFloatField
+import com.yunzia.hyperstar.hook.core.helper.getObjectField
+import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
+import com.yunzia.hyperstar.hook.core.helper.setLongField
+import com.yunzia.hyperstar.hook.core.helper.setObjectField
+import com.yunzia.hyperstar.prefs.XSPUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class LongPressVolumeBarToExpand: Hooker() {
+object LongPressVolumeBarToExpand: BasePluginHook() {
     val isPressExpandVolume = XSPUtils.getBoolean("is_press_expand_volume",false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
-
+    override fun init() {
         if (!isPressExpandVolume) return
-
         var longClick = false
         var longPressJob: Job? = null
 
@@ -44,12 +50,12 @@ class LongPressVolumeBarToExpand: Hooker() {
 
         findClass(
             "com.android.systemui.miui.volume.MiuiVolumeDialogView",
-            classLoader
+            pluginClassLoader
         ).apply {
             afterHookMethod(
                 "onFinishInflate"
-            ) {
-                this.getObjectFieldAs<View>("mExpandButton").apply {
+            ) {  args, result ->
+                thisObject.getObjectFieldAs<View>("mExpandButton").apply {
                     setOnClickListener(null)
                     alpha = 0f
                     isClickable = false
@@ -60,64 +66,55 @@ class LongPressVolumeBarToExpand: Hooker() {
             afterHookMethod(
                 "notifyAccessibilityChanged",
                 Boolean::class.java
-            ) {
-                this.getObjectFieldAs<View>("mExpandButton").apply {
+            ) { args, result ->
+                thisObject.getObjectFieldAs<View>("mExpandButton").apply {
                     setOnClickListener(null)
                     isClickable = false
                     visibility = View.GONE
                 }
-
             }
         }
 
         findClass(
-            "com.android.systemui.miui.volume.MiuiVolumeDialogMotion", classLoader
+            "com.android.systemui.miui.volume.MiuiVolumeDialogMotion", pluginClassLoader
         ).apply {
-            beforeHookMethod("lambda\$processExpandTouch\$1") {
-                this.setObjectField("mIsExpandButton",true)
+            beforeHookMethod("lambda\$processExpandTouch\$1") { args, result ->
+                thisObject.setObjectField("mIsExpandButton",true)
             }
-
         }
 
         findClass(
             "com.android.systemui.miui.volume.MiuiVolumeSeekBar",
-            classLoader
+            pluginClassLoader
         ).apply {
             afterHookMethod(
                 "onTouchEvent",
                 MotionEvent::class.java
-            ) {
-                val mSeekBarOnclickListener = this.getObjectField("mSeekBarOnclickListener")
-                val mSeekBarAnimListener = this.getObjectField("mSeekBarAnimListener")
+            ) { args, result ->
+                val mSeekBarOnclickListener = thisObject.getObjectField("mSeekBarOnclickListener")
+                val mSeekBarAnimListener = thisObject.getObjectField("mSeekBarAnimListener")
                 val volumePanelViewController = mSeekBarAnimListener.getObjectField("this\$0")
                 val mVolumeView = volumePanelViewController.getObjectFieldAs<View>("mVolumeView")
-
-
-                this.setLongField("mCurrentMS",0L)
+                thisObject.setLongField("mCurrentMS",0L)
                 if (mSeekBarOnclickListener != null) {
-                    val motionEvent = it.args?.get(0) as MotionEvent
-
-
+                    val motionEvent = args?.get(0) as MotionEvent
                     when (motionEvent.action) {
                         MotionEvent.ACTION_DOWN -> {
 
-                            if ( !volumePanelViewController.getBooleanField("mExpanded") ){
+                            if ( !volumePanelViewController.getBooleanField("mExpanded")!! ){
 
                                 // 启动长按检测协程
                                 longPressJob = CoroutineScope(Dispatchers.Main).launch {
                                     mVolumeView.startScaleAnimation() // 执行缩放动画
                                     delay(300)
-                                    val mMoveY = this@afterHookMethod.getFloatField("mMoveY")
-
+                                    val mMoveY = thisObject.getFloatField("mMoveY")!!
                                     if (longClick && mMoveY < 10f){
                                         mVolumeView.apply {
                                             performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                                             scaleY = 1f
                                             scaleX = 1f
                                         }
-
                                         mSeekBarOnclickListener.callMethod( "onClick")
-
                                     }
 
                                 }
@@ -133,7 +130,6 @@ class LongPressVolumeBarToExpand: Hooker() {
                             longPressJob?.cancel()
                         }
                     }
-
                 }
             }
         }

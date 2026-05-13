@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -39,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,18 +51,21 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.topbar.TopButton
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.modifier.elevation
-import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.component.preference.PreferenceScreen
 import com.yunzia.hyperstar.utils.Helper
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.SPUtils
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import com.yunzia.hyperstar.ui.navigation.SystemUIRoutes
+import SearchRoute
+import androidx.activity.compose.LocalActivity
+import com.yunzia.hyperstar.MainActivity
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import yunzia.ui.DraggableGrid
 
 data class Card(
@@ -124,16 +129,16 @@ private fun saveList(items: List<Card>) {
 
     //cardList = items
 
-    SPUtils.setString("card_tile_list",mCardStyleTiles)
+    SPUtils.putString("card_tile_list",mCardStyleTiles)
 
 }
 
+@SearchRoute(route = SystemUIRoutes.CardList::class)
 @Composable
-fun QSCardListScreen(
-    navController: NavController,
-    currentStartDestination: MutableState<String>
-) {
-    val mContext = navController.context
+fun QSCardListScreen() {
+    val navController = LocalNavigator.current
+    val activity = LocalActivity.current as MainActivity
+    val mContext = LocalContext.current
     val cardMap = mutableMapOf<String, Card>()
     var items by remember { mutableStateOf(emptyList<Card>()) }
     var lastitems by remember { mutableStateOf(emptyList<Card>()) }
@@ -151,9 +156,8 @@ fun QSCardListScreen(
 
     val view = LocalView.current
 
-    ModuleNavPagers(
-        activityTitle = stringResource(R.string.card_tile_edit),
-        parentRoute = currentStartDestination,
+    PreferenceScreen(
+        title = stringResource(R.string.card_tile_edit),
         navController = navController,
         endIcon = {
 
@@ -181,9 +185,11 @@ fun QSCardListScreen(
         endClick = {
             Helper.rootShell("killall com.android.systemui")
         },
-    ){
+        scrollToKey = activity.appViewModel.scrollToKey.value,
+        onScrollComplete = { activity.appViewModel.scrollToKey.value = null },
+    ) { _, _ ->
 
-            itemGroup(
+            list.itemGroup(
                 title = R.string.card_list_header_title,
                 position = SuperGroupPosition.FIRST
                 //summary = R.string.card_list_header_sub_title
@@ -241,7 +247,7 @@ fun QSCardListScreen(
                 }
             }
 
-        this.itemGroup(
+        list.itemGroup(
             title = R.string.card_list_no_add_title
         ) {
             LazyVerticalGrid(
@@ -344,7 +350,7 @@ fun CardItem(
                 .fillMaxSize()
                 .padding(vertical = 4.dp, horizontal = 4.dp)
                 .elevation(
-                    shape = SquircleShape(18.dp),
+                    shape = RoundedCornerShape(18.dp),
                     backgroundColor = colorScheme.secondary,
                     shadowElevation = 3f
                 ),

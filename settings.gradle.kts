@@ -23,7 +23,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "HyperStar"
 include(":app")
-include(":annotations")
-include(":processor")
-include(":hhook")
-include(":liquidglass")
+include(":ksp-annotation")
+include(":ksp-processor")
+include(":baselineprofile")

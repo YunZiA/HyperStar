@@ -33,13 +33,13 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.enums.EventState
 import com.yunzia.hyperstar.ui.component.modifier.bounceClick
 import com.yunzia.hyperstar.ui.component.modifier.bounceScale
-import com.yunzia.hyperstar.ui.component.pager.NavPager
+import com.yunzia.hyperstar.ui.component.preference.widget.PreferenceListPage
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.media.app.AppInfo
 import com.yunzia.hyperstar.utils.root
 import kotlinx.coroutines.Dispatchers
@@ -62,7 +62,8 @@ private fun getRootManagerInfo(
     val rootList = root.toMutableList()
     root.forEach {
         try {
-            val packageInfo = packageManager.getPackageInfo(it.packageName, 0).applicationInfo!!
+            val packageInfo = packageManager.getPackageInfo(it.packageName, 0).applicationInfo
+                ?: return@forEach
 
             val app_name = packageManager.getApplicationLabel(packageInfo).toString()
             val package_name = packageInfo.packageName
@@ -93,11 +94,9 @@ private fun getRootManagerInfo(
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
-fun GoRootPager(
-    navController: NavHostController,
-    currentStartDestination: MutableState<String>
-) {
+fun GoRootPager() {
     val mContext = LocalContext.current
+    val navController = LocalNavigator.current
     ///val rootList = getRootManagerInfo(mContext)
     
     val noRoot = remember { mutableStateOf<List<AppInfo>?>(null) }
@@ -116,12 +115,10 @@ fun GoRootPager(
     }
 
 
-    NavPager(
-        activityTitle = stringResource(R.string.quick_authorization),
+    PreferenceListPage(
+        title = stringResource(R.string.quick_authorization),
         navController = navController,
-        parentRoute = currentStartDestination,
     ) {
-
         item {
             Text(
                 stringResource(R.string.installed),
@@ -152,13 +149,10 @@ fun GoRootPager(
         }
 
         noRoot.value?.forEach {
-
             item {
                 AppItem(mContext,it)
             }
-
         }
-
     }
 
 }
@@ -249,7 +243,10 @@ private fun AppItem(
     }
 }
 private fun startAppByPackageName(context: Context, app: AppInfo) {
-    val intent = app.launch!!
+    val intent = app.launch ?: run {
+        Log.e("AppStarter", "No launch intent for package: ${app.packageName}")
+        return
+    }
 
     val resolveInfo = context.packageManager.resolveActivity(intent, 0)
     if (resolveInfo != null) {

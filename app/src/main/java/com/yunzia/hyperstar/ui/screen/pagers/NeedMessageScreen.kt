@@ -1,6 +1,7 @@
 package com.yunzia.hyperstar.ui.screen.pagers
 
 import android.content.ClipData
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -31,9 +33,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.component.pager.NavPager
+import com.yunzia.hyperstar.ui.component.preference.widget.PreferencePage
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.OSVersion
 import com.yunzia.hyperstar.utils.androidVersion
@@ -50,19 +52,27 @@ import com.yunzia.hyperstar.utils.isPad
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import androidx.compose.runtime.collectAsState
+import com.yunzia.hyperstar.ui.component.preference.widget.PreferenceListPage
 
 @Composable
-fun NeedMessageScreen(
-    navController: NavController,
-    currentStartDestination: MutableState<String>,
-) {
+fun NeedMessageScreen() {
     val context = LocalContext.current
+    val navController = LocalNavigator.current
+    val activity = LocalActivity.current as MainActivity
+    val appViewModel = activity.appViewModel
+    val xposedServiceInfo = appViewModel.xposedServiceInfo.value
     val debugInfo = "Debug Info of HyperStar\n\n" +
-            "ModuleActive = ${isModuleActive()}\n" +
+            "ModuleActive = ${appViewModel.isActive}\n" +
             "HookChannel =  OS${getSettingChannel()}\n" +
             "VersionCode = ${getVersionCode(context)}\n" +
             "VersionName = ${getVerName(context)}\n\n" +
+            "ApiVersion = ${xposedServiceInfo.apiVersion}\n" +
+            "FrameworkName = ${xposedServiceInfo.frameworkName}\n" +
+            "FrameworkVersion = ${xposedServiceInfo.frameworkVersion}\n" +
+            "FrameworkVersionCode = ${xposedServiceInfo.frameworkVersionCode}\n\n" +
             "MarketName = $marketName\n" +
             "DeviceName = $deviceName\n" +
             "isFold = ${isFold()}\n" +
@@ -71,7 +81,6 @@ fun NeedMessageScreen(
             "HyperOSVersion = $OSVersion\n" +
             "IsBetaVersion = $isBetaOS\n" +
             "SystemVersion = $systemVersionIncremental"
-
 
     val localClipboard = LocalClipboard.current
     val debugInfoString = buildAnnotatedString {
@@ -93,20 +102,18 @@ fun NeedMessageScreen(
 
     }
 
-    NavPager(
-        activityTitle = stringResource(R.string.debug_message),
+    PreferenceListPage(
+        title = stringResource(R.string.debug_message),
         navController = navController,
-        parentRoute = currentStartDestination
     ) {
-
         item {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp)
-                    .clip(G2RoundedCornerShape(21.dp))
+                    .clip(SmoothRoundedCornerShape(21.dp))
                     .background(Color(0x2A0D84FF))
-                    ,
+                ,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
@@ -155,7 +162,5 @@ fun NeedMessageScreen(
 
             }
         }
-
-
     }
 }

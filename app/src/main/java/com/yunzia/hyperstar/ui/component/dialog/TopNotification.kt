@@ -22,7 +22,7 @@
 //import androidx.compose.ui.platform.LocalDensity
 //import androidx.compose.ui.unit.DpSize
 //import androidx.compose.ui.unit.dp
-//import top.yukonga.miuix.kmp.utils.BackHandler
+//import com.yunzia.hyperstar.ui.navigation.NavigationBackHandler
 //import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 //import top.yukonga.miuix.kmp.utils.getRoundedCorner
 //import top.yukonga.miuix.kmp.utils.getWindowSize
@@ -31,10 +31,10 @@
 //fun TopNotification(
 //    show: MutableState<Boolean>,
 //    modifier: Modifier = Modifier,
-//    backgroundColor: Color = SuperDialogDefaults.backgroundColor(),
+//    backgroundColor: Color = OverlayDialogDefaults.backgroundColor(),
 //    onFocus: () -> Unit = {},
 //    onDismissRequest: (() -> Unit)? = null,
-//    insideMargin: DpSize = SuperDialogDefaults.insideMargin,
+//    insideMargin: DpSize = OverlayDialogDefaults.insideMargin,
 //    defaultWindowInsetsPadding: Boolean = true,
 //    content: @Composable () -> Unit
 //) {
@@ -54,7 +54,7 @@
 //        val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) 20.dp  else 32.dp } }
 //        val maxWidth by remember { derivedStateOf { if (windowHeight >= 480.dp && windowWidth >= 840.dp) 420.dp else  383.2.dp } }
 //
-//        BackHandler(enabled = show.value) {
+//        NavigationBackHandler(isBackEnabled = show.value) {
 //            onDismissRequest?.invoke()
 //        }
 //

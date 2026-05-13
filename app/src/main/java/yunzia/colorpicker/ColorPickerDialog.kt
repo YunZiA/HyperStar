@@ -40,16 +40,16 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.Button
-import androidx.wear.compose.material.ButtonDefaults.buttonColors
-import androidx.wear.compose.material.Icon
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseButton
 import com.yunzia.hyperstar.ui.component.MTextField
-import com.yunzia.hyperstar.ui.component.dialog.SuperDialog
+import com.yunzia.hyperstar.ui.component.dialog.OverlayDialog
 import com.yunzia.hyperstar.ui.component.tool.FilterColorHex
+import top.yukonga.miuix.kmp.basic.Button
+import top.yukonga.miuix.kmp.basic.ButtonDefaults.buttonColors
+import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 
 @Composable
@@ -72,7 +72,7 @@ fun ColorPickerDialog(
     val filter = remember(key1 = color.value) { FilterColorHex(color.value.toHex()) }
 
 
-    SuperDialog(
+    OverlayDialog(
         title = title,
         show = showDialog,
         imePadding = false,
@@ -84,7 +84,7 @@ fun ColorPickerDialog(
             if (hasFocus){
                 kc?.hide()
                 focusManager.clearFocus()
-                return@SuperDialog
+                return@OverlayDialog
             }
             if (doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)){
 
@@ -105,11 +105,11 @@ fun ColorPickerDialog(
                 Image(
                     modifier = Modifier
                         .size(60.dp)
-                        .clip(G2RoundedCornerShape(10.dp))
+                        .clip(SmoothRoundedCornerShape(10.dp))
                         .border(
                             2.dp,
                             if (color.value.toColor() == colorScheme.surfaceVariant) colorScheme.secondaryContainer else Color.Transparent,
-                            G2RoundedCornerShape(10.dp)
+                            SmoothRoundedCornerShape(10.dp)
                         ),
                     imageVector = ImageVector.vectorResource(R.drawable.transparent),
                     colorFilter = ColorFilter.tint(
@@ -137,11 +137,10 @@ fun ColorPickerDialog(
                                     doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)
                                 },
                                 //contentPadding = PaddingValues(10.dp,16.dp),
-                                shape = G2RoundedCornerShape(12.dp),
+                                cornerRadius = 12.dp,
                                 colors = buttonColors(
-                                    backgroundColor = Color.Transparent,
-                                    contentColor = Color.Transparent,
-                                    disabledContentColor = Color.Transparent
+                                    color = Color.Transparent,
+                                    disabledColor = Color.Transparent
                                 )
                             ) {
                                 Icon(

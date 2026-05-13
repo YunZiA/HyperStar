@@ -1,12 +1,13 @@
 package com.yunzia.hyperstar.ui.component
 
 import android.view.HapticFeedbackConstants
-import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -16,7 +17,6 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,31 +27,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.ExperimentalWearMaterialApi
-import androidx.wear.compose.material.FractionalThreshold
-import androidx.wear.compose.material.rememberSwipeableState
-import androidx.wear.compose.material.swipeable
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.SPUtils
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.Text
@@ -59,7 +49,6 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import yunzia.colorpicker.ColorPickerDialog
 import yunzia.colorpicker.colorFromHex
 import yunzia.colorpicker.toHex
-import kotlin.math.roundToInt
 
 fun getDefaultColor(
     dfColor:Color,
@@ -73,122 +62,125 @@ fun getDefaultColor(
     }
 }
 
-@OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun ColorPickerTool(
+    modifier: Modifier = Modifier,
     title:String,
     dfColor:Color = Color.Transparent,
     key : String
-
 ) {
-
-    val insideMargin = remember { BasicComponentDefaults.InsideMargin }
     val view = LocalView.current
-    val layoutDirection = LocalLayoutDirection.current
-    val swappableState = rememberSwipeableState(Status.CLOSE)
-    val squareSize = 103.dp+insideMargin.calculateEndPadding(layoutDirection)
-    val sizePx = with(LocalDensity.current) { -squareSize.toPx() }
-    val anchors = mapOf(0f to Status.CLOSE, sizePx to Status.OPEN)
     val scope = rememberCoroutineScope()
 
     val showDialog = remember { mutableStateOf(false) }
-    val color = remember {  mutableStateOf(getDefaultColor(dfColor,key)) }
-    val paddingModifier = remember(insideMargin) {
-        Modifier.padding(insideMargin)
+    val colorState = remember { mutableStateOf(getDefaultColor(dfColor, key)) }
+
+    val status = remember { mutableStateOf(Status.CLOSE) }
+    val offsetX = remember { Animatable(0f) }
+
+    val density = LocalDensity.current
+    val layoutDirection = LocalLayoutDirection.current
+    val insideMargin = BasicComponentDefaults.InsideMargin
+
+    val squareSize = 103.dp + insideMargin.calculateEndPadding(layoutDirection)
+    val maxOffset = with(density) { -squareSize.toPx() }
+
+
+    val draggableState = rememberDraggableState { delta ->
+        scope.launch {
+            val new = (offsetX.value + delta).coerceIn(maxOffset, 0f)
+            offsetX.snapTo(new)
+        }
     }
-    val titleColor = animateColorAsState(
-        if (swappableState.targetValue == Status.CLOSE) colorScheme.onSurface else colorScheme.disabledOnSecondaryVariant,
-        label = ""
-    )
+
+    fun settle() {
+        scope.launch {
+            val target = if (offsetX.value < maxOffset / 2) {
+                status.value = Status.OPEN
+                maxOffset
+            } else {
+                status.value = Status.CLOSE
+                0f
+            }
+            offsetX.animateTo(target)
+        }
+    }
 
     Box(
-        Modifier
-            .height(IntrinsicSize.Max)
+        modifier
             .fillMaxWidth()
+            .height(IntrinsicSize.Max)
     ) {
 
         Row(
-            modifier = Modifier.bounceAnim()
+            modifier = Modifier
                 .fillMaxWidth()
-                .swipeable(
-                    state = swappableState,
-                    anchors = anchors,
-                    thresholds = { _, _ -> FractionalThreshold(0.3f) },
-                    orientation = Orientation.Horizontal
+                .draggable(
+                    state = draggableState,
+                    orientation = Orientation.Horizontal,
+                    onDragStopped = { settle() }
                 )
                 .clickable(
-                    enabled = swappableState.targetValue == Status.CLOSE,
+                    enabled = status.value == Status.CLOSE
                 ) {
+                    view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     showDialog.value = true
                 }
-                .then(paddingModifier),
+                .padding(insideMargin),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+
             Text(
                 modifier = Modifier.weight(1f),
                 text = title,
                 fontWeight = FontWeight.Medium,
-                color = titleColor.value
+                color = if (status.value == Status.CLOSE)
+                    colorScheme.onSurface
+                else
+                    colorScheme.disabledOnSecondaryVariant
             )
 
+            val colorPreviewShape  = remember { RoundedCornerShape(30.dp) }
             Box(
                 modifier = Modifier
-                    .offset { IntOffset(swappableState.offset.value.roundToInt(), 0) }
-                    .graphicsLayer(
-                        shadowElevation = 12f,
-                        shape = RoundedCornerShape(30.dp),
-                        clip = false
-                    )
-                    .pointerInput(Unit) {
-                        detectTapGestures{
-                            if (swappableState.targetValue == Status.CLOSE){
-                                view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                                showDialog.value = true
-
-                            }
-                        }
-
+                    .graphicsLayer {
+                        translationX = offsetX.value
+                        shadowElevation = 12f
+                        shape = colorPreviewShape
                     }
-                    .border(3.dp, Color.White, RoundedCornerShape(30.dp))
                     .size(30.dp)
-                    .clip(RoundedCornerShape(30.dp)),
+                    .border(3.dp, Color.White, colorPreviewShape),
                 contentAlignment = Alignment.Center
-
-            ){
+            ) {
                 Image(
                     modifier = Modifier
                         .size(27.dp)
-                        .clip(RoundedCornerShape(30.dp))
+                        .clip(colorPreviewShape)
                         .border(
-                            3.dp,
-                            if (color.value == Color.White) Color(0xFFF0F0F0) else Color.Transparent,
-                            RoundedCornerShape(30.dp)
+                            width = 3.dp,
+                            color = if (colorState.value == Color.White) Color(0xFFF0F0F0) else Color.Transparent,
+                            shape = colorPreviewShape
                         ),
-                    imageVector = ImageVector.vectorResource(R.drawable.transparent),
-                    colorFilter = ColorFilter.tint(
-                        color.value,
-                        BlendMode.SrcOver
-                    ),
+                    painter = painterResource(R.drawable.transparent),
+                    colorFilter = ColorFilter.tint(colorState.value, BlendMode.SrcOver),
                     contentDescription = "ColorImage"
                 )
             }
-
-
         }
 
         Row(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
+                .fillMaxHeight()
                 .width(squareSize)
-                .alpha(if (swappableState.offset.value == 0f ) 0f else 1f )
-                .offset {
-                    IntOffset((squareSize.toPx()+swappableState.offset.value).toInt(), 0)
-                }
-                .fillMaxHeight(),
-            horizontalArrangement = Arrangement.Start,
+                .graphicsLayer {
+                    translationX = offsetX.value + squareSize.toPx()
+                    alpha = if (offsetX.value == 0f) 0f else 1f
+                },
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             MiniTextButton(
                 text = stringResource(R.string.default_it),
                 textColor = colorScheme.onPrimaryContainer,
@@ -198,13 +190,16 @@ fun ColorPickerTool(
                 color = colorScheme.primary,
                 onClick = {
                     scope.launch {
-                        swappableState.animateTo(Status.CLOSE)
+                        status.value = Status.CLOSE
+                        offsetX.animateTo(0f)
                     }
-                    color.value = dfColor
-                    SPUtils.setString(key,"null")
+                    colorState.value = dfColor
+                    SPUtils.putString(key, "null")
                 }
             )
-            Spacer(modifier = Modifier.width(6.dp))
+
+            Spacer(Modifier.width(6.dp))
+
             MiniTextButton(
                 text = stringResource(R.string.cancel),
                 fontSize = 11.sp,
@@ -213,22 +208,20 @@ fun ColorPickerTool(
                 color = colorScheme.secondary,
                 onClick = {
                     scope.launch {
-                        swappableState.animateTo(Status.CLOSE)
+                        status.value = Status.CLOSE
+                        offsetX.animateTo(0f)
                     }
-                },
+                }
             )
         }
-
-
     }
 
     ColorPickerDialog(
         title = title,
-        fColor = color.value,
+        fColor = colorState.value,
         showDialog = showDialog
     ) {
-        color.value = it
-        SPUtils.setString(key,color.value.toHex())
-
+        colorState.value = it
+        SPUtils.putString(key, it.toHex())
     }
 }

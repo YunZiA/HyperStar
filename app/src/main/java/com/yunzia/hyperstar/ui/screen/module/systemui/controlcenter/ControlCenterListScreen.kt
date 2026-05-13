@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter
 
+import IgnoreSearchIndex
 import android.app.Application
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
@@ -22,6 +23,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,15 +34,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.topbar.TopButton
-import com.yunzia.hyperstar.ui.component.XMiuixSlider
-import com.yunzia.hyperstar.ui.component.XSuperDropdown
-import com.yunzia.hyperstar.ui.component.XSuperSwitch
-import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.component.preference.PreferenceScreen
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.item.BrightnessItem
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.item.CardItem
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.item.DeviceCenterItem
@@ -49,14 +50,23 @@ import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.item.ListIte
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.item.MediaItem
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.item.VolumeItem
 import com.yunzia.hyperstar.utils.Helper
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.SPUtils
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import com.yunzia.hyperstar.ui.navigation.SystemUIRoutes
+import SearchRoute
+import androidx.activity.compose.LocalActivity
+import androidx.compose.runtime.mutableIntStateOf
+import com.yunzia.hyperstar.MainActivity
+import com.yunzia.hyperstar.ui.component.preference.widget.DropdownPreference
+import com.yunzia.hyperstar.ui.component.preference.widget.SliderPreference
+import com.yunzia.hyperstar.ui.component.preference.widget.SwitchPreference
+import com.yunzia.hyperstar.viewmodel.NotificationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Card
-import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Switch
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
@@ -71,9 +81,9 @@ data class ItemState(
     companion object {
         fun loadFromSP(tag: String): ItemState {
             val defaultColumn = when(tag) {
-                "cards", "deviceControl", "deviceCenter", "list", "edit" -> 4f
-                "media" -> 2f
                 "brightness", "volume" -> 1f
+                "cards", "media" -> 2f
+                "deviceControl", "deviceCenter", "list", "edit" -> 4f
                 else -> 4f
             }
             return ItemState(
@@ -102,6 +112,23 @@ class ControlCenterListViewModel(application: Application) : AndroidViewModel(ap
     private val _itemStates = MutableStateFlow<Map<String, ItemState>>(emptyMap())
     val itemStates: StateFlow<Map<String, ItemState>> = _itemStates
 
+
+    init {// 初始化时从 SPUtils 加载所有项的状态
+        val initialStates = listOf("cards", "media", "brightness", "volume", "deviceControl", "deviceCenter", "list", "edit")
+            .associate { tag ->
+                tag to ItemState.loadFromSP(tag)
+            }
+        _itemStates.value = initialStates
+        loadInitialData()
+    }
+
+    private fun loadInitialData() {
+        val itemList = getLists()
+        originalOrder = itemList
+        viewModelScope.launch {
+            _items.value = initData(getApplication(), itemList)
+        }
+    }
 
     fun updateCardItemSpan(
         index: Int,
@@ -159,34 +186,16 @@ class ControlCenterListViewModel(application: Application) : AndroidViewModel(ap
             )
 
             // 更新 SPUtils
-            enable?.let { SPUtils.setBoolean("${itemTag}_span_size_enable", it) }
-            spanSize?.let { SPUtils.setFloat("${itemTag}_span_size", it) }
+            enable?.let { SPUtils.putBoolean("${itemTag}_span_size_enable", it) }
+            spanSize?.let { SPUtils.putFloat("${itemTag}_span_size", it) }
 
             currentStates + (itemTag to newState)
 
         }
     }
-
-    init {// 初始化时从 SPUtils 加载所有项的状态
-        val initialStates = listOf("cards", "media", "brightness", "volume", "deviceControl", "deviceCenter", "list", "edit")
-            .associate { tag ->
-                tag to ItemState.loadFromSP(tag)
-            }
-        _itemStates.value = initialStates
-        loadInitialData()
-    }
-
-    private fun loadInitialData() {
-        val itemList = getLists()
-        originalOrder = itemList
-        viewModelScope.launch {
-            _items.value = initData(getApplication(), itemList)
-        }
-    }
-
     fun updateSwitch(enabled: Boolean) {
         _switchEnabled.value = enabled
-        SPUtils.setBoolean("controlCenter_priority_enable", enabled)
+        SPUtils.putBoolean("controlCenter_priority_enable", enabled)
     }
 
     fun moveItem(fromIndex: Int, toIndex: Int) {
@@ -225,7 +234,7 @@ class ControlCenterListViewModel(application: Application) : AndroidViewModel(ap
 
     private fun setLists(list: List<String>) {
         list.forEachIndexed { index, s ->
-            SPUtils.setFloat("${s}_priority", 30f + index)
+            SPUtils.putFloat("${s}_priority", 30f + index)
         }
     }
 
@@ -236,9 +245,9 @@ class ControlCenterListViewModel(application: Application) : AndroidViewModel(ap
 
         return itemLists.mapIndexed { index, tag ->
             val column = when(tag) {
-                "cards", "deviceControl", "deviceCenter", "list", "edit" -> 4
-                "media" -> 2
+                "cards", "media" -> 2
                 "brightness", "volume" -> 1
+                "deviceControl", "deviceCenter", "list", "edit" -> 4
                 else -> 4
             }
             Card(index, tag, column, cardMap.getValue(tag))
@@ -247,21 +256,27 @@ class ControlCenterListViewModel(application: Application) : AndroidViewModel(ap
 }
 
 
+@SearchRoute(route = SystemUIRoutes.LayoutArrangement::class)
 @Composable
-fun ControlCenterListScreen(
-    navController: NavController,
-    currentStartDestination: MutableState<String>
-) {
+fun ControlCenterListScreen() {
 
-    val viewModel: ControlCenterListViewModel = viewModel()
+    val context = LocalContext.current
+    val viewModel = viewModel<ControlCenterListViewModel>(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return ControlCenterListViewModel(context.applicationContext as Application) as T
+            }
+        }
+    )
+    val navController = LocalNavigator.current
+    val activity = LocalActivity.current as MainActivity
 
     val items by viewModel.items.collectAsState()
     val orderChanged by viewModel.orderChanged.collectAsState()
     val switchEnabled by viewModel.switchEnabled.collectAsState()
 
-    ModuleNavPagers(
-        activityTitle = stringResource(R.string.control_center_edit),
-        parentRoute = currentStartDestination,
+    PreferenceScreen(
+        title = stringResource(R.string.control_center_edit),
         navController = navController,
         endIcon = {
 
@@ -289,8 +304,10 @@ fun ControlCenterListScreen(
             //view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             Helper.rootShell("killall com.android.systemui")
         },
-    ){
-        item {
+        scrollToKey = activity.appViewModel.scrollToKey.value,
+        onScrollComplete = { activity.appViewModel.scrollToKey.value = null },
+    ) { _, _ ->
+        list.item {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -403,69 +420,64 @@ fun getHeight(
 val insideMargin  =  PaddingValues(16.dp, 16.dp)
 
 @Composable
+@IgnoreSearchIndex
 fun EnableItemDropdown(
     key: String,
     dfOpt: Int = 0
 ){
-
     val state = remember { mutableStateOf(SPUtils.getBoolean("${key}_enable",false)) }
+    val panel = remember { mutableIntStateOf(SPUtils.getInt(key, dfOpt)) }
+    val options = stringArrayResource(R.array.land_rightOrLeft_entire).toList()
 
-    XSuperSwitch(
+    SwitchPreference(
         title = stringResource(R.string.enable),
-        key = "${key}_enable",
-        state = state,
-        insideMargin = insideMargin
+        checked = state.value,
+        onCheckedChange = {
+            state.value = it
+            SPUtils.putBoolean("${key}_enable", it)
+        }
     )
 
-    XSuperDropdown(
+    DropdownPreference(
         title = stringResource(R.string.land_rightOrLeft),
+        entries = options,
+        selectedIndex = panel.intValue,
         enabled = state.value,
-        insideMargin = insideMargin,
-        key = key,
-        dfOpt = dfOpt,
-        option = R.array.land_rightOrLeft_entire
-
+        onSelectedIndexChange = {
+            panel.intValue = it
+            SPUtils.putInt(key, it)
+        }
     )
-
-//    XSuperDialogDropdown(
-//        title = stringResource(R.string.land_rightOrLeft),
-//        enabled = state.value,
-//        insideMargin = insideMargin,
-//        key = key,
-//        dfOpt = dfOpt,
-//        option = R.array.land_rightOrLeft_entire
-//    )
-
-
 }
 
 @Composable
+@IgnoreSearchIndex
 fun EnableItemSlider(
     key: String,
     state: MutableState<Boolean>,
     progress : Float,
     progressState: MutableFloatState,
 ){
-
-    XSuperSwitch(
+    SwitchPreference(
         title = stringResource(R.string.enable),
-        key = "${key}_enable",
-        state = state,
-        insideMargin = insideMargin
+        checked = state.value,
+        onCheckedChange = {
+            state.value = it
+            SPUtils.putBoolean("${key}_enable", it)
+        }
     )
 
-    XMiuixSlider(
+    SliderPreference(
         title = stringResource(R.string.span_size),
-        key = key,
-        isDialog = true,
+        value = progressState.floatValue,
         enabled = state.value,
-        paddingValues = insideMargin,
-        maxValue = 4f,
-        minValue = 1f,
-        defValue = progress,
-        progress = progressState
+        valueRange = 1f..4f,
+        valueFormatter = { it.toInt().toString() },
+        onValueChange = {
+            progressState.floatValue = it
+            SPUtils.putFloat(key, it)
+        }
     )
-
 }
 
 

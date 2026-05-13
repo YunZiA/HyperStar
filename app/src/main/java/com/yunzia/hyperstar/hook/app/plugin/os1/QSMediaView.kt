@@ -5,15 +5,16 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.marginTop
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.beforeHookConstructor
-import com.yunzia.hyperstar.hook.base.findClass
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.base.findViewByIdNameAs
+import com.yunzia.hyperstar.hook.core.helper.beforeHookConstructor
+import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
+import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
 import com.yunzia.hyperstar.hook.util.startMarqueeOfFading
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.prefs.XSPUtils
 
-//import de.robv.android.xposed.XposedHelpers
-
-class QSMediaView : Hooker() {
+object QSMediaView : BasePluginHook() {
 
     val isHideCover:Boolean = XSPUtils.getBoolean("is_hide_cover",false)
     val isTitleCenter:Boolean = XSPUtils.getBoolean("is_title_center",false)
@@ -21,20 +22,15 @@ class QSMediaView : Hooker() {
     val isArtistMarquee:Boolean = XSPUtils.getBoolean("is_artist_marquee",false)
     val isEmptyStateMarquee:Boolean = XSPUtils.getBoolean("is_emptyState_marquee",false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
-        startMethodsHook()
-    }
-
-    private fun startMethodsHook() {
+    override fun init() {
         val fadingEdgeLength = 40
 
         findClass(
             "miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",
-            classLoader
+            pluginClassLoader
         ).apply {
-            beforeHookMethod("updateSize"){
-                val itemView = this.getObjectFieldAs<View>("itemView")
+            beforeHookMethod("updateSize") { args, result ->
+                val itemView = thisObject.getObjectFieldAs<View>("itemView")
                 val title = itemView.findViewByIdNameAs<TextView>("title")
                 val artist = itemView.findViewByIdNameAs<TextView>("artist")
                 val emptyState = itemView.findViewByIdNameAs<TextView>("empty_state")
@@ -85,8 +81,8 @@ class QSMediaView : Hooker() {
             }
             beforeHookConstructor(
                 View::class.java
-            ){
-                val itemView = it.args[0] as View
+            ) { args, result ->
+                val itemView = args[0] as View
                 val title = itemView.findViewByIdNameAs<TextView>("title")
                 val artist = itemView.findViewByIdNameAs<TextView>("artist")
                 val emptyState = itemView.findViewByIdNameAs<TextView>("empty_state")
@@ -108,8 +104,5 @@ class QSMediaView : Hooker() {
                 }
             }
         }
-
     }
-
-
 }

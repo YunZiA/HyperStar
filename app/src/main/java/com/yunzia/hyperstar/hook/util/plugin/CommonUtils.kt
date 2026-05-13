@@ -1,8 +1,10 @@
 package com.yunzia.hyperstar.hook.util.plugin
 
 import android.view.View
-import de.robv.android.xposed.XposedHelpers
-import de.robv.android.xposed.XposedHelpers.findClass
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.callStaticMethod
+import com.yunzia.hyperstar.hook.core.helper.getStaticBooleanField
+import com.yunzia.hyperstar.hook.core.helper.getStaticObjectField
 
 class CommonUtils(private val classLoader: ClassLoader?) {
 
@@ -10,12 +12,12 @@ class CommonUtils(private val classLoader: ClassLoader?) {
     val CommonUtils = findClass("miui.systemui.util.CommonUtils",classLoader)
 
     val INSTANCE by lazy {
-        XposedHelpers.getStaticObjectField(CommonUtils,"INSTANCE")
+        CommonUtils.getStaticObjectField("INSTANCE")
     }
 
 
     val IS_TABLET by lazy {
-        XposedHelpers.getStaticBooleanField(CommonUtils,"IS_TABLET")
+        CommonUtils.getStaticBooleanField("IS_TABLET")
     }
 
     fun setLayoutSizeDefault(
@@ -26,8 +28,7 @@ class CommonUtils(private val classLoader: ClassLoader?) {
         num : Int = 4,
         any: Any? = null
     ) {
-        XposedHelpers.callStaticMethod(
-        CommonUtils,
+        CommonUtils.callStaticMethod(
         "setLayoutSize\$default",
         INSTANCE,
         view,
@@ -47,8 +48,7 @@ class CommonUtils(private val classLoader: ClassLoader?) {
         num : Int = 4,
         any: Any? = null
     ){
-        XposedHelpers.callStaticMethod(
-            CommonUtils,
+        CommonUtils.callStaticMethod(
             "setLayoutHeight\$default",
             INSTANCE,
             view,

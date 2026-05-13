@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -28,12 +27,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.CapsuleShape
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 
 @Composable
@@ -46,7 +44,6 @@ fun MiniTextButton(
     radius: Dp = 10.dp,
     onClick: () -> Unit,
 ) {
-
 
     BaseButton(
         modifier = modifier,
@@ -84,7 +81,7 @@ fun Button(
         },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = G2RoundedCornerShape(cornerRadius),
+        shape = SmoothRoundedCornerShape(cornerRadius),
         color = colors
     ) {
         Row(
@@ -119,7 +116,7 @@ fun TextButton(
         },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = G2RoundedCornerShape(cornerRadius),
+        shape = SmoothRoundedCornerShape(cornerRadius),
         color = colors
     ) {
         Row(
@@ -150,7 +147,7 @@ fun BaseButton(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable () -> Unit
 ) {
-    val capsuleShape  = G2RoundedCornerShape(cornerRadius)
+    val capsuleShape  = SmoothRoundedCornerShape(cornerRadius)
 
     val hapticFeedback = LocalHapticFeedback.current
 
@@ -171,7 +168,6 @@ fun BaseButton(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             content()
-
         }
     }
 }
@@ -199,7 +195,7 @@ fun BaseButton(
         },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = G2RoundedCornerShape(cornerRadius),
+        shape = SmoothRoundedCornerShape(cornerRadius),
         color = color
     ) {
         Row(

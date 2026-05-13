@@ -1,117 +1,95 @@
 package com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.list
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavHostController
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.component.SuperGroupPosition
-import com.yunzia.hyperstar.ui.component.XMiuixSlider
-import com.yunzia.hyperstar.ui.component.XSuperDropdown
-import com.yunzia.hyperstar.ui.component.itemGroup
-import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.component.preference.PreferenceScreen
+import com.yunzia.hyperstar.ui.component.preference.core.ListPreference
+import com.yunzia.hyperstar.ui.component.preference.preferenceGroup
+import com.yunzia.hyperstar.ui.component.preference.sp.SpSliderPreference
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import com.yunzia.hyperstar.ui.navigation.SystemUIRoutes
+import com.yunzia.hyperstar.prefs.SPUtils
 import com.yunzia.hyperstar.utils.Helper
+import SearchRoute
+import androidx.activity.compose.LocalActivity
+import com.yunzia.hyperstar.MainActivity
 
-
+@SearchRoute(route = SystemUIRoutes.TileLayout::class)
 @Composable
-fun QsListViewScreen(
-    navController: NavHostController,
-    currentStartDestination: MutableState<String>
-) {
-    ModuleNavPagers(
-        activityTitle = stringResource(R.string.tile_layout),
-        parentRoute = currentStartDestination,
+fun QsListViewScreen() {
+    val navController = LocalNavigator.current
+    val activity = LocalActivity.current as MainActivity
+    PreferenceScreen(
+        title = stringResource(R.string.tile_layout),
         navController = navController,
         endClick = {
             Helper.rootShell("killall com.android.systemui")
-        }
-    ){
-        itemGroup(
-            position = SuperGroupPosition.FIRST
-        ){
-
-            XSuperDropdown(
+        },
+        scrollToKey = activity.appViewModel.scrollToKey.value,
+        onScrollComplete = { activity.appViewModel.scrollToKey.value = null },
+    ) { _, _ ->
+        preferenceGroup {
+            val wordlessOptions = stringArrayResource(R.array.is_wordless_mode_entire).toList()
+            ListPreference(
                 title = stringResource(R.string.wordless_mode),
-                key = "is_wordless_mode_2",
-                option = R.array.is_wordless_mode_entire,
+                entries = wordlessOptions,
+                entryValues = wordlessOptions.indices.map { it.toString() },
+                value = "0",
+                onValueChange = { SPUtils.putInt("is_wordless_mode_2", it.toIntOrNull() ?: 0) },
             )
-
-
         }
 
-        itemGroup(
-            title = R.string.title_style
-        ){
-            XMiuixSlider(
+        preferenceGroup(R.string.title_style) {
+            SpSliderPreference(
                 title = stringResource(R.string.title_size),
                 key = "list_label_size",
-                unit = "dp",
-                maxValue = 25f,
-                minValue = 0f,
-                defValue = 13f,
-                decimalPlaces = 2
+                valueRange = 0f..25f,
+                defaultValue = 13f,
+                decimalPlaces = 2,
+                valueFormatter = { "${it}dp" }
             )
-
-            XMiuixSlider(
+            SpSliderPreference(
                 title = stringResource(R.string.title_width),
                 key = "list_label_width",
-                unit = "%",
-                maxValue = 100f,
-                minValue = 0f,
-                defValue = 100f
+                valueRange = 0f..100f,
+                defaultValue = 100f,
+                valueFormatter = { "${it.toInt()}%" }
             )
-
         }
-        itemGroup(
-            title = R.string.vertical_spacing
-        ){
-            XMiuixSlider(
+        preferenceGroup(R.string.vertical_spacing) {
+            SpSliderPreference(
                 title = stringResource(R.string.disable_icon_labels),
                 key = "list_spacing_y",
-                unit = "%",
-                maxValue = 150f,
-                minValue = 0f,
-                defValue = 100f
+                valueRange = 0f..150f,
+                defaultValue = 100f,
+                valueFormatter = { "${it.toInt()}%" }
             )
-
-            XMiuixSlider(
+            SpSliderPreference(
                 title = stringResource(R.string.enable_icon_labels),
                 key = "list_label_spacing_y",
-                unit = "%",
-                maxValue = 150f,
-                minValue = 0f,
-                defValue = 100f
+                valueRange = 0f..150f,
+                defaultValue = 100f,
+                valueFormatter = { "${it.toInt()}%" }
             )
-
         }
-
-
-        itemGroup(
-            title = R.string.margin_top,
-            position = SuperGroupPosition.FIRST
-        ){
-            XMiuixSlider(
+        preferenceGroup(R.string.margin_top) {
+            SpSliderPreference(
                 title = stringResource(R.string.icon),
                 key = "list_icon_top",
-                unit = "%",
-                maxValue = 50F,
-                minValue = -50f,
-                defValue = 0f
+                valueRange = -50f..50f,
+                defaultValue = 0f,
+                valueFormatter = { "${it.toInt()}%" }
             )
-
-            XMiuixSlider(
+            SpSliderPreference(
                 title = stringResource(R.string.title),
                 key = "list_label_top",
-                unit = "dp",
-                maxValue = 100f,
-                minValue = -100f,
-                defValue = 0f,
-                decimalPlaces = 1
+                valueRange = -100f..100f,
+                defaultValue = 0f,
+                decimalPlaces = 1,
+                valueFormatter = { "${it}dp" }
             )
-
         }
-
-
     }
-
 }

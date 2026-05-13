@@ -1,6 +1,6 @@
 package com.yunzia.hyperstar.ui.component.dialog
 
-import android.util.Half
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,10 +43,9 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.BackHandler
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import com.yunzia.hyperstar.ui.component.helper.getWindowSize
+import top.yukonga.miuix.kmp.shapes.SmoothUnevenRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.DialogLayout
-import top.yukonga.miuix.kmp.utils.getWindowSize
 
 
 //object SheetDialogState {
@@ -79,8 +77,8 @@ fun SuperBottomSheetDialog(
 ) {
     val density = LocalDensity.current
     val getWindowSize by rememberUpdatedState(getWindowSize())
-    val windowWidth by rememberUpdatedState(getWindowSize.width.dp / density.density)
-    val windowHeight by rememberUpdatedState(getWindowSize.height.dp / density.density)
+    val windowWidth by rememberUpdatedState(getWindowSize.width)
+    val windowHeight by rememberUpdatedState(getWindowSize.height)
     val isLargeScreen by remember { derivedStateOf { (windowHeight >= 480.dp && windowWidth >= 840.dp) } }
 
     val animationSpec: SpringSpec<Float> = spring(dampingRatio = Spring.DampingRatioLowBouncy,stiffness = 500f)
@@ -146,11 +144,11 @@ fun SuperBottomSheetDialog(
                     .offset { IntOffset(0, (screenHeight - heightAnim.value).toInt()) }
                     .height(with(density) { fullHeight.toDp() })
                     .clip(
-                        G2RoundedCornerShape(
-                            topStart = CornerSize(25.dp),
-                            topEnd = CornerSize(25.dp),
-                            bottomEnd = CornerSize(0.dp),
-                            bottomStart = CornerSize(0.dp)
+                        SmoothUnevenRoundedCornerShape(
+                            topStart = 25.dp,
+                            topEnd = 25.dp,
+                            bottomEnd = 0.dp,
+                            bottomStart = 0.dp
                         )
                     )
                     .pointerInput(Unit) {

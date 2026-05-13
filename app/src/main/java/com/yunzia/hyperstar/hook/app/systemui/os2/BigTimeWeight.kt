@@ -1,55 +1,55 @@
 package com.yunzia.hyperstar.hook.app.systemui.os2
 
-import android.content.res.XModuleResources
 import android.graphics.Typeface
-import android.view.ViewGroup
 import android.widget.TextView
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.tool.starLog
-import de.robv.android.xposed.callbacks.XC_InitPackageResources
-import de.robv.android.xposed.callbacks.XC_LayoutInflated
+import com.yunzia.hyperstar.hook.core.base.BaseHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.afterHookAllMethods
+import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
+import com.yunzia.hyperstar.hook.core.helper.callMethodAs
+import com.yunzia.hyperstar.hook.core.helper.getObjectField
+import com.yunzia.hyperstar.hook.core.helper.setObjectField
 
-class Test : Hooker() {
+object Test : BaseHook() {
 
 
-    override fun initResources(
-        resparam: XC_InitPackageResources.InitPackageResourcesParam?,
-        modRes: XModuleResources?
-    ) {
-        super.initResources(resparam, modRes)
-
-        resparam?.res?.hookLayout(
-            systemUI,
-            "layout",
-            "hybrid_notification",
-            object : XC_LayoutInflated(){
-                override fun handleLayoutInflated(liparam: LayoutInflatedParam) {
-                    starLog.logE("hybrid_notification hooked")
-                    val root = liparam.view as ViewGroup
-                    root.findViewByIdNameAs<TextView>(
-                        "notification_title"
-                    ).typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                }
-
-            }
-        )
-
-        resparam?.res?.hookLayout(
-            systemUI,
-            "layout",
-            "hybrid_conversation_notification",
-            object : XC_LayoutInflated(){
-                override fun handleLayoutInflated(liparam: LayoutInflatedParam) {
-                    starLog.logE("hybrid_notification hooked")
-                    val root = liparam.view as ViewGroup
-                    root.findViewByIdNameAs<TextView>(
-                        "notification_title"
-                    ).typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                }
-
-            }
-        )
+//    override fun initResources(
+//        resparam: XC_InitPackageResources.InitPackageResourcesParam?,
+//        modRes: XModuleResources?
+//    ) {
+//        super.initResources(resparam, modRes)
+//
+//        resparam?.res?.hookLayout(
+//            systemUI,
+//            "layout",
+//            "hybrid_notification",
+//            object : XC_LayoutInflated(){
+//                override fun handleLayoutInflated(liparam: LayoutInflatedParam) {
+//                    logE("hybrid_notification hooked")
+//                    val root = liparam.view as ViewGroup
+//                    root.findViewByIdNameAs<TextView>(
+//                        "notification_title"
+//                    ).typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+//                }
+//
+//            }
+//        )
+//
+//        resparam?.res?.hookLayout(
+//            systemUI,
+//            "layout",
+//            "hybrid_conversation_notification",
+//            object : XC_LayoutInflated(){
+//                override fun handleLayoutInflated(liparam: LayoutInflatedParam) {
+//                    logE("hybrid_notification hooked")
+//                    val root = liparam.view as ViewGroup
+//                    root.findViewByIdNameAs<TextView>(
+//                        "notification_title"
+//                    ).typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+//                }
+//
+//            }
+//        )
 
 
 //        resparam?.res?.setReplacement(
@@ -60,10 +60,10 @@ class Test : Hooker() {
 //                R.dimen.notification_title_text_size
 //            )
 //        )
-    }
+//    }
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
+        
 //        findClass(
 //            "com.android.systemui.statusbar.notification.row.HybridNotificationView",
 //            classLoader
@@ -71,23 +71,22 @@ class Test : Hooker() {
 //            afterHookAllMethods(
 //                "bind"
 //            ){
-//                val mTitleView  = this.getObjectFieldAs<TextView>("mTitleView")
+//                val mTitleView  = thisObject.getObjectFieldAs<TextView>("mTitleView")
 //                mTitleView.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
 //
 //            }
 //            afterHookMethod("onFinishInflate"){
-//                val mTitleView  = this.getObjectFieldAs<TextView>("mTitleView")
+//                val mTitleView  = thisObject.getObjectFieldAs<TextView>("mTitleView")
 //                mTitleView.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
 //            }
 //        }
 
         findClass(
-            "com.android.systemui.statusbar.notification.row.HybridGroupManager",
-            classLoader
+            "com.android.systemui.statusbar.notification.row.HybridGroupManager"
         ).apply {
-            afterHookAllMethods("bindFromNotification"){
+            afterHookAllMethods("bindFromNotification") { args, result ->
 
-                val hybridNotificationView  = it.result
+                val hybridNotificationView  = result.value
                 hybridNotificationView.callMethodAs<TextView>("getTitleView").typeface = Typeface.defaultFromStyle(Typeface.BOLD)
 
             }
@@ -99,7 +98,7 @@ class Test : Hooker() {
 
 //        findClass("com.android.systemui.statusbar.notification.row.NotificationContentInflaterInjector",classLoader).apply {
 //            afterHookAllMethods("handleTitle"){
-//                val builderRemoteViews = it.args[0] as RemoteViews
+//                val builderRemoteViews = args[0] as RemoteViews
 //                builderRemoteViews.
 //
 //            }
@@ -120,15 +119,14 @@ class Test : Hooker() {
     private fun bigTimeWeight(){
 
         findClass(
-            "com.android.systemui.controlcenter.shade.NotificationHeaderExpandController",
-            classLoader
+            "com.android.systemui.controlcenter.shade.NotificationHeaderExpandController"
         ).beforeHookMethod(
             "updateWeight",
             Float::class.java
-        ) {
-            this.setObjectField(
+        ) { args, result ->
+            thisObject.setObjectField(
                 "miproNormal",
-                this.getObjectField("miproMedium")!!
+                thisObject.getObjectField("miproMedium")!!
             )
 
         }

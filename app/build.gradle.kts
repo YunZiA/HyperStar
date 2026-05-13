@@ -1,4 +1,5 @@
 
+import com.android.build.api.dsl.ApplicationExtension
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.time.LocalDateTime
@@ -6,83 +7,64 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Properties
 
-
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.ksp)
     id ("kotlin-parcelize")
+    alias(libs.plugins.baselineprofile)
 }
 
-android {
-
+val versionInfo: Pair<Int, String> by lazy {
     val versionFile = file("version.properties")
-    val properties = Properties().apply {
-        load(FileInputStream(versionFile))
-    }
+    val props = Properties().apply { load(FileInputStream(versionFile)) }
+    if (versionFile.canRead()) {
+        val appVersionName = props.getProperty("APP_VERSION_NAME", "1.0.0")
+        val versionNamePart = appVersionName.split(".").first() //yyyyMMdd
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHm")
+        val createTime = LocalDateTime.now(ZoneId.of("Asia/Shanghai")).format(formatter)
 
-    fun getVersionCode():Int {
-        if (versionFile.canRead()) {
-
-            val versionName = properties["VERSION_NAME"].toString().split(".")[0]
-            val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
-            val createTime = LocalDateTime.now(ZoneId.of("Asia/Shanghai")).format(formatter).takeLast(6)
-            val baseVersionCode = "$versionName$createTime"
-            var versionCode = "${baseVersionCode}00".toInt()
-            val runTasks = gradle.startParameter.taskNames
-            System.out.println("> Configure project :runTasks = $runTasks")
-            if (":app:assembleDebug" !in runTasks && "" !in runTasks){
-                val lastVersionCode = properties["VERSION_CODE"].toString()
-                if (lastVersionCode.take(7) == baseVersionCode){
-                    versionCode = lastVersionCode.toInt()+1
-                }
-                System.out.println("> Configure project :app:assembleRelease versionCode = $versionCode")
-
-                properties["VERSION_CODE"] = versionCode.toString()
-                FileOutputStream(versionFile).use { output ->
-                    properties.store(output, null)
-                }
-            }
-
-            return versionCode
-        } else {
-            throw GradleException("Could not find version.properties!")
+        val baseVersionCode = "$versionNamePart${createTime.substring(2, 8)}"
+        var versionCode = "${baseVersionCode}00".toInt()
+        val generatedVersionName = "${appVersionName}_${createTime}"
+        val storedVersionCode = props.getProperty("VERSION_CODE")?.toIntOrNull()
+        val storedVersionName = props.getProperty("VERSION_NAME")
+        val shouldUpdateVersionFile = gradle.startParameter.taskNames.any { taskName ->
+            taskName.contains("Release", ignoreCase = true) || taskName.contains("Dev", ignoreCase = true)
         }
-    }
+        val versionName = if (shouldUpdateVersionFile) generatedVersionName else storedVersionName ?: generatedVersionName
 
-    fun getVersionName():String{
-        if (versionFile.canRead()) {
-
-            val runTasks = gradle.startParameter.taskNames
-            System.out.println("> Configure project :runTasks = $runTasks")
-
-            val buildChannel = when {
-                runTasks.any { it.contains("assembleDebug", ignoreCase = true) } -> "debug"
-                runTasks.any { it.contains("assembleRelease", ignoreCase = true) } -> "release"
-                runTasks.any { it.contains("assembleDev", ignoreCase = true) } -> "dev"
-                else -> "Unknown"
+        if (shouldUpdateVersionFile) {
+            val lastVersionCode = storedVersionCode?.toString().orEmpty()
+            if (lastVersionCode.take(7) == baseVersionCode) {
+                versionCode = lastVersionCode.toInt() + 1
             }
-
-            val versionName = properties["VERSION_NAME"].toString()
-            val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm")
-            val createTime = LocalDateTime.now(ZoneId.of("Asia/Shanghai")).format(formatter)
-            return "${versionName}_${createTime}_$buildChannel"
+            props["VERSION_CODE"] = versionCode.toString()
+            props["VERSION_NAME"] = versionName
+            FileOutputStream(versionFile).use { output ->
+                props.store(output, null)
+            }
         } else {
-            throw GradleException("Could not find version.properties!")
+            versionCode = storedVersionCode ?: versionCode
         }
-
+        System.out.println("> Configure project :{versionCode = $versionCode, versionName = $versionName}")
+        Pair(versionCode, versionName)
+    } else {
+        throw GradleException("Could not find version.properties!")
     }
+}
+
+configure<ApplicationExtension> {
     namespace = "com.yunzia.hyperstar"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.yunzia.hyperstar"
         minSdk = 33
-        targetSdk = 36
-        versionCode = getVersionCode()
-        versionName = getVersionName()
+        targetSdk = 37
+        versionCode = versionInfo.first
+        versionName = versionInfo.second
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -90,78 +72,77 @@ android {
         }
     }
 
-    val keystoreFile = System.getenv("KEYSTORE_PATH")
-    signingConfigs {
-        if (keystoreFile != null) {
-            create("ci") {
-                storeFile = file(keystoreFile)
-                storePassword = System.getenv("KEYSTORE_PASSWORD")
-                keyAlias = System.getenv("KEY_ALIAS")
-                keyPassword = System.getenv("KEY_PASSWORD")
-                enableV4Signing = true
-            }
-
-        }else{
-            create("default"){
-                enableV4Signing = true
-
-            }
-        }
-
+    val localProps = Properties().apply {
+        val localFile = rootProject.file("KEY.properties")
+        if (localFile.exists()) load(FileInputStream(localFile))
     }
 
-    applicationVariants.all {
-        outputs.all {
-            if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
-                val config = project.android.defaultConfig
-                val appName = "HyperStar"
-                val versionName = "v"+config.versionName
+    val keystorePath = System.getenv("KEYSTORE_PATH")
+        ?: localProps.getProperty("KEYSTORE_PATH")
+    val keystorePassword = System.getenv("KEYSTORE_PASSWORD")
+        ?: localProps.getProperty("KEYSTORE_PASSWORD")
+    val keystoreAlias = System.getenv("KEY_ALIAS")
+        ?: localProps.getProperty("KEY_ALIAS")
+    val keystoreKeyPassword = System.getenv("KEY_PASSWORD")
+        ?: localProps.getProperty("KEY_PASSWORD")
 
-                this.outputFileName = "${appName}_${versionName}.apk"
+    val hasSigning = keystorePath != null && keystorePassword != null
+            && keystoreAlias != null && keystoreKeyPassword != null
+
+    signingConfigs {
+        if (hasSigning) {
+            create("release") {
+                storeFile = file(keystorePath)
+                storePassword = keystorePassword
+                keyAlias = keystoreAlias
+                keyPassword = keystoreKeyPassword
+                enableV4Signing = true
             }
         }
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName(if (keystoreFile != null) "ci" else "default")
+            if (hasSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+            optimization.enable = true
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-
+            matchingFallbacks.add("release")
         }
 
         debug {
             // 对于debug版本，可以不使用混和资源压缩
-            isMinifyEnabled = false
-            isShrinkResources = false
-
+//            optimization.enable = false
         }
         create("dev") {
-            signingConfig = signingConfigs.getByName(if (keystoreFile != null) "ci" else "default")
+            if (hasSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+            optimization.enable = true
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-        }
-        create("cc") {
+            matchingFallbacks.add("dev")
+            matchingFallbacks += listOf("release")
         }
     }
-    //outputFileName = "${defaultConfig.applicationId}${buildType.applicationIdSuffix}-${defaultConfig.versionName}${buildType.versionNameSuffix}.apk"
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "21"
-    }
+
     buildFeatures {
         compose = true
+        aidl = true
         buildConfig = true
     }
     packaging {
@@ -170,38 +151,50 @@ android {
         }
     }
 
+    androidResources {
+        androidResources.additionalParameters += listOf("--allow-reserved-package-id", "--package-id", "0x39")
+    }
 }
+
+base {
+    archivesName.set("HyperStar_${versionInfo.second}")
+}
+
 dependencies {
-    implementation(project(":annotations"))
-    implementation(project(":liquidglass"))
-    ksp(libs.androidx.room.compiler)
-    ksp(project(":processor"))
-    implementation(libs.kotlinpoet) // 用于生成代码
+    ksp(project(":ksp-processor"))
+    implementation(project(":ksp-processor"))
+    implementation(project(":ksp-annotation"))
+    "baselineProfile"(project(":baselineprofile"))
+//    implementation(libs.androidx.compose.ui.text)
+
+    compileOnly(libs.api)
+    implementation(libs.service)
+
     implementation(libs.okhttp)
-    implementation(libs.dexkit)
     implementation(libs.gson)
-    implementation(libs.androidx.navigation.compose)
-    implementation("com.github.skydoves:cloudy:0.2.4")
-    implementation(libs.haze)
+//    implementation(libs.kyant.shapes)
+    implementation(libs.miuix)
+    implementation(libs.miuix.preference)
+    implementation(libs.miuix.blur)
+    implementation(libs.miuix.shapes)
+    implementation(libs.miuix.icons)
+    implementation(libs.miuix.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigationevent.compose)
 
     implementation (libs.androidx.palette.ktx)
     implementation(libs.kotlinx.serialization.json)
 
-    //implementation ("com.godaddy.android.colorpicker:compose-color-picker-android:0.7.0")
-    implementation(libs.androidx.compose.material)
     implementation(libs.github.colormath.ext.jetpack.compose)
     implementation(libs.androidx.profileinstaller)
-    implementation (libs.androidx.constraintlayout.compose)
-    implementation (libs.accompanist.drawablepainter)
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.accompanist.drawablepainter)
+//    implementation(libs.androidx.compose.material)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.cardview)
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    compileOnly (libs.android.xposed)
-    implementation(libs.kyuubiran.ezxhelper)
     implementation(libs.androidx.foundation)
-    implementation (libs.miuix)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

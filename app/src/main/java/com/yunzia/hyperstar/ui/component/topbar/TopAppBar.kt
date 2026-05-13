@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -18,67 +17,100 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.component.nav.backParentPager
+import com.yunzia.hyperstar.ui.navigation.Navigator
+import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.SmallTopAppBar
 import top.yukonga.miuix.kmp.basic.TopAppBar
+import top.yukonga.miuix.kmp.basic.TopAppBarDefaults
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 
 @Composable
-fun ModuleTopAppBar(
-    modifier: Modifier,
-    title : String,
+fun HomeTopAppBar(
+    modifier: Modifier = Modifier,
+    title: String,
     scrollBehavior: ScrollBehavior? = null,
-    color : Color,
-    activity: ComponentActivity,
-    endIcon :  @Composable () -> Unit = {},
-    endClick:() -> Unit = {}
-){
-
+    color: Color = Color.Transparent,
+    actions: @Composable RowScope.() -> Unit = {},
+) {
     TopAppBar(
         modifier = modifier,
         color = color,
         title = title,
         scrollBehavior = scrollBehavior,
+        titlePadding = TopAppBarDefaults.TitlePadding,
+        navigationIconPadding = TopAppBarDefaults.TitlePadding,
+        actionIconPadding = TopAppBarDefaults.TitlePadding,
+        actions = actions
+    )
+}
+
+@Composable
+fun HyperStarTopAppBar(
+    modifier: Modifier = Modifier,
+    title: String,
+    scrollBehavior: ScrollBehavior? = null,
+    color: Color = Color.Transparent,
+    onBack: () -> Unit,
+    actions: @Composable RowScope.() -> Unit = {},
+) {
+    TopAppBar(
+        modifier = modifier,
+        color = color,
+        title = title,
+        scrollBehavior = scrollBehavior,
+        titlePadding = TopAppBarDefaults.TitlePadding,
+        navigationIconPadding = TopAppBarDefaults.TitlePadding,
+        actionIconPadding = TopAppBarDefaults.TitlePadding,
         navigationIcon = {
             TopButton(
-                modifier = Modifier.padding(start = 18.dp),
                 imageVector = ImageVector.vectorResource(R.drawable.bar_back__exit),
                 contentDescription = "back",
-                onClick = {
-                    activity.finish()
-                }
+                onClick = onBack
             )
-
-
         },
+        actions = actions
+    )
+}
+
+@Composable
+fun ModuleTopAppBar(
+    modifier: Modifier,
+    title: String,
+    scrollBehavior: ScrollBehavior? = null,
+    color: Color,
+    activity: ComponentActivity,
+    endIcon: @Composable () -> Unit = {},
+    endClick: () -> Unit = {}
+) {
+    HyperStarTopAppBar(
+        modifier = modifier,
+        color = color,
+        title = title,
+        scrollBehavior = scrollBehavior,
+        onBack = { activity.finish() },
         actions = {
             endIcon()
             TopButton(
-                modifier = Modifier.padding(end = 18.dp),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_menu_refresh),
                 contentDescription = "restart",
                 onClick = endClick
             )
-
         }
     )
-
 }
+
 @Composable
 fun ActivityTopAppBar(
     modifier: Modifier,
-    title : String,
+    title: String,
     scrollBehavior: ScrollBehavior? = null,
-    color : Color,
+    color: Color,
     activity: ComponentActivity,
-    actions: @Composable() (RowScope.() -> Unit) = {}
-){
-
+    actions: @Composable (RowScope.() -> Unit) = {}
+) {
     val view = LocalView.current
 
     TopAppBar(
@@ -97,68 +129,43 @@ fun ActivityTopAppBar(
                 Icon(
                     ImageVector.vectorResource(R.drawable.bar_back__exit),
                     contentDescription = "back",
-                    tint = colorScheme.onBackground)
+                    tint = colorScheme.onBackground
+                )
             }
-
         },
         actions = actions
     )
-
 }
 
 @Composable
 fun NavTopAppBar(
     modifier: Modifier,
+    navController: Navigator,
     title: String,
-    largeTitle: String? = null,
     scrollBehavior: ScrollBehavior? = null,
     color: Color,
-    navController: NavController,
-    parentRoute: MutableState<String>,
-    actions: @Composable() (RowScope.() -> Unit) = {}
-){
-
-    val view = LocalView.current
-
-    TopAppBar(
+    actions: @Composable (RowScope.() -> Unit) = {},
+) {
+    HyperStarTopAppBar(
         modifier = modifier,
         color = color,
         title = title,
-        largeTitle = largeTitle,
         scrollBehavior = scrollBehavior,
-        navigationIcon = {
-            IconButton(
-                modifier = Modifier.padding(start = 12.dp),
-                onClick = {
-                    view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                    navController.backParentPager(parentRoute.value)
-
-                }
-            ) {
-                Icon(
-                    ImageVector.vectorResource(R.drawable.bar_back__exit),
-                    contentDescription = "back",
-                    tint = colorScheme.onBackground)
-            }
-
-        },
+        onBack = { navController.goBack() },
         actions = actions
     )
-
 }
-
 
 @Composable
 fun NavSmallTopAppBar(
     modifier: Modifier,
+    navController: Navigator,
     title: String,
     scrollBehavior: ScrollBehavior? = null,
     color: Color,
-    navController: NavController,
     parentRoute: MutableState<String>,
-    actions: @Composable() (RowScope.() -> Unit) = {}
-){
-
+    actions: @Composable (RowScope.() -> Unit) = {}
+) {
     val view = LocalView.current
 
     SmallTopAppBar(
@@ -166,67 +173,54 @@ fun NavSmallTopAppBar(
         color = color,
         title = title,
         scrollBehavior = scrollBehavior,
+        titlePadding = TopAppBarDefaults.TitlePadding,
+        navigationIconPadding = TopAppBarDefaults.TitlePadding,
+        actionIconPadding = TopAppBarDefaults.TitlePadding,
         navigationIcon = {
             IconButton(
-                modifier = Modifier.padding(start = 12.dp),
+                modifier = Modifier,
                 onClick = {
                     view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                    navController.backParentPager(parentRoute.value)
-
+                    navController.goBack()
                 }
             ) {
                 Icon(
                     ImageVector.vectorResource(R.drawable.bar_back__exit),
                     contentDescription = "back",
-                    tint = colorScheme.onBackground)
+                    tint = colorScheme.onBackground
+                )
             }
-
         },
         actions = actions
     )
-
 }
 
 @Composable
 fun ModuleNavTopAppBar(
     modifier: Modifier,
-    title : String,
+    title: String,
     scrollBehavior: ScrollBehavior? = null,
-    color : Color,
+    color: Color,
     startClick: () -> Unit,
-    endIcon :  @Composable () -> Unit = {},
-    endClick:() -> Unit = {}
-){
-
-    TopAppBar(
+    endIcon: @Composable () -> Unit = {},
+    endClick: () -> Unit = {}
+) {
+    HyperStarTopAppBar(
         modifier = modifier,
         color = color,
         title = title,
         scrollBehavior = scrollBehavior,
-        navigationIcon = {
-            TopButton(
-                modifier = Modifier.padding(start = 18.dp),
-                imageVector = ImageVector.vectorResource(R.drawable.bar_back__exit),
-                contentDescription = "back",
-                onClick = startClick
-            )
-
-
-        },
+        onBack = startClick,
         actions = {
             endIcon()
             TopButton(
-                modifier = Modifier.padding(end = 18.dp),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_menu_refresh),
                 contentDescription = "restart",
                 onClick = endClick
             )
-
         }
     )
-
 }
-
 
 @Composable
 fun TopButton(
@@ -235,20 +229,17 @@ fun TopButton(
     contentDescription: String?,
     tint: Color = colorScheme.onBackground,
     onClick: () -> Unit,
-
-){
+) {
     val view = LocalView.current
     Box(
         modifier
-            .size(35.dp)
             .clip(RoundedCornerShape(50))
             .clickable {
                 view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                 onClick()
-
             },
         contentAlignment = Alignment.Center
-    ){
+    ) {
         Icon(
             imageVector,
             contentDescription = contentDescription,

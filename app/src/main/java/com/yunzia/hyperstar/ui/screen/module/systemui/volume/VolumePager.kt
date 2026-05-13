@@ -1,141 +1,134 @@
 package com.yunzia.hyperstar.ui.screen.module.systemui.volume
 
+import IgnoreSearchIndex
+import SearchRoute
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.component.ContentFolder
+import com.yunzia.hyperstar.ui.component.preference.PreferenceContentFolder
 import com.yunzia.hyperstar.ui.component.SuperGroupPosition
-import com.yunzia.hyperstar.ui.component.XMiuixSuperSliderSwitch
-import com.yunzia.hyperstar.ui.component.XSuperDropdown
-import com.yunzia.hyperstar.ui.component.XSuperSliders
-import com.yunzia.hyperstar.ui.component.XSuperSwitch
-import com.yunzia.hyperstar.ui.component.itemGroup
-import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
-import com.yunzia.hyperstar.utils.isOS2Settings
+import com.yunzia.hyperstar.ui.component.preference.PreferenceGroupScope
+import com.yunzia.hyperstar.ui.component.preference.PreferenceList
+import com.yunzia.hyperstar.ui.component.preference.preferenceGroup
+import com.yunzia.hyperstar.ui.component.preference.sp.SpSliderPreference
+import com.yunzia.hyperstar.ui.component.preference.sp.SpSwitchPreference
+import com.yunzia.hyperstar.ui.component.preference.sp.SpSwitchSliderPreference
+import com.yunzia.hyperstar.ui.component.preference.sp.SpDropdownPreference
+import com.yunzia.hyperstar.ui.navigation.MainRoutes
+import com.yunzia.hyperstar.ui.navigation.Navigator
+import com.yunzia.hyperstar.utils.isAtLeastOS2Settings
+import com.yunzia.hyperstar.utils.isOS1Settings
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 
+@SearchRoute(route = MainRoutes.SystemUI::class, tabIndex = 1)
 @Composable
 fun VolumePager(
-    navController: NavController,
+    navController: Navigator,
     scrollBehavior: ScrollBehavior,
-    paddingValue: PaddingValues
+    paddingValue: PaddingValues,
+    scrollToKey: String? = null,
+    onScrollComplete: (() -> Unit)? = null,
 ) {
-    LazyColumn(
-        modifier = Modifier.nestedOverScrollVertical(scrollBehavior.nestedScrollConnection),
-        contentPadding = PaddingValues(bottom = paddingValue.calculateBottomPadding())
+    PreferenceList(
+        contentPadding = PaddingValues(bottom = paddingValue.calculateBottomPadding()),
+        scrollBehavior = scrollBehavior,
+        scrollToKey = scrollToKey,
+        onScrollComplete = onScrollComplete
     ) {
-
-        itemGroup(
+        preferenceGroup(
             title = R.string.basics,
-            position = SuperGroupPosition.FIRST
-        ){
-            XSuperDropdown(
-                title = stringResource(R.string.is_super_blur_volume_title),
+            position = SuperGroupPosition.FIRST,
+        ) {
+            val blurOptions = stringArrayResource(R.array.is_super_blur_entire).toList()
+            SpDropdownPreference(
                 key = "is_super_blur_volume",
-                option = R.array.is_super_blur_entire
+                title = stringResource(R.string.is_super_blur_volume_title),
+                entries = blurOptions
             )
-
-            if (!isOS2Settings()){
-                XSuperSwitch(
+            if (isOS1Settings()) {
+                SpSwitchPreference(
                     title = stringResource(R.string.title_use_pad_volume),
                     summary = stringResource(R.string.summary_use_pad_volume),
                     key = "is_use_pad_volume"
                 )
             }
-            if (isOS2Settings()){
-                XSuperSwitch(
+            if (isAtLeastOS2Settings()) {
+                SpSwitchPreference(
                     title = stringResource(R.string.title_volume_top_value_show),
                     key = "volume_top_value_show"
                 )
             }
-            XMiuixSuperSliderSwitch(
-                switchTitle = stringResource(R.string.is_change_qs_progress_radius_title),
+            SpSwitchSliderPreference(
                 switchKey = "is_change_volume_progress_radius",
-                switchSummary = stringResource(id = R.string.progress_radius_summary),
-                title = stringResource(R.string.qs_progress_radius_title) ,
-                key ="volume_progress_radius",
+                switchTitle = stringResource(R.string.is_change_qs_progress_radius_title),
+                switchSummary = stringResource(R.string.progress_radius_summary),
+                key = "volume_progress_radius",
+                title = stringResource(R.string.qs_progress_radius_title),
+                unit = "dp",
                 minValue = 0f,
                 maxValue = 20f,
-                progress = 2f,
-                unit = "dp",
-                decimalPlaces = 1
+                defaultValue = 2f,
+                decimalPlaces = 1,
             )
         }
-        itemGroup(
+        preferenceGroup(
             title = R.string.sidebar_mode,
-            position = SuperGroupPosition.FIRST
-        ){
-
-
-            if (isOS2Settings()){
-                XSuperSwitch(
+        ) {
+            if (isAtLeastOS2Settings()) {
+                SpSwitchPreference(
                     title = stringResource(R.string.title_press_expand_volume),
                     summary = stringResource(R.string.summary_press_expand_volume),
                     key = "is_press_expand_volume"
                 )
-
             }
-            XSuperSwitch(
+            SpSwitchPreference(
                 title = stringResource(R.string.title_standardview_hide),
                 key = "is_hide_StandardView"
             )
             OrientationDimBarFolder(
-                stringResource(R.string.title_volume_height_collapsed),"volume_height_collapsed",300f
+                stringResource(R.string.title_volume_height_collapsed), "volume_height_collapsed", 300f
             )
             OrientationDimBarFolder(
-                stringResource(R.string.title_volume_offset_top_collapsed),"volume_offset_top_collapsed",250f
+                stringResource(R.string.title_volume_offset_top_collapsed), "volume_offset_top_collapsed", 250f
             )
             OrientationDimBarFolder(
-                stringResource(R.string.title_volume_shadow_height_collapsed),"volume_shadow_height_collapsed",300f
+                stringResource(R.string.title_volume_shadow_height_collapsed), "volume_shadow_height_collapsed", 300f
             )
             OrientationDimBarFolder(
-                stringResource(R.string.status_shadow_height_when_button_hidden),"volume_shadow_height_collapsed_no_footer",300f
+                stringResource(R.string.status_shadow_height_when_button_hidden), "volume_shadow_height_collapsed_no_footer", 300f
             )
             OrientationDimBarFolder(
-                stringResource(R.string.title_volume_shadow_margin_top_collapsed),"volume_shadow_margin_top_collapsed",450f
+                stringResource(R.string.title_volume_shadow_margin_top_collapsed), "volume_shadow_margin_top_collapsed", 450f
             )
-
         }
     }
-
 }
 
-
 @Composable
-fun OrientationDimBarFolder(
-    title:String,
-    key:String,
+@IgnoreSearchIndex
+fun PreferenceGroupScope.OrientationDimBarFolder(
+    title: String,
+    key: String,
     maxValue: Float
-){
-    ContentFolder(title){
-
-        XSuperSliders(
-            host = title,
+) {
+    PreferenceContentFolder(title, key = key) {
+        SpSliderPreference(
+            key = key + "_p",
             title = stringResource(R.string.PORTRAIT),
-            key = key+"_p",
-            defValue = -1f,
-            maxValue = maxValue,
-            minValue = 0f,
+            defaultValue = -1f,
+            valueRange = 0f..maxValue,
             unit = "dp",
             decimalPlaces = 1
         )
-
-
-        XSuperSliders(
-            host = title,
+        SpSliderPreference(
+            key = key + "_l",
             title = stringResource(R.string.LANDSCAPE),
-            key = key+"_l",
-            defValue = -1f,
-            maxValue = maxValue,
-            minValue = 0f,
+            defaultValue = -1f,
+            valueRange = 0f..maxValue,
             unit = "dp",
             decimalPlaces = 1
         )
-
     }
 }

@@ -11,69 +11,66 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import com.yunzia.hyperstar.PagerList
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseButton
-import com.yunzia.hyperstar.ui.component.dialog.SuperCTDialogDefaults
-import com.yunzia.hyperstar.ui.component.dialog.SuperXDialog
-import com.yunzia.hyperstar.utils.PreferencesUtil
+import com.yunzia.hyperstar.prefs.PreferencesUtil
+import com.yunzia.hyperstar.ui.navigation.MainRoutes
 import top.yukonga.miuix.kmp.basic.Text
-
-@Composable
-fun RootDialog(
-    show: MutableState<Boolean>,
-    navController: NavHostController
-) {
-
-    SuperXDialog(
-        title = stringResource(R.string.tips),
-        show = show,
-        onDismissRequest = {}
-    ) {
-
-        Text(
-            stringResource(R.string.no_root_description),
-            Modifier
-                .padding(horizontal = 5.dp)
-                .padding(top = 8.dp, bottom = 24.dp)
-                .fillMaxWidth(),
-            color = SuperCTDialogDefaults.summaryColor(),
-            textAlign = TextAlign.Center,
-            fontSize = 16.sp
-        )
-        BaseButton(
-            text = stringResource(R.string.cancel),
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                show.value = false
-                PreferencesUtil.removePreferences("no_root_waring")
-            }
-
-        )
-        Spacer(Modifier.height(12.dp))
-        BaseButton(
-            text = stringResource(R.string.no_warning),
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                show.value = false
-                PreferencesUtil.putBoolean("no_root_waring",false)
-
-            }
-
-        )
-        Spacer(Modifier.height(12.dp))
-        BaseButton(
-            text = stringResource(R.string.quick_authorization),
-            modifier = Modifier.fillMaxWidth(),
-            submit = true,
-            onClick = {
-                show.value = false
-                navController.navigate(PagerList.GO_ROOT)
-
-            }
-
-        )
-
-    }
-}
+//
+//@Composable
+//fun RootDialog(
+//    show: MutableState<Boolean>,
+//    navController: NavHostController
+//) {
+//
+//    SuperXDialog(
+//        title = stringResource(R.string.tips),
+//        show = show,
+//        onDismissRequest = {}
+//    ) {
+//
+//        Text(
+//            stringResource(R.string.no_root_description),
+//            Modifier
+//                .padding(horizontal = 5.dp)
+//                .padding(top = 8.dp, bottom = 24.dp)
+//                .fillMaxWidth(),
+//            color = SuperCTDialogDefaults.summaryColor(),
+//            textAlign = TextAlign.Center,
+//            fontSize = 16.sp
+//        )
+//        BaseButton(
+//            text = stringResource(R.string.cancel),
+//            modifier = Modifier.fillMaxWidth(),
+//            onClick = {
+//                show.value = false
+//                PreferencesUtil.removePreferences("no_root_waring")
+//            }
+//
+//        )
+//        Spacer(Modifier.height(12.dp))
+//        BaseButton(
+//            text = stringResource(R.string.no_warning),
+//            modifier = Modifier.fillMaxWidth(),
+//            onClick = {
+//                show.value = false
+//                PreferencesUtil.putBoolean("no_root_waring",false)
+//
+//            }
+//
+//        )
+//        Spacer(Modifier.height(12.dp))
+//        BaseButton(
+//            text = stringResource(R.string.quick_authorization),
+//            modifier = Modifier.fillMaxWidth(),
+//            submit = true,
+//            onClick = {
+//                show.value = false
+//                navController.navigate(MainRoutes.GoRoot)
+//
+//            }
+//
+//        )
+//
+//    }
+//}

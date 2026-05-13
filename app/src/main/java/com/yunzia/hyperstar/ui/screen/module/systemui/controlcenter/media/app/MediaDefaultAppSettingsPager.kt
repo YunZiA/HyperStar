@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -28,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
@@ -44,18 +42,23 @@ import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
+import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import com.yunzia.hyperstar.ui.navigation.MediaRoutes
+import SearchRoute
+import top.yukonga.miuix.kmp.preference.ArrowPreference
+import top.yukonga.miuix.kmp.preference.CheckboxLocation
+import top.yukonga.miuix.kmp.preference.CheckboxPreference
 import kotlin.collections.forEachIndexed
 
 @SuppressLint("MutableCollectionMutableState")
+@SearchRoute(route = MediaRoutes.MediaApp::class)
 @Composable
-fun MediaAppSettingsPager(
-    navController: NavController,
-    parentRoute: MutableState<String>
-) {
+fun MediaAppSettingsPager() {
     val activity = LocalActivity.current as MainActivity
+    val navController = LocalNavigator.current
     val context = LocalContext.current
-    val viewModel: MediaAppSettingsViewModel = viewModel(
+    val viewModel = viewModel<MediaAppSettingsViewModel>(
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return MediaAppSettingsViewModel(context.applicationContext as Application) as T
@@ -83,23 +86,13 @@ fun MediaAppSettingsPager(
         viewModel.loadApps(context)
     }
 
-    // LaunchedEffect for search status
-    LaunchedEffect(searchStatus.value.current) {
-        viewModel.onSearchStatusChanged(searchStatus.value.current)
-    }
-
-    // LaunchedEffect for search text
-    LaunchedEffect(searchStatus.value.searchText) {
-        viewModel.onSearchTextChanged(searchStatus.value.searchText)
-    }
-    SearchModuleNavPager(
+    searchStatus.value.SearchModuleNavPager(
         activityTitle = stringResource(R.string.media_default_app_settings),
-        searchStatus = searchStatus.value,
         navController = navController,
-        parentRoute = parentRoute,
         endClick = {
             Helper.rootShell("killall com.android.systemui")
         },
+        onQueryChange = { viewModel.onSearchTextChanged(it) },
         result = {
 
             searchApp.value.forEachIndexed { index, app ->
@@ -112,7 +105,7 @@ fun MediaAppSettingsPager(
             }
 
         },
-    ){ topAppBarScrollBehavior,padding->
+    ){ topAppBarScrollBehavior,contentTopPadding->
 
         LoadBox(
             loadStatus = loadStatus.value,
@@ -123,8 +116,8 @@ fun MediaAppSettingsPager(
                     .fillMaxSize()
                     .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
                 contentPadding = PaddingValues(
-                    top = 0.dp,
-                    bottom = padding.calculateBottomPadding() + 28.dp
+                    top = contentTopPadding,
+                    bottom = 28.dp
                 )
             ) {
 
@@ -156,34 +149,30 @@ fun AppItem(
 ) {
     val isSelected by remember { derivedStateOf { currentApp.value == app.packageName } }
 
-    BasicComponent(
+    CheckboxPreference(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
             .padding(top = 10.dp)
             .bounceAnimN()
-            .clip(G2RoundedCornerShape(CardDefaults.CornerRadius))
+            .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
             .background(if (isSelected) colorScheme.tertiaryContainer else colorScheme.surfaceVariant),
         title = app.label,
         titleColor = titleColor(isSelected),
         summary = app.packageName,
         summaryColor = summaryColor(isSelected),
-        leftAction = {
-            AppIcon(
-                icon = app.icon,
-                label = app.label,
-                modifier = Modifier.padding(end = 12.dp)
-            )
+//        startAction = {
+//            AppIcon(
+//                icon = app.icon,
+//                label = app.label,
+//                modifier = Modifier.padding(end = 12.dp)
+//            )
+//        },
+        endActions = {
         },
-        rightActions = {
-            Checkbox(
-                checked = isSelected,
-                onCheckedChange = {
-                    onClick()
-                }
-            )
-        },
-        onClick = {
+        checkboxLocation = CheckboxLocation.End,
+        checked = isSelected,
+        onCheckedChange = {
             onClick()
         }
     )

@@ -19,8 +19,11 @@
 package yunzia.utils
 
 import android.graphics.Outline
+import android.util.Log
 import android.view.View
 import android.view.ViewOutlineProvider
+import yunzia.utils.MiuiBlurUtils.METHOD_SET_VIEW_BLUR_MODE
+
 
 object MiBlurUtilsKt {
 
@@ -33,6 +36,10 @@ object MiBlurUtilsKt {
 
     private val setMiViewBlurMode by lazy {
         View::class.java.getDeclaredMethod("setMiViewBlurMode", Integer.TYPE)
+    }
+
+    private val setViewBlurMode by lazy {
+        View::class.java.getMethod("setMiViewBlurMode", Integer.TYPE)
     }
 
     private val setMiBackgroundBlurMode by lazy {
@@ -68,6 +75,7 @@ object MiBlurUtilsKt {
 
 
     fun View.chooseBackgroundBlurContainer(container: View?) {
+        if (container == null) return
         chooseBackgroundBlurContainer.invoke(this, container)
     }
 
@@ -77,6 +85,10 @@ object MiBlurUtilsKt {
 
     fun View.setMiViewBlurMode(mode: Int) {
         setMiViewBlurMode.invoke(this, mode)
+    }
+
+    fun View.setViewBlurMode(mode: Int) {
+        setViewBlurMode.invoke(this, mode)
     }
 
     fun View.setMiBackgroundBlurRadius(radius: Int) {
@@ -100,6 +112,7 @@ object MiBlurUtilsKt {
     }
 
     fun View.clearMiBackgroundBlendColor() {
+        Log.d("AndroidView", "clearMiBackgroundBlendColor")
         clearMiBackgroundBlendColor.invoke(this)
     }
 

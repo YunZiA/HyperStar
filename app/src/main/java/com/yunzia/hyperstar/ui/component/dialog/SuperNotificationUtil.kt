@@ -22,10 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.squareup.kotlinpoet.FLOAT_ARRAY
+import com.yunzia.hyperstar.ui.component.helper.getWindowSize
 import top.yukonga.miuix.kmp.anim.DecelerateEasing
 import top.yukonga.miuix.kmp.basic.Scaffold
-import top.yukonga.miuix.kmp.utils.getWindowSize
 import kotlin.collections.component1
 import kotlin.collections.component2
 
@@ -72,8 +71,8 @@ object SuperNotificationUtil {
     fun SuperNotificationHost() {
         val density = LocalDensity.current
         val getWindowSize by rememberUpdatedState(getWindowSize())
-        val windowWidth by rememberUpdatedState(getWindowSize.width.dp / density.density)
-        val windowHeight by rememberUpdatedState(getWindowSize.height.dp / density.density)
+        val windowWidth by rememberUpdatedState(getWindowSize.width)
+        val windowHeight by rememberUpdatedState(getWindowSize.height)
         val largeScreen by remember { derivedStateOf { (windowHeight >= 480.dp && windowWidth >= 840.dp) } }
 
         notificationStates.entries.forEach { (notification, notificationState) ->

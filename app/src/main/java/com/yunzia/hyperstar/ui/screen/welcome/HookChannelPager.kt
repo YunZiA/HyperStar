@@ -34,25 +34,21 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.Icon
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.Button
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.screen.pagers.titleColor
-import com.yunzia.hyperstar.utils.OSVersion
-import com.yunzia.hyperstar.utils.SPUtils
-import com.yunzia.hyperstar.utils.getHookChannel
+import com.yunzia.hyperstar.prefs.SPUtils
 import com.yunzia.hyperstar.utils.getSettingChannel
-import com.yunzia.hyperstar.utils.isBetaOS
-import com.yunzia.hyperstar.utils.isOS2
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.extra.CheckboxLocation
-import top.yukonga.miuix.kmp.extra.SuperCheckbox
+import top.yukonga.miuix.kmp.preference.CheckboxLocation
+import top.yukonga.miuix.kmp.preference.CheckboxPreference
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.basic.Icon
 
 @Composable
 fun HookChannelPager(
@@ -144,7 +140,7 @@ private fun LazyListScope.channelItem(
     val isSelected = index == selectedItem.intValue
 
     item(channel) {
-        SuperCheckbox(
+        CheckboxPreference(
             title = "Xiaomi HyperOS $index.0",
             titleColor = titleColor(isSelected),
             checked = isSelected,
@@ -156,12 +152,12 @@ private fun LazyListScope.channelItem(
                     Log.d("ggc", "channelItem: $isSelected")
                     if (isSelected) {
                         Log.d("ggc", "channelItem: isSelected $isSelected")
-                        SPUtils.setInt("is_Hook_Channel", selectedItem.intValue)
+                        SPUtils.putInt("is_Hook_Channel", selectedItem.intValue)
                     }
                 }
-                .clip(G2RoundedCornerShape(CardDefaults.CornerRadius))
+                .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
                 .background(if (isSelected) colorScheme.tertiaryContainer else colorScheme.surfaceVariant),
-            checkboxLocation = CheckboxLocation.Right,
+            checkboxLocation = CheckboxLocation.End,
             insideMargin = PaddingValues(20.dp),
             onCheckedChange = {
                 selectedItem.intValue = index

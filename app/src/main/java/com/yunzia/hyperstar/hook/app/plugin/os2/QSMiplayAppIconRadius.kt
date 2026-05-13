@@ -1,25 +1,25 @@
 package com.yunzia.hyperstar.hook.app.plugin.os2
 
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.dimenReplaceByValue
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
+import com.yunzia.hyperstar.prefs.XSPUtils
 import yunzia.utils.DensityUtil.Companion.dpToPx
 
-class QSMiplayAppIconRadius: Hooker() {
+object QSMiplayAppIconRadius: BasePluginHook() {
 
     private val qsDetailProgressBgRadius = XSPUtils.getBoolean("qs_detail_progress_bg_radius",false)
     private val disableAppIconRadius = XSPUtils.getBoolean("qs_detail_app_icon_radius",false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
+    override fun init() {
 
         if (disableAppIconRadius) {
-            replaceDimen("miplay_detail_header_app_icon_radius",plugin) {
-                return@replaceDimen 0f
+            dimenReplaceByValue("miplay_detail_header_app_icon_radius",plugin) {
+                return@dimenReplaceByValue 0f
             }
         }
         if (qsDetailProgressBgRadius){
-            replaceDimen("miplay_seekbar_progress_bg_corner_radiu",plugin) {
-                return@replaceDimen dpToPx(displayMetrics, 8f)
+            dimenReplaceByValue("miplay_seekbar_progress_bg_corner_radiu",plugin) {
+                return@dimenReplaceByValue dpToPx(displayMetrics, 8f)
             }
         }
     }

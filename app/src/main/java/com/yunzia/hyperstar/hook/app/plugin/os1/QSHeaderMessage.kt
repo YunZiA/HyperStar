@@ -1,32 +1,27 @@
 package com.yunzia.hyperstar.hook.app.plugin.os1
 
 import android.os.Handler
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.base.replaceHookMethod
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.callMethod
+import com.yunzia.hyperstar.hook.core.helper.getObjectField
+import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
+import com.yunzia.hyperstar.prefs.XSPUtils
 
-class QSHeaderMessage : Hooker() {
+object QSHeaderMessage : BasePluginHook() {
     private val showMessage= XSPUtils.getBoolean("close_header_show_message",false)
     val showMessageMillis: Float = XSPUtils.getFloat("header_show_message_millis",1f)*1000
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
-        startMethodsHook()
-    }
-
-    private fun startMethodsHook() {
-
+    override fun init() {
         findClass(
             "miui.systemui.controlcenter.panel.main.header.MainPanelHeaderController",
-            classLoader
+            pluginClassLoader
         ).apply {
             if (showMessage){
                 replaceHookMethod(
                     "showMessage",
                     CharSequence::class.java
-                ){
-
+                ) {
                     return@replaceHookMethod null
                 }
 
@@ -34,23 +29,17 @@ class QSHeaderMessage : Hooker() {
                 replaceHookMethod(
                     "handleShowMessage",
                     CharSequence::class.java
-                ){
-                    val message = it.args[0]
+                ) {
+                    val message = it[0]
                     val headerMsgController = getObjectField("headerMsgController")
                     headerMsgController.callMethod("changeMsg",message)
                     callMethod("changeTarget",headerMsgController,true)
                     val uiHandler = getObjectField("uiHandler") as Handler
                     val hideMsgCallback = getObjectField("hideMsgCallback") as Runnable
                     uiHandler.postDelayed(hideMsgCallback,showMessageMillis.toLong())
-
                     return@replaceHookMethod null
-
                 }
-
             }
         }
-
     }
-
-
 }

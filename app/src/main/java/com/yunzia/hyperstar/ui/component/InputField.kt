@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +14,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -25,12 +27,14 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 
 @Composable
 fun InputField(
@@ -57,13 +61,25 @@ fun InputField(
         else Modifier.padding(vertical = insideMargin.height)
     }
 
-    val focused = interactionSource.collectIsFocusedAsState().value
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
+    var textFieldValue by remember { mutableStateOf(TextFieldValue(query, TextRange(query.length))) }
+
+    LaunchedEffect(query) {
+        if (textFieldValue.text != query) {
+            textFieldValue = TextFieldValue(query, TextRange(query.length))
+        }
+    }
+
     BasicTextField(
-        value = query,
-        onValueChange = onQueryChange,
+        value = textFieldValue,
+        onValueChange = { newValue ->
+            textFieldValue = newValue
+            if (newValue.text != query) {
+                onQueryChange(newValue.text)
+            }
+        },
         readOnly = !expanded,
         modifier = modifier
             .then(
@@ -98,7 +114,7 @@ fun InputField(
         interactionSource = interactionSource,
         decorationBox =
             @Composable { innerTextField ->
-                val shape = remember { derivedStateOf { G2RoundedCornerShape(50.dp) } }
+                val shape = remember { derivedStateOf { SmoothRoundedCornerShape(50.dp) } }
                 Box(
                     modifier = Modifier
                         .background(
@@ -135,12 +151,10 @@ fun InputField(
     )
 
     LaunchedEffect(expanded) {
-        //delay(100)
-        if (expanded){
+        if (expanded) {
             focusRequester.requestFocus()
-        }else if (focused){
+        } else {
             focusManager.clearFocus()
         }
-
     }
 }

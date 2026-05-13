@@ -3,8 +3,8 @@ package com.yunzia.hyperstar.ui.theme
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.graphics.Color
-import android.os.Build
 import androidx.activity.SystemBarStyle
+import androidx.activity.compose.LocalActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
@@ -12,10 +12,11 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import com.kyant.liquidglass.rememberLiquidGlassProviderState
 import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.utils.LanguageHelper.Companion.getIndexLanguage
+import top.yukonga.miuix.kmp.theme.ColorSchemeMode
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.theme.ThemeController
 import top.yukonga.miuix.kmp.theme.darkColorScheme
 import top.yukonga.miuix.kmp.theme.lightColorScheme
 
@@ -24,43 +25,75 @@ import top.yukonga.miuix.kmp.theme.lightColorScheme
 fun BaseActivity.HyperStarTheme(
     content: @Composable () -> Unit
 ) {
-    isDarkMode = colorMode.intValue == 2 || (isSystemInDarkTheme() && colorMode.intValue == 0)
-    DisposableEffect(isDarkMode) {
+
+    val isDark = isSystemInDarkTheme()
+    DisposableEffect(colorMode.intValue) {
+        isDarkMode = when(colorMode.intValue){
+            2, 5 -> true
+            0, 3 -> isDark
+            else -> false
+        }
+
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.auto(
                 Color.TRANSPARENT,
-                Color.TRANSPARENT,
-                { isDarkMode }
-            ) ,
+                Color.TRANSPARENT
+            ) { isDarkMode },
             navigationBarStyle = SystemBarStyle.auto(
                 Color.TRANSPARENT,
-                Color.TRANSPARENT,
-                { false }
-            )
+                Color.TRANSPARENT
+            ) { isDarkMode },
         )
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-        }
         window.isNavigationBarContrastEnforced = false
-        onDispose {}
+        onDispose {  }
     }
 
+    val controller = when (colorMode.intValue) {
+        1 -> ThemeController(ColorSchemeMode.Light)
+        2 -> ThemeController(ColorSchemeMode.Dark)
+        3 -> ThemeController(
+            ColorSchemeMode.MonetSystem,
+//            keyColor = keyColor,
+            isDark = isDark
+        )
 
-    return MiuixTheme(
-        colors = if (isDarkMode) {
-            darkColorScheme()
-        }else{
-            lightColorScheme()
-        }
-    ){
-        val context = LocalContext.current
-        val newContext = context.createConfigurationContext(Configuration(context.resources.configuration).apply {
-            setLocale(getIndexLanguage(language.intValue))
-        })
-        CompositionLocalProvider(
-            LocalConfiguration provides newContext.resources.configuration
-        ) {
+        4 -> ThemeController(
+            ColorSchemeMode.MonetLight,
+//            keyColor = keyColor,
+        )
+
+        5 -> ThemeController(
+            ColorSchemeMode.MonetDark,
+//            keyColor = keyColor,
+        )
+
+        else -> ThemeController(ColorSchemeMode.System)
+    }
+
+    val context = LocalContext.current
+    val newContext = context.createConfigurationContext(Configuration(context.resources.configuration).apply {
+        setLocale(getIndexLanguage(language.intValue))
+    })
+
+    CompositionLocalProvider(
+        LocalConfiguration provides newContext.resources.configuration
+    ) {
+        MiuixTheme(
+            controller = controller
+        ){
             content()
         }
     }
 
+}
+
+
+@Composable
+fun isInDarkTheme(): Boolean {
+    val activity = LocalActivity.current as BaseActivity
+    return when (activity.colorMode.intValue) {
+        1, 4 -> false
+        2, 5, 6 -> true
+        else -> isSystemInDarkTheme()
+    }
 }

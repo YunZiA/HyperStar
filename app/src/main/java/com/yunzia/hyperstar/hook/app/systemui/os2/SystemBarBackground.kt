@@ -1,40 +1,39 @@
 package com.yunzia.hyperstar.hook.app.systemui.os2
 
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.afterHookConstructor
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.hook.core.base.BaseHook
+import com.yunzia.hyperstar.hook.core.helper.afterHookConstructor
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.hook.core.helper.getIntField
+import com.yunzia.hyperstar.hook.core.helper.getObjectField
+import com.yunzia.hyperstar.hook.core.helper.setIntField
+import com.yunzia.hyperstar.prefs.XSPUtils
 
 
-class SystemBarBackground : Hooker() {
+object SystemBarBackground : BaseHook() {
 
     private val isTransparentNavigationBarBackground = XSPUtils.getBoolean("is_transparent_navigationBar_background",false)
     private val isTransparentStatusBarBackground = XSPUtils.getBoolean("is_transparent_statusBar_background",false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
-
+    override fun init() {
         transparentNavigationBarBackground()
         transparentStatusBarBackground()
-
     }
 
     private fun transparentStatusBarBackground() {
         if (!isTransparentStatusBarBackground) return
-
 //        val BarTransitions = findClass(
 //            "com.android.systemui.statusbar.phone.BarTransitions",
 //            classLoader
 //        )
         findClass(
-            "com.android.systemui.dagger.DaggerReferenceGlobalRootComponent\$StatusBarFragmentComponentImpl\$SwitchingProvider",
-            classLoader
-        ).afterHookMethod("get"){
-            val id = this.getIntField("id")
+            "com.android.systemui.dagger.DaggerReferenceGlobalRootComponent\$StatusBarFragmentComponentImpl\$SwitchingProvider"
+        ).afterHookMethod("get") { args, result ->
+            val id = thisObject.getIntField("id")
             when(id){
                 4->{
 
-                    val mBarBackground = it.result.getObjectField("mBarBackground")
+                    val mBarBackground = result.value.getObjectField("mBarBackground")
 
                     mBarBackground.setIntField("mSemiTransparent", 0)
 
@@ -61,25 +60,22 @@ class SystemBarBackground : Hooker() {
         if (!isTransparentNavigationBarBackground) return
 
         val NavigationBarView = findClass(
-            "com.android.systemui.navigationbar.NavigationBarView",
-            classLoader
+            "com.android.systemui.navigationbar.NavigationBarView"
         )
         val SwitchingProvider9 = findClass(
-            "com.android.systemui.dagger.DaggerReferenceGlobalRootComponent\$ReferenceSysUIComponentImpl\$SwitchingProvider\$9",
-            classLoader
+            "com.android.systemui.dagger.DaggerReferenceGlobalRootComponent\$ReferenceSysUIComponentImpl\$SwitchingProvider\$9"
         )
-        val DisplayTracker = findClass("com.android.systemui.settings.DisplayTracker", classLoader)
+        val DisplayTracker = findClass("com.android.systemui.settings.DisplayTracker")
 
         findClass(
-            "com.android.systemui.navigationbar.NavigationBarTransitions",
-            classLoader
+            "com.android.systemui.navigationbar.NavigationBarTransitions"
         ).afterHookConstructor(
             NavigationBarView,
             SwitchingProvider9,
             DisplayTracker
-        ){
-            val mView = this.getObjectField( "mView")
-            val mBarBackground = this.getObjectField("mBarBackground")
+        ) { args, result ->
+            val mView = thisObject.getObjectField( "mView")
+            val mBarBackground = thisObject.getObjectField("mBarBackground")
             //Object mSemiTransparent = XposedHelpers.getIntField(thisObject,"mSemiTransparent");
             mBarBackground.setIntField("mSemiTransparent", 0)
 

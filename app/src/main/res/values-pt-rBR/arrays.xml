@@ -80,6 +80,9 @@
         <item>Sistema</item>
         <item>Claro</item>
         <item>Escuro</item>
+        <item>Monet (Follow system)</item>
+        <item>Monet (Light)</item>
+        <item>Monet (Dark)</item>
     </string-array>
 
     <string-array name="reboot_menus_style">

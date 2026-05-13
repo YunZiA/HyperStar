@@ -2,26 +2,24 @@ package com.yunzia.hyperstar.hook.app.screenshot
 
 import android.content.ContentResolver
 import android.provider.Settings
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.hook.core.base.BaseHook
+import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.prefs.XSPUtils
 
-class EnableClipboardWriteOnScreenshot : Hooker() {
+object EnableClipboardWriteOnScreenshot : BaseHook() {
 
     val isEnable = XSPUtils.getBoolean("enable_clipboard_write_on_screenshot",false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
-
+    override fun init() {
         if (!isEnable) return
-
         Settings.Secure::class.java.afterHookMethod(
             "getInt",
             ContentResolver::class.java,
             String::class.java,
             Int::class.java
-        ){
-            if (it.args[1] == "mi_screen_shots_write_clipboard_enable"){
-                it.result = 1
+        ) { args, result ->
+            if (args[1] == "mi_screen_shots_write_clipboard_enable"){
+                result.replace(1)
             }
 
         }

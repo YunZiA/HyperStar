@@ -1,31 +1,29 @@
 package com.yunzia.hyperstar.hook.init
 
-import android.app.AndroidAppHelper
-import com.yunzia.annotations.Init
-import com.yunzia.hyperstar.hook.base.InitHooker
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.utils.XSPUtils
+//import com.yunzia.annotations.Init
+import com.yunzia.hyperstar.hook.core.annotation.Init
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.base.BaseHooks
+import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.prefs.XSPUtils
 
 @Init(packageName = "com.android.thememanager")
-class InitThemeManagerHook: InitHooker() {
+object InitThemeManagerHook: BaseHooks() {
 
-    override fun initHook() {
+    override fun init() {
         //AndroidAppHelper.currentApplication().packageManager.
         if (XSPUtils.getBoolean("is_unlock_ai_wallpaper",false)){
 
             findClass(
-                "com.android.thememanager.basemodule.utils.wvg",
-                classLoader
+                "com.android.thememanager.basemodule.utils.wvg"
             ).afterHookMethod(
                 "jk"
-            ){
-                if (it.result == false){
-                    it.result = true
+            ) { args, result ->
+                if (result.value == false){
+                    result.replace(true)
                 }
             }
         }
-
-
 
     }
 

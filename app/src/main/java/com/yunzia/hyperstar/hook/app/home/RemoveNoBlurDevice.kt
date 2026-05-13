@@ -1,21 +1,17 @@
 package com.yunzia.hyperstar.hook.app.home
 
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClassWithPrefix
-import com.yunzia.hyperstar.hook.base.replaceHookMethod
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.hook.core.base.BaseHook
+import com.yunzia.hyperstar.hook.core.finder.findClassWithPrefix
+import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
+import com.yunzia.hyperstar.prefs.XSPUtils
 
-class RemoveNoBlurDevice : Hooker() {
+object RemoveNoBlurDevice : BaseHook() {
 
     val isUnlock = XSPUtils.getBoolean("is_unlock_home_blur",false)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
-
+    override fun init() {
         if (!isUnlock) return
-
-
-        classLoader.findClassWithPrefix(
+        findClassWithPrefix(
             "com.miui.home.launcher.common.BlurUtilities",
             "com.miui.home.common.utils.BlurUtilities"
         ).replaceHookMethod(
@@ -23,7 +19,6 @@ class RemoveNoBlurDevice : Hooker() {
         ){
             return@replaceHookMethod false
         }
-
 
 
     }

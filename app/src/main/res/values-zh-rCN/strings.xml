@@ -257,6 +257,7 @@
     <string name="title_adb_enabled">隐藏USB调试</string>
     <string name="title_adb_wifi_enabled">隐藏无线调试</string>
     <string name="not_developer">我tm就不是开发者</string>
+    <string name="fun_scope">作用域</string>
     <string name="title_log_level">日志输出等级</string>
     <string name="summary_log_level">重启作用域应用生效</string>
     <string name="no_active_des_sum">请前往XP模块管理器激活</string>

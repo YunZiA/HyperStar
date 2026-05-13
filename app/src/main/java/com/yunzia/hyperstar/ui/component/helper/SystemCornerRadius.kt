@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.ui.component.helper
 
-import android.util.Log
 import android.view.RoundedCorner
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -8,7 +7,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getCornerRadiusBottom
 
 
@@ -25,15 +24,13 @@ fun getSystemCornerRadius(): Dp {
 @Composable
 fun getSystemSmoothCornerRadius(): Dp {
     val cornerDp = getSystemCornerRadius()
-    Log.d("ggc", "getSystemCornerRadius: $cornerDp")
     if (cornerDp <= 22.dp) return cornerDp
     return  cornerDp*11/12
 }
 
 @Composable
-fun getSystemSmoothCornerShape(): G2RoundedCornerShape {
+fun getSystemSmoothCornerShape(): SmoothRoundedCornerShape {
     val cornerDp = getSystemCornerRadius()
-    Log.d("ggc", "getSystemCornerRadius: $cornerDp")
-    if (cornerDp <= 22.dp) return G2RoundedCornerShape(cornerDp)
-    return  G2RoundedCornerShape(cornerDp*12/10)
+    if (cornerDp <= 22.dp) return SmoothRoundedCornerShape(cornerDp)
+    return  SmoothRoundedCornerShape(cornerDp*12/10)
 }

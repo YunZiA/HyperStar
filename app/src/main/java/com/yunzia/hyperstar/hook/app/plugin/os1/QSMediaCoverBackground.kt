@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.hook.app.plugin.os1
 
-import android.content.res.XModuleResources
 import android.graphics.Bitmap
 import android.graphics.Outline
 import android.graphics.drawable.Drawable
@@ -9,19 +8,22 @@ import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import androidx.core.graphics.drawable.toDrawable
-import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.afterHookAllConstructors
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.hook.base.replaceHookMethod
-import com.yunzia.hyperstar.hook.tool.starLog
-import com.yunzia.hyperstar.utils.XSPUtils
-import de.robv.android.xposed.callbacks.XC_InitPackageResources
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.base.findViewByIdNameAs
+import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
+import com.yunzia.hyperstar.hook.core.StarLog.logE
+import com.yunzia.hyperstar.hook.core.helper.afterHookAllConstructors
+import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.hook.core.helper.callMethod
+import com.yunzia.hyperstar.hook.core.helper.getFloatField
+import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
+import com.yunzia.hyperstar.prefs.XSPUtils
 import yunzia.utils.BitmapUtils
 import yunzia.utils.BitmapUtils.Companion.auto
 
 
-class QSMediaCoverBackground: Hooker() {
+object QSMediaCoverBackground: BasePluginHook() {
 
     private var vintage :Int? = null
 
@@ -38,38 +40,20 @@ class QSMediaCoverBackground: Hooker() {
     val alpha = XSPUtils.getFloat("cover_dim_background_value",0f).coerceIn(0f, 100f)
     val coverAnciently:Boolean = XSPUtils.getBoolean("cover_anciently",false)
 
-
-    override fun initResources(
-        resparam: XC_InitPackageResources.InitPackageResourcesParam?,
-        modRes: XModuleResources?
-    ) {
-        super.initResources(resparam, modRes)
-        vintage = resparam?.res?.addResource(modRes, R.drawable.vintage)!!
-
-
-    }
-
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
-        startMethodsHook()
-
-    }
-
-    private fun startMethodsHook() {
+    override fun init() {
         var foreground: Drawable? = null
-        val MediaPlayerMetaData  = findClass("miui.systemui.controlcenter.media.MediaPlayerMetaData",classLoader)
-        val CommonUtils = findClass("miui.systemui.util.CommonUtils",classLoader)
+        val MediaPlayerMetaData  = findClass("miui.systemui.controlcenter.media.MediaPlayerMetaData",pluginClassLoader)
 
         findClass(
             "miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",
-            classLoader
+            pluginClassLoader
         ).apply {
             afterHookMethod(
                 "updateMetaData",
                 MediaPlayerMetaData
-            ){
-                val mediaPlayerMetaData = it.args[0]
-                val itemView = this.getObjectFieldAs<View>("itemView")
+            ) { args, result ->
+                val mediaPlayerMetaData = args[0]
+                val itemView = thisObject.getObjectFieldAs<View>("itemView")
                 val cover = itemView.findViewByIdNameAs<ImageView>("cover")
                 val res = itemView.resources
 
@@ -94,13 +78,13 @@ class QSMediaCoverBackground: Hooker() {
 
                 var art = mediaPlayerMetaData.callMethod("getArt")
                 if (art == null){
-                    starLog.logE("art is null")
+                    logE("art is null")
                     return@afterHookMethod
                 }
 
                 if (art !is Bitmap){
-                    starLog.logE("mediaPlayerMetaData:art is not get!!!")
-                    this.callMethod("updateResources")
+                    logE("mediaPlayerMetaData:art is not get!!!")
+                    thisObject.callMethod("updateResources")
                     return@afterHookMethod
 
                 }
@@ -133,9 +117,9 @@ class QSMediaCoverBackground: Hooker() {
 
             }
             if (!defaultBackground) {
-                afterHookAllConstructors {
-                    val itemView = this.getObjectFieldAs<View>("itemView")
-                    val _cornerRadius = this.getFloatField("_cornerRadius")
+                afterHookAllConstructors { args, result ->
+                    val itemView = thisObject.getObjectFieldAs<View>("itemView")
+                    val _cornerRadius = thisObject.getFloatField("_cornerRadius") ?:0F
                     itemView.outlineProvider = object : ViewOutlineProvider(){
                         override fun getOutline(view: View?, outline: Outline?) {
                             if (view == null) return
@@ -146,29 +130,22 @@ class QSMediaCoverBackground: Hooker() {
                     itemView.clipToOutline = true
 
                 }
-                afterHookMethod("updateSize") {
-                    val itemView = this.getObjectFieldAs<View>("itemView")
-                    val _cornerRadius = this.getFloatField("_cornerRadius")
+                afterHookMethod("updateSize") { args, result ->
+                    val itemView = thisObject.getObjectFieldAs<View>("itemView")
+                    val _cornerRadius = thisObject.getFloatField("_cornerRadius")?:0F
                     itemView.outlineProvider = object : ViewOutlineProvider(){
                         override fun getOutline(view: View?, outline: Outline?) {
                             if (view == null) return
                             outline?.setRoundRect(0,0,view.width,view.height,_cornerRadius)
                         }
-
                     }
                     itemView.clipToOutline = true
-
                 }
-                replaceHookMethod("updateResources"){
+                replaceHookMethod("updateResources") {
                     return@replaceHookMethod null
-
                 }
             }
 
         }
     }
-
-
-
-
 }

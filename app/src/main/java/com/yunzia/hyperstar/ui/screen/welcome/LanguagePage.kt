@@ -36,15 +36,15 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.TextButton
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN
 import com.yunzia.hyperstar.ui.screen.pagers.titleColor
-import com.yunzia.hyperstar.utils.PreferencesUtil
+import com.yunzia.hyperstar.prefs.PreferencesUtil
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.extra.CheckboxLocation
-import top.yukonga.miuix.kmp.extra.SuperCheckbox
+import top.yukonga.miuix.kmp.preference.CheckboxLocation
+import top.yukonga.miuix.kmp.preference.CheckboxPreference
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 
 @Composable
 fun LanguagePage(
@@ -135,10 +135,7 @@ private fun LanguageItem(
     isSelected: State<Boolean>,
     onCheckedChange: ((Boolean) -> Unit)
 ){
-
-
-
-    SuperCheckbox(
+    CheckboxPreference(
         title = language,
         titleColor =  titleColor(isSelected.value),
         checked = isSelected.value,
@@ -147,12 +144,12 @@ private fun LanguageItem(
             .padding(horizontal = 12.dp)
             .padding(vertical = 5.dp)
             .bounceAnimN {}
-            .clip(G2RoundedCornerShape(CardDefaults.CornerRadius))
+            .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
             .background(if (isSelected.value) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
         ,
-        checkboxLocation = CheckboxLocation.Right,
+        checkboxLocation = CheckboxLocation.End,
         insideMargin = PaddingValues(20.dp),
-        onCheckedChange =  {onCheckedChange(it) }
+        onCheckedChange =  { onCheckedChange(it) }
     )
 
 

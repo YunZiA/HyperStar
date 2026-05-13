@@ -12,20 +12,13 @@ import androidx.lifecycle.viewModelScope
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.LoadStatus
 import com.yunzia.hyperstar.ui.component.search.SearchStatus
-import com.yunzia.hyperstar.ui.component.search.SearchStatus.Status
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.media.app.AppInfo
-import com.yunzia.hyperstar.utils.SPUtils
+import com.yunzia.hyperstar.prefs.SPUtils
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MediaAppSettingsViewModel(
-    application: Application  // 注入 Application
-) : AndroidViewModel(application) {
+class MediaAppSettingsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _appLists = mutableStateOf<List<AppInfo>>(emptyList())
     val appLists: State<List<AppInfo>> = _appLists
@@ -50,7 +43,7 @@ class MediaAppSettingsViewModel(
 
     fun updateSelectedApp(packageName: String) {
         _currentApp.value = if (_currentApp.value == packageName) "" else packageName
-        SPUtils.setString("media_default_app_package", _currentApp.value)
+        SPUtils.putString("media_default_app_package", _currentApp.value)
     }
 
     init {
@@ -75,36 +68,31 @@ class MediaAppSettingsViewModel(
         }
     }
 
-    fun onSearchStatusChanged(status: Status) {
-        if (status == Status.COLLAPSED) {
-            _searchStatus.value.searchText = ""
-        }
-    }
+    private val searchDebouncer = SearchDebouncer<AppInfo>(viewModelScope)
 
     fun onSearchTextChanged(searchText: String) {
         _searchStatus.value.searchText = searchText
 
-        if (searchText.isEmpty()) {
-            _searchStatus.value.resultStatus = SearchStatus.ResultStatus.DEFAULT
-            _searchApp.value = emptyList()
-            return
-        }
-
-        viewModelScope.launch(Dispatchers.Default) {
-            delay(300)
-            _searchStatus.value.resultStatus = SearchStatus.ResultStatus.LOAD
-
-            _searchApp.value = _appLists.value.asFlow()
-                .filter { app ->
-                    app.label.contains(searchText, ignoreCase = true) || app.packageName.contains(searchText, ignoreCase = true)
-
+        searchDebouncer.submit(
+            query = searchText,
+            onEmpty = {
+                _searchApp.value = emptyList()
+                _searchStatus.value.resultStatus = SearchStatus.ResultStatus.DEFAULT
+            },
+            onLoading = {
+                _searchStatus.value.resultStatus = SearchStatus.ResultStatus.LOAD
+            },
+            onResult = { results ->
+                _searchApp.value = results
+                _searchStatus.value.resultStatus = if (results.isEmpty()) {
+                    SearchStatus.ResultStatus.EMPTY
+                } else {
+                    SearchStatus.ResultStatus.SHOW
                 }
-                .toList()
-
-            _searchStatus.value.resultStatus = if (_searchApp.value.isEmpty()) {
-                SearchStatus.ResultStatus.EMPTY
-            } else {  // 修复了这里的语法错误
-                SearchStatus.ResultStatus.SHOW
+            }
+        ) { query ->
+            _appLists.value.filter {
+                it.label.contains(query, ignoreCase = true) || it.packageName.contains(query, ignoreCase = true)
             }
         }
     }

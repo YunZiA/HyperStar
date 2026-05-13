@@ -1,33 +1,28 @@
 package com.yunzia.hyperstar.hook.app.plugin.os2
 
 import android.content.Context
-import com.yunzia.hyperstar.hook.base.Hooker
-import com.yunzia.hyperstar.hook.base.findClass
-import com.yunzia.hyperstar.utils.XSPUtils
+import com.yunzia.hyperstar.hook.core.base.BasePluginHook
+import com.yunzia.hyperstar.hook.core.finder.findClass
+import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
+import com.yunzia.hyperstar.prefs.XSPUtils
 
-class SuperBlurVolumeManager : Hooker() {
+object SuperBlurVolumeManager : BasePluginHook() {
 
     val superBlurVolume = XSPUtils.getInt("is_super_blur_volume",0)
 
-    override fun initHook(classLoader: ClassLoader?) {
-        super.initHook(classLoader)
-        if (superBlurVolume != 0){
-            startMethodsHook()
-        }
-    }
+    override fun init() {
+        if (superBlurVolume == 0) return
 
-    private fun startMethodsHook() {
         findClass(
             "miui.systemui.util.MiBlurCompat",
-            classLoader
-        ).afterHookMethod("getBackgroundBlurOpenedInDefaultTheme",Context::class.java){
+            pluginClassLoader
+        ).afterHookMethod("getBackgroundBlurOpenedInDefaultTheme",Context::class.java) { args, result ->
 
-            if (superBlurVolume == 1){
-                it.result = false
+            if (superBlurVolume == 1) {
+                result.replace(false)
             }else if (superBlurVolume == 2){
-                it.result = true
+                result.replace(true)
             }
         }
-
     }
 }

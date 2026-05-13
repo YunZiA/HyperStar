@@ -22,11 +22,6 @@ class MiBlurCompat(private val classLoader: ClassLoader?) {
         miBlurCompat.callStaticMethod("setMiBackgroundBlurRadiusCompat",view,radius)
     }
 
-    fun setMiBackgroundBlurRadiusCompat(view: View,radius:Int){
-
-        XposedHelpers.callStaticMethod(miBlurCompat,"setMiBackgroundBlurRadiusCompat",view,radius)
-    }
-
     fun setMiBackgroundBlendColors(view: View?, colorArray:IntArray, float: Float){
 
         miBlurCompat.callStaticMethod( "setMiBackgroundBlendColors",view,colorArray,float)
@@ -36,17 +31,6 @@ class MiBlurCompat(private val classLoader: ClassLoader?) {
 
         try {
             miBlurCompat.callStaticMethod( "chooseBackgroundBlurContainerCompat",view,view2)
-        }  catch (e: NoSuchMethodError) {
-            View::class.java.getMethod("chooseBackgroundBlurContainer", View::class.java).invoke(view,view2)
-
-            //XposedHelpers.callMethod(view, "chooseBackgroundBlurContainerCompat",view2)
-        }
-    }
-
-    fun chooseBackgroundBlurContainerCompat(view: View,view2: View?){
-
-        try {
-            XposedHelpers.callStaticMethod(miBlurCompat, "chooseBackgroundBlurContainerCompat",view,view2)
         }  catch (e: NoSuchMethodError) {
             View::class.java.getMethod("chooseBackgroundBlurContainer", View::class.java).invoke(view,view2)
 

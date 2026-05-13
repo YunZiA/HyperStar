@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.LocalTextStyle
 import kotlinx.coroutines.delay
 import top.yukonga.miuix.kmp.basic.Text
 

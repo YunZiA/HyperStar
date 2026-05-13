@@ -24,6 +24,14 @@ android {
     }
 
     targetProjectPath = ":app"
+    buildTypes {
+        create("dev") {
+        }
+        create("benchmarkDev") {
+        }
+        create("nonMinifiedDev") {
+        }
+    }
 
 }
 

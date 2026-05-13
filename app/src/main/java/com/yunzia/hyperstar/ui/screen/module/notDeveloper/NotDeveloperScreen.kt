@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/yunzia/hyperstar/ui/screen/module/NotDeveloperScreen.kt
-package com.yunzia.hyperstar.ui.screen.module
-========
 package com.yunzia.hyperstar.ui.screen.module.notDeveloper
->>>>>>>> newApi:app/src/main/java/com/yunzia/hyperstar/ui/screen/module/notDeveloper/NotDeveloperScreen.kt
 
 import android.annotation.SuppressLint
 import android.provider.Settings
@@ -34,14 +30,6 @@ import androidx.compose.ui.unit.sp
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.SuperGroup
 import com.yunzia.hyperstar.ui.component.SuperGroupPosition
-<<<<<<<< HEAD:app/src/main/java/com/yunzia/hyperstar/ui/screen/module/NotDeveloperScreen.kt
-import com.yunzia.hyperstar.ui.component.XSuperSwitch
-import com.yunzia.hyperstar.ui.component.itemGroup
-import com.yunzia.hyperstar.ui.component.pager.NavPager
-import top.yukonga.miuix.kmp.basic.CardDefaults
-import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
-========
 import com.yunzia.hyperstar.ui.component.preference.PreferenceScreen
 import com.yunzia.hyperstar.ui.component.preference.core.SwitchPreference
 import com.yunzia.hyperstar.ui.component.preference.preferenceGroup
@@ -53,19 +41,11 @@ import androidx.activity.compose.LocalActivity
 import com.yunzia.hyperstar.MainActivity
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Text
->>>>>>>> newApi:app/src/main/java/com/yunzia/hyperstar/ui/screen/module/notDeveloper/NotDeveloperScreen.kt
 
 @SuppressLint("StringFormatMatches")
 @SearchRoute(route = MainRoutes.NotDeveloper::class)
 @Composable
-<<<<<<<< HEAD:app/src/main/java/com/yunzia/hyperstar/ui/screen/module/NotDeveloperScreen.kt
-fun NotDeveloperScreen(
-    navController: NavController,
-    currentStartDestination: MutableState<String>,
-) {
-========
 fun NotDeveloperScreen() {
->>>>>>>> newApi:app/src/main/java/com/yunzia/hyperstar/ui/screen/module/notDeveloper/NotDeveloperScreen.kt
     val status = stringArrayResource(R.array.status)
     val navController = LocalNavigator.current
     val activity = LocalActivity.current as MainActivity
@@ -96,27 +76,15 @@ fun NotDeveloperScreen() {
     PreferenceScreen(
         title = stringResource(R.string.not_developer),
         navController = navController,
-<<<<<<<< HEAD:app/src/main/java/com/yunzia/hyperstar/ui/screen/module/NotDeveloperScreen.kt
-        parentRoute = currentStartDestination,
-    ) {
-
-        item {
-========
         scrollToKey = activity.appViewModel.scrollToKey.value,
         onScrollComplete = { activity.appViewModel.scrollToKey.value = null },
     ) { _, _ ->
         preferenceGroup {
->>>>>>>> newApi:app/src/main/java/com/yunzia/hyperstar/ui/screen/module/notDeveloper/NotDeveloperScreen.kt
             SuperGroup(
                 modifier = Modifier.fillMaxWidth(),
                 position = SuperGroupPosition.FIRST,
                 cardColor = CardDefaults.defaultColors(Color(0x2A0D84FF))
-<<<<<<<< HEAD:app/src/main/java/com/yunzia/hyperstar/ui/screen/module/NotDeveloperScreen.kt
-            ){
-
-========
             ) {
->>>>>>>> newApi:app/src/main/java/com/yunzia/hyperstar/ui/screen/module/notDeveloper/NotDeveloperScreen.kt
                 Text(
                     text = stringResource(R.string.nodevelop_info),
                     modifier = Modifier.padding(16.dp),
@@ -127,11 +95,7 @@ fun NotDeveloperScreen() {
             }
         }
 
-<<<<<<<< HEAD:app/src/main/java/com/yunzia/hyperstar/ui/screen/module/NotDeveloperScreen.kt
-        itemGroup {
-========
         preferenceGroup {
->>>>>>>> newApi:app/src/main/java/com/yunzia/hyperstar/ui/screen/module/notDeveloper/NotDeveloperScreen.kt
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -153,11 +117,7 @@ fun NotDeveloperScreen() {
                 )
             }
         }
-<<<<<<<< HEAD:app/src/main/java/com/yunzia/hyperstar/ui/screen/module/NotDeveloperScreen.kt
-        itemGroup {
-========
         preferenceGroup {
->>>>>>>> newApi:app/src/main/java/com/yunzia/hyperstar/ui/screen/module/notDeveloper/NotDeveloperScreen.kt
             Text(
                 text.value,
                 modifier = Modifier
@@ -167,16 +127,9 @@ fun NotDeveloperScreen() {
                 lineHeight = 1.6.em,
             )
         }
-<<<<<<<< HEAD:app/src/main/java/com/yunzia/hyperstar/ui/screen/module/NotDeveloperScreen.kt
-        itemGroup(
-            position = SuperGroupPosition.LAST
-        ) {
-            XSuperSwitch(
-========
         preferenceGroup {
             var devSettings by remember { mutableStateOf(SPUtils.getBoolean("development_settings_enabled", false)) }
             SwitchPreference(
->>>>>>>> newApi:app/src/main/java/com/yunzia/hyperstar/ui/screen/module/notDeveloper/NotDeveloperScreen.kt
                 title = stringResource(R.string.title_development_settings_enabled),
                 checked = devSettings,
                 onCheckedChange = {

@@ -15,19 +15,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
-<<<<<<<< HEAD:app/src/main/java/com/yunzia/hyperstar/ui/component/SuperDropdown1.kt
-import androidx.compose.ui.unit.dp
-import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
-import com.yunzia.hyperstar.utils.SPUtils
-import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
-import top.yukonga.miuix.kmp.extra.DropDownMode
-import top.yukonga.miuix.kmp.extra.SuperDropdown
-========
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
 import com.yunzia.hyperstar.prefs.SPUtils
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.preference.WindowDropdownPreference
->>>>>>>> newApi:app/src/main/java/com/yunzia/hyperstar/ui/component/Dropdown.kt
 
 @Composable
 fun XDropdown(

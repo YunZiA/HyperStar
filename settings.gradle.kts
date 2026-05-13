@@ -25,4 +25,4 @@ rootProject.name = "HyperStar"
 include(":app")
 include(":ksp-annotation")
 include(":ksp-processor")
-include(":baselineprofile")
+include(":starbaselineprofile")

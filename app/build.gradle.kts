@@ -164,8 +164,8 @@ dependencies {
     ksp(project(":ksp-processor"))
     implementation(project(":ksp-processor"))
     implementation(project(":ksp-annotation"))
-    "baselineProfile"(project(":baselineprofile"))
-//    implementation(libs.androidx.compose.ui.text)
+    "baselineProfile"(project(":starbaselineprofile"))
+    //    implementation(libs.androidx.compose.ui.text)
 
     compileOnly(libs.api)
     implementation(libs.service)

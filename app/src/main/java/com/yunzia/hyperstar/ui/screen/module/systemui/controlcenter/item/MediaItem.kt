@@ -20,7 +20,7 @@ import com.yunzia.hyperstar.ui.component.modifier.elevation
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.EnableItemDropdown
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.extra.WindowBottomSheetDefaults
+import top.yukonga.miuix.kmp.layout.BottomSheetDefaults
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import yunzia.ui.Card
 
@@ -66,7 +66,7 @@ fun MediaItem(
     ) {
 
         Card(
-            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width)
+            modifier = Modifier.navigationBarsPadding().padding(bottom = BottomSheetDefaults.insideMargin.width)
         ) {
             EnableItemDropdown(
                 key = "media_land_rightOrLeft",

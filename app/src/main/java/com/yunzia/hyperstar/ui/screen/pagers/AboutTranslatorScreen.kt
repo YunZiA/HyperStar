@@ -1,79 +1,67 @@
 package com.yunzia.hyperstar.ui.screen.pagers
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.component.SuperIntentArrow
-import com.yunzia.hyperstar.ui.component.itemGroup
-import com.yunzia.hyperstar.ui.component.pager.NavPager
+import com.yunzia.hyperstar.ui.component.preference.widget.IntentPreference
+import com.yunzia.hyperstar.ui.component.preference.widget.PreferenceListPage
+import com.yunzia.hyperstar.ui.component.preference.widget.itemGroup
 import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 
 @Composable
 fun TranslatorScreen() {
     val navController = LocalNavigator.current
     val context = LocalContext.current
-    NavPager(
-        activityTitle = stringResource(R.string.translator),
+    PreferenceListPage(
+        title = stringResource(R.string.translator),
         navController = navController
     ) {
-        itemGroup(
-            title = "English"
-        ) {
-            SuperIntentArrow(
+        itemGroup("English") {
+            IntentPreference(
                 title = "cafayeli",
                 summary = "Telegram@cafayeli",
                 context = context,
                 url = "https://t.me/cafayeli"
             )
-            SuperIntentArrow(
+            IntentPreference(
                 title = "Natsukawa Masuzu",
                 summary = "Telegram@Minggg07",
                 context = context,
                 url = "https://t.me/Minggg07"
             )
         }
-        this.itemGroup(
-            title = "Русский"
-        ) {
-            SuperIntentArrow(
+        itemGroup("Русский") {
+            IntentPreference(
                 title = "Алексей",
                 summary = "Telegram@Osean22",
                 context = context,
                 url = "https://t.me/Osean22"
             )
         }
-        this.itemGroup(
-            title = "tiếng việt"
-        ) {
-            SuperIntentArrow(
+        itemGroup("tiếng việt") {
+            IntentPreference(
                 title = "Natsukawa Masuzu",
                 summary = "Telegram@Minggg07",
                 context = context,
                 url = "https://t.me/Minggg07"
             )
         }
-        this.itemGroup(
-            title = "Español (México)"
-        ) {
-            SuperIntentArrow(
+        itemGroup("Español (México)") {
+            IntentPreference(
                 title = "Julio César",
                 summary = "Telegram@jj24_0",
                 context = context,
                 url = "https://t.me/jj24_0"
             )
         }
-        this.itemGroup(
-            title = "Português (Brasil)"
-        ) {
-            SuperIntentArrow(
+        itemGroup("Português (Brasil)") {
+            IntentPreference(
                 title = "Adaias Junior",
                 summary = "Telegram@Miel11s",
                 context = context,
                 url = "https://t.me/Miel11s"
             )
-
         }
     }
 }

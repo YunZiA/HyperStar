@@ -16,11 +16,9 @@ import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
 import com.yunzia.hyperstar.ui.navigation.Navigator
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.rememberHazeState
+import com.yunzia.hyperstar.ui.component.modifier.rememberLayerBackdrop
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
-
 
 
 @Composable
@@ -31,7 +29,7 @@ fun NavPager(
     content: (LazyListScope.() -> Unit)? = null
 ) {
 
-    val hazeState = rememberHazeState()
+    val backdrop = rememberLayerBackdrop()
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
 
 
@@ -40,7 +38,7 @@ fun NavPager(
         popupHost = { },
         topBar = {
             NavTopAppBar(
-                modifier = Modifier.showBlur(hazeState),
+                modifier = Modifier.showBlur(backdrop),
                 color = Color.Transparent,
                 title = activityTitle,
                 scrollBehavior = topAppBarScrollBehavior,
@@ -51,7 +49,7 @@ fun NavPager(
         }
     ) { padding ->
         if (content != null) {
-            Box(Modifier.blur(hazeState)) {
+            Box(Modifier.blur(backdrop)) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                         .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),

@@ -16,7 +16,6 @@ import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.findViewByIdNameAs
 import com.yunzia.hyperstar.hook.base.percentageProgress
-import com.yunzia.hyperstar.hook.core.StarLog.log
 import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.colorReplaceByValue
 import com.yunzia.hyperstar.hook.core.helper.afterHookAllConstructors
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
@@ -48,10 +47,6 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
 
     override fun init() {
         if (!brightnessShow && !volumeShow) return
-        startMethodsHook()
-    }
-
-    private fun startMethodsHook() {
 
         val controlCenterUtils = ControlCenterUtils(pluginClassLoader)
         val miBlurCompat = MiBlurCompat(pluginClassLoader)
@@ -176,7 +171,6 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
                             width = dpToPx(root.resources,50f).toInt()
                         }
                         topText.layoutParams = mLayoutParams
-                        log("toggle_slider_item_view ${topText.layoutParams}")
                     }
 
                 }
@@ -206,7 +200,6 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
                         width = dpToPx(brightnessPanel.resources,50f).toInt()
                     }
                     topText.layoutParams = mLayoutParams
-                    log("toggle_slider_item_view ${topText.layoutParams}")
                 }
                 afterHookMethod(
                     "updateIconProgress"
@@ -272,7 +265,6 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
                 val icon = sliderController.callMethodAs<View>("getVIcon")?:return@afterHookMethod
                 val sizeSliderX =  thisObject.getObjectFieldAs<Float>("sizeSliderX")?:return@afterHookMethod
                 val sizeBgX = thisObject.getObjectFieldAs<Float>("sizeBgX") ?:return@afterHookMethod
-                log("${topValue.left} || ${topValue.right} **$sizeSliderX")
 
                 val left = (dpToPx(topValue.resources, 50f).toInt() - icon.layoutParams.width) / 2
 

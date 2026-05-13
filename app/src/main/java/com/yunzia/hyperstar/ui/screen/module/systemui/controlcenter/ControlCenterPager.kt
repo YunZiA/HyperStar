@@ -1,243 +1,233 @@
 package com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.SuperGroupPosition
-import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
-import com.yunzia.hyperstar.ui.component.SuperStringArrow
-import com.yunzia.hyperstar.ui.component.SwitchContentFolder
 import com.yunzia.hyperstar.ui.component.XContentDropdown
-import com.yunzia.hyperstar.ui.component.XMiuixSlider
-import com.yunzia.hyperstar.ui.component.XMiuixSuperSliderSwitch
 import com.yunzia.hyperstar.ui.component.XDropdown
-import com.yunzia.hyperstar.ui.component.XSuperSwitch
-import com.yunzia.hyperstar.ui.component.itemGroup
-import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
+import com.yunzia.hyperstar.ui.component.preference.PreferenceList
+import com.yunzia.hyperstar.ui.component.preference.core.SearchableNavPreference
+import com.yunzia.hyperstar.ui.component.preference.preferenceGroup
+import com.yunzia.hyperstar.ui.component.preference.sp.SpSliderPreference
+import com.yunzia.hyperstar.ui.component.preference.sp.SpStringPreference
+import com.yunzia.hyperstar.ui.component.preference.sp.SpSwitchFolderPreference
+import com.yunzia.hyperstar.ui.component.preference.sp.SpSwitchPreference
+import com.yunzia.hyperstar.ui.component.preference.sp.SpSwitchSliderPreference
+import SearchRoute
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.yunzia.hyperstar.ui.component.preference.sp.SpContentDropdownPreference
+import com.yunzia.hyperstar.ui.component.preference.sp.SpDropdownPreference
+import com.yunzia.hyperstar.ui.navigation.MainRoutes
 import com.yunzia.hyperstar.ui.navigation.Navigator
 import com.yunzia.hyperstar.ui.navigation.SystemUIRoutes
 import com.yunzia.hyperstar.utils.getSettingChannel
 import com.yunzia.hyperstar.utils.isOS1Settings
-import com.yunzia.hyperstar.utils.isOS2Settings
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 
-
+@SearchRoute(route = MainRoutes.SystemUI::class, tabIndex = 0)
 @Composable
 fun ControlCenterPager(
     navController: Navigator,
     scrollBehavior: ScrollBehavior,
-    paddingValue: PaddingValues
+    paddingValue: PaddingValues,
+    scrollToKey: String? = null,
+    onScrollComplete: (() -> Unit)? = null,
 ) {
-    LazyColumn(
-        modifier = Modifier.nestedOverScrollVertical(scrollBehavior.nestedScrollConnection),
-        contentPadding = PaddingValues(bottom = paddingValue.calculateBottomPadding())
+    PreferenceList(
+        contentPadding = PaddingValues(bottom = paddingValue.calculateBottomPadding()),
+        scrollBehavior = scrollBehavior,
+        scrollToKey = scrollToKey,
+        onScrollComplete = onScrollComplete
     ) {
-        itemGroup(
+        preferenceGroup(
             title = R.string.basics,
-            position = SuperGroupPosition.FIRST
-        ){
-            XDropdown(
-                title = stringResource(R.string.widget_advanced_textures),
+            position = SuperGroupPosition.FIRST,
+        ) {
+            val blurOptions = stringArrayResource(R.array.is_super_blur_entire).toList()
+            SpDropdownPreference(
                 key = "is_super_blur_Widget",
-                option = R.array.is_super_blur_entire,
+                title = stringResource(R.string.widget_advanced_textures),
+                entries = blurOptions,
             )
 
-            SuperNavHostArrow(
+            SearchableNavPreference(
+                key = "control_center_color_edit_nav",
                 title = stringResource(R.string.color_edit),
-                navController = navController,
-                route = SystemUIRoutes.ColorEdit
+                onClick = { navController.navigate(SystemUIRoutes.ColorEdit) }
             )
-            SuperNavHostArrow(
+            SearchableNavPreference(
+                key = "control_center_layout_arrangement_nav",
                 title = stringResource(R.string.control_center_edit),
-                navController = navController,
-                route = SystemUIRoutes.LayoutArrangement
+                onClick = { navController.navigate(SystemUIRoutes.LayoutArrangement) }
             )
-            SuperNavHostArrow(
+            SearchableNavPreference(
+                key = "media_settings_nav",
                 title = stringResource(R.string.media_settings),
-                navController = navController,
-                route = SystemUIRoutes.Media
+                onClick = { navController.navigate(SystemUIRoutes.Media) }
             )
         }
 
+        preferenceGroup(
+            title = R.string.header,
+        ) {
+            SpSwitchPreference(
+                title = stringResource(R.string.close_qs_clock_anim_title),
+                key = "close_qs_clock_anim",
+                visible = { getSettingChannel() == 1 }
+            )
 
-        itemGroup(
-            title = R.string.header
-        ){
-
-
-            if (getSettingChannel() == 1){
-                XSuperSwitch(
-                    title = stringResource(R.string.close_qs_clock_anim_title),
-                    key = "close_qs_clock_anim"
-                )
-
-            }
-
-            XSuperSwitch(
-//                enabled = false,
+            SpSwitchPreference(
                 title = stringResource(R.string.is_use_chaos_header_title),
                 key = "is_use_chaos_header"
             )
 
-            if (getSettingChannel() == 2) {
-                SwitchContentFolder(
-                    switchTitle = stringResource(R.string.close_header_show_message_title),
-                    switchKey = "close_header_show_message",
-                    contrary = true
-                ) {
-                    XMiuixSlider(
+            SpSwitchFolderPreference(
+                key = "close_header_show_message",
+                title = stringResource(R.string.close_header_show_message_title),
+                contrary = true,
+                visible = { getSettingChannel() == 2 },
+                content = {
+                    SpSliderPreference(
                         title = stringResource(R.string.header_show_message_millis_title),
                         key = "header_show_message_millis",
-                        defValue = 1f,
+                        defaultValue = 1f,
                         valueRange = 0.1f..5f,
-                        unit = "s",
                         decimalPlaces = 2,
+                        valueFormatter = { "${it}s" }
                     )
                 }
-            }
+            )
+
         }
-        itemGroup(
-            title = R.string.card_tile
-        ){
-            XSuperSwitch(
+        preferenceGroup(
+            title = R.string.card_tile,
+        ) {
+            SpSwitchPreference(
                 title = stringResource(R.string.card_tile_click_close_title),
                 summary = stringResource(R.string.card_tile_click_close_summary),
                 key = "card_tile_click_close"
             )
-            SwitchContentFolder(
-                switchTitle = stringResource(R.string.enable_card_tile_edit),
-                switchKey = "use_card_tile_list"
-            ) {
-                SuperNavHostArrow(
-                    title = stringResource(R.string.card_tile_edit),
-                    navController = navController,
-                    route = SystemUIRoutes.CardList
-                )
-
-            }
+            SpSwitchFolderPreference(
+                key = "use_card_tile_list",
+                title = stringResource(R.string.enable_card_tile_edit),
+                content = {
+                    SearchableNavPreference(
+                        key = "card_tile_edit_nav",
+                        title = stringResource(R.string.card_tile_edit),
+                        onClick = { navController.navigate(SystemUIRoutes.CardList) }
+                    )
+                }
+            )
         }
-        itemGroup(
-            title = R.string.volume_or_brightness
-        ){
-            XMiuixSuperSliderSwitch(
+        preferenceGroup(
+            title = R.string.volume_or_brightness,
+        ) {
+            SpSwitchSliderPreference(
+                switchKey = "is_change_qs_progress_radius",
                 switchTitle = stringResource(R.string.is_change_qs_progress_radius_title),
                 switchSummary = stringResource(R.string.progress_radius_summary),
-                switchKey = "is_change_qs_progress_radius",
-                title = stringResource(R.string.qs_progress_radius_title) ,
-                key ="qs_progress_radius",
+                key = "qs_progress_radius",
+                title = stringResource(R.string.qs_progress_radius_title),
+                unit = "Dp",
                 minValue = 0f,
                 maxValue = 20f,
-                progress = 2f,
-                unit = "dp",
-                decimalPlaces = 1
+                defaultValue = 2f,
+                decimalPlaces = 1,
             )
-            XSuperSwitch(
+            SpSwitchPreference(
                 title = stringResource(R.string.qs_brightness_top_value_show_title),
                 key = "qs_brightness_top_value_show"
             )
-            if (isOS1Settings()){
-                XSuperSwitch(
-                    title = stringResource(R.string.qs_volume_top_value_show_title),
-                    key = "qs_volume_top_value_show"
-                )
-            }
+            SpSwitchPreference(
+                title = stringResource(R.string.qs_volume_top_value_show_title),
+                key = "qs_volume_top_value_show",
+                visible = { isOS1Settings() }
+            )
+
         }
-        this.itemGroup(
+        preferenceGroup(
             title = R.string.device_center,
-        ){
-            XDropdown(
-                title = stringResource(R.string.device_center_ist),
+        ) {
+            SpDropdownPreference(
                 key = "is_device_center_mode",
-                option = R.array.is_device_center_mode_entire,
+                title = stringResource(R.string.device_center_ist),
+                entriesId = R.array.is_device_center_mode_entire
             )
         }
-        itemGroup(
-            title = R.string.tile
-        ){
-
-            XSuperSwitch(
+        preferenceGroup(
+            title = R.string.tile,
+        ) {
+            SpSwitchPreference(
                 title = stringResource(R.string.list_tile_click_close_title),
                 summary = stringResource(R.string.list_tile_click_close_summary),
                 key = "list_tile_click_close"
             )
-            XSuperSwitch(
+            SpSwitchPreference(
                 title = stringResource(R.string.title_fix_list_tile_icon_scale),
                 key = "fix_list_tile_icon_scale"
             )
-            XMiuixSuperSliderSwitch(
+            SpSwitchSliderPreference(
+                switchKey = "is_qs_list_tile_radius",
                 switchTitle = stringResource(R.string.is_qs_list_tile_radius_title),
                 switchSummary = stringResource(R.string.is_qs_list_tile_radius_summary),
-                switchKey = "is_qs_list_tile_radius",
-                title = stringResource(R.string.qs_list_tile_radius_title),
                 key = "qs_list_tile_radius",
+                title = stringResource(R.string.qs_list_tile_radius_title),
+                unit = "dp",
                 minValue = 0f,
                 maxValue = 36f,
-                progress = when (getSettingChannel()){
-                    1, 2 -> {
-                        20f
-                    }
-                    else -> {
-                        24f
-                    }
+                defaultValue = when (getSettingChannel()) {
+                    1, 2 -> 20f
+                    else -> 24f
                 },
-                unit = "dp",
-                decimalPlaces = 1
+                decimalPlaces = 1,
             )
-
-            XContentDropdown(
+            SpContentDropdownPreference(
                 title = stringResource(R.string.is_list_label_mode_title),
                 key = "is_list_label_mode",
-                option = R.array.is_list_label_mode_entire,
-                showOptions = 0,
-                contents = {
-
-                    XDropdown(
+                option = R.array.is_list_label_mode_entire
+            ) {
+                when(it) {
+                    0 -> SpDropdownPreference(
                         title = stringResource(R.string.wordless_mode),
                         key = "is_wordless_mode_0",
-                        option = R.array.is_wordless_mode_entire,
+                        entriesId = R.array.is_wordless_mode_entire
                     )
-                },
-                showOption = 2,
-            ){
-                SuperNavHostArrow(
-                    title = stringResource(R.string.tile_layout),
-                    navController = navController,
-                    route = SystemUIRoutes.TileLayout
-                )
+                    2 -> SearchableNavPreference(
+                        key = "tile_layout_nav",
+                        title = stringResource(R.string.tile_layout),
+                        onClick = { navController.navigate(SystemUIRoutes.TileLayout) }
+                    )
+                }
             }
-
-            XSuperSwitch(
+            SpSwitchPreference(
                 title = stringResource(R.string.enable_title_follow_animation),
                 key = "title_follow_anim"
             )
-
-            XSuperSwitch(
+            SpSwitchPreference(
                 title = stringResource(R.string.list_tile_label_marquee_title),
                 key = "list_tile_label_marquee"
             )
-
-
         }
 
-        itemGroup(
+        preferenceGroup(
             title = R.string.other,
-            position = SuperGroupPosition.LAST
-        ){
-            SuperStringArrow(
+            position = SuperGroupPosition.LAST,
+        ) {
+            SpStringPreference(
                 title = stringResource(R.string.title_qs_customize_entry_button_text),
                 key = "qs_customize_entry_button_text"
             )
-            XSuperSwitch(
+            SpSwitchPreference(
                 title = stringResource(R.string.close_edit_button_show_title),
                 key = "close_edit_button_show"
             )
-
-
         }
-
     }
 }
-

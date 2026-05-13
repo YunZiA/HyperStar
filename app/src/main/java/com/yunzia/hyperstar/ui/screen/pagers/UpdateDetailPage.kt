@@ -434,7 +434,6 @@ private fun DetailContent(
         UpdateContent(
             lastCommit = lastCommit,
             fileUrl = fileUrl,
-            navController = navController
         )
     }
 }

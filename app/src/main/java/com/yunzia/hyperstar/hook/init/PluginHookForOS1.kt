@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.hook.init
 
-import android.content.ContextWrapper
 import com.yunzia.hyperstar.hook.app.plugin.HideVolumeCollpasedFootButton
 import com.yunzia.hyperstar.hook.app.plugin.QSCardAutoCollapse
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTileList
@@ -10,7 +9,6 @@ import com.yunzia.hyperstar.hook.app.plugin.QSMediaDefaultApp
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaNoPlayTitle
 import com.yunzia.hyperstar.hook.app.plugin.QSMiplayDetailVolumeBar
 import com.yunzia.hyperstar.hook.app.plugin.QSToggleSliderRadius
-import com.yunzia.hyperstar.hook.app.plugin.QSVolumeMute
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurWidgetManager
 import com.yunzia.hyperstar.hook.app.plugin.VolumeBarLayoutParams
 import com.yunzia.hyperstar.hook.app.plugin.os1.DeviceCenterRow
@@ -33,30 +31,12 @@ import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os1.VolumeOrQSBrightnessValue
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenuHook
 import com.yunzia.hyperstar.hook.core.base.BasePluginHooks
-import com.yunzia.hyperstar.hook.core.StarLog.logD
-import com.yunzia.hyperstar.hook.core.finder.loadClass
-import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 
 object PluginHookForOS1 : BasePluginHooks() {
 
     override fun init() {
-        startSystemUIPluginHook()
+        hookPluginContext()
     }
-
-//        initResource(qsControlCenterColor)
-
-
-    private fun startSystemUIPluginHook(){
-        "com.android.systemui.shared.plugins.PluginInstance\$PluginFactory".loadClass().afterHookMethod("createPluginContext") { args, result ->
-            val mPluginContext = result.value as ContextWrapper
-            if (mPluginContext.packageName != plugin){
-                logD("检测到非目标应用包名: 当前包名为 " + mPluginContext.packageName + ", 目标插件包名为 " + plugin)
-                return@afterHookMethod
-            }
-            initPlugin(mPluginContext)
-        }
-    }
-
 
     override fun onPluginLoaded() {
         initHooks(
@@ -75,13 +55,11 @@ object PluginHookForOS1 : BasePluginHooks() {
             VolumeOrQSBrightnessValue,
             QSCardTileList,
             QSCardAutoCollapse,
-            QSVolumeMute,
             QSToggleSliderRadius,
             QSHeaderMessage,
             QSHeaderView,
             QSEditButton,
             PadVolume,
-            QSClockAnim,
             QSControlCenterList,
             VolumeColumnProgressRadius,
             PowerMenuHook,
@@ -92,8 +70,6 @@ object PluginHookForOS1 : BasePluginHooks() {
             QSMiplayAppIconRadius,
             QSMediaNoPlayTitle,
             QSEditText,
-
         )
     }
-
 }

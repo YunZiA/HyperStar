@@ -1,75 +1,37 @@
 package com.yunzia.hyperstar.utils
 
-import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.snapshotFlow
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.mapSaver
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.staticCompositionLocalOf
 import io.github.libxposed.service.XposedService
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.flow.asStateFlow
 import java.util.concurrent.CopyOnWriteArraySet
-import kotlin.collections.emptyList
-
 
 val LocalScopeManager = staticCompositionLocalOf<ScopeManager> {
-    error("LocalNavigator not provided")
+    error("LocalScopeManager not provided")
 }
 
 class ScopeManager {
     private lateinit var service: XposedService
     private val scopeSet = CopyOnWriteArraySet<String>()
     private val _scopeFlow = MutableStateFlow<Set<String>>(emptySet())
-    val scopeFlow: StateFlow<Set<String>> = _scopeFlow
-
-    private fun updateScopeFlow() {
-        _scopeFlow.value = scopeSet.toSet()
-    }
+    val scopeFlow: StateFlow<Set<String>> = _scopeFlow.asStateFlow()
 
     fun attachService(service: XposedService) {
         this.service = service
         scopeSet.clear()
         scopeSet.addAll(service.scope)
-        updateScopeFlow()
+        emitScope()
     }
 
+    operator fun contains(packageName: String): Boolean = packageName in scopeSet
 
-    fun hasScope(pkg: String): Boolean {
-        return pkg in scopeSet
-    }
+    fun getScope(): Set<String> = scopeSet.toSet()
 
-
-    fun contains(packageName: String): Boolean {
-
-        return scopeSet.contains(packageName)
-    }
-
-    fun getScope(): Set<String> {
-        return scopeSet.toSet()
-    }
-
-    fun addScope(packageName: String, callback: Result<List<String>>.() -> Unit = {}) = addScope(listOf(packageName), callback =  callback)
+    fun addScope(
+        packageName: String,
+        callback: Result<List<String>>.() -> Unit = {}
+    ) = addScope(listOf(packageName), callback)
 
     fun addScope(
         packages: List<String>,
@@ -84,12 +46,10 @@ class ScopeManager {
                         Result.success(emptyList<String>()).callback()
                         return
                     }
-                    val changed = scopeSet.addAll(result)
-                    if (changed) {
-                        updateScopeFlow()
-                    }
+                    if (scopeSet.addAll(result)) emitScope()
                     Result.success(result).callback()
                 }
+
                 override fun onScopeRequestFailed(message: String) {
                     Result.failure<List<String>>(IllegalStateException(message)).callback()
                 }
@@ -101,8 +61,10 @@ class ScopeManager {
 
     fun removeScope(packages: List<String>) {
         service.removeScope(packages)
-        scopeSet.removeAll(packages.toSet())
-        updateScopeFlow()
+        if (scopeSet.removeAll(packages.toSet())) emitScope()
     }
 
+    private fun emitScope() {
+        _scopeFlow.value = scopeSet.toSet()
+    }
 }

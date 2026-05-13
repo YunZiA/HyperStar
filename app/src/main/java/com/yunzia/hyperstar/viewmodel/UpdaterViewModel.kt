@@ -9,11 +9,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -34,7 +34,6 @@ class UpdaterViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(UpdateDetailUiState())
     val uiState: StateFlow<UpdateDetailUiState> = _uiState.asStateFlow()
 
-    // 新增的UI状态
     data class UpdateDetailUiState(
         val newPageState: NewPageState = NewPageState(),
         val animationState: UpdatePageAnimationState? = null,
@@ -43,24 +42,23 @@ class UpdaterViewModel : ViewModel() {
         val needCancel: MutableState<Boolean> = mutableStateOf(true)
     )
 
-    // 页面事件
     sealed class UpdateDetailEvent {
         data class PageChanged(val page: Int) : UpdateDetailEvent()
         data class ScrollOffsetChanged(val offset: Float) : UpdateDetailEvent()
-        data class AnimationCompleted(val radius: Dp,val finalRadius: Dp) : UpdateDetailEvent()
+        data class AnimationCompleted(val radius: Dp, val finalRadius: Dp) : UpdateDetailEvent()
         data class SetScrollEnabled(val isScrollEnabled: Boolean) : UpdateDetailEvent()
-        object NavigateToDetailPage : UpdateDetailEvent()
-        object NavigateBack : UpdateDetailEvent()
-        object CancelTiltEffect : UpdateDetailEvent()
+        data object NavigateToDetailPage : UpdateDetailEvent()
+        data object NavigateBack : UpdateDetailEvent()
+        data object CancelTiltEffect : UpdateDetailEvent()
     }
 
     fun handleEvent(event: UpdateDetailEvent) {
         viewModelScope.launch {
             when (event) {
                 is UpdateDetailEvent.PageChanged -> {
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            newPageState = currentState.newPageState.copy(
+                    _uiState.update {
+                        it.copy(
+                            newPageState = it.newPageState.copy(
                                 currentPage = event.page,
                                 expand = event.page == 1
                             ),
@@ -72,82 +70,47 @@ class UpdaterViewModel : ViewModel() {
 
                 is UpdateDetailEvent.ScrollOffsetChanged -> {
                     if (_uiState.value.newPageState.currentPage == 1) {
-                        _uiState.update { currentState ->
-                            currentState.copy(
-                                isBlur = event.offset < -20f
-                            )
-                        }
+                        _uiState.update { it.copy(isBlur = event.offset < -20f) }
                     }
                 }
 
                 is UpdateDetailEvent.AnimationCompleted -> {
-                    val currentState = _uiState.value
-                    if (!currentState.newPageState.expand) {
-                        _uiState.update {
-                            it.copy(
-                                newPageState = it.newPageState.copy(complete = false)
-                            )
-                        }
+                    val pageState = _uiState.value.newPageState
+                    if (!pageState.expand) {
+                        _uiState.update { it.copy(newPageState = it.newPageState.copy(complete = false)) }
                         return@launch
                     }
-
-                    if (event.radius == event.finalRadius) {
-                        delay(300L)
-                        _uiState.update {
-                            it.copy(
-                                newPageState = it.newPageState.copy(complete = true)
-                            )
-                        }
-                    } else {
-                        _uiState.update {
-                            it.copy(
-                                newPageState = it.newPageState.copy(complete = false)
-                            )
-                        }
-                    }
+                    val complete = event.radius == event.finalRadius
+                    if (complete) delay(300L)
+                    _uiState.update { it.copy(newPageState = it.newPageState.copy(complete = complete)) }
                 }
+
                 is UpdateDetailEvent.NavigateToDetailPage -> {
-                    viewModelScope.launch {
-                        _uiState.update {
-                            it.copy(
-                                newPageState = it.newPageState.copy(
-                                    currentPage = 1,
-                                    expand = true,
-
-                                ),
-                                isBlur = false
-
-                            )
-                        }
-                    }
-                }
-                is UpdateDetailEvent.NavigateBack -> {
-                    viewModelScope.launch {
-                        _uiState.update {
-                            it.copy(
-                                newPageState = it.newPageState.copy(
-                                    currentPage = 0,
-                                    expand = false
-                                ),
-                                isBlur = false
-                            )
-                        }
-                    }
-                }
-                is UpdateDetailEvent.SetScrollEnabled -> {
                     _uiState.update {
-                        it.copy(isScrollEnabled = event.isScrollEnabled)
+                        it.copy(
+                            newPageState = it.newPageState.copy(currentPage = 1, expand = true),
+                            isBlur = false
+                        )
                     }
                 }
 
-                UpdateDetailEvent.CancelTiltEffect -> {
-                    _uiState.update { it.apply {
-                        needCancel.value = false
-                    } }
+                is UpdateDetailEvent.NavigateBack -> {
+                    _uiState.update {
+                        it.copy(
+                            newPageState = it.newPageState.copy(currentPage = 0, expand = false),
+                            isBlur = false
+                        )
+                    }
+                }
+
+                is UpdateDetailEvent.SetScrollEnabled -> {
+                    _uiState.update { it.copy(isScrollEnabled = event.isScrollEnabled) }
+                }
+
+                is UpdateDetailEvent.CancelTiltEffect -> {
+                    _uiState.value.needCancel.value = false
                     delay(150)
-                    _uiState.update { it.apply {
-                        needCancel.value = true
-                    } }
+                    _uiState.value.needCancel.value = true
                 }
             }
         }
@@ -165,8 +128,6 @@ class UpdaterViewModel : ViewModel() {
             tiltState = tiltState
         )
     }
-
-
 }
 
 @Composable
@@ -176,35 +137,35 @@ private fun rememberUpdateDetailAnimations(
     tiltState: TiltAnimationState
 ): UpdatePageAnimationState {
     val durationMillis = 400
-    val SlowEasing = LinearOutSlowInEasing
+    val easing = LinearOutSlowInEasing
     val coroutineScope = rememberCoroutineScope()
     val headerTop = padding.calculateTopPadding() + 65.dp
+
     LaunchedEffect(newPageState.expand) {
         if (newPageState.expand) {
             tiltState.noAnim = true
-            tiltState.recovery(
-                coroutineScope,
-                tween(durationMillis = durationMillis, easing = SlowEasing)
-            )
-        }else{
+            tiltState.recovery(coroutineScope, tween(durationMillis = durationMillis, easing = easing))
+        } else {
             tiltState.noAnim = false
         }
     }
 
-    //CubicBezierEasing(0.2f, 0.0f, 0.2f, 1.0f)
+    val expand = newPageState.expand
+    val spec = tween<Dp>(durationMillis = durationMillis, easing = easing)
+    val floatSpec = tween<Float>(durationMillis = durationMillis, easing = easing)
+    val colorSpec = tween<Color>(durationMillis = durationMillis, easing = easing)
+
     val alpha by animateFloatAsState(
-        targetValue = if (newPageState.expand) 1f else 0f,
-        animationSpec = tween(durationMillis = durationMillis, easing = SlowEasing)
+        targetValue = if (expand) 1f else 0f,
+        animationSpec = floatSpec
     )
-
     val paddingTop by animateDpAsState(
-        targetValue = if (newPageState.expand) 0.dp else padding.calculateTopPadding() + 2.dp,
-        animationSpec = tween(durationMillis = durationMillis, easing = SlowEasing)
+        targetValue = if (expand) 0.dp else padding.calculateTopPadding() + 2.dp,
+        animationSpec = spec
     )
-
     val paddingBottom by animateDpAsState(
-        targetValue = if (newPageState.expand) 0.dp else padding.calculateBottomPadding() + 28.dp,
-        animationSpec = tween(durationMillis = durationMillis, easing = SlowEasing)
+        targetValue = if (expand) 0.dp else padding.calculateBottomPadding() + 28.dp,
+        animationSpec = spec
     )
 
     val myRadius = getSystemCornerRadius()
@@ -212,45 +173,46 @@ private fun rememberUpdateDetailAnimations(
 
     val animatedValues = AnimatedValues(
         color = animateColorAsState(
-            if (newPageState.expand) colorScheme.surface else colorScheme.surfaceContainer,
-            animationSpec = tween(durationMillis = durationMillis, easing = SlowEasing)
+            targetValue = if (expand) colorScheme.surface else colorScheme.surfaceContainer,
+            animationSpec = colorSpec
         ).value,
         radius = animateDpAsState(
-            if (newPageState.expand) myRadius else 20.dp,
-            animationSpec = tween(durationMillis = durationMillis, easing = SlowEasing)
+            targetValue = if (expand) myRadius else 20.dp,
+            animationSpec = spec
         ).value,
         cardHeight = animateDpAsState(
-            if (newPageState.expand) windowHeight else headerTop + 500.dp,
-            animationSpec = tween(durationMillis = durationMillis, easing = SlowEasing)
+            targetValue = if (expand) windowHeight else headerTop + 500.dp,
+            animationSpec = spec
         ).value,
         top = animateDpAsState(
-            targetValue = if (newPageState.expand) 0.dp else headerTop,
-            animationSpec = tween(durationMillis = durationMillis, easing = SlowEasing)
+            targetValue = if (expand) 0.dp else headerTop,
+            animationSpec = spec
         ).value,
         horizontal = animateDpAsState(
-            targetValue = if (newPageState.expand) 0.dp else 28.dp,
-            animationSpec = tween(durationMillis = durationMillis, easing = SlowEasing)
+            targetValue = if (expand) 0.dp else 28.dp,
+            animationSpec = spec
         ).value,
         titleTop = animateDpAsState(
-            targetValue = if (newPageState.expand) padding.calculateTopPadding() + 28.dp else 45.dp,
-            animationSpec = tween(durationMillis = durationMillis, easing = SlowEasing)
+            targetValue = if (expand) padding.calculateTopPadding() + 28.dp else 45.dp,
+            animationSpec = spec
         ).value
     )
 
     return UpdatePageAnimationState(
         alpha = alpha,
         paddings = PaddingValues(top = paddingTop, bottom = paddingBottom),
-        values = animatedValues,
-
+        values = animatedValues
     )
 }
-// 状态相关的数据类
+
+@Stable
 data class NewPageState(
     val currentPage: Int = 0,
     val expand: Boolean = false,
     val complete: Boolean = false
 )
 
+@Stable
 data class AnimatedValues(
     val color: Color,
     val radius: Dp,
@@ -260,10 +222,9 @@ data class AnimatedValues(
     val titleTop: Dp
 )
 
-
-// 包装动画状态
+@Stable
 data class UpdatePageAnimationState(
     val alpha: Float,
     val paddings: PaddingValues,
-    val values: AnimatedValues,
+    val values: AnimatedValues
 )

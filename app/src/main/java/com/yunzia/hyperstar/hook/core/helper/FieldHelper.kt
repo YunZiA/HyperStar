@@ -7,50 +7,23 @@ import java.util.concurrent.ConcurrentHashMap
 
 object FieldHelper {
     const val TAG = "FieldHelper"
-    private val NULL = Any()
-
-    private val fieldCache = ConcurrentHashMap<FieldCacheKey, Any>()
+    private val fieldCache = NullableCache<FieldCacheKey, Field>()
     private val fieldTypeCache = ConcurrentHashMap<String, Field>()
 
-
     @JvmStatic
-    fun getCacheSize(): Int {
-        return fieldCache.size
-    }
+    fun getCacheSize(): Int = fieldCache.size()
 
-    @JvmStatic
-    private inline fun getCachedOrFind(
-        key: FieldCacheKey,
-        crossinline loader: () -> Field?
-    ): Field? {
-
-        fieldCache[key]?.let {
-            return if (it === NULL) null else it as Field
-        }
-        val result = loader()
-
-        fieldCache.putIfAbsent(key, result ?: NULL)
-
-        return result
-    }
-
-    /**
-     * 查找字段（精确名称），找不到则抛 NoSuchFieldError。
-     */
     @JvmStatic
     fun findField(
         clazz: Class<*>,
         fieldName: String
     ): Field? {
-
-        val key = FieldCacheKey(System.identityHashCode(clazz.classLoader),clazz.name, fieldName)
-        return getCachedOrFind(key) {
+        val key = FieldCacheKey(System.identityHashCode(clazz.classLoader), clazz.name, fieldName)
+        return fieldCache.getOrPut(key) {
             var current: Class<*>? = clazz
             while (current != null && current != Any::class.java) {
                 try {
-                    val field = current.getDeclaredField(fieldName)
-                    field.isAccessible = true
-                    return@getCachedOrFind field
+                    return@getOrPut current.getDeclaredField(fieldName).apply { isAccessible = true }
                 } catch (_: NoSuchFieldException) {
                     current = current.superclass
                 }
@@ -58,7 +31,6 @@ object FieldHelper {
             null
         }
     }
-
 
     @JvmStatic
     fun requireField(
@@ -68,29 +40,6 @@ object FieldHelper {
         return findField(clazz, fieldName) ?: throw NoSuchFieldError("${clazz.name}#$fieldName")
     }
 
-    /**
-     * 递归查找字段：从 clazz 开始，向上遍历继承链（不含 Object）。
-     */
-    @Throws(NoSuchFieldException::class)
-    @JvmStatic
-    private fun findFieldRecursiveImpl(
-        clazz: Class<*>,
-        fieldName: String
-    ): Field {
-        var current: Class<*>? = clazz
-        while (current != null && current != Any::class.java) {
-            try {
-                return current.getDeclaredField(fieldName)
-            } catch (_: NoSuchFieldException) {
-                current = current.superclass
-            }
-        }
-        throw NoSuchFieldException("${clazz.name}#$fieldName")
-    }
-
-    /**
-     * 查找第一个类型完全匹配的字段（递归父类），找不到抛 NoSuchFieldError。
-     */
     @JvmStatic
     fun findFirstFieldByExactType(
         clazz: Class<*>,
@@ -116,16 +65,14 @@ object FieldHelper {
     internal inline fun <reified T> getObjectField(obj: Any, fieldName: String): T {
         return getField(obj::class.java, fieldName).get(obj) as T
     }
+
     @JvmStatic
     private inline fun <T> getPrimitiveField(
         obj: Any,
         fieldName: String,
         getter: Field.(Any) -> T
     ): T {
-        return getter(
-            getField(obj::class.java, fieldName),
-            obj
-        )
+        return getter(getField(obj::class.java, fieldName), obj)
     }
 
     @JvmStatic
@@ -152,15 +99,13 @@ object FieldHelper {
     @JvmStatic
     fun getShortField(obj: Any, fieldName: String): Short = getPrimitiveField(obj, fieldName, Field::getShort)
 
-    // Helper to reduce duplication
     @JvmStatic
     private fun getField(clazz: Class<*>, fieldName: String): Field {
         return findField(clazz, fieldName) ?: throw NoSuchFieldError("Field '$fieldName' not found in ${clazz.simpleName}")
     }
 
-    // Setters
     @JvmStatic
-    internal inline  fun <reified T> setObjectField(obj: Any, fieldName: String, value: T) {
+    internal inline fun <reified T> setObjectField(obj: Any, fieldName: String, value: T) {
         setFieldValue(obj, null, fieldName, value)
     }
 
@@ -168,36 +113,25 @@ object FieldHelper {
     fun setBooleanField(obj: Any, fieldName: String, value: Boolean) = setFieldValue(obj, null, fieldName, value)
 
     @JvmStatic
-    fun setByteField(obj: Any, fieldName: String, value: Byte) =
-        setFieldValue(obj, null, fieldName, value)
+    fun setByteField(obj: Any, fieldName: String, value: Byte) = setFieldValue(obj, null, fieldName, value)
 
     @JvmStatic
-    fun setCharField(obj: Any, fieldName: String, value: Char) =
-        setFieldValue(obj, null, fieldName, value)
+    fun setCharField(obj: Any, fieldName: String, value: Char) = setFieldValue(obj, null, fieldName, value)
 
     @JvmStatic
-    fun setDoubleField(obj: Any, fieldName: String, value: Double) =
-        setFieldValue(obj, null, fieldName, value)
+    fun setDoubleField(obj: Any, fieldName: String, value: Double) = setFieldValue(obj, null, fieldName, value)
 
     @JvmStatic
-    fun setFloatField(obj: Any, fieldName: String, value: Float) =
-        setFieldValue(obj, null, fieldName, value)
+    fun setFloatField(obj: Any, fieldName: String, value: Float) = setFieldValue(obj, null, fieldName, value)
 
     @JvmStatic
-    fun setIntField(obj: Any, fieldName: String, value: Int) =
-        setFieldValue(obj, null, fieldName, value)
+    fun setIntField(obj: Any, fieldName: String, value: Int) = setFieldValue(obj, null, fieldName, value)
 
     @JvmStatic
-    fun setLongField(obj: Any, fieldName: String, value: Long) =
-        setFieldValue(obj, null, fieldName, value)
+    fun setLongField(obj: Any, fieldName: String, value: Long) = setFieldValue(obj, null, fieldName, value)
 
     @JvmStatic
-    fun setShortField(obj: Any, fieldName: String, value: Short) =
-        setFieldValue(obj, null, fieldName, value)
-
-// endregion
-
-// region === Static Field Getters / Setters ===
+    fun setShortField(obj: Any, fieldName: String, value: Short) = setFieldValue(obj, null, fieldName, value)
 
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
@@ -237,7 +171,6 @@ object FieldHelper {
     fun getStaticShortField(clazz: Class<*>, fieldName: String): Short =
         getField(clazz, fieldName).getShort(null)
 
-    // Setters
     @JvmStatic
     internal inline fun <reified T> setStaticObjectField(clazz: Class<*>, fieldName: String, value: T) {
         setFieldValue(null, clazz, fieldName, value)
@@ -275,10 +208,6 @@ object FieldHelper {
     fun setStaticShortField(clazz: Class<*>, fieldName: String, value: Short) =
         setFieldValue(null, clazz, fieldName, value)
 
-// endregion
-
-// region === Unified Field Access Helper ===
-
     @JvmStatic
     private fun setFieldValue(
         obj: Any?,
@@ -296,8 +225,8 @@ object FieldHelper {
                     Double::class.javaPrimitiveType -> setDouble(obj, value as Double)
                     Float::class.javaPrimitiveType -> setFloat(obj, value as Float)
                     Int::class.javaPrimitiveType -> setInt(obj, value as Int)
-                    Long::class.javaPrimitiveType  -> setLong(obj, value as Long)
-                    Short::class.javaPrimitiveType  -> setShort(obj, value as Short)
+                    Long::class.javaPrimitiveType -> setLong(obj, value as Long)
+                    Short::class.javaPrimitiveType -> setShort(obj, value as Short)
                     else -> set(obj, value)
                 }
             }
@@ -318,13 +247,13 @@ object FieldHelper {
 }
 
 
-fun Any?.setIntField(fieldName: String,value: Int) = this?.let { FieldHelper.setIntField(this, fieldName, value) }
+fun Any?.setIntField(fieldName: String, value: Int) = this?.let { FieldHelper.setIntField(this, fieldName, value) }
 fun Any?.getIntField(fieldName: String) = this?.let { FieldHelper.getIntField(this, fieldName) }
 
-fun Any?.setFloatField(fieldName: String,value: Float) = this?.let { FieldHelper.setFloatField(this, fieldName,value) }
+fun Any?.setFloatField(fieldName: String, value: Float) = this?.let { FieldHelper.setFloatField(this, fieldName, value) }
 fun Any?.getFloatField(fieldName: String) = this?.let { FieldHelper.getFloatField(this, fieldName) }
 
-fun Any?.setLongField(fieldName: String,value: Long) = this?.let { FieldHelper.setLongField(this, fieldName, value) }
+fun Any?.setLongField(fieldName: String, value: Long) = this?.let { FieldHelper.setLongField(this, fieldName, value) }
 fun Any?.getLongField(fieldName: String) = this?.let { FieldHelper.getLongField(this, fieldName) }
 
 fun Any?.getStringField(fieldName: String) = this?.let { FieldHelper.getObjectField(this, fieldName) as String }

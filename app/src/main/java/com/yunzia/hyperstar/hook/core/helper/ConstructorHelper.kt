@@ -1,46 +1,25 @@
 package com.yunzia.hyperstar.hook.core.helper
 
-import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.StarLog.logW
+import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.provider.ClassLoaderProvider
 import java.lang.reflect.Constructor
-import java.lang.reflect.Field
-import java.util.concurrent.ConcurrentHashMap
 
-object ConstructorHelper : CoreHelper() {
+object ConstructorHelper {
     private const val TAG = "ConstructorHelper"
-    private val NULL = Any()
-    private val constructorCache = ConcurrentHashMap<ConstructorCacheKey, Any>()
+    private val constructorCache = NullableCache<ConstructorCacheKey, Constructor<*>>()
 
-
-    @JvmStatic
-    private inline fun getCachedOrFind(
-        key: ConstructorCacheKey,
-        crossinline loader: () -> Constructor<*>?
-    ): Constructor<*>? {
-        constructorCache[key]?.let {
-            return if (it === NULL) null else it as Constructor<*>
-        }
-        val result = loader()
-        constructorCache.putIfAbsent(key, result ?: NULL)
-
-        return result
-    }
-
-    /**
-     * 安全查找构造函数：找不到时返回 null 并打日志，不抛异常
-     */
     @JvmStatic
     fun findConstructorExact(clazz: Class<*>?, vararg parameterTypes: Class<*>): Constructor<*>? {
-        clazz?: return null
+        clazz ?: return null
 
         val key = ConstructorCacheKey(
             System.identityHashCode(clazz.classLoader),
             clazz.name,
             parameterTypes.contentDeepHashCode()
         )
-        return getCachedOrFind(key) {
+        return constructorCache.getOrPut(key) {
             try {
                 clazz.getDeclaredConstructor(*parameterTypes).apply {
                     isAccessible = true
@@ -54,10 +33,12 @@ object ConstructorHelper : CoreHelper() {
         }
     }
 
-    // 如果你还想支持 Object... 参数（自动转 Class）
     @JvmStatic
     fun findConstructorExact(clazz: Class<*>?, vararg parameterTypes: Any?): Constructor<*>? {
-        return findConstructorExact(clazz, *getParameterClasses(clazz?.classLoader, parameterTypes))
+        return findConstructorExact(
+            clazz,
+            *MethodHelper.getParameterClasses(clazz?.classLoader, parameterTypes)
+        )
     }
 
     @JvmStatic
@@ -68,7 +49,7 @@ object ConstructorHelper : CoreHelper() {
     ): Constructor<*>? {
         return try {
             val clazz = findClass(className, classLoader)
-            findConstructorExact(clazz, *getParameterClasses(classLoader, parameterTypes))
+            findConstructorExact(clazz, *MethodHelper.getParameterClasses(classLoader, parameterTypes))
         } catch (e: Exception) {
             logW(TAG, "Failed to find class or constructor: $className", e)
             null
@@ -83,14 +64,14 @@ object ConstructorHelper : CoreHelper() {
         val classLoader = ClassLoaderProvider.safeClassLoader
         return try {
             val clazz = findClass(className, classLoader)
-            findConstructorExact(clazz, *getParameterClasses(classLoader, parameterTypes))
+            findConstructorExact(clazz, *MethodHelper.getParameterClasses(classLoader, parameterTypes))
         } catch (e: Exception) {
             logW(TAG, "Failed to find class or constructor: $className", e)
             null
         }
     }
 
-    internal data  class ConstructorCacheKey(
+    internal data class ConstructorCacheKey(
         private val loaderId: Int,
         private val className: String,
         private val signatureHash: Int,

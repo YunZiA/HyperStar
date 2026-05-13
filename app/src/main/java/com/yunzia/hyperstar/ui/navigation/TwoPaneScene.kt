@@ -1,6 +1,5 @@
 package com.yunzia.hyperstar.ui.navigation
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -46,7 +45,6 @@ class TwoPaneScene<T : Any>(
         val showTwoPanes = shouldShowSplitPane().value
         val rightPane =  previousEntries.lastOrNull()?.let { @Composable {it.Content()} }
 
-        Log.d("TwoPane", "$leftPane \n$rightPane\n$placeholder\n${entries.size}")
         Row(modifier = Modifier.fillMaxSize()) {
             if (showTwoPanes) {
                 Box(modifier = Modifier.weight(0.4f)) {

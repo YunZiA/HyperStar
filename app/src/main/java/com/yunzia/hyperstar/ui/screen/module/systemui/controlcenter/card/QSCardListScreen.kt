@@ -56,10 +56,14 @@ import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.topbar.TopButton
 import com.yunzia.hyperstar.ui.component.itemGroup
 import com.yunzia.hyperstar.ui.component.modifier.elevation
-import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.component.preference.PreferenceScreen
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.prefs.SPUtils
 import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import com.yunzia.hyperstar.ui.navigation.SystemUIRoutes
+import SearchRoute
+import androidx.activity.compose.LocalActivity
+import com.yunzia.hyperstar.MainActivity
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import yunzia.ui.DraggableGrid
@@ -129,9 +133,11 @@ private fun saveList(items: List<Card>) {
 
 }
 
+@SearchRoute(route = SystemUIRoutes.CardList::class)
 @Composable
 fun QSCardListScreen() {
     val navController = LocalNavigator.current
+    val activity = LocalActivity.current as MainActivity
     val mContext = LocalContext.current
     val cardMap = mutableMapOf<String, Card>()
     var items by remember { mutableStateOf(emptyList<Card>()) }
@@ -150,8 +156,8 @@ fun QSCardListScreen() {
 
     val view = LocalView.current
 
-    ModuleNavPagers(
-        activityTitle = stringResource(R.string.card_tile_edit),
+    PreferenceScreen(
+        title = stringResource(R.string.card_tile_edit),
         navController = navController,
         endIcon = {
 
@@ -179,9 +185,11 @@ fun QSCardListScreen() {
         endClick = {
             Helper.rootShell("killall com.android.systemui")
         },
-    ){
+        scrollToKey = activity.appViewModel.scrollToKey.value,
+        onScrollComplete = { activity.appViewModel.scrollToKey.value = null },
+    ) { _, _ ->
 
-            itemGroup(
+            list.itemGroup(
                 title = R.string.card_list_header_title,
                 position = SuperGroupPosition.FIRST
                 //summary = R.string.card_list_header_sub_title
@@ -239,7 +247,7 @@ fun QSCardListScreen() {
                 }
             }
 
-        this.itemGroup(
+        list.itemGroup(
             title = R.string.card_list_no_add_title
         ) {
             LazyVerticalGrid(

@@ -10,8 +10,8 @@ import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import top.yukonga.miuix.kmp.extra.WindowBottomSheet
-import top.yukonga.miuix.kmp.extra.WindowBottomSheetDefaults
+import top.yukonga.miuix.kmp.window.WindowBottomSheet
+import top.yukonga.miuix.kmp.layout.BottomSheetDefaults
 import top.yukonga.miuix.kmp.icon.extended.Close
 
 
@@ -22,20 +22,20 @@ fun CancelBottomSheet(
     title: String? = null,
     backgroundColor: Color = colorScheme.surface,
     enableWindowDim: Boolean = true,
-    cornerRadius: Dp = WindowBottomSheetDefaults.cornerRadius,
-    sheetMaxWidth: Dp = WindowBottomSheetDefaults.maxWidth,
+    cornerRadius: Dp = BottomSheetDefaults.cornerRadius,
+    sheetMaxWidth: Dp = BottomSheetDefaults.maxWidth,
     onDismissRequest: (() -> Unit)? = null,
     onDismissFinished: (() -> Unit)? = null,
-    outsideMargin: DpSize = WindowBottomSheetDefaults.outsideMargin,
-    insideMargin: DpSize = WindowBottomSheetDefaults.insideMargin,
+    outsideMargin: DpSize = BottomSheetDefaults.outsideMargin,
+    insideMargin: DpSize = BottomSheetDefaults.insideMargin,
     defaultWindowInsetsPadding: Boolean = true,
-    dragHandleColor: Color = WindowBottomSheetDefaults.dragHandleColor(),
+    dragHandleColor: Color = BottomSheetDefaults.dragHandleColor(),
     allowDismiss: Boolean = true,
     enableNestedScroll: Boolean = true,
     content: @Composable () -> Unit
 ) {
     WindowBottomSheet(
-        show = show,
+        show = show.value,
         modifier = modifier,
         title = title,
         startAction = {

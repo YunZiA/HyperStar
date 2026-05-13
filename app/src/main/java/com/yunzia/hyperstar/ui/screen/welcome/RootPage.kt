@@ -89,7 +89,8 @@ private fun getRootManagerInfo(
     val rootList = root.toMutableList()
     root.forEach {
         try {
-            val packageInfo = packageManager.getPackageInfo(it.packageName, 0).applicationInfo!!
+            val packageInfo = packageManager.getPackageInfo(it.packageName, 0).applicationInfo
+                ?: return@forEach
 
             val app_name = packageManager.getApplicationLabel(packageInfo).toString()
             val package_name = packageInfo.packageName
@@ -461,7 +462,10 @@ private fun AppItem(
     }
 }
 private fun startAppByPackageName(context: Context, app: AppInfo) {
-    val intent = app.launch!!
+    val intent = app.launch ?: run {
+        Log.e("AppStarter", "No launch intent for package: ${app.packageName}")
+        return
+    }
 
     val resolveInfo = context.packageManager.resolveActivity(intent, 0)
     if (resolveInfo != null) {

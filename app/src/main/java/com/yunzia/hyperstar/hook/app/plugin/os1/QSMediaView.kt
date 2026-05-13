@@ -14,8 +14,6 @@ import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
 import com.yunzia.hyperstar.hook.util.startMarqueeOfFading
 import com.yunzia.hyperstar.prefs.XSPUtils
 
-//import de.robv.android.xposed.XposedHelpers
-
 object QSMediaView : BasePluginHook() {
 
     val isHideCover:Boolean = XSPUtils.getBoolean("is_hide_cover",false)
@@ -25,10 +23,6 @@ object QSMediaView : BasePluginHook() {
     val isEmptyStateMarquee:Boolean = XSPUtils.getBoolean("is_emptyState_marquee",false)
 
     override fun init() {
-        startMethodsHook()
-    }
-
-    private fun startMethodsHook() {
         val fadingEdgeLength = 40
 
         findClass(

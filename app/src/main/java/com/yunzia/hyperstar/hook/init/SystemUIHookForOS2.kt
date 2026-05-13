@@ -19,6 +19,13 @@ import kotlin.Int
 object SystemUIHookForOS2 : BaseHooks() {
 
 
+    private val setMiShadowMethod by lazy {
+        val floatType: Class<*> = Float.TYPE
+        Class.forName("android.view.View").getMethod(
+            "setMiShadow", Integer.TYPE, floatType, floatType, floatType, floatType, Boolean.TYPE
+        )
+    }
+
     override fun init() {
         initHooks(
             SystemBarBackground,
@@ -31,10 +38,7 @@ object SystemUIHookForOS2 : BaseHooks() {
 
     fun applyViewShadowForMediaAlbum(f: Float, f2: Float, i: Int, view: View?) {
         try {
-            val cls = Class.forName("android.view.View")
-            val cls2: Class<*> = Float.TYPE
-            cls.getMethod("setMiShadow", Integer.TYPE, cls2, cls2, cls2, cls2, Boolean.TYPE)
-                .invoke(view, Color.argb(i, 0, 0, 0), 0.0f, f, f2, 1.0f, Boolean.FALSE)
+            setMiShadowMethod.invoke(view, Color.argb(i, 0, 0, 0), 0.0f, f, f2, 1.0f, Boolean.FALSE)
         } catch (unused: Exception) {
             Log.d(
                 "NotificationUtil",

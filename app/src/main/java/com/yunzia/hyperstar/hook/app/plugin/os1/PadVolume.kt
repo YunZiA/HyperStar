@@ -408,7 +408,6 @@ object PadVolume : BasePluginHook() {
             val timeAbove = getChildAt(2) as TextView
             removeViewAt(2)
             timeAbove.id = resources.getIdentifier("ticking_time_above_progress_view","id",plugin)
-            //val timeAbovelp = timeAbove.layoutParams
             val timeAbovelp = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT

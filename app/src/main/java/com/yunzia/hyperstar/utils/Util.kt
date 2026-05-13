@@ -11,6 +11,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -36,32 +37,6 @@ fun appIcon(packageName: String, content: Context = LocalContext.current): Mutab
 }
 
 @Composable
-fun loadAppInfo(packageName: String, content: Context = LocalContext.current): MutableState<AppInfo?> {
-    val appInfo: MutableState<AppInfo?> = remember { mutableStateOf(null) }
-
-    LaunchedEffect(packageName) {
-        val pm = content.packageManager
-        try {
-
-            val info = pm.getPackageInfo(packageName, PackageManager.GET_META_DATA)
-            val applicationInfo = pm.getApplicationInfo(packageName, 0)
-
-            appInfo.value = AppInfo(
-                info.applicationInfo?.loadIcon(pm),
-                pm.getApplicationLabel(info.applicationInfo!!).toString(),
-                info.versionName,
-                info.longVersionCode
-            )
-
-        } catch (e: PackageManager.NameNotFoundException) {
-            // Handle the case where the package is not found
-        }
-    }
-
-    return appInfo
-}
-
-@Composable
 fun rememberWindowSize(): State<DpSize> {
     val windowInfo = LocalWindowInfo.current
     val density = LocalDensity.current
@@ -81,7 +56,7 @@ fun rememberWindowSize(): State<DpSize> {
 
 
 data class AppInfo(
-    val appIcon: Drawable?,
+    val appIcon: ImageBitmap?,
     val appName: String,
     val versionName: String?,
     val versionCode: Long

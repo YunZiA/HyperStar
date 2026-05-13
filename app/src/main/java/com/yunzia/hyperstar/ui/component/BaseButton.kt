@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kyant.shapes.RoundedRectangle
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.Text
@@ -44,7 +44,6 @@ fun MiniTextButton(
     radius: Dp = 10.dp,
     onClick: () -> Unit,
 ) {
-
 
     BaseButton(
         modifier = modifier,
@@ -82,7 +81,7 @@ fun Button(
         },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = RoundedRectangle(cornerRadius),
+        shape = SmoothRoundedCornerShape(cornerRadius),
         color = colors
     ) {
         Row(
@@ -117,7 +116,7 @@ fun TextButton(
         },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = RoundedRectangle(cornerRadius),
+        shape = SmoothRoundedCornerShape(cornerRadius),
         color = colors
     ) {
         Row(
@@ -148,7 +147,7 @@ fun BaseButton(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable () -> Unit
 ) {
-    val capsuleShape  = RoundedRectangle(cornerRadius)
+    val capsuleShape  = SmoothRoundedCornerShape(cornerRadius)
 
     val hapticFeedback = LocalHapticFeedback.current
 
@@ -196,7 +195,7 @@ fun BaseButton(
         },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = RoundedRectangle(cornerRadius),
+        shape = SmoothRoundedCornerShape(cornerRadius),
         color = color
     ) {
         Row(

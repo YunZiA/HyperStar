@@ -29,7 +29,7 @@ import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.EnableItemDr
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Icon
-import top.yukonga.miuix.kmp.extra.WindowBottomSheetDefaults
+import top.yukonga.miuix.kmp.layout.BottomSheetDefaults
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import yunzia.ui.Card
 
@@ -48,7 +48,7 @@ fun VolumeItem(
         }
     ) {
         Card(
-            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width)
+            modifier = Modifier.navigationBarsPadding().padding(bottom = BottomSheetDefaults.insideMargin.width)
         ) {
             EnableItemDropdown(
                 key = "volume_land_rightOrLeft",

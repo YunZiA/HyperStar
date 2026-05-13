@@ -6,19 +6,16 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.SeekBar
 import androidx.core.graphics.toColorInt
+import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.helper.FieldHelper
 import com.yunzia.hyperstar.hook.core.helper.MethodHelper
-import com.yunzia.hyperstar.hook.core.helper.MethodHelper.findMethodBestMatch
-import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.helper.callMethod
 import com.yunzia.hyperstar.hook.util.android.findViewByIdName
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
+
 object BaseHookHelper {
-
-
-
 
     fun setColorField(context: Any?, fieldName: String, color: String?) {
         context?.let {
@@ -26,8 +23,8 @@ object BaseHookHelper {
         }
     }
 
-    fun Resources.getId(name: String, defPackage: String) = this.getIdentifier(name,"id",defPackage)
-    fun Resources.getResId(name: String, type: String, defPackage: String) = this.getIdentifier(name,type,defPackage)
+    fun Resources.getId(name: String, defPackage: String) = this.getIdentifier(name, "id", defPackage)
+    fun Resources.getResId(name: String, type: String, defPackage: String) = this.getIdentifier(name, type, defPackage)
 
     fun Any.getResId(name: String, type: String, defPackage: String) = this.callMethod("getIdentifier", name, type, defPackage) as Int
 
@@ -45,17 +42,16 @@ object BaseHookHelper {
 
 
 
-    fun  Array<Method?>.onlyInvoke(
+    fun Array<Method?>.onlyInvoke(
         o: Any?,
         vararg objects: Any?
-    ): Any?{
-        for (method in this){
-            if (method != null){
-                return method.invoke(o,*objects)
+    ): Any? {
+        for (method in this) {
+            if (method != null) {
+                return method.invoke(o, *objects)
             }
         }
         return null
-
     }
 
     @Throws(
@@ -70,20 +66,23 @@ object BaseHookHelper {
         methodNames: Array<String>,
         parameterTypes: Array<Class<*>?>,
         vararg args: Any?
-    ):Method?{
-        try {
-            for (methodName in methodNames){
-                return findMethodBestMatch(this,methodName,*parameterTypes,*args)
+    ): Method? {
+        var lastError: Throwable? = null
+        for (methodName in methodNames) {
+            try {
+                MethodHelper.findMethodBestMatch(this, methodName, parameterTypes, args)?.let { return it }
+            } catch (e: IllegalAccessException) {
+                logE(e.toString())
+                throw IllegalAccessError(e.message)
+            } catch (e: IllegalArgumentException) {
+                throw e
+            } catch (e: InvocationTargetException) {
+                throw InvocationTargetError(e.cause)
+            } catch (e: Throwable) {
+                lastError = e
             }
-        }catch (e: IllegalAccessException) {
-            // should not happen
-            logE(e.toString())
-            throw IllegalAccessError(e.message)
-        } catch (e: IllegalArgumentException) {
-            throw e
-        } catch (e: InvocationTargetException) {
-            throw InvocationTargetError(e.cause)
         }
+        lastError?.let { logE(it.toString()) }
         return null
     }
 
@@ -91,29 +90,32 @@ object BaseHookHelper {
     fun Class<*>?.findMethodsBestMatch(
         methodsName: Array<String>,
         vararg args: Class<*>?
-    ):Method?{
-        try {
-            for (methodName in methodsName){
-                return findMethodBestMatch(this,methodName,*args)
+    ): Method? {
+        var lastError: Throwable? = null
+        for (methodName in methodsName) {
+            try {
+                MethodHelper.findMethodBestMatch(this, methodName, *args)?.let { return it }
+            } catch (e: IllegalAccessException) {
+                logE(e.toString())
+                throw IllegalAccessError(e.message)
+            } catch (e: IllegalArgumentException) {
+                throw e
+            } catch (e: InvocationTargetException) {
+                throw InvocationTargetError(e.cause)
+            } catch (e: Throwable) {
+                lastError = e
             }
-        }catch (e: IllegalAccessException) {
-            // should not happen
-            logE(e.toString())
-            throw IllegalAccessError(e.message)
-        } catch (e: IllegalArgumentException) {
-            throw e
-        } catch (e: InvocationTargetException) {
-            throw InvocationTargetError(e.cause)
         }
+        lastError?.let { logE(it.toString()) }
         return null
     }
 
     fun Class<*>?.findMethodBestMatchIfExist(
         methodName: String,
         vararg args: Class<*>?
-    ):Method?{
+    ): Method? {
         try {
-            val method = findMethodBestMatch(this,methodName,*args)
+            val method = MethodHelper.findMethodBestMatch(this, methodName, *args)
             return method
         } catch (e: NoSuchMethodError) {
             return null
@@ -126,9 +128,9 @@ object BaseHookHelper {
     fun Class<*>?.findMethodBestMatch(
         methodName: String,
         vararg args: Class<*>?
-    ):Method?{
+    ): Method? {
         try {
-            val method = findMethodBestMatch(this,methodName,*args)
+            val method = MethodHelper.findMethodBestMatch(this, methodName, *args)
             return method
         } catch (e: NoSuchMethodError) {
             logE(e.toString())
@@ -156,8 +158,8 @@ object BaseHookHelper {
     fun Class<*>?.findMethodExactIfExists(
         methodName: String,
         vararg parameterTypes: Any?
-    ): Method?{
-        return MethodHelper.findMethodExactIfExists(this,methodName,*parameterTypes)
+    ): Method? {
+        return MethodHelper.findMethodExactIfExists(this, methodName, *parameterTypes)
     }
 
 

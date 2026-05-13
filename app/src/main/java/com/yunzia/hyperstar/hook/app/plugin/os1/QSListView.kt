@@ -17,7 +17,6 @@ import com.yunzia.hyperstar.hook.core.helper.afterHookConstructor
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.findViewByIdNameAs
 import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
-import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.helper.afterHookAllMethods
 import com.yunzia.hyperstar.hook.core.helper.beforeHookAllMethods
 import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
@@ -39,12 +38,12 @@ import yunzia.utils.DensityUtil.Companion.dpToPx
 object QSListView : BasePluginHook() {
 
     val labelMode: Int = XSPUtils.getInt("is_list_label_mode",0)
-    val isWordlessMode0: Int = XSPUtils.getInt("is_wordless_mode_0",0)
-    val isWordlessMode2: Int = XSPUtils.getInt("is_wordless_mode_2",0)
-    val labelSize = XSPUtils.getFloat("list_label_size",13f)
-    val labelWidth = XSPUtils.getFloat("list_label_width",100f)/100f
-    val labelMarquee = XSPUtils.getBoolean("list_tile_label_marquee",false)
-    private val tileColorForState = XSPUtils.getInt("qs_list_tile_color_for_state",0)
+    val isWordlessMode0: Int = XSPUtils.getInt("is_wordless_mode_0", 0)
+    val isWordlessMode2: Int = XSPUtils.getInt("is_wordless_mode_2", 0)
+    val labelSize = XSPUtils.getFloat("list_label_size", 13f)
+    val labelWidth = XSPUtils.getFloat("list_label_width", 100f)/100f
+    val labelMarquee = XSPUtils.getBoolean("list_tile_label_marquee", false)
+    private val tileColorForState = XSPUtils.getInt("qs_list_tile_color_for_state", 0)
     val listSpacingY = XSPUtils.getFloat("list_spacing_y",100f)/100
     val listLabelSpacingY = XSPUtils.getFloat("list_label_spacing_y",100f)/100
 
@@ -88,10 +87,8 @@ object QSListView : BasePluginHook() {
                 val icon = qSItemView.findViewByIdNameAs<FrameLayout>("icon_frame")
 
                 if (labelMode == 1){
-                    qSItemView.apply {
-                        removeView(label)
-                        addView(label,1)
-                    }
+
+                    label.z = 10f
                     val layoutParam =  label.layoutParams.apply {
                         width = icon.layoutParams.width/10*9
                     }
@@ -100,12 +97,9 @@ object QSListView : BasePluginHook() {
                         layoutParams = layoutParam
                     }
                 } else if (labelMode == 2){
-                    qSItemView.apply {
-                        removeView(label)
-                        addView(label,1)
-                    }
+                    label.z = 10f
                     qSItemView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                    val layoutWidth = qSItemView.measuredWidth*labelWidth
+                    val layoutWidth = qSItemView.measuredWidth * labelWidth
                     val layoutParam =  label.layoutParams.apply {
                         width = layoutWidth.toInt()
                     }
@@ -113,7 +107,6 @@ object QSListView : BasePluginHook() {
                         setTextSize(TypedValue.COMPLEX_UNIT_DIP,labelSize)
                         layoutParams = layoutParam
                     }
-                    logD("${qSItemView.layoutParams.width}+${qSItemView.measuredWidth}")
                 }
                 if(labelMarquee){
                     label.startMarqueeOfFading(25)
@@ -141,16 +134,14 @@ object QSListView : BasePluginHook() {
                     }
                     2 -> {
                         when (isWordlessMode2) {
-                            2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
-                            1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
-
+                            2 -> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
+                            1 -> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
                         }
                     }
                     else -> {
                         when (isWordlessMode0) {
-                            2-> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
-                            1-> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
-
+                            2 -> Settings.Secure.putInt(contentResolver, "wordless_mode", 1)
+                            1 -> Settings.Secure.putInt(contentResolver, "wordless_mode", 0)
                         }
                         return@beforeHookMethod
                     }
@@ -222,6 +213,10 @@ object QSListView : BasePluginHook() {
             val enableColor = XSPUtils.getString("list_title_on_color", "null")
             val restrictedColor = XSPUtils.getString("list_title_restricted_color", "null")
             val unavailableColor = XSPUtils.getString("list_title_unavailable_color", "null")
+            val disableColorInt = if (disableColor != "null") Color.parseColor(disableColor) else null
+            val enableColorInt = if (enableColor != "null") Color.parseColor(enableColor) else null
+            val restrictedColorInt = if (restrictedColor != "null") Color.parseColor(restrictedColor) else null
+            val unavailableColorInt = if (unavailableColor != "null") Color.parseColor(unavailableColor) else null
 
             QSTileItemView.beforeHookMethod(
                 "onStateUpdated",
@@ -265,10 +260,10 @@ object QSListView : BasePluginHook() {
                     var unavailable = icon.getIntField("iconColorUnavailable")?:0
                     var restrict = icon.getIntField("iconColorRestrict")?:0
                     if (tileColorForState == 2){
-                        if (disableColor != "null")  off = Color.parseColor(disableColor)
-                        if (enableColor != "null")  enable = Color.parseColor(enableColor)
-                        if (restrictedColor != "null")  unavailable = Color.parseColor(restrictedColor)
-                        if (unavailableColor != "null")  restrict = Color.parseColor(unavailableColor)
+                        if (disableColorInt != null)  off = disableColorInt
+                        if (enableColorInt != null)  enable = enableColorInt
+                        if (restrictedColorInt != null)  unavailable = restrictedColorInt
+                        if (unavailableColorInt != null)  restrict = unavailableColorInt
                     }
 
 

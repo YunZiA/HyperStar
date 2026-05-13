@@ -11,17 +11,12 @@ import android.widget.LinearLayout
 import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.getDimensionPixelOffset
-import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
-import com.yunzia.hyperstar.hook.core.StarLog.log
-import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.hook.core.helper.callMethod
 import com.yunzia.hyperstar.hook.core.helper.callMethodAs
 import com.yunzia.hyperstar.hook.core.helper.getObjectField
 import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
-import com.yunzia.hyperstar.hook.core.helper.getStaticObjectField
-import com.yunzia.hyperstar.hook.util.ConstraintSet
 import com.yunzia.hyperstar.prefs.XSPUtils
 
 
@@ -30,20 +25,8 @@ object QSHeaderView : BasePluginHook() {
     private val is_use_chaos_header = XSPUtils.getBoolean("is_use_chaos_header", false)
 
     override fun init() {
-        if (is_use_chaos_header) startMethodsHook()
-    }
+        if (!is_use_chaos_header) return
 
-    fun collapseStatusBar(context: Context) {
-        try {
-            val systemService = context.getSystemService("statusbar")
-            systemService.javaClass.getMethod("collapsePanels", *arrayOfNulls(0))
-                .invoke(systemService, *arrayOfNulls(0))
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun startMethodsHook() {
         var qsListControllerProvider: Any? = null
 
         findClass(
@@ -58,9 +41,7 @@ object QSHeaderView : BasePluginHook() {
                     logE("qsListControllerProviders == null")
                     return@afterHookMethod
                 }
-                logD("qsListControllerProviders != null")
                 qsListControllerProvider = qsListControllerProviders
-
             }
         }
 
@@ -85,7 +66,7 @@ object QSHeaderView : BasePluginHook() {
                     "ic_header_settings",
                     "drawable",
                     "miui.systemui.plugin"
-                );
+                )
                 val ic_controls_edit = view.resources.getIdentifier(
                     "ic_controls_edit",
                     "drawable",
@@ -97,7 +78,6 @@ object QSHeaderView : BasePluginHook() {
                     "header_carrier_vertical_mode_margin_bottom",
                     plugin
                 ) * 3.8).toInt()
-                //(getDimensionPixelOffset(res,"header_carrier_vertical_mode_margin_bottom",plugin)*1.9).toInt()
 
                 val lp = ViewGroup.MarginLayoutParams(size, size).apply {
                     bottomMargin = bottom
@@ -106,7 +86,6 @@ object QSHeaderView : BasePluginHook() {
                     layoutParams = lp
                     setBackgroundResource(ic_header_settings)
                 }
-                //lp.topMargin = 100
                 val b = Button(mContext).apply {
                     layoutParams = lp
                     setBackgroundResource(ic_controls_edit)
@@ -127,7 +106,6 @@ object QSHeaderView : BasePluginHook() {
                     addView(c)
                     addView(b)
                 }
-                //header.top = 200
                 viewId = header.id
                 view.addView(header)
                 a.setOnClickListener {
@@ -145,7 +123,6 @@ object QSHeaderView : BasePluginHook() {
                     if (view.alpha == 0f) return@setOnClickListener
                     it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     if (qsListControllerProvider != null) {
-                        logD("qsListControllerProvider != null")
                         val get = qsListControllerProvider.callMethod("get")
                         if (get == null) {
                             logE("get == null")
@@ -156,11 +133,9 @@ object QSHeaderView : BasePluginHook() {
                                 logE("enumConstants == null")
                                 return@setOnClickListener
                             }
-                            logD("" + mainPanelMode[0])
                             get.callMethod("startQuery", mainPanelMode[2])
                         }
                     }
-
                 }
             }
             afterHookMethod(
@@ -175,132 +150,17 @@ object QSHeaderView : BasePluginHook() {
                 view.findViewById<LinearLayout>(viewId).apply {
                     translationY = y
                 }
-
             }
         }
-
-
     }
 
-    private fun startMethodsHook1() {
-        val MainHeader = findClass(
-            "miui.systemui.controlcenter.panel.main.header.StatusHeaderController",
-            pluginClassLoader
-        )
-        val CommonUtils = findClass("miui.systemui.util.CommonUtils", pluginClassLoader)
-        MainHeader.replaceHookMethod(
-            "updateConstraint"
-        ) {
-
-            val fakeStatusBarViewController = thisObject.getObjectField("fakeStatusBarViewController")
-            val sysUIContext: Context = thisObject.getObjectField("sysUIContext") as Context
-            val parent = thisObject.callMethod("getView") as ViewGroup
-            val mContext = thisObject.callMethod("getContext") as Context
-
-            if (fakeStatusBarViewController == null) return@replaceHookMethod null
-
-
-            val constraintSet = ConstraintSet(pluginClassLoader)
-            //val header_status_bar_icon:Int = sysUIContext.resources.get("header_status_bar_icons", "id", "miui.systemui.plugin");
-
-            val header_carrier_vertical_mode_margin_bottom = mContext.resources.getIdentifier(
-                "header_carrier_vertical_mode_margin_bottom",
-                "dimen",
-                "miui.systemui.plugin"
-            )
-
-            val header_status_bar_icons: Int = mContext.resources.getIdentifier(
-                "header_status_bar_icons",
-                "id",
-                "miui.systemui.plugin"
-            );
-            val header_date: Int =
-                mContext.resources.getIdentifier("header_date", "id", "miui.systemui.plugin");
-            val header_carrier_view: Int = mContext.resources.getIdentifier(
-                "header_carrier_view",
-                "id",
-                "miui.systemui.plugin"
-            );
-            val privacy_container: Int =
-                mContext.resources.getIdentifier("privacy_container", "id", "miui.systemui.plugin");
-            log("" + header_status_bar_icons + header_date + header_carrier_view + privacy_container)
-            constraintSet.constrainWidth(header_status_bar_icons, -2)
-            constraintSet.constrainHeight(header_status_bar_icons, -2)
-            constraintSet.constrainWidth(header_date, -2)
-            constraintSet.constrainHeight(header_date, -2)
-            constraintSet.constrainWidth(header_carrier_view, -2)
-            constraintSet.constrainHeight(header_carrier_view, -2)
-            val header_privacy_container_height: Int = mContext.resources.getIdentifier(
-                "header_privacy_container_height",
-                "dimen",
-                "miui.systemui.plugin"
-            );
-
-            constraintSet.constrainWidth(privacy_container, -2)
-            constraintSet.constrainHeight(
-                privacy_container,
-                mContext.resources.getDimensionPixelSize(header_privacy_container_height)
-            )
-
-            val INSTANCE = CommonUtils.getStaticObjectField("INSTANCE")
-            val orientation = INSTANCE.callMethod("getInVerticalMode", mContext) as Boolean
-
-            if (orientation) {
-                constraintSet.connect(header_status_bar_icons, 4, 0, 4);
-                constraintSet.connect(header_date, 3, header_status_bar_icons, 3);
-                constraintSet.connect(header_date, 4, header_status_bar_icons, 4);
-                constraintSet.createHorizontalChainRtl(
-                    0,
-                    6,
-                    0,
-                    7,
-                    intArrayOf(header_date, header_status_bar_icons),
-                    null as FloatArray?,
-                    1
-                );
-                val dimensionPixelSize = mContext.resources.getDimensionPixelSize(
-                    header_carrier_vertical_mode_margin_bottom
-                );
-                constraintSet.connect(
-                    header_carrier_view,
-                    4,
-                    header_status_bar_icons,
-                    3,
-                    dimensionPixelSize
-                );
-                constraintSet.connect(header_carrier_view, 7, 0, 7);
-                constraintSet.connect(
-                    privacy_container,
-                    4,
-                    header_status_bar_icons,
-                    3,
-                    dimensionPixelSize
-                );
-                constraintSet.connect(privacy_container, 7, 0, 7);
-            } else {
-                constraintSet.connect(header_status_bar_icons, 4, 0, 4);
-                constraintSet.connect(header_carrier_view, 3, header_status_bar_icons, 3);
-                constraintSet.connect(header_carrier_view, 4, header_status_bar_icons, 4);
-                constraintSet.connect(privacy_container, 3, header_status_bar_icons, 3);
-                constraintSet.connect(privacy_container, 4, header_status_bar_icons, 4);
-                constraintSet.connect(privacy_container, 7, 0, 7);
-                constraintSet.createHorizontalChainRtl(
-                    0,
-                    6,
-                    privacy_container,
-                    6,
-                    intArrayOf(header_carrier_view, header_status_bar_icons),
-                    null as FloatArray?,
-                    1
-                );
-            }
-
-            constraintSet.callMethod("applyTo", parent)
-
-            return@replaceHookMethod null
+    fun collapseStatusBar(context: Context) {
+        try {
+            val systemService = context.getSystemService("statusbar")
+            systemService.javaClass.getMethod("collapsePanels", *arrayOfNulls(0))
+                .invoke(systemService, *arrayOfNulls(0))
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
     }
 }
-
-

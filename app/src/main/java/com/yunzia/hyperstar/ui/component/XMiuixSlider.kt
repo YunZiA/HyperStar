@@ -1,6 +1,6 @@
+
 package com.yunzia.hyperstar.ui.component
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -52,11 +52,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kyant.shapes.RoundedRectangle
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.prefs.PreferencesUtil
 import com.yunzia.hyperstar.prefs.SPUtils
-import com.yunzia.hyperstar.ui.component.dialog.SuperDialogs
+import com.yunzia.hyperstar.ui.component.dialog.OverlayDialogs
 import com.yunzia.hyperstar.ui.component.enums.EventState
 import com.yunzia.hyperstar.ui.component.modifier.bounceClick
 import com.yunzia.hyperstar.ui.component.modifier.bounceScale
@@ -64,7 +64,7 @@ import com.yunzia.hyperstar.ui.component.tool.FilterFloat
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.Slider
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.extra.SuperDialog
+import top.yukonga.miuix.kmp.overlay.OverlayDialog
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -111,7 +111,7 @@ fun XMiuixSlider(
             .height(IntrinsicSize.Max)
             .fillMaxWidth()
             .bounceScale(eventState)
-            .clip(RoundedRectangle(8.dp))
+            .clip(SmoothRoundedCornerShape(8.dp))
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = { offset ->
@@ -312,7 +312,7 @@ fun XSuperSliders(
             .height(IntrinsicSize.Max)
             .fillMaxWidth()
             .bounceScale(eventState)
-            .clip(RoundedRectangle(8.dp))
+            .clip(SmoothRoundedCornerShape(8.dp))
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = { offset ->
@@ -451,9 +451,9 @@ fun ValueDialog(
 
     val defValues = TextFieldValue("", TextRange(0))
 
-    SuperDialog(
+    OverlayDialog(
         title = title,
-        show = showDialog,
+        show = showDialog.value,
 //        onFocus = {
 //            kc?.hide()
 //            focusManager.clearFocus()
@@ -462,7 +462,7 @@ fun ValueDialog(
             if (hasFocus){
                 kc?.hide()
                 focusManager.clearFocus()
-                return@SuperDialog
+                return@OverlayDialog
             }
             filter.setInputValue(String.format("%.${decimalPlaces}f", values.floatValue))
             showDialog.value = false
@@ -576,7 +576,6 @@ fun calcSteps(
 //        .roundToInt()
 
     val result =  points - 1  // ✅ steps 定义
-    Log.d("calcSteps", "calcSteps: ${range.endInclusive} - ${range.start} = $result")
     return  result
 //    return 19
 }

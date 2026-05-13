@@ -43,9 +43,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import com.kyant.shapes.RoundedRectangle
-import com.kyant.shapes.UnevenRoundedRectangle
 import com.yunzia.hyperstar.ui.component.helper.getWindowSize
+import top.yukonga.miuix.kmp.shapes.SmoothUnevenRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.DialogLayout
 
 
@@ -145,7 +144,7 @@ fun SuperBottomSheetDialog(
                     .offset { IntOffset(0, (screenHeight - heightAnim.value).toInt()) }
                     .height(with(density) { fullHeight.toDp() })
                     .clip(
-                        UnevenRoundedRectangle(
+                        SmoothUnevenRoundedCornerShape(
                             topStart = 25.dp,
                             topEnd = 25.dp,
                             bottomEnd = 0.dp,

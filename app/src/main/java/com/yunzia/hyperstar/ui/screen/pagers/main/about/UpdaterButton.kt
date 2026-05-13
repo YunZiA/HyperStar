@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kyant.shapes.RoundedRectangle
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.ui.component.Button
@@ -58,7 +58,6 @@ fun UpdaterButton(
     Button(
         modifier = Modifier
             .wrapContentHeight()
-            .padding(bottom = 10.dp)
             .drawBehind {
                 val gradientBrush = Brush.linearGradient(
                     colors = listOf(
@@ -86,7 +85,7 @@ fun UpdaterButton(
             }
             .shadow(
                 elevation = 1.5.dp,
-                shape = RoundedRectangle(16.dp),
+                shape = SmoothRoundedCornerShape(16.dp),
                 clip = true,
                 ambientColor = shadowColor,
                 spotColor = shadowColor

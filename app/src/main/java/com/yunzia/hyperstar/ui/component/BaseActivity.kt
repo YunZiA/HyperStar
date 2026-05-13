@@ -4,26 +4,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
-import android.widget.Toast
+
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.yunzia.hyperstar.prefs.PreferencesUtil
-import io.github.libxposed.service.XposedService
-import io.github.libxposed.service.XposedService.OnScopeEventListener
-import io.github.libxposed.service.XposedServiceHelper
 import com.yunzia.hyperstar.ui.theme.HyperStarTheme
 import com.yunzia.hyperstar.utils.LanguageHelper
-import com.yunzia.hyperstar.prefs.SPUtils
 import kotlin.system.exitProcess
 
 
@@ -87,8 +78,8 @@ abstract class BaseActivity : ComponentActivity() {
     }
 
     fun reStart() {
-        val intent = this.packageManager.getLaunchIntentForPackage(this.packageName)
-        intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        val intent = this.packageManager.getLaunchIntentForPackage(this.packageName) ?: return
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         this.startActivity(intent)
         exitProcess(0)
     }

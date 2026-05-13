@@ -30,7 +30,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -62,14 +61,13 @@ import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseButton
 import com.yunzia.hyperstar.ui.component.Button
-import com.yunzia.hyperstar.ui.component.SuperIntentArrow
+import com.yunzia.hyperstar.ui.component.preference.widget.IntentPreference
 import com.yunzia.hyperstar.ui.component.XScaffold
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
 import com.yunzia.hyperstar.utils.getVerName
 import com.yunzia.hyperstar.viewmodel.UpdaterDownloadViewModel
 import com.yunzia.hyperstar.viewmodel.UpdaterViewModel
-import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import top.yukonga.miuix.kmp.basic.HorizontalDivider
@@ -84,14 +82,15 @@ import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import com.yunzia.hyperstar.ui.navigation.NavBackHandler
-import com.kyant.shapes.RoundedRectangle
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import com.yunzia.hyperstar.ui.navigation.MainRoutes
 import com.yunzia.hyperstar.ui.navigation.Navigator
 import top.yukonga.miuix.kmp.basic.DropdownImpl
 import top.yukonga.miuix.kmp.basic.Icon
-import top.yukonga.miuix.kmp.extra.SuperDialog
-import top.yukonga.miuix.kmp.extra.WindowListPopup
+import com.yunzia.hyperstar.ui.component.modifier.rememberLayerBackdrop
+import top.yukonga.miuix.kmp.overlay.OverlayDialog
+import top.yukonga.miuix.kmp.window.WindowListPopup
 import top.yukonga.miuix.kmp.icon.extended.More
 import java.io.File
 import java.net.URLEncoder
@@ -102,13 +101,12 @@ fun UpdaterScreen() {
     val navController = LocalNavigator.current
     val viewModel: UpdaterViewModel = viewModel()
     val downloadModel: UpdaterDownloadViewModel = activity.downloadModel
-    val hazeState = remember { HazeState() }
+    val backdrop = rememberLayerBackdrop()
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
     val view = LocalView.current
     val context = LocalContext.current
 
-    val pagerState = rememberPagerState(initialPage =  0, pageCount = { 2 })
-    // Collect states from ViewModel
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = { 2 })
     val isNeedUpdate = downloadModel.isNeedUpdate.collectAsState()
     val showUpdater = downloadModel.showUpdater.collectAsState()
     val currentCommit = downloadModel.currentCommit.collectAsState()
@@ -119,12 +117,9 @@ fun UpdaterScreen() {
     val menuShow = remember { mutableStateOf(false) }
     val currentVersion = remember { getVerName(context) }
     val fileUrl = remember {
-        derivedStateOf {
-            "https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/${activity.newAppName.value}"
-        }
+        mutableStateOf("https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/${activity.newAppName.value}")
     }
 
-    // Effect to initialize data
     LaunchedEffect(Unit) {
         downloadModel.init()
         downloadModel.getFileTotalSize(fileUrl.value)
@@ -138,7 +133,7 @@ fun UpdaterScreen() {
         topBar = {
             SmallTopAppBar(
                 modifier = Modifier.then(
-                    if (uiState.value.isBlur) Modifier.showBlur(hazeState)
+                    if (uiState.value.isBlur) Modifier.showBlur(backdrop)
                     else Modifier
                 ),
                 color = Color.Transparent,
@@ -223,7 +218,7 @@ fun UpdaterScreen() {
         HorizontalPager(
             modifier = Modifier
                 .fillMaxSize()
-                .blur(hazeState),
+                .blur(backdrop),
             beyondViewportPageCount = PagerDefaults.BeyondViewportPageCount + 1,
             state = pagerState,
             userScrollEnabled = isNeedUpdate.value && uiState.value.isScrollEnabled,
@@ -237,7 +232,6 @@ fun UpdaterScreen() {
                         padding = padding,
                         title = currentVersion,
                         isLoading = isLoading,
-                        navController = navController
                     ){
                         if (isLoading.value) return@UpdateOverviewPage
                         val encodedLog = URLEncoder.encode(currentCommit.value.replace(" ", "%20"), "UTF-8")
@@ -278,7 +272,6 @@ fun UpdateOverviewPage(
     title: String,
     pagerState: PagerState,
     isLoading: State<Boolean>,
-    navController: Navigator,
     navPager: () -> Unit,
 ) {
 
@@ -370,7 +363,7 @@ fun UpdateOverviewPage(
             }
         }
 
-        ChannelDialog(showDialog,navController)
+        ChannelDialog(showDialog)
 
 
 
@@ -381,10 +374,7 @@ fun UpdateOverviewPage(
 fun UpdateContent(
     lastCommit: String,
     fileUrl: State<String>,
-    navController: Navigator,
 ) {
-
-
     val context = LocalContext.current
     val styles = TextLinkStyles(style = SpanStyle(color = colorResource(R.color.blue), fontSize = 14.sp))
 
@@ -422,7 +412,6 @@ fun UpdateContent(
 
     lastCommit.lines().forEach { line ->
         if (line.startsWith("#")) {
-            // 以#开头的文本加粗加大
             Text(
                 text = "|  "+line.removePrefix("#").trim(),
                 fontSize = 17.sp,
@@ -433,7 +422,6 @@ fun UpdateContent(
                 color = colorScheme.onBackground
             )
         } else {
-            // 普通文本
             Text(
                 text = line,
                 fontSize = 15.sp,
@@ -443,7 +431,6 @@ fun UpdateContent(
                 color = colorScheme.onSurfaceVariantSummary
             )
         }
-
     }
 
     HorizontalDivider(
@@ -461,9 +448,6 @@ fun UpdateContent(
         lineHeight = 1.5.em,
         color = colorScheme.onSurfaceVariantSummary,
     )
-
-
-
 }
 
 @Composable
@@ -473,7 +457,7 @@ private fun UpdatePup(
     downloadModel: UpdaterDownloadViewModel,
 ) {
     WindowListPopup(
-        show = show,
+        show = show.value,
         popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
         alignment = PopupPositionProvider.Align.TopEnd,
         onDismissRequest = {
@@ -492,22 +476,18 @@ private fun UpdatePup(
                     navController.navigate(MainRoutes.LogHistory)
                 }
             )
-
         }
     }
-
-
 }
 
 @Composable
 private fun ChannelDialog(
     show: MutableState<Boolean>,
-    navController: Navigator
 ) {
     val context = LocalContext.current
-    SuperDialog(
+    OverlayDialog(
         title = stringResource(R.string.go_channel_discuss),
-        show = show,
+        show = show.value,
         onDismissRequest = {
             show.value = false
         }
@@ -517,16 +497,16 @@ private fun ChannelDialog(
             modifier = Modifier
                 .padding(top = 8.dp, bottom = 18.dp)
                 .fillMaxWidth()
-                .clip(RoundedRectangle(12.dp))
+                .clip(SmoothRoundedCornerShape(12.dp))
                 .background(colorScheme.secondaryContainer)
         ) {
 
-            SuperIntentArrow(
+            IntentPreference(
                 title = stringResource(R.string.qq_group_title),
                 context = context,
                 url = "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&amp;k=5ONF7LuaoQS6RWEOUYBuA0x4X8ssvHJp&amp;authKey=Pic4VQJxKBJwSjFzsIzbJ50ILs0vAEPjdC8Nat4zmiuJRlftqz9%2FKjrBwZPQTc4I&amp;noverify=0&amp;group_code=810317966"
             )
-            SuperIntentArrow(
+            IntentPreference(
                 title = stringResource(R.string.telegram_group),
                 context = context,
                 url = "https://t.me/Hyperstar_chat"
@@ -549,8 +529,6 @@ private fun ChannelDialog(
     }
 }
 
-
-// 安装 APK 文件
 fun installApk(context: Context, filePath: String) {
     try {
         val apkFile = File(filePath)
@@ -566,12 +544,7 @@ fun installApk(context: Context, filePath: String) {
         }
 
         context.startActivity(intent)
-
     } catch (e: Exception) {
-        e.printStackTrace()
-        Log.d("ggc", "安装失败: ${e.message}")
+        Log.e("UpdaterScreen", "installApk failed: ${e.message}")
     }
 }
-
-
-

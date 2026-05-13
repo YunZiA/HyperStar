@@ -42,11 +42,17 @@ import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import com.kyant.shapes.RoundedRectangle
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import com.yunzia.hyperstar.ui.navigation.MediaRoutes
+import SearchRoute
+import top.yukonga.miuix.kmp.preference.ArrowPreference
+import top.yukonga.miuix.kmp.preference.CheckboxLocation
+import top.yukonga.miuix.kmp.preference.CheckboxPreference
 import kotlin.collections.forEachIndexed
 
 @SuppressLint("MutableCollectionMutableState")
+@SearchRoute(route = MediaRoutes.MediaApp::class)
 @Composable
 fun MediaAppSettingsPager() {
     val activity = LocalActivity.current as MainActivity
@@ -66,8 +72,6 @@ fun MediaAppSettingsPager() {
     val searchStatus = viewModel.searchStatus
     val currentApp = viewModel.currentApp
 
-    val searchTransition = searchStatus.value.transition()
-
 
     LaunchedEffect(Unit) {
         activity.requestInstalledAppsPermission()
@@ -82,22 +86,13 @@ fun MediaAppSettingsPager() {
         viewModel.loadApps(context)
     }
 
-    // LaunchedEffect for search status
-    LaunchedEffect(searchStatus.value.expandState) {
-        viewModel.onSearchStatusChanged(searchStatus.value.expandState)
-    }
-
-    // LaunchedEffect for search text
-    LaunchedEffect(searchStatus.value.searchText) {
-        viewModel.onSearchTextChanged(searchStatus.value.searchText)
-    }
     searchStatus.value.SearchModuleNavPager(
         activityTitle = stringResource(R.string.media_default_app_settings),
-        searchTransition = searchTransition,
         navController = navController,
         endClick = {
             Helper.rootShell("killall com.android.systemui")
         },
+        onQueryChange = { viewModel.onSearchTextChanged(it) },
         result = {
 
             searchApp.value.forEachIndexed { index, app ->
@@ -154,34 +149,30 @@ fun AppItem(
 ) {
     val isSelected by remember { derivedStateOf { currentApp.value == app.packageName } }
 
-    BasicComponent(
+    CheckboxPreference(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
             .padding(top = 10.dp)
             .bounceAnimN()
-            .clip(RoundedRectangle(CardDefaults.CornerRadius))
+            .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
             .background(if (isSelected) colorScheme.tertiaryContainer else colorScheme.surfaceVariant),
         title = app.label,
         titleColor = titleColor(isSelected),
         summary = app.packageName,
         summaryColor = summaryColor(isSelected),
-        startAction = {
-            AppIcon(
-                icon = app.icon,
-                label = app.label,
-                modifier = Modifier.padding(end = 12.dp)
-            )
-        },
+//        startAction = {
+//            AppIcon(
+//                icon = app.icon,
+//                label = app.label,
+//                modifier = Modifier.padding(end = 12.dp)
+//            )
+//        },
         endActions = {
-            Checkbox(
-                checked = isSelected,
-                onCheckedChange = {
-                    onClick()
-                }
-            )
         },
-        onClick = {
+        checkboxLocation = CheckboxLocation.End,
+        checked = isSelected,
+        onCheckedChange = {
             onClick()
         }
     )

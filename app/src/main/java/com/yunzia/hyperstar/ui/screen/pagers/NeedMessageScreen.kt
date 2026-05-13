@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -34,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.component.pager.NavPager
+import com.yunzia.hyperstar.ui.component.preference.widget.PreferencePage
 import com.yunzia.hyperstar.utils.Helper.isModuleActive
 import com.yunzia.hyperstar.utils.OSVersion
 import com.yunzia.hyperstar.utils.androidVersion
@@ -51,9 +52,10 @@ import com.yunzia.hyperstar.utils.isPad
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import com.kyant.shapes.RoundedRectangle
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import androidx.compose.runtime.collectAsState
+import com.yunzia.hyperstar.ui.component.preference.widget.PreferenceListPage
 
 @Composable
 fun NeedMessageScreen() {
@@ -100,19 +102,18 @@ fun NeedMessageScreen() {
 
     }
 
-    NavPager(
-        activityTitle = stringResource(R.string.debug_message),
+    PreferenceListPage(
+        title = stringResource(R.string.debug_message),
         navController = navController,
     ) {
-
         item {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp)
-                    .clip(RoundedRectangle(21.dp))
+                    .clip(SmoothRoundedCornerShape(21.dp))
                     .background(Color(0x2A0D84FF))
-                    ,
+                ,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
@@ -161,7 +162,5 @@ fun NeedMessageScreen() {
 
             }
         }
-
-
     }
 }

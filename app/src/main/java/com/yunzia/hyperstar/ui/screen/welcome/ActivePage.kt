@@ -61,7 +61,7 @@ import com.yunzia.hyperstar.utils.isPad
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import com.kyant.shapes.RoundedRectangle
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.basic.Icon
 
 @Composable
@@ -154,7 +154,7 @@ fun ActivePage(
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp)
                 .padding(top = 15.dp, bottom = 6.dp)
-                .clip(RoundedRectangle(21.dp))
+                .clip(SmoothRoundedCornerShape(21.dp))
                 .background(colorScheme.surface)
             ,
             verticalAlignment = Alignment.CenterVertically,

@@ -40,11 +40,11 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import com.kyant.shapes.RoundedRectangle
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.BaseButton
 import com.yunzia.hyperstar.ui.component.MTextField
-import com.yunzia.hyperstar.ui.component.dialog.SuperDialog
+import com.yunzia.hyperstar.ui.component.dialog.OverlayDialog
 import com.yunzia.hyperstar.ui.component.tool.FilterColorHex
 import top.yukonga.miuix.kmp.basic.Button
 import top.yukonga.miuix.kmp.basic.ButtonDefaults.buttonColors
@@ -72,7 +72,7 @@ fun ColorPickerDialog(
     val filter = remember(key1 = color.value) { FilterColorHex(color.value.toHex()) }
 
 
-    SuperDialog(
+    OverlayDialog(
         title = title,
         show = showDialog,
         imePadding = false,
@@ -84,7 +84,7 @@ fun ColorPickerDialog(
             if (hasFocus){
                 kc?.hide()
                 focusManager.clearFocus()
-                return@SuperDialog
+                return@OverlayDialog
             }
             if (doTextFieldValue(filter.getInputValue(),hasFocus,focusManager,color,context)){
 
@@ -105,11 +105,11 @@ fun ColorPickerDialog(
                 Image(
                     modifier = Modifier
                         .size(60.dp)
-                        .clip(RoundedRectangle(10.dp))
+                        .clip(SmoothRoundedCornerShape(10.dp))
                         .border(
                             2.dp,
                             if (color.value.toColor() == colorScheme.surfaceVariant) colorScheme.secondaryContainer else Color.Transparent,
-                            RoundedRectangle(10.dp)
+                            SmoothRoundedCornerShape(10.dp)
                         ),
                     imageVector = ImageVector.vectorResource(R.drawable.transparent),
                     colorFilter = ColorFilter.tint(

@@ -14,12 +14,12 @@ import com.yunzia.hyperstar.ui.component.XScaffold
 import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
-import dev.chrisbanes.haze.HazeState
 import top.yukonga.miuix.kmp.basic.FabPosition
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import com.yunzia.hyperstar.ui.navigation.Navigator
+import com.yunzia.hyperstar.ui.component.modifier.rememberLayerBackdrop
 
 @Composable
 fun ModuleNavPagers(
@@ -29,7 +29,7 @@ fun ModuleNavPagers(
         navController.goBack()
     },
     endClick: () -> Unit,
-    endIcon:  @Composable () -> Unit = {},
+    endIcon: @Composable () -> Unit = {},
     content: LazyListScope.() -> Unit
 ) {
 
@@ -64,10 +64,10 @@ fun ModuleNavPager(
     },
     endClick: () -> Unit,
     endIcon: @Composable () -> Unit = {},
-    contents: @Composable ((ScrollBehavior, PaddingValues) -> Unit)? = null,
+    contents: @Composable (ScrollBehavior, PaddingValues) -> Unit,
 ) {
 
-    val hazeState = remember { HazeState() }
+    val backdrop = rememberLayerBackdrop()
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
 
     XScaffold(
@@ -78,7 +78,7 @@ fun ModuleNavPager(
         popupHost = { },
         topBar = {
             ModuleNavTopAppBar(
-                modifier = Modifier.showBlur(hazeState),
+                modifier = Modifier.showBlur(backdrop),
                 color = Color.Transparent,
                 title = activityTitle,
                 scrollBehavior = topAppBarScrollBehavior,
@@ -91,12 +91,10 @@ fun ModuleNavPager(
         }
 
     ) { padding ->
-        if (contents != null) {
-            Box(
-                Modifier.blur(hazeState)
-            ) {
-                contents(topAppBarScrollBehavior,padding)
-            }
+        Box(
+            Modifier.fillMaxSize().blur(backdrop)
+        ) {
+            contents(topAppBarScrollBehavior,padding)
         }
 
     }

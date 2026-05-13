@@ -14,11 +14,7 @@ object QSLabelFollowExpandAnim : BasePluginHook(){
         findClass(
             "miui.systemui.controlcenter.panel.main.qs.QSItemViewHolder",
             pluginClassLoader
-        ).apply {
-//            replaceHookMethod("getItemFrame"){
-//
-//            }
-        }.findMethodExt(
+        ).findMethodExt(
             "getIconFrame",
             { isBridge && isSynthetic }
         )?.replaceHook {

@@ -10,13 +10,7 @@ object QSEditButton : BasePluginHook() {
     private val closeEditButtonShow = XSPUtils.getBoolean("close_edit_button_show",false)
 
     override fun init() {
-        if (!closeEditButtonShow){
-            return
-        }
-        startMethodsHook()
-    }
-
-    private fun startMethodsHook() {
+        if (!closeEditButtonShow) return
 
         findClass(
             "miui.systemui.controlcenter.panel.main.qs.EditButtonController",
@@ -27,7 +21,5 @@ object QSEditButton : BasePluginHook() {
         ) {
             false
         }
-
-
     }
 }

@@ -1,13 +1,16 @@
 package com.yunzia.hyperstar.ui.navigation
 
-import android.util.Log
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSerializable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.navigation3.runtime.NavKey
@@ -23,22 +26,37 @@ fun rememberNavigator(startKey: Route): Navigator {
     }
 }
 
-class Navigator(startKey: Route) {
+class Navigator(val startKey: Route) {
     val backStack: SnapshotStateList<Route> = mutableStateListOf(startKey)
+    var currentRoute by mutableStateOf<Route>(startKey)
+        internal set
 
     fun navigate(route: Route) {
         backStack.add(route)
+        currentRoute = route
+    }
+
+    fun navigateWithParents(route: Route) {
+        // 收集缺失的父级路由链
+        val missingParents = generateSequence(route.parent as? Route) { parent ->
+            (parent.parent as? Route).takeIf { it != parent }
+        }
+        .filter { it != MainRoutes.Key && !backStack.contains(it) }
+        .toList()
+        .reversed()
+
+        for (parent in missingParents) {
+            backStack.add(parent)
+        }
+        backStack.add(route)
+        currentRoute = route
     }
 
     fun goBack(): Boolean {
         if (backStack.isEmpty()) return false
-//
-//        backStack.removeLastOrNull()
-//        return true
 
         val currentKey = backStack.last()
         val parentKey = currentKey.parent
-        Log.d("Navigator", "goBack() - stack=${backStack.toList()}, current=$currentKey, parent=$parentKey")
 
         // 在栈中从后向前查找与 parentKey 相等的 Route（若 parentKey 是 Route 实例）
         val parentIndex = backStack.indexOfLast { it == parentKey }
@@ -49,28 +67,26 @@ class Navigator(startKey: Route) {
                 if (parentIndex == backStack.lastIndex) {
                     if (backStack.size > 1) {
                         backStack.removeAt(backStack.lastIndex)
-                        Log.d("Navigator", "goBack() - removed top, newStack=${backStack.toList()}")
+                        currentRoute = backStack.lastOrNull() ?: startKey
                         true
                     } else {
-                        Log.d("Navigator", "goBack() - only one element, cannot pop")
                         false
                     }
                 } else {
                     // 移除 parent 之后的所有条目（保留 parent 在栈顶）
                     val toRemove = backStack.subList(parentIndex + 1, backStack.size).toList()
                     backStack.removeAll(toRemove)
-                    Log.d("Navigator", "goBack() - popped to parent, removed=$toRemove, newStack=${backStack.toList()}")
+                    currentRoute = backStack.lastOrNull() ?: startKey
                     true
                 }
             }
             else -> {
                 // parent 不在栈中：降级为普通的 pop（移除最后一项）如果还有多于 1 项
                 if (backStack.size > 1) {
-                    val removed = backStack.removeAt(backStack.lastIndex)
-                    Log.d("Navigator", "goBack() - parent not found, popped last=$removed, newStack=${backStack.toList()}")
+                    backStack.removeAt(backStack.lastIndex)
+                    currentRoute = backStack.lastOrNull() ?: startKey
                     true
                 } else {
-                    Log.d("Navigator", "goBack() - parent not found and only one element, cannot pop")
                     false
                 }
             }
@@ -84,6 +100,7 @@ class Navigator(startKey: Route) {
             val navigator = Navigator(initialKey)
             navigator.backStack.clear()
             navigator.backStack.addAll(savedList)
+            navigator.currentRoute = savedList.lastOrNull() ?: initialKey
             navigator
         })
     }

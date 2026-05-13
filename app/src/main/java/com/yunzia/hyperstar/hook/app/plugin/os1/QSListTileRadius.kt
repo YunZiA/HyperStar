@@ -1,7 +1,6 @@
 package com.yunzia.hyperstar.hook.app.plugin.os1
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import com.yunzia.hyperstar.hook.core.base.BasePluginHook
@@ -56,18 +55,4 @@ object QSListTileRadius : BasePluginHook() {
 
         }
     }
-
-    private fun setRadius(
-        context: Context,
-        res : Resources,
-        name:String
-    ) {
-
-        val id: Int = res.getIdentifier(name, "drawable", plugin)
-        val drawable: Drawable = context.theme.getDrawable(id)
-        if (drawable is GradientDrawable) {
-            drawable.cornerRadius = dpToPx(res,qsListTileRadius)
-        }
-    }
-
 }

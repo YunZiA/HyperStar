@@ -24,11 +24,6 @@ object QSMediaView : BasePluginHook() {
     val isEmptyStateMarquee:Boolean = XSPUtils.getBoolean("is_emptyState_marquee",false)
 
     override fun init() {
-        startMethodsHook()
-    }
-
-    private fun startMethodsHook() {
-        val ReflectionHelper = findClass("miuix.reflect.ReflectionHelper",pluginClassLoader)
         val fadingEdgeLength = 40
         val MediaPlayerViewHolder  = findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",pluginClassLoader)
         MediaPlayerViewHolder.apply {
@@ -40,7 +35,6 @@ object QSMediaView : BasePluginHook() {
                 val title = itemView.findViewByIdNameAs<TextView>("title")
                 val artist = itemView.findViewByIdNameAs<TextView>("artist")
                 val emptyState = itemView.findViewByIdNameAs<TextView>("empty_state")
-//                emptyState.marginTop -
                 if (isHideCover && isTitleCenter){
                     val top = title.marginTop*3
                     title.apply {
@@ -77,7 +71,6 @@ object QSMediaView : BasePluginHook() {
                     artist.gravity = Gravity.CENTER
                 }
                 if (isTitleMarquee){
-                    //setDeclaredBooleanField(title::class.java,"mHasOverlappingRendering",false)
                     title.apply {
                         ellipsize = TextUtils.TruncateAt.MARQUEE
                         isFocusable = true
@@ -115,25 +108,6 @@ object QSMediaView : BasePluginHook() {
                 }
 
             }
-//            beforeHookMethod(
-//                "updateIconsInfo",
-//                "miui.systemui.controlcenter.media.MediaPlayerIconsInfo",
-//                Boolean::class.java
-//            ){
-//                val itemView : View = thisObject.getObjectFieldAs<View>("itemView")
-//
-//                val deviceIcon = itemView.findViewByIdNameAs<ImageView>("device_icon")
-//
-//                deviceIcon.setRenderEffect(RenderEffect.createBlurEffect(50f, 50f, Shader.TileMode.CLAMP))
-//            }
         }
-
-        val HapticFeedback = findClass("miui.systemui.util.HapticFeedback",pluginClassLoader)
-        val MiShadowUtils = findClass("miuix.core.util.MiShadowUtils",pluginClassLoader)
-
-
     }
-
-
-
 }

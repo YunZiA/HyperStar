@@ -30,8 +30,7 @@ import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.EnableItemDr
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Icon
-import top.yukonga.miuix.kmp.extra.WindowBottomSheet
-import top.yukonga.miuix.kmp.extra.WindowBottomSheetDefaults
+import top.yukonga.miuix.kmp.layout.BottomSheetDefaults
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import yunzia.ui.Card
 
@@ -39,6 +38,7 @@ import yunzia.ui.Card
 fun BrightnessItem(
     item: Card,
 ) {
+
     val showDialog = remember { mutableStateOf(false) }
     CancelBottomSheet(
         title = item.name,
@@ -48,7 +48,7 @@ fun BrightnessItem(
         }
     ) {
         Card(
-            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width)
+            modifier = Modifier.navigationBarsPadding().padding(bottom = BottomSheetDefaults.insideMargin.width)
         ){
             EnableItemDropdown(
                 key = "brightness_land_rightOrLeft",

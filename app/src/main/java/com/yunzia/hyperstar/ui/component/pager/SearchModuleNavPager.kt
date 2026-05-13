@@ -2,7 +2,6 @@ package com.yunzia.hyperstar.ui.component.pager
 
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Transition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -10,15 +9,12 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,27 +28,24 @@ import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.InputField
 import com.yunzia.hyperstar.ui.component.topbar.ModuleNavTopAppBar
 import com.yunzia.hyperstar.ui.component.XScaffold
-import com.yunzia.hyperstar.ui.component.modifier.blur
-import com.yunzia.hyperstar.ui.component.modifier.showBlur
-import com.yunzia.hyperstar.ui.component.search.SearchBox
 import com.yunzia.hyperstar.ui.component.search.SearchPager
 import com.yunzia.hyperstar.ui.component.search.SearchStatus
-import dev.chrisbanes.haze.HazeState
 import top.yukonga.miuix.kmp.basic.FabPosition
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import com.kyant.shapes.RoundedRectangle
-import com.yunzia.hyperstar.ui.component.search.TopAppBarAnim
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
+import com.yunzia.hyperstar.ui.component.search.TopAppSearchBar
+import com.yunzia.hyperstar.ui.component.search.rememberMotionState
 import com.yunzia.hyperstar.ui.navigation.Navigator
 import top.yukonga.miuix.kmp.basic.Icon
+import com.yunzia.hyperstar.ui.component.modifier.rememberLayerBackdrop
 
 @Composable
 fun SearchStatus.SearchModuleNavPager(
     activityTitle: String,
-    searchTransition: Transition<Boolean>,
     navController: Navigator,
     floatingActionButton: @Composable () -> Unit = {},
     floatingPagerButton: @Composable () -> Unit = {},
@@ -62,20 +55,24 @@ fun SearchStatus.SearchModuleNavPager(
     },
     endClick: () -> Unit,
     endIcon: @Composable () -> Unit = {},
+    onQueryChange: (String) -> Unit = { searchText = it },
     result: LazyListScope.(ScrollBehavior) -> Unit,
     contents: @Composable (ScrollBehavior, Dp) -> Unit,
 ) {
 
-    val hazeState = remember { HazeState() }
+    val backdrop = rememberLayerBackdrop()
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
+    val searchMotionState = rememberMotionState()
 
     XScaffold(
         floatingActionButton = floatingActionButton,
         floatingActionButtonPosition = floatingActionButtonPosition,
         floatingPagerButton = floatingPagerButton,
         topBar = {
-            searchTransition.TopAppBarAnim(
-                hazeState = hazeState
+            TopAppSearchBar(
+                searchStatus = this,
+                motionState = searchMotionState,
+                backdrop = backdrop
             ){
                 ModuleNavTopAppBar(
                     modifier = Modifier,
@@ -92,21 +89,18 @@ fun SearchStatus.SearchModuleNavPager(
             }
         },
         popupHost = {
-            searchTransition.SearchPager(
+            SearchPager(
                 searchStatus = this,
-                {}
+                motionState = searchMotionState,
+                defaultResult = {},
+                onQueryChange = onQueryChange,
+                navigationKey = navController.currentRoute,
             ) {
                 result(topAppBarScrollBehavior)
             }
         }
     ) { padding ->
-        searchTransition.SearchBox(
-            searchStatus = this,
-            contentPadding = padding,
-            hazeState = hazeState
-        ){ contentTopPadding ->
-            contents(topAppBarScrollBehavior, contentTopPadding)
-        }
+        contents(topAppBarScrollBehavior, padding.calculateTopPadding())
 
     }
 
@@ -185,7 +179,7 @@ fun SearchBarFake(
             .padding(horizontal = 12.dp)
             .background(
                 color = colorScheme.surfaceContainerHigh,
-                shape = RoundedRectangle(50.dp)
+                shape = SmoothRoundedCornerShape(50.dp)
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {

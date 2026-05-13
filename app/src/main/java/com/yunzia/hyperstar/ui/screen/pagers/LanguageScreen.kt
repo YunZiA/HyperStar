@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
@@ -18,14 +17,14 @@ import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN
-import com.yunzia.hyperstar.ui.component.pager.NavPager
 import com.yunzia.hyperstar.prefs.PreferencesUtil
+import com.yunzia.hyperstar.ui.component.preference.widget.PreferenceListPage
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
 import top.yukonga.miuix.kmp.basic.CardDefaults
-import top.yukonga.miuix.kmp.extra.CheckboxLocation
-import top.yukonga.miuix.kmp.extra.SuperCheckbox
+import top.yukonga.miuix.kmp.preference.CheckboxLocation
+import top.yukonga.miuix.kmp.preference.CheckboxPreference
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import com.kyant.shapes.RoundedRectangle
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 
 @Composable
@@ -35,14 +34,11 @@ fun LanguagePager(
     val navController = LocalNavigator.current
     val languageList = stringArrayResource(R.array.language_list).toList()
 
-    NavPager(
-        activityTitle = stringResource(R.string.language),
+    PreferenceListPage(
+        title = stringResource(R.string.language),
         navController = navController,
     ) {
-
-
         languageList.forEachIndexed { index, language ->
-
             item(index){
                 val isSelected = remember { derivedStateOf { activity.language.intValue == index } }
 
@@ -53,12 +49,9 @@ fun LanguagePager(
                     activity.setLocale(activity.language.intValue)
                 }
             }
-
-
         }
-
-
     }
+
 
 }
 
@@ -70,7 +63,7 @@ private fun LanguageItem(
     onCheckedChange: (Boolean) -> Unit
 ){
 
-    SuperCheckbox(
+    CheckboxPreference(
         title = language,
         titleColor =  titleColor(isSelected.value),
         checked = isSelected.value,
@@ -79,7 +72,7 @@ private fun LanguageItem(
             .padding(horizontal = 12.dp)
             .padding(top = 10.dp)
             .bounceAnimN {}
-            .clip(RoundedRectangle(CardDefaults.CornerRadius))
+            .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
             .background(if (isSelected.value) colorScheme.tertiaryContainer else colorScheme.surfaceVariant)
         ,
         checkboxLocation = CheckboxLocation.End,

@@ -21,11 +21,7 @@ object QSMiplayDetailVolumeBar: BasePluginHook() {
 
     override fun init() {
         if (!isDetailVolumebarShowValue) return
-        starMethodHook()
-    }
-
-    private fun starMethodHook() {
-         findClass(
+        findClass(
              "com.android.systemui.QSControlMiPlayDetailHeader",
              pluginClassLoader
          ).apply {
@@ -53,7 +49,6 @@ object QSMiplayDetailVolumeBar: BasePluginHook() {
             }
             afterHookAllMethods("addObservers\$lambda-29") { args, result ->
                 val qSControlMiPlayDetailHeader = args[0]
-                val num = args[1] as Int
                 val volumeBarContainer = qSControlMiPlayDetailHeader.getObjectFieldAs<RelativeLayout>("volumeBarContainer")
                 if (volumeBarContainer.childCount < 3) return@afterHookAllMethods
                 val seekBar = qSControlMiPlayDetailHeader.getObjectFieldAs<SeekBar>("volumeBar")
@@ -65,7 +60,6 @@ object QSMiplayDetailVolumeBar: BasePluginHook() {
 
             }
         }
-
     }
 
 }

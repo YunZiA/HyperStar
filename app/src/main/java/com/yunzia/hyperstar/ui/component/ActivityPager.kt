@@ -16,10 +16,10 @@ import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
 import com.yunzia.hyperstar.ui.component.topbar.ModuleTopAppBar
-import dev.chrisbanes.haze.HazeState
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
+import com.yunzia.hyperstar.ui.component.modifier.rememberLayerBackdrop
 
 @Composable
 fun ModulePagers(
@@ -55,7 +55,7 @@ fun ModulePager(
     contents: @Composable ((ScrollBehavior, PaddingValues) -> Unit)? = null
 ) {
 
-    val hazeState = remember { HazeState() }
+    val backdrop = rememberLayerBackdrop()
     val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
 
     XScaffold(
@@ -63,7 +63,7 @@ fun ModulePager(
         popupHost = { },
         topBar = {
             ModuleTopAppBar(
-                modifier = Modifier.showBlur(hazeState),
+                modifier = Modifier.showBlur(backdrop),
                 color = Color.Transparent,
                 title = activityTitle,
                 scrollBehavior = topAppBarScrollBehavior,
@@ -77,7 +77,7 @@ fun ModulePager(
         }
     ) { padding ->
         if (contents != null) {
-            Box(Modifier.blur(hazeState)) {
+            Box(Modifier.blur(backdrop)) {
                 contents(topAppBarScrollBehavior,padding)
 
             }

@@ -63,11 +63,15 @@ sealed interface MainRoutes : Route {
 
     @Parcelize
     @Serializable
-    data class CurrentLog(val currentAllLog: String) : MainRoutes
+    data class CurrentLog(val currentAllLog: String) : MainRoutes {
+        override val parent: NavKey get() = Updater
+    }
 
     @Parcelize
     @Serializable
-    data object LogHistory : MainRoutes
+    data object LogHistory : MainRoutes {
+        override val parent: NavKey get() = Updater
+    }
 
     @Parcelize
     @Serializable
@@ -182,4 +186,73 @@ sealed interface ColorEditRoutes : Route {
     @Parcelize
     @Serializable
     data object ListColor : ColorEditRoutes
+}
+
+fun Route.displayName(): String = when (this) {
+    MainRoutes.SystemUI -> "系统界面"
+    MainRoutes.Home -> "首页"
+    MainRoutes.Screenshot -> "截图"
+    MainRoutes.Barrage -> "弹幕通知"
+    MainRoutes.ThemeManager -> "主题壁纸"
+    MainRoutes.MMS -> "短信"
+    MainRoutes.NotDeveloper -> "非开发者"
+    MainRoutes.Language -> "语言"
+    MainRoutes.GoRoot -> "获取Root"
+    MainRoutes.Updater -> "更新"
+    MainRoutes.LogHistory -> "日志历史"
+    MainRoutes.Translator -> "翻译人员"
+    MainRoutes.Message -> "消息"
+    MainRoutes.References -> "引用"
+    MainRoutes.Donation -> "捐赠"
+    MainRoutes.Show -> "显示"
+    SystemUIRoutes.ColorEdit -> "颜色编辑"
+    SystemUIRoutes.LayoutArrangement -> "控制中心布局"
+    SystemUIRoutes.Media -> "妙播"
+    SystemUIRoutes.CardList -> "卡片磁贴列表"
+    SystemUIRoutes.TileLayout -> "磁贴布局"
+    SystemUIRoutes.PowerMenu -> "电源菜单"
+    SystemUIRoutes.NotificationOfIm -> "通知应用选择"
+    SystemUIRoutes.NotificationImAppDetail -> "通知应用详情"
+    ColorEditRoutes.CardTileColor -> "卡片磁贴颜色"
+    ColorEditRoutes.ToggleSliderColor -> "亮度条&音量条颜色"
+    ColorEditRoutes.DeviceCenterColor -> "融合设备中心改色"
+    ColorEditRoutes.ListColor -> "普通磁贴颜色"
+    MediaRoutes.MediaApp -> "默认播放应用选择"
+    is PowerMenuRoutes.FunSelect -> "功能选择"
+    is MainRoutes.CurrentLog -> "当前日志"
+    MainRoutes.PlaceHolder -> "占位"
+    MainRoutes.Key -> ""
+    else -> this::class.simpleName ?: "未知"
+}
+
+/** Returns the top-level MainRoute ancestor (e.g., SystemUI, Home, Barrage). */
+fun Route.topLevelRoute(): Route {
+    var current: Route = this
+    while (true) {
+        val p = current.parent
+        if (p is Route && p != current && p != MainRoutes.Key) {
+            current = p
+        } else {
+            break
+        }
+    }
+    return current
+}
+
+fun Route.path(): String {
+    val parts = mutableListOf<String>()
+    var current: Route = this
+    while (true) {
+        val name = current.displayName()
+        if (name.isNotEmpty()) {
+            parts.add(name)
+        }
+        val parent = current.parent
+        if (parent is Route && parent != current) {
+            current = parent
+        } else {
+            break
+        }
+    }
+    return parts.reversed().joinToString(" → ")
 }

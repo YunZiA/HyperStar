@@ -1,149 +1,140 @@
 package com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.list
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.component.ColorPickerTool
 import com.yunzia.hyperstar.ui.component.ItemAnim
-import com.yunzia.hyperstar.ui.component.SuperGroupPosition
-import com.yunzia.hyperstar.ui.component.XDropdown
-import com.yunzia.hyperstar.ui.component.itemGroup
-import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
-import com.yunzia.hyperstar.utils.Helper
-import com.yunzia.hyperstar.prefs.SPUtils
+import com.yunzia.hyperstar.ui.component.preference.PreferenceScreen
+import com.yunzia.hyperstar.ui.component.preference.core.ListPreference
+import com.yunzia.hyperstar.ui.component.preference.preferenceGroup
+import com.yunzia.hyperstar.ui.component.preference.sp.SpColorPickerPreference
+import com.yunzia.hyperstar.ui.navigation.ColorEditRoutes
 import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import com.yunzia.hyperstar.prefs.SPUtils
+import com.yunzia.hyperstar.utils.Helper
+import SearchRoute
+import androidx.activity.compose.LocalActivity
+import com.yunzia.hyperstar.MainActivity
+import com.yunzia.hyperstar.ui.component.preference.sp.SpDropdownPreference
 
+@SearchRoute(route = ColorEditRoutes.ListColor::class)
 @Composable
 fun QSListColorScreen() {
     val navController = LocalNavigator.current
-    val tileColor = remember {
-        mutableIntStateOf(SPUtils.getInt("qs_list_tile_color_for_state",0))
-    }
+    val activity = LocalActivity.current as MainActivity
     val waitTime = 105L
-    ModuleNavPagers(
-        activityTitle = stringResource(R.string.tile_color),
+    var tileColor by remember { mutableIntStateOf(SPUtils.getInt("qs_list_tile_color_for_state", 0)) }
+    val tileOptions = stringArrayResource(R.array.qs_list_tile_color_for_state_entire).toList()
+
+    PreferenceScreen(
+        title = stringResource(R.string.tile_color),
         navController = navController,
         endClick = {
             Helper.rootShell("killall com.android.systemui")
         },
-    ) {
-
-        itemGroup(
-            R.string.general,
-            position = SuperGroupPosition.FIRST
-        ) {
-
-            XDropdown(
-                title = stringResource(R.string.title_color_in_state),
-                option = R.array.qs_list_tile_color_for_state_entire,
+        scrollToKey = activity.appViewModel.scrollToKey.value,
+        onScrollComplete = { activity.appViewModel.scrollToKey.value = null },
+    ) { _, _ ->
+        preferenceGroup(R.string.general) {
+            SpDropdownPreference(
                 key = "qs_list_tile_color_for_state",
-                selectedIndex = tileColor
+                title = stringResource(R.string.title_color_in_state),
+                entries = tileOptions
             )
             ItemAnim(
-                animState = (tileColor.intValue == 0),
+                animState = (tileColor == 0),
                 waitTime = waitTime
             ) {
-                ColorPickerTool(
+                SpColorPickerPreference(
                     title = stringResource(R.string.title),
                     key = "list_title_color"
                 )
             }
-
         }
 
-        itemGroup(
-            title = R.string.close_state_color
-        ) {
-            ColorPickerTool(
+        preferenceGroup(R.string.close_state_color) {
+            SpColorPickerPreference(
                 title = stringResource(R.string.icon),
                 key = "list_icon_off_color"
             )
             ItemAnim(
-                animState = (tileColor.intValue == 2),
+                animState = (tileColor == 2),
                 waitTime = waitTime
             ) {
-                ColorPickerTool(
+                SpColorPickerPreference(
                     title = stringResource(R.string.title),
                     key = "list_title_off_color"
                 )
             }
-
         }
 
-        itemGroup(
-            title = R.string.enable_state_color
-        ){
-            ColorPickerTool(
+        preferenceGroup(R.string.enable_state_color) {
+            SpColorPickerPreference(
                 title = stringResource(R.string.enable_background),
                 key = "list_enabled_color"
             )
-            ColorPickerTool(
+            SpColorPickerPreference(
                 title = stringResource(R.string.warning_background),
                 key = "list_warning_color"
             )
-            ColorPickerTool(
+            SpColorPickerPreference(
                 title = stringResource(R.string.icon),
                 key = "list_icon_on_color"
             )
             ItemAnim(
-                animState = (tileColor.intValue == 2),
+                animState = (tileColor == 2),
                 waitTime = waitTime
             ) {
-                ColorPickerTool(
+                SpColorPickerPreference(
                     title = stringResource(R.string.title),
                     key = "list_title_on_color"
                 )
             }
         }
 
-        itemGroup(
-            title = R.string.restricted_state_color
-        ){
-            ColorPickerTool(
+        preferenceGroup(R.string.restricted_state_color) {
+            SpColorPickerPreference(
                 title = stringResource(R.string.background),
                 key = "list_restricted_color"
             )
-            ColorPickerTool(
+            SpColorPickerPreference(
                 title = stringResource(R.string.icon),
                 key = "list_icon_restricted_color"
             )
             ItemAnim(
-                animState = (tileColor.intValue == 2),
+                animState = (tileColor == 2),
                 waitTime = waitTime
             ) {
-                ColorPickerTool(
+                SpColorPickerPreference(
                     title = stringResource(R.string.title),
                     key = "list_title_restricted_color"
                 )
             }
         }
 
-        itemGroup(
-            title = R.string.unavailable_state_color,
-            position = SuperGroupPosition.LAST
-        ){
-            ColorPickerTool(
+        preferenceGroup(R.string.unavailable_state_color) {
+            SpColorPickerPreference(
                 title = stringResource(R.string.background),
                 key = "list_unavailable_color"
             )
-            ColorPickerTool(
+            SpColorPickerPreference(
                 title = stringResource(R.string.icon),
                 key = "list_icon_unavailable_color"
             )
             ItemAnim(
-                animState = (tileColor.intValue == 2),
+                animState = (tileColor == 2),
                 waitTime = waitTime
             ) {
-                ColorPickerTool(
+                SpColorPickerPreference(
                     title = stringResource(R.string.title),
                     key = "list_title_unavailable_color"
                 )
             }
         }
-
-
     }
 }

@@ -11,12 +11,8 @@ import com.yunzia.hyperstar.prefs.XSPUtils
 object QSMediaDeviceName : BasePluginHook() {
 
     override fun init() {
-        if (XSPUtils.getInt("is_local_speaker",0) == 1){
-            startMethodsHook()
-        }
-    }
+        if (XSPUtils.getInt("is_local_speaker",0) != 1) return
 
-    private fun startMethodsHook() {
         val MiPlayExtentionsKt  = findClass("com.android.systemui.MiPlayExtentionsKt",pluginClassLoader)
         MiPlayExtentionsKt.afterHookAllMethods("getFullName") { args, result ->
             val p0Vars = args[0]

@@ -6,8 +6,6 @@ import android.view.View
 import android.widget.FrameLayout
 import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
-import com.yunzia.hyperstar.hook.core.StarLog.logD
-import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
 import com.yunzia.hyperstar.hook.core.helper.getLongField
 import com.yunzia.hyperstar.hook.core.helper.getObjectField
@@ -28,47 +26,31 @@ object QSTileAutoCollapse : BasePluginHook() {
 
 
     override fun init() {
+        if (!clickClose) return
 
-        logD("QSTileAutoCollapse init")
+        val QSTileItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemView", pluginClassLoader)
+        val MainPanelModeController = findClass("miui.systemui.controlcenter.panel.main.MainPanelController\$Mode",pluginClassLoader)
 
-        if (clickClose){
-            val QSTileItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemView", pluginClassLoader)
+        QSTileItemView.beforeHookMethod(
+            "onFinishInflate\$lambda$0",
+            QSTileItemView,View::class .java
+        ) { args, result ->
+            val qSTileItemView = args[0] as FrameLayout
+            val lastTriggeredTime = qSTileItemView.getLongField("lastTriggeredTime")!!
+            val elapsedRealtime = SystemClock.elapsedRealtime()
 
-            val MainPanelModeController = findClass("miui.systemui.controlcenter.panel.main.MainPanelController\$Mode",pluginClassLoader)
-            logD("QSTileAutoCollapse $QSTileItemView $MainPanelModeController")
+            if (elapsedRealtime > lastTriggeredTime + 200) {
+                val clickAction = qSTileItemView.getObjectField("clickAction")
+                    ?: return@beforeHookMethod
 
-            QSTileItemView.beforeHookMethod(
-                "onFinishInflate\$lambda$0",
-                QSTileItemView,View::class .java
-            ) { args, result ->
-                logD("QSTileAutoCollapse onFinishInflate")
-                val qSTileItemView = args[0] as FrameLayout
-                val lastTriggeredTime = qSTileItemView.getLongField("lastTriggeredTime")!!
-                val elapsedRealtime = SystemClock.elapsedRealtime()
+                val enumConstants: Array<out Any> = MainPanelModeController?.enumConstants
+                    ?: return@beforeHookMethod
 
-                if (elapsedRealtime > lastTriggeredTime + 200) {
-                    val clickAction = qSTileItemView.getObjectField("clickAction")
-                    if (clickAction == null) {
-                        logE("clickAction == null")
-                        return@beforeHookMethod
-                    }
-
-                    val enumConstants: Array<out Any>? = MainPanelModeController?.enumConstants
-                    if (enumConstants == null) {
-                        logE("enumConstants == null")
-                        return@beforeHookMethod
-                    }
-
-                    val mainPanelMode = qSTileItemView.getObjectField("mode")
-                    logE("mainPanelMode == $mainPanelMode")
-                    if (mainPanelMode == enumConstants[0]) {
-                        collapseStatusBar(qSTileItemView.context)
-                    } else {
-                        logE("mainPanelMode == edit")
-                    }
+                val mainPanelMode = qSTileItemView.getObjectField("mode")
+                if (mainPanelMode == enumConstants[0]) {
+                    collapseStatusBar(qSTileItemView.context)
                 }
             }
-
         }
     }
 

@@ -1,6 +1,6 @@
 package com.yunzia.hyperstar.ui.screen.pagers.main
 
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -57,7 +57,6 @@ import com.yunzia.hyperstar.ui.component.BaseButton
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.utils.getSettingChannel
-import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.ListPopupColumn
 import top.yukonga.miuix.kmp.basic.ListPopupDefaults
@@ -67,17 +66,18 @@ import top.yukonga.miuix.kmp.basic.PopupPositionProvider
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.VerticalDivider
-import top.yukonga.miuix.kmp.extra.CheckboxLocation
-import top.yukonga.miuix.kmp.extra.SuperCheckbox
+import top.yukonga.miuix.kmp.preference.CheckboxLocation
+import top.yukonga.miuix.kmp.preference.CheckboxPreference
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import com.kyant.shapes.RoundedRectangle
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import com.yunzia.hyperstar.LocalMainPagerState
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
+import com.yunzia.hyperstar.ui.component.modifier.blur
+import com.yunzia.hyperstar.ui.component.modifier.rememberLayerBackdrop
 import top.yukonga.miuix.kmp.basic.DropdownImpl
 import top.yukonga.miuix.kmp.basic.NavigationBarItem
-import top.yukonga.miuix.kmp.extra.SuperDialog
-import top.yukonga.miuix.kmp.extra.WindowListPopup
+import top.yukonga.miuix.kmp.blur.LayerBackdrop
+import top.yukonga.miuix.kmp.overlay.OverlayDialog
+import top.yukonga.miuix.kmp.window.WindowListPopup
 import top.yukonga.miuix.kmp.utils.Platform
 import top.yukonga.miuix.kmp.utils.platform
 
@@ -96,7 +96,7 @@ fun MainPagerInLand(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val pagerState = LocalMainPagerState.current
-    val hazeState = rememberHazeState()
+    val backdrop = rememberLayerBackdrop()
 
     Row(
         modifier = modifier
@@ -114,7 +114,7 @@ fun MainPagerInLand(
             }
         )
         MainPageContent(
-            hazeState = hazeState,
+            backdrop = backdrop,
             modifier = Modifier.widthIn(min = 400.dp)
         )
 
@@ -128,14 +128,14 @@ fun MainPager() {
     val activity = LocalActivity.current as MainActivity
     val pagerState = LocalMainPagerState.current
     val coroutineScope = rememberCoroutineScope()
-    val hazeState = rememberHazeState()
+    val backdrop = rememberLayerBackdrop()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         popupHost = { },
         bottomBar = {
             NavigationBar(
-                modifier = Modifier.showBlur(hazeState),
+                modifier = Modifier.showBlur(backdrop),
                 color = Color.Transparent
             ) {
                 mainPagerItems().forEachIndexed { index, item ->
@@ -154,7 +154,7 @@ fun MainPager() {
         },
     ) { padding ->
         MainPageContent(
-            hazeState = hazeState,
+            backdrop = backdrop,
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(bottom = padding.calculateBottomPadding())
         )
@@ -275,11 +275,10 @@ fun RebootPup(
 
     val os2 = getSettingChannel() > 1
     val optionSize = if (os2) 2 else 1
-    Log.d("ggc", "RebootPup: $os2")
 
 
     WindowListPopup(
-        show = show,
+        show = show.value,
         popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
         alignment = PopupPositionProvider.Align.TopEnd,
         onDismissRequest = {
@@ -322,9 +321,9 @@ fun RebootDialog(
     show: MutableState<Boolean>
 ) {
     val rebootList = remember { mutableStateListOf<String>() }
-    SuperDialog(
+    OverlayDialog(
         title = stringResource(R.string.fast_reboot),
-        show = show,
+        show = show.value,
         onDismissRequest = {
             show.value = false
             rebootList.clear()
@@ -335,7 +334,7 @@ fun RebootDialog(
             modifier = Modifier
                 .padding(top = 8.dp, bottom = 18.dp)
                 .fillMaxWidth()
-                .clip(RoundedRectangle(16.dp))
+                .clip(SmoothRoundedCornerShape(16.dp))
                 .background(colorScheme.secondaryContainer)
         ) {
             Item(
@@ -402,7 +401,7 @@ fun Item(
     onCheckedChange: (Boolean,String) -> Unit
 ) {
     val isChecked = remember { mutableStateOf(false) }
-    SuperCheckbox(
+    CheckboxPreference(
         title = title,
         checked = isChecked.value,
         checkboxLocation = CheckboxLocation.End,
@@ -416,7 +415,7 @@ fun Item(
 
 @Composable
 fun MainPageContent(
-    hazeState: HazeState,
+    backdrop: LayerBackdrop,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
@@ -424,10 +423,10 @@ fun MainPageContent(
     val mainPagerState = LocalMainPagerState.current
 
     HorizontalPager(
-        modifier = modifier.hazeSource(hazeState),
+        modifier = modifier.blur(backdrop),
         state = mainPagerState,
         contentPadding = PaddingValues(0.dp),
-        beyondViewportPageCount = 2,
+        beyondViewportPageCount = 1,
         userScrollEnabled = activity.enablePageUserScroll.value,
         pageContent = { page ->
             when (page) {

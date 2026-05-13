@@ -11,6 +11,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/baselineprofile" />
+            <option value="$PROJECT_DIR$/ksp-annotation" />
+            <option value="$PROJECT_DIR$/ksp-processor" />
           </set>
         </option>
       </GradleProjectSettings>

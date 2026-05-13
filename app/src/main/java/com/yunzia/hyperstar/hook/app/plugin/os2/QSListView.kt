@@ -18,7 +18,6 @@ import com.yunzia.hyperstar.hook.core.helper.afterHookConstructor
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.findViewByIdNameAs
 import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
-import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.helper.afterHookAllMethods
 import com.yunzia.hyperstar.hook.core.helper.beforeHookAllMethods
 import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
@@ -100,98 +99,6 @@ object QSListView : BasePluginHook() {
         val QSItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSItemView", pluginClassLoader)
         val QSTileItemView = findClass("miui.systemui.controlcenter.qs.tileview.QSTileItemView", pluginClassLoader)
         val commonUtils = CommonUtils(pluginClassLoader)
-        val QSListController = findClass("miui.systemui.controlcenter.panel.main.qs.QSListController", pluginClassLoader)
-        val WhenMappings = findClass("miui.systemui.controlcenter.panel.main.qs.QSListController\$WhenMappings", pluginClassLoader)
-        val AnimValue = findClass("miui.systemui.controlcenter.panel.detail.DetailPanelAnimator\$AnimValue", pluginClassLoader)
-        val DetailPanelAnimator = findClass("miui.systemui.controlcenter.panel.detail.DetailPanelAnimator", pluginClassLoader)
-
-
-
-        //进入编辑调用
-//        XposedHelpers.findAndHookMethod(QSListController,"distributeTileInfo",List::class.java,object :XC_MethodHook(){
-//            override fun beforeHookedMethod(param: MethodHookParam?) {
-//                super.beforeHookedMethod(param)
-//                val thisObj = param?.thisObject
-//                val addedTiles = XposedHelpers.getObjectField(thisObj,"addedTiles") as ArrayList<*>
-//                val cc =  ArrayList( addedTiles.subList(0,5))
-////                XposedHelpers.setObjectField(thisObj,"addedTiles",cc)
-//            }
-//
-//        })
-//
-//        XposedHelpers.findAndHookMethod(QSListController,"distributeTiles",object :XC_MethodHook(){
-//            override fun beforeHookedMethod(param: MethodHookParam?) {
-//                super.beforeHookedMethod(param)
-//                val thisObj = param?.thisObject
-//                val host = XposedHelpers.getObjectField(thisObj,"host")
-//                val tt = XposedHelpers.callMethod(host,"getTiles") as Collection<*>
-//                for (t in tt){
-//                    log("getTiles $t")
-//                }
-//
-//                val addedTiles = XposedHelpers.getObjectField(thisObj,"addedTiles") as ArrayList<*>
-////                val cc =  emptyArray<>()
-////                XposedHelpers.setObjectField(thisObj,"addedTiles",cc)
-////                log("distributeTiles ${addedTiles.size}")
-//            }
-//
-//            override fun afterHookedMethod(param: MethodHookParam?) {
-//                super.afterHookedMethod(param)
-//                val thisObj = param?.thisObject
-//                val addedTiles = XposedHelpers.getObjectField(thisObj,"addedTiles") as ArrayList<*>
-////                val cc =  emptyArray<>()
-////                XposedHelpers.setObjectField(thisObj,"addedTiles",cc)
-//                log("distributeTiles ${addedTiles.size}")
-//            }
-
-//        })
-
-
-
-//        XposedHelpers.findAndHookMethod(QSListController,"onModeChanged",object :XC_MethodHook(){
-//            override fun beforeHookedMethod(param: MethodHookParam?) {
-//                super.beforeHookedMethod(param)
-//                val thisObj = param?.thisObject
-//                //添加前的列表
-//                val copiedTiles = XposedHelpers.getObjectField(thisObj,"copiedTiles") as ArrayList<*>
-//                for (i in copiedTiles){
-//
-//                    log("copiedTiles: $i")
-//                }
-//                //添加后的列表
-//                val addedTiles = XposedHelpers.getObjectField(thisObj,"addedTiles") as ArrayList<*>
-//                for (i in addedTiles){
-//
-//                    log("addedTiles: $i")
-//                }
-//                val cc =  ArrayList( addedTiles.subList(0,5))
-//                //XposedHelpers.setObjectField(thisObj,"addedTiles",cc)
-//            }
-//
-//        })
-//        XposedHelpers.findAndHookMethod(QSListController,"getListItems",object :XC_MethodHook(){
-//            override fun afterHookedMethod(param: MethodHookParam?) {
-//                super.afterHookedMethod(param)
-//                val thisObj = param?.thisObject
-//                val mainPanelController = XposedHelpers.getObjectField(thisObj,"mainPanelController")
-//                val get = XposedHelpers.callMethod(mainPanelController,"get")
-//                val getModeController = XposedHelpers.callMethod(get,"getModeController")
-//                val getMode = XposedHelpers.callMethod(getModeController,"getMode")
-//                val ordinal = XposedHelpers.callMethod(getMode,"ordinal") as Int
-//                val cc = XposedHelpers.getStaticObjectField(WhenMappings,"\$EnumSwitchMapping\$0") as Array<*>
-////                int i = WhenMappings.$EnumSwitchMapping$0[ordinal];
-//                val i = cc[ordinal]
-//
-//                if (i !=1 && i != 2) return
-//
-//                val list = param?.result as List<*>
-//                val arrayList = ArrayList<Any?>()
-//                arrayList.addAll(list)
-//                arrayList.addAll(list)
-//
-//                param.result = list.subList(0,1)
-//            }
-//        })
 
         if (labelMarquee || labelMode != 0 ){
 
@@ -206,10 +113,7 @@ object QSListView : BasePluginHook() {
                 val icon = qSItemView.findViewByIdNameAs<FrameLayout>("icon_frame")
 
                 if (labelMode == 1){
-                    qSItemView.apply {
-                        removeView(label)
-                        addView(label,1)
-                    }
+                    label.z = 10f
                     icon.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
                     val layoutParam =  label.layoutParams.apply {
                         width = icon.measuredWidth/9*7
@@ -219,13 +123,8 @@ object QSListView : BasePluginHook() {
                         layoutParams = layoutParam
                     }
                 } else if (labelMode == 2){
-                    qSItemView.apply {
-                        removeView(label)
-                        addView(label,1)
-                    }
-
+                    label.z = 10f
                     qSItemView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                    logD("${qSItemView.layoutParams.width}+${qSItemView.measuredWidth}")
 
                     val layoutParam =  label.layoutParams.apply {
                         width = qSItemView.measuredWidth*labelWidth.toInt()
@@ -410,6 +309,10 @@ object QSListView : BasePluginHook() {
             val enableColor = XSPUtils.getString("list_title_on_color", "null")
             val restrictedColor = XSPUtils.getString("list_title_restricted_color", "null")
             val unavailableColor = XSPUtils.getString("list_title_unavailable_color", "null")
+            val disableColorInt = if (disableColor != "null") Color.parseColor(disableColor) else null
+            val enableColorInt = if (enableColor != "null") Color.parseColor(enableColor) else null
+            val restrictedColorInt = if (restrictedColor != "null") Color.parseColor(restrictedColor) else null
+            val unavailableColorInt = if (unavailableColor != "null") Color.parseColor(unavailableColor) else null
 
             QSTileItemView.beforeHookMethod(
                 "onStateUpdated",
@@ -445,10 +348,10 @@ object QSListView : BasePluginHook() {
                     var unavailable = icon.getIntField("iconColorUnavailable")!!
                     var restrict = icon.getIntField("iconColorRestrict")!!
                     if (tileColorForState == 2){
-                        if (disableColor != "null")  off = Color.parseColor(disableColor)
-                        if (enableColor != "null")  enable = Color.parseColor(enableColor)
-                        if (restrictedColor != "null")  unavailable = Color.parseColor(restrictedColor)
-                        if (unavailableColor != "null")  restrict = Color.parseColor(unavailableColor)
+                        if (disableColorInt != null)  off = disableColorInt
+                        if (enableColorInt != null)  enable = enableColorInt
+                        if (restrictedColorInt != null)  unavailable = restrictedColorInt
+                        if (unavailableColorInt != null)  restrict = unavailableColorInt
                     }
 
                     if (state == 0) {

@@ -10,10 +10,7 @@ object QSClockAnim : BasePluginHook() {
     val closeQsClockAnim = XSPUtils.getBoolean("close_qs_clock_anim",false)
 
     override fun init() {
-        if (closeQsClockAnim) startMethodsHook()
-    }
-
-    private fun startMethodsHook() {
+        if (!closeQsClockAnim) return
 
         findClass(
             "miui.systemui.controlcenter.panel.main.header.FakeStatusHeaderController",
@@ -22,10 +19,7 @@ object QSClockAnim : BasePluginHook() {
             "onCreate"
         ){
             return@replaceHookMethod null
-
         }
-
-
     }
 
 }

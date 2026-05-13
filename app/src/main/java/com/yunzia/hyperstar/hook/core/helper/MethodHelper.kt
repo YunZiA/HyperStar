@@ -5,7 +5,6 @@ import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.core.helper.MethodHelper.TAG
 import com.yunzia.hyperstar.hook.core.helper.MethodHelper.findMethodBestMatch
-import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.util.concurrent.ConcurrentHashMap
@@ -13,18 +12,11 @@ import java.util.concurrent.ConcurrentHashMap
 object MethodHelper {
 
     const val TAG = "MethodHelper"
-    private val NULL = Any()
-    private val methodCache = ConcurrentHashMap<MethodCacheKey, Any>()
+    private val methodCache = NullableCache<MethodCacheKey, Method>()
 
     @JvmStatic
-    fun getCacheSize(): Int {
-        return methodCache.size
-    }
+    fun getCacheSize(): Int = methodCache.size()
 
-
-    /**
-     * 查找精确方法（参数类型支持 Object...：Class、String、实例等）
-     */
     @JvmStatic
     fun findMethodExact(clazz: Class<*>?, methodName: String, vararg parameterTypes: Any?): Method? {
         clazz ?: return null
@@ -35,9 +27,6 @@ object MethodHelper {
         )
     }
 
-    /**
-     * 安全查找（不抛异常，返回 null 表示未找到）
-     */
     @JvmStatic
     fun findMethodExactIfExists(
         clazz: Class<*>?,
@@ -53,10 +42,6 @@ object MethodHelper {
         }
     }
 
-
-    /**
-     * 安全版本（类名 + ClassLoader）
-     */
     @JvmStatic
     fun findMethodExactIfExists(
         className: String,
@@ -73,9 +58,6 @@ object MethodHelper {
         }
     }
 
-    /**
-     * 精确查找方法（仅当前类，不含继承）
-     */
     @JvmStatic
     fun findMethodExact(
         clazz: Class<*>?,
@@ -84,7 +66,7 @@ object MethodHelper {
     ): Method? {
         clazz ?: return null
         val key = buildKey(clazz, methodName, paramTypes, "exact")
-        return getCachedOrFind(key) {
+        return methodCache.getOrPut(key) {
             try {
                 clazz.getDeclaredMethod(methodName, *paramTypes).apply { isAccessible = true }
             } catch (e: NoSuchMethodException) {
@@ -94,9 +76,6 @@ object MethodHelper {
         }
     }
 
-    /**
-     * 通过类名 + ClassLoader 查找（支持字符串类名、Class 对象等参数）
-     */
     @JvmStatic
     fun findMethodExact(
         className: String,
@@ -109,9 +88,6 @@ object MethodHelper {
         return findMethodExact(clazz, methodName, *resolvedParams)
     }
 
-    /**
-     * 查找最佳匹配方法（考虑继承链和参数可赋值性）
-     */
     @JvmStatic
     fun findMethodBestMatch(
         clazz: Class<*>?,
@@ -120,7 +96,7 @@ object MethodHelper {
     ): Method? {
         clazz ?: return null
         val key = buildKey(clazz, methodName, parameterTypes, "bestmatch")
-        return getCachedOrFind(key) {
+        return methodCache.getOrPut(key) {
 
             val exact = runCatching {
                 clazz.getDeclaredMethod(methodName, *parameterTypes)
@@ -128,7 +104,7 @@ object MethodHelper {
 
             if (exact != null) {
                 exact.isAccessible = true
-                return@getCachedOrFind exact
+                return@getOrPut exact
             }
 
             var bestMatch: Method? = null
@@ -157,9 +133,6 @@ object MethodHelper {
         }
     }
 
-    /**
-     * 根据实际参数推断类型并查找最佳匹配
-     */
     @JvmStatic
     fun findMethodBestMatch(
         clazz: Class<*>?,
@@ -171,9 +144,6 @@ object MethodHelper {
         return findMethodBestMatch(clazz, methodName, *paramTypes)
     }
 
-    /**
-     * 混合显式类型与运行时参数
-     */
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
     fun findMethodBestMatch(
@@ -220,17 +190,7 @@ object MethodHelper {
     )
 
     @JvmStatic
-    private inline fun getCachedOrFind(key: MethodCacheKey, crossinline loader: () -> Method?): Method? {
-        methodCache[key]?.let {
-            return if (it === NULL) null else it as Method
-        }
-        val result = loader()
-        methodCache.putIfAbsent(key, result ?: NULL)
-        return result
-    }
-
-    @JvmStatic
-    private fun getParameterClasses(
+    fun getParameterClasses(
         loader: ClassLoader?,
         params: Array<out Any?>
     ): Array<Class<*>> = params.map { param ->
@@ -263,14 +223,8 @@ object MethodHelper {
         actual: Array<out Class<*>>,
         formal: Array<out Class<*>>
     ): Boolean {
-
         if (actual.size != formal.size) return false
-
-        return actual.indices.all {
-
-            isAssignable(actual[it], formal[it])
-
-        }
+        return actual.indices.all { isAssignable(actual[it], formal[it]) }
     }
 
     @JvmStatic
@@ -278,10 +232,8 @@ object MethodHelper {
         actual: Class<*>,
         formal: Class<*>
     ): Boolean {
-        if (formal.isAssignableFrom(actual))
-            return true
-        if (primitiveWrapperMap[formal] == actual || primitiveWrapperMap[actual] == formal)
-            return true
+        if (formal.isAssignableFrom(actual)) return true
+        if (primitiveWrapperMap[formal] == actual || primitiveWrapperMap[actual] == formal) return true
         return false
     }
 
@@ -303,28 +255,11 @@ object MethodHelper {
         }
         return 0
     }
-    private val BOOLEAN_PRIMITIVE = Boolean::class.javaPrimitiveType!!
-    private val INT_PRIMITIVE = Int::class.javaPrimitiveType!!
-    private val Float_PRIMITIVE = Float::class.javaPrimitiveType!!
-    private val LONG_PRIMITIVE = Long::class.javaPrimitiveType!!
-    private val DOUBLE_PRIMITIVE = Double::class.javaPrimitiveType!!
-    private val SHORT_PRIMITIVE = Short::class.javaPrimitiveType!!
-    private val BYTE_PRIMITIVE = Byte::class.javaPrimitiveType!!
-    private val CHAR_PRIMITIVE = Char::class.javaPrimitiveType!!
 
     @JvmStatic
     private fun Any?.toParamType(): Class<*> {
-        return when (this) {
-            is Boolean -> BOOLEAN_PRIMITIVE
-            is Int -> INT_PRIMITIVE
-            is Float -> Float_PRIMITIVE
-            is Long -> LONG_PRIMITIVE
-            is Double -> DOUBLE_PRIMITIVE
-            is Short -> SHORT_PRIMITIVE
-            is Byte -> BYTE_PRIMITIVE
-            is Char -> CHAR_PRIMITIVE
-            else -> this?.javaClass ?: Any::class.java
-        }
+        if (this == null) return Any::class.java
+        return wrapperPrimitiveMap[this::class.java] ?: this.javaClass
     }
 
     private data class MethodCacheKey(
@@ -348,23 +283,23 @@ fun Any?.callMethod(methodName: String, vararg args: Any?): Any? {
 }
 
 fun <T> Any?.callMethodAs(methodName: String, vararg args: Any?): T {
-    return this.callMethod( methodName, *args) as T
+    return this.callMethod(methodName, *args) as T
 }
 
-fun  <T>  Class<*>?.callStaticMethodAs(methodName: String, vararg args: Any?):T {
+fun <T> Class<*>?.callStaticMethodAs(methodName: String, vararg args: Any?): T {
     return this.callStaticMethod(methodName, *args) as T
 }
 
-fun Class<*>?.callStaticMethods(methodName: String, parameterTypes: Array<Class<*>>, vararg args: Any?):Any? {
+fun Class<*>?.callStaticMethods(methodName: String, parameterTypes: Array<Class<*>>, vararg args: Any?): Any? {
     try {
-        return findMethodBestMatch(this, methodName,parameterTypes, *args)?.invoke(null, *args)
+        return findMethodBestMatch(this, methodName, parameterTypes, *args)?.invoke(null, *args)
     } catch (t: Throwable) {
         logE(TAG, t.message)
     }
     return null
 }
 
-fun Class<*>?.callStaticMethod(methodName: String, vararg args: Any?):Any? {
+fun Class<*>?.callStaticMethod(methodName: String, vararg args: Any?): Any? {
     try {
         return findMethodBestMatch(this, methodName, *args)?.invoke(null, *args)
     } catch (t: Throwable) {
@@ -372,23 +307,3 @@ fun Class<*>?.callStaticMethod(methodName: String, vararg args: Any?):Any? {
     }
     return null
 }
-
-//fun AfterHookParam.callSuperMethod(): Any? {
-//    val thisObj = this.thisObject
-//    val parameterTypes = this.args.map { it?.javaClass }.toTypedArray()
-//    val superClass = thisObj.javaClass.superclass
-//    val superMethod = findMethodBestMatch(superClass,this.member.name,*parameterTypes)
-//    //MethodHandles.privateLookupIn(superClass,MethodHandles.lookup()).findSpecial(superClass,this.method.name,*parameterTypes,this.javaClass)
-//    val methodHandle = MethodHandles.lookup().unreflectSpecial(superMethod, thisObj.javaClass)
-//    return methodHandle.invokeWithArguments(thisObj, *this.args)
-//}
-//
-//fun BeforeHookParam.callSuperMethod(): Any? {
-//    val thisObj = this.thisObject
-//    val parameterTypes = this.args.map { it?.javaClass }.toTypedArray()
-//    val superClass = thisObj.javaClass.superclass
-//    val superMethod = findMethodBestMatch(superClass,this.member.name,*parameterTypes)
-//    //MethodHandles.privateLookupIn(superClass,MethodHandles.lookup()).findSpecial(superClass,this.method.name,*parameterTypes,this.javaClass)
-//    val methodHandle = MethodHandles.lookup().unreflectSpecial(superMethod, thisObj.javaClass)
-//    return methodHandle.invokeWithArguments(thisObj, *this.args)
-//}

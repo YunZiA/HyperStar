@@ -18,7 +18,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.profileinstaller.ProfileInstaller
 import com.yunzia.hyperstar.ui.component.BaseActivity
 import com.yunzia.hyperstar.utils.AppInfo
 import com.yunzia.hyperstar.prefs.PreferencesUtil
@@ -84,9 +83,6 @@ class MainActivity : BaseActivity() {
     override fun InitData(savedInstanceState: Bundle?) {
         setLauncherIconHidden(PreferencesUtil.getBoolean("is_hide_icon", false))
 
-        ProfileInstaller.writeProfile(this)
-//        toggleLauncherIconVisibility(PreferencesUtil.getBoolean("is_hide_icon", false))
-
 
         LaunchedEffect(Unit) {
             val downloadsDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
@@ -135,7 +131,7 @@ class MainActivity : BaseActivity() {
      */
     private suspend fun fetchNewVersionApkName(): String = withContext(Dispatchers.IO) {
         val rawFileUrl = "https://gitee.com/dongdong-gc/hyper-star-updater/raw/main/dev/apk_name.m3u"
-        val client = OkHttpClient()
+        val client = httpClient
         val request = Request.Builder().url(rawFileUrl).build()
         try {
             val response = client.newCall(request).execute()
@@ -254,41 +250,6 @@ class MainActivity : BaseActivity() {
         private const val REQUEST_CODE_INSTALLED_APPS = 999
         private const val KEY_IS_RECREATE = "isRecreate"
         private const val KEY_IS_ACTIVE = "isActive"
+        private val httpClient = OkHttpClient()
     }
-}
-
-/**
- * Extension function to get app info by package name.
- */
-private suspend fun PackageManager.getApplicationInfos(
-    vararg packageNames: String
-): Map<String, AppInfo?> {
-    return coroutineScope {
-        packageNames.associateWith { packageName ->
-            async {
-                try {
-                    val packageInfo = this@getApplicationInfos.getPackageInfo(packageName, PackageManager.GET_META_DATA)
-                    AppInfo(
-                        appIcon = packageInfo.applicationInfo?.loadIcon(this@getApplicationInfos),
-                        appName = this@getApplicationInfos.getApplicationLabel(packageInfo.applicationInfo!!).toString(),
-                        versionName = packageInfo.versionName,
-                        versionCode = packageInfo.longVersionCode
-                    )
-                    null
-                } catch (e: PackageManager.NameNotFoundException) {
-                    Log.w("ggc", "Package not found: $packageName")
-                    null
-                }
-            }
-        }.mapValues { it.value.await() }
-    }
-}
-private fun PackageManager.getAppInfo(packageName: String): AppInfo {
-    val packageInfo = getPackageInfo(packageName, PackageManager.GET_META_DATA)
-    return AppInfo(
-        appIcon = packageInfo.applicationInfo?.loadIcon(this),
-        appName = this.getApplicationLabel(packageInfo.applicationInfo!!).toString(),
-        versionName = packageInfo.versionName,
-        versionCode = packageInfo.longVersionCode
-    )
 }

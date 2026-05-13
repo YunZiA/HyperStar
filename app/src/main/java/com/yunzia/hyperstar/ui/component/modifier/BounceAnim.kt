@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.yunzia.hyperstar.ui.component.enums.EventState
 import com.yunzia.hyperstar.prefs.PreferencesUtil
-import com.kyant.shapes.RoundedRectangle
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 
 
 fun Modifier.bounceAnimN(
@@ -115,7 +115,7 @@ fun Modifier.bounceCorner(
         animationSpec = tween(100),
         label = "",
     )
-    this.clip(RoundedRectangle(size))
+    this.clip(SmoothRoundedCornerShape(size))
 
 }
 

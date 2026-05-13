@@ -1,14 +1,17 @@
 package com.yunzia.hyperstar.ui.screen.module.systemui
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.TabRow
 import com.yunzia.hyperstar.ui.component.pager.ModuleNavPager
@@ -17,13 +20,37 @@ import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.ControlCente
 import com.yunzia.hyperstar.ui.screen.module.systemui.other.SystemUIOtherPager
 import com.yunzia.hyperstar.ui.screen.module.systemui.volume.VolumePager
 import com.yunzia.hyperstar.utils.Helper
+import generated.SearchIndex
 import kotlinx.coroutines.launch
 
+import SearchRoute
+import androidx.compose.runtime.remember
+import com.yunzia.hyperstar.ui.navigation.MainRoutes
+
+@SearchRoute(route = MainRoutes.SystemUI::class)
 @Composable
 fun SystemUIScreen(){
     val navController = LocalNavigator.current
     val coroutineScope = rememberCoroutineScope()
-    val pagerState = rememberPagerState(initialPage = 0 ,pageCount = { 3 })
+    val activity = LocalActivity.current as MainActivity
+    val scrollToKey = activity.appViewModel.scrollToKey.value
+
+    val initialPage = remember(scrollToKey) {
+        if (scrollToKey != null) {
+            SearchIndex.entries.find { it.key == scrollToKey }?.tabIndex ?: 0
+        } else 0
+    }
+    val pagerState = rememberPagerState(initialPage = initialPage, pageCount = { 3 })
+
+    LaunchedEffect(scrollToKey) {
+        if (scrollToKey != null) {
+            val tabIndex = SearchIndex.entries.find { it.key == scrollToKey }?.tabIndex ?: 0
+            if (tabIndex in 0..2) {
+                pagerState.animateScrollToPage(tabIndex)
+            }
+        }
+    }
+
     val tabs = listOf(
         stringResource(R.string.control_center),
         stringResource(R.string.sound_settings),
@@ -65,21 +92,27 @@ fun SystemUIScreen(){
                         ControlCenterPager(
                             navController,
                             scrollBehavior,
-                            paddingValue
+                            paddingValue,
+                            scrollToKey = scrollToKey,
+                            onScrollComplete = { activity.appViewModel.scrollToKey.value = null }
                         )
                     }
                     1 -> {
                         VolumePager(
                             navController,
                             scrollBehavior,
-                            paddingValue
+                            paddingValue,
+                            scrollToKey = scrollToKey,
+                            onScrollComplete = { activity.appViewModel.scrollToKey.value = null }
                         )
                     }
                     2 -> {
                         SystemUIOtherPager(
                             navController,
                             scrollBehavior,
-                            paddingValue
+                            paddingValue,
+                            scrollToKey = scrollToKey,
+                            onScrollComplete = { activity.appViewModel.scrollToKey.value = null }
                         )
                     }
                 }

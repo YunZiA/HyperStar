@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.FrameLayout
 import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
-import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
 import com.yunzia.hyperstar.hook.core.helper.getLongField
@@ -17,10 +16,15 @@ object QSTileAutoCollapse : BasePluginHook() {
 
     private val clickClose = XSPUtils.getBoolean("list_tile_click_close",false)
 
+    private var cachedCollapseMethod: java.lang.reflect.Method? = null
+
     fun collapseStatusBar(context: Context) {
         try {
             val systemService = context.getSystemService("statusbar")
-            systemService.javaClass.getMethod("collapsePanels", *arrayOfNulls(0)).invoke(systemService, *arrayOfNulls(0))
+            val method = cachedCollapseMethod ?: systemService.javaClass
+                .getMethod("collapsePanels")
+                .also { cachedCollapseMethod = it }
+            method.invoke(systemService)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -54,8 +58,6 @@ object QSTileAutoCollapse : BasePluginHook() {
                     if (mainPanelMode != enumConstants[2]) {
                         val mContext = qSTileItemView.context
                         collapseStatusBar(mContext)
-                    }else{
-                        logD("mainPanelMode == edit")
                     }
                 }
             }

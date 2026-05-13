@@ -1,7 +1,6 @@
 package com.yunzia.hyperstar.hook.app.plugin.os1
 
 import android.graphics.Color
-import android.util.Log
 import android.view.ViewGroup
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.core.base.BasePluginHook
@@ -22,7 +21,6 @@ object QSMiplayAppIconRadius: BasePluginHook() {
                 this as ViewGroup
                 val icon = findViewByIdName("app_icon")
                 val card = icon?.parent
-                //log("$card")
                 card.callMethod("setCardBackgroundColor",Color.TRANSPARENT)
                 card.callMethod("setRadius",0f)
             }
@@ -33,13 +31,10 @@ object QSMiplayAppIconRadius: BasePluginHook() {
                     val card = icon?.parent
                     card.callMethod("setCardBackgroundColor",Color.TRANSPARENT)
                     card.callMethod("setRadius",0f)
-
                 }
-
             }catch (e: Exception) {
-                Log.d("ggc", "${e.message}")
+                // layout may not exist on all devices
             }
-            //resparam?.res?.getIdentifier("qs_control_detail_header_metainfo_layout_support_land","layout",plugin)
 
         }
 

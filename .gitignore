@@ -16,3 +16,7 @@ local.properties
 HyperStar.jks
 /.kotlin/sessions/
 
+KEY.properties
+/CLAUDE.md
+/app/src/main/java/com/yunzia/hyperstar/ui/component/preference/README.md
+/app/src/main/java/com/yunzia/hyperstar/ui/component/PREFERENCE_README.md

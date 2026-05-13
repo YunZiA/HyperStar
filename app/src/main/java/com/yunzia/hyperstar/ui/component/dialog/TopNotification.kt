@@ -31,10 +31,10 @@
 //fun TopNotification(
 //    show: MutableState<Boolean>,
 //    modifier: Modifier = Modifier,
-//    backgroundColor: Color = SuperDialogDefaults.backgroundColor(),
+//    backgroundColor: Color = OverlayDialogDefaults.backgroundColor(),
 //    onFocus: () -> Unit = {},
 //    onDismissRequest: (() -> Unit)? = null,
-//    insideMargin: DpSize = SuperDialogDefaults.insideMargin,
+//    insideMargin: DpSize = OverlayDialogDefaults.insideMargin,
 //    defaultWindowInsetsPadding: Boolean = true,
 //    content: @Composable () -> Unit
 //) {

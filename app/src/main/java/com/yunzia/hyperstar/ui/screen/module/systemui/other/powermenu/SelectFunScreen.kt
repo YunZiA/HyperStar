@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,8 +39,9 @@ import com.yunzia.hyperstar.prefs.SPUtils
 import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import com.kyant.shapes.RoundedRectangle
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import SearchRoute
 import com.yunzia.hyperstar.ui.navigation.PowerMenuRoutes
 
 
@@ -112,22 +114,22 @@ fun FunItem(
 
     var eventState by remember { mutableStateOf(EventState.Idle) }
     val scale by animateFloatAsState(if (eventState == EventState.Pressed) 0.90f else 1f)
+    var checked by remember(isSelect) { mutableStateOf( if (isSelect) ToggleableState.On else ToggleableState.Off) }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 28.dp)
+            .padding(horizontal = 12.dp)
             .padding(top = 10.dp)
             .scale(scale)
-            .clip(RoundedRectangle(16.dp))
+            .clip(SmoothRoundedCornerShape(16.dp))
             .background(if (isSelect) colorScheme.tertiaryContainer  else colorScheme.surfaceVariant)
             .clickable {
-                selectFun.value = if (isSelect) "" else type
-                isSelect = !isSelect
+                selectFun.value = type
+                isSelect = true
                 SPUtils.putString(key, type)
             }
             .pointerInput(eventState) {
-
                 awaitPointerEventScope {
                     eventState = if (eventState == EventState.Pressed) {
                         waitForUpOrCancellation()
@@ -159,13 +161,13 @@ fun FunItem(
                 modifier = Modifier
                     .padding(start = 16.dp),
                 enabled = true,
-                checked = isSelect,
-                onCheckedChange = {
-
-                    selectFun.value = if (isSelect) "" else type
-                    isSelect = !isSelect
+                state = checked,
+                onClick = {
+                    selectFun.value = type
+                    isSelect = true
+                    checked = ToggleableState.On
                     SPUtils.putString(key, type)
-                }
+                },
             )
 
 

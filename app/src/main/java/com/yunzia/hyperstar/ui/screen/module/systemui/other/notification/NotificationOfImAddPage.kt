@@ -8,14 +8,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.remember
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateSet
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,35 +29,28 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.drawablepainter.DrawablePainter
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.topbar.TopButton
-import com.yunzia.hyperstar.ui.component.XScaffold
-import com.yunzia.hyperstar.ui.component.modifier.blur
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnimN
-import com.yunzia.hyperstar.ui.component.modifier.nestedOverScrollVertical
 import com.yunzia.hyperstar.ui.component.modifier.showBlur
-import com.yunzia.hyperstar.ui.component.search.SearchBox
-import com.yunzia.hyperstar.ui.component.search.SearchPager
+import com.yunzia.hyperstar.ui.component.preference.SearchPreferenceScreen
 import com.yunzia.hyperstar.ui.screen.pagers.summaryColor
 import com.yunzia.hyperstar.ui.screen.pagers.titleColor
 import com.yunzia.hyperstar.viewmodel.NotificationAddViewModel
-import dev.chrisbanes.haze.HazeState
-import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.CardDefaults
-import top.yukonga.miuix.kmp.basic.Checkbox
-import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.TopAppBar
-import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import com.kyant.shapes.RoundedRectangle
-import com.yunzia.hyperstar.ui.component.search.TopAppBarAnim
-import com.yunzia.hyperstar.ui.navigation.Navigator
-import dev.chrisbanes.haze.rememberHazeState
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.preference.ArrowPreference
+import SearchRoute
+import androidx.compose.runtime.getValue
+import com.yunzia.hyperstar.ui.component.modifier.rememberLayerBackdrop
+import com.yunzia.hyperstar.ui.navigation.SystemUIRoutes
 
 @Composable
 fun NotificationOfImAddPage(
     expand: MutableState<Boolean>,
     selectApp: SnapshotStateSet<NotificationInfo>,
     unSelectApp: SnapshotStateSet<NotificationInfo>
-){
+) {
     val context = LocalContext.current
     val viewModel = viewModel<NotificationAddViewModel>(
         factory = object : ViewModelProvider.Factory {
@@ -68,126 +59,81 @@ fun NotificationOfImAddPage(
             }
         }
     )
-    val hazeState = rememberHazeState()
-    val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
+    val backdrop = rememberLayerBackdrop()
     val searchStatus by viewModel.searchStatus
     val searchResults by viewModel.searchResults
-    val searchTransition = searchStatus.transition()
 
     LaunchedEffect(unSelectApp) {
         viewModel.updateUnselectedApps(unSelectApp)
     }
 
-    LaunchedEffect(searchStatus.searchText) {
-        viewModel.updateSearchText(searchStatus.searchText, unSelectApp)
-    }
-
     LaunchedEffect(expand.value) {
-        if (!expand.value){
+        if (!expand.value) {
             viewModel.clearSelection()
         }
     }
 
-
-    XScaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black),
-        popupHost = {
-            searchTransition.SearchPager(
-                searchStatus = searchStatus,
-                {}
-            ) {
-                searchResults.forEach { app->
-                    item(app.packageName) {
-                        AppNotifItem(
-                            notificationInfo = app,
-                            isSelected = viewModel.isSelected(app),
-                            onSelectionChanged = { isSelected ->
-                                viewModel.toggleAppSelection(app)
+    SearchPreferenceScreen(
+        searchStatus = searchStatus,
+        backdrop = backdrop,
+        onQueryChange = { viewModel.updateSearchText(it, unSelectApp) },
+        topBar = { topAppBarScrollBehavior ->
+            TopAppBar(
+                modifier = Modifier.showBlur(backdrop),
+                color = Color.Transparent,
+                title = stringResource(R.string.application_selection),
+                scrollBehavior = topAppBarScrollBehavior,
+                navigationIcon = {
+                    TopButton(
+                        modifier = Modifier.padding(start = 18.dp),
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_close),
+                        contentDescription = "close",
+                        onClick = {
+                            expand.value = false
+                        }
+                    )
+                },
+                actions = {
+                    TopButton(
+                        modifier = Modifier.padding(end = 18.dp),
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_done),
+                        contentDescription = "done",
+                        onClick = {
+                            expand.value = false
+                            viewModel.confirmSelection { selectedApps ->
+                                selectApp.addAll(selectedApps)
                             }
-                        )
-                    }
+                        }
+                    )
+                }
+            )
+        },
+        searchResult = {
+            searchResults.forEach { app ->
+                item(app.packageName) {
+                    AppNotifItem(
+                        notificationInfo = app,
+                        isSelected = viewModel.isSelected(app),
+                        onSelectionChanged = { isSelected ->
+                            viewModel.toggleAppSelection(app)
+                        }
+                    )
                 }
             }
         },
-        topBar = {
-            searchTransition.TopAppBarAnim(
-                hazeState = hazeState
-            ){
-                TopAppBar(
-                    modifier = Modifier.showBlur(hazeState),
-                    color = Color.Transparent,
-                    title = stringResource(R.string.application_selection),
-                    scrollBehavior = topAppBarScrollBehavior,
-                    navigationIcon = {
-                        TopButton(
-                            modifier = Modifier.padding(start = 18.dp),
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_close),
-                            contentDescription = "close",
-                            onClick = {
-                                expand.value = false
-                            }
-                        )
-                    },
-                    actions = {
-                        TopButton(
-                            modifier = Modifier.padding(end = 18.dp),
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_done),
-                            contentDescription = "done",
-                            onClick = {
-                                expand.value = false
-                                viewModel.confirmSelection { selectedApps ->
-                                    selectApp.addAll(selectedApps)
-                                }
-//                                if (selectedAppList.isNotEmpty()){
-//                                    selectApp.addAll(selectedAppList)
-//                                    selectedAppList.clear()
-//                                }
-                            }
-                        )
+    ) {
+        unSelectApp.forEach { app ->
+            item(app.packageName) {
+                AppNotifItem(
+                    notificationInfo = app,
+                    isSelected = viewModel.isSelected(app),
+                    onSelectionChanged = { isSelected ->
+                        viewModel.toggleAppSelection(app)
                     }
                 )
-
             }
         }
-    ){ padding->
-
-        searchTransition.SearchBox(
-            searchStatus = searchStatus,
-            contentPadding = padding,
-            hazeState = hazeState
-        ) { contentTopPadding ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .nestedOverScrollVertical(topAppBarScrollBehavior.nestedScrollConnection),
-                contentPadding = PaddingValues(
-                    top = contentTopPadding,
-                    bottom = padding.calculateBottomPadding() + 28.dp
-                )
-            ) {
-
-                unSelectApp.forEach {app->
-                    item(app.packageName) {
-                        AppNotifItem(
-                            notificationInfo = app,
-                            isSelected = viewModel.isSelected(app),
-                            onSelectionChanged = { isSelected ->
-                                viewModel.toggleAppSelection(app)
-                            }
-                        )
-                    }
-                }
-
-            }
-
-        }
-
     }
-
-
-
 }
 
 @Composable
@@ -197,13 +143,13 @@ private fun AppNotifItem(
     onSelectionChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    BasicComponent(
+    ArrowPreference(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .padding(top = 10.dp)
             .bounceAnimN()
-            .clip(RoundedRectangle(CardDefaults.CornerRadius))
+            .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
             .background(
                 if (isSelected) colorScheme.tertiaryContainer
                 else colorScheme.surfaceVariant
@@ -219,12 +165,6 @@ private fun AppNotifItem(
                 appName = notificationInfo.appName
             )
         },
-        endActions = {
-            Checkbox(
-                checked = isSelected,
-                onCheckedChange = { onSelectionChanged(!isSelected) }
-            )
-        },
         onClick = { onSelectionChanged(!isSelected) }
     )
 }
@@ -238,7 +178,7 @@ private fun AppIcon(
     Box(modifier = Modifier.padding(end = 12.dp)) {
         Image(
             modifier = modifier.size(40.dp),
-            painter = DrawablePainter(icon),
+            painter = remember(icon) { DrawablePainter(icon) },
             contentDescription = appName
         )
     }

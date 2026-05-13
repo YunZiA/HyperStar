@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
-import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.hookLayout
 import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
 import com.yunzia.hyperstar.hook.core.helper.replaceHookAllConstructors
@@ -17,13 +16,6 @@ object DeviceCenterRow: BasePluginHook() {
 
     val deviceCenterSpanSize = XSPUtils.getFloat("deviceCenter_span_size", 4f).toInt()
     val isDeviceCenterMode = XSPUtils.getInt("is_device_center_mode", 0)
-
-//    override fun init() {
-//
-//
-//
-//    }
-
 
     override fun init() {
 
@@ -43,7 +35,6 @@ object DeviceCenterRow: BasePluginHook() {
             }
 
         }
-        //res.setReplacement(plugin,"dimen","device_center_device_item_width",res.getDimensionPixelSize(device_center_item_height))
         if (deviceCenterSpanSize < 4){
             hookLayout("device_center_device_item",plugin) {
                 this as ViewGroup
@@ -92,10 +83,8 @@ object DeviceCenterRow: BasePluginHook() {
                 val rowMode: Array<out Any> = DeviceCenterEntryViewHolderMode?.getEnumConstants()!!
 
                 if (deviceItems.size == 1 || deviceCenterSpanSize == 1 || isDeviceCenterMode == 1){
-                    logD("1")
                     return@replaceHookMethod rowMode[0]
                 }else{
-                    logD(">1")
                     return@replaceHookMethod if (deviceItems.size > deviceCenterSpanSize){
                         if (isDeviceCenterMode == 2){
                             rowMode[1]

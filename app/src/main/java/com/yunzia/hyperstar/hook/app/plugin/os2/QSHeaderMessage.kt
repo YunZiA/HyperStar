@@ -13,10 +13,6 @@ object QSHeaderMessage : BasePluginHook() {
     val showMessageMillis: Float = XSPUtils.getFloat("header_show_message_millis",1f)*1000
 
     override fun init() {
-        startMethodsHook()
-    }
-
-    private fun startMethodsHook() {
         if (showMessage){
             findClass(
                 "miui.systemui.controlcenter.panel.main.header.MessageHeaderController",

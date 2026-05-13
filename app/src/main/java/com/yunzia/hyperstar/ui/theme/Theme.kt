@@ -3,9 +3,8 @@ package com.yunzia.hyperstar.ui.theme
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.graphics.Color
-import android.os.Build
-import android.util.Log
 import androidx.activity.SystemBarStyle
+import androidx.activity.compose.LocalActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
@@ -79,7 +78,6 @@ fun BaseActivity.HyperStarTheme(
     CompositionLocalProvider(
         LocalConfiguration provides newContext.resources.configuration
     ) {
-        Log.d("HyperStarTheme", "HyperStarTheme: LocalConfiguration")
         MiuixTheme(
             controller = controller
         ){
@@ -87,4 +85,15 @@ fun BaseActivity.HyperStarTheme(
         }
     }
 
+}
+
+
+@Composable
+fun isInDarkTheme(): Boolean {
+    val activity = LocalActivity.current as BaseActivity
+    return when (activity.colorMode.intValue) {
+        1, 4 -> false
+        2, 5, 6 -> true
+        else -> isSystemInDarkTheme()
+    }
 }

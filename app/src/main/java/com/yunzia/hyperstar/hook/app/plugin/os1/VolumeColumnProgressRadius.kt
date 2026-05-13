@@ -18,10 +18,6 @@ object VolumeColumnProgressRadius : BasePluginHook() {
 
     override fun init() {
         if (!isChangeVolumeProgressRadius) return
-        startMethodsHook()
-    }
-
-    private fun startMethodsHook() {
         findClass(
             "com.android.systemui.miui.volume.MiuiVolumeSeekBarProgressView",
             pluginClassLoader

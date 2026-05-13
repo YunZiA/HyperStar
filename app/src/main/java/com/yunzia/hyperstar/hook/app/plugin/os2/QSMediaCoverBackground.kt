@@ -18,7 +18,6 @@ import com.yunzia.hyperstar.hook.core.helper.afterHookAllConstructors
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.hook.core.helper.callMethod
 import com.yunzia.hyperstar.hook.core.helper.getFloatField
-import com.yunzia.hyperstar.hook.core.helper.getObjectField
 import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
 import com.yunzia.hyperstar.prefs.XSPUtils
 import yunzia.utils.BitmapUtils
@@ -40,17 +39,9 @@ object QSMediaCoverBackground: BasePluginHook() {
     val coverAnciently:Boolean = XSPUtils.getBoolean("cover_anciently",false)
 
     override fun init() {
-        startMethodsHook()
-    }
-
-    private fun startMethodsHook() {
         var foreground: Drawable? = null
         val MediaPlayerMetaData  = findClass("miui.systemui.controlcenter.media.MediaPlayerMetaData",pluginClassLoader)
         val MediaPlayerViewHolder  = findClass("miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",pluginClassLoader)
-        val CommonUtils = findClass("miui.systemui.util.CommonUtils",pluginClassLoader)
-
-//        val controlCenterUtils = ControlCenterUtils(pluginClassLoader)
-//        val miBlurCompat = MiBlurCompat(pluginClassLoader)
 
         MediaPlayerViewHolder.afterHookMethod("updateMetaData",MediaPlayerMetaData!!) { args, result ->
 
@@ -110,12 +101,6 @@ object QSMediaCoverBackground: BasePluginHook() {
 
                     }
                     itemView.background = artDrawable
-//                        if (coverAnciently ) {
-//                        val layerDrawable = LayerDrawable(arrayOf(artDrawable, foreground))
-//                        layerDrawable
-//                    } else {
-//                        artDrawable
-//                    }
                 }
 
             })
@@ -123,7 +108,6 @@ object QSMediaCoverBackground: BasePluginHook() {
         }
 
         if (!defaultBackground){
-            val HapticFeedback = findClass("miui.systemui.util.HapticFeedback",pluginClassLoader)
 
             MediaPlayerViewHolder.apply {
                 afterHookAllConstructors { args, result ->
@@ -157,30 +141,6 @@ object QSMediaCoverBackground: BasePluginHook() {
 
                 }
             }
-
-            val MediaPanelContentController = findClass("miui.systemui.controlcenter.panel.main.media.MediaPanelContentController",pluginClassLoader)
-            val MediaPanelParams = findClass("miui.systemui.controlcenter.panel.main.media.MediaPanelController\$MediaPanelParams",pluginClassLoader)
-
-            MediaPanelContentController.afterHookMethod(
-                "updateFromViewSize",
-                "miui.systemui.controlcenter.panel.main.media.MediaFromView"
-            ) { args, result ->
-                val mediaFromView = args[0]
-                val view = mediaFromView.callMethod("getViewHolder")
-            }
-
-            MediaPanelParams.afterHookAllConstructors { args, result ->
-                val fromView  = thisObject.getObjectField("fromView")
-                val fromView2  = thisObject.getObjectField("fromView2")
-
-            }
-
-
-
         }
     }
-
-
-
-
 }

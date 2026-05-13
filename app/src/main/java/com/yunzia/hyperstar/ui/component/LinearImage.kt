@@ -38,7 +38,7 @@ fun LinearImage(
         colorFilter = colorFilter,
         modifier = modifier.drawWithContent {
                 drawIntoCanvas { canvas ->
-                    canvas.saveLayer(Rect(Offset.Infinite,size), paint = Paint())
+                    canvas.saveLayer(Rect(Offset.Zero,size), paint = Paint())
                     drawContent()
                     drawRect(
                         brush = Brush.linearGradient(

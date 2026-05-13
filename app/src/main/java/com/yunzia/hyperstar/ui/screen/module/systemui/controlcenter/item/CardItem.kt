@@ -36,7 +36,7 @@ import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.ItemState
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.extra.WindowBottomSheetDefaults
+import top.yukonga.miuix.kmp.layout.BottomSheetDefaults
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
 import yunzia.ui.Card
 
@@ -139,7 +139,7 @@ fun CardItem(
             )
         }
         Card(
-            modifier = Modifier.navigationBarsPadding().padding(bottom = WindowBottomSheetDefaults.insideMargin.width)
+            modifier = Modifier.navigationBarsPadding().padding(bottom = BottomSheetDefaults.insideMargin.width)
         ) {
             EnableItemSlider(
                 key = "cards_span_size",

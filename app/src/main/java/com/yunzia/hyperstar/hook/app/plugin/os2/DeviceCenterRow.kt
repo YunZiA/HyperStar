@@ -7,7 +7,6 @@ import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
 import com.yunzia.hyperstar.hook.base.getDimensionPixelSize
 import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
-import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.hookLayout
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.hook.core.helper.getObjectFieldAs
@@ -106,11 +105,9 @@ object DeviceCenterRow: BasePluginHook() {
                 if (isDeviceCenterMode == 2){
                     val size = deviceCenterSpanSize-1
                     if (list.size <= size){
-                        logD("list.size <= size")
                         thisObject.setObjectField("b", list)
 
                     }else{
-                        logD("list.size  size")
                         val lists = list.subList(0,size)
                         thisObject.setObjectField("b", lists)
 

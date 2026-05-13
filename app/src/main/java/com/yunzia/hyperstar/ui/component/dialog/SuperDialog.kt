@@ -29,43 +29,43 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.extra.SuperDialog
+import top.yukonga.miuix.kmp.overlay.OverlayDialog
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import com.kyant.shapes.RoundedRectangle
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import com.yunzia.hyperstar.ui.component.helper.getWindowSize
-import top.yukonga.miuix.kmp.extra.SuperDialog
+import top.yukonga.miuix.kmp.overlay.OverlayDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.DialogLayout
 import top.yukonga.miuix.kmp.utils.getRoundedCorner
 
 /**
  * A dialog with a title, a summary, and other contents.
  *
- * @param show The show state of the [SuperDialog].
- * @param modifier The modifier to be applied to the [SuperDialog].
- * @param title The title of the [SuperDialog].
+ * @param show The show state of the [OverlayDialog].
+ * @param modifier The modifier to be applied to the [OverlayDialog].
+ * @param title The title of the [OverlayDialog].
  * @param titleColor The color of the title.
- * @param summary The summary of the [SuperDialog].
+ * @param summary The summary of the [OverlayDialog].
  * @param summaryColor The color of the summary.
- * @param backgroundColor The background color of the [SuperDialog].
- * @param onDismissRequest The callback when the [SuperDialog] is dismissed.
- * @param outsideMargin The margin outside the [SuperDialog].
- * @param insideMargin The margin inside the [SuperDialog].
- * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [SuperDialog].
- * @param content The [Composable] content of the [SuperDialog].
+ * @param backgroundColor The background color of the [OverlayDialog].
+ * @param onDismissRequest The callback when the [OverlayDialog] is dismissed.
+ * @param outsideMargin The margin outside the [OverlayDialog].
+ * @param insideMargin The margin inside the [OverlayDialog].
+ * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [OverlayDialog].
+ * @param content The [Composable] content of the [OverlayDialog].
  */
 @Composable
-fun SuperDialog(
+fun OverlayDialog(
     show: MutableState<Boolean>,
     modifier: Modifier = Modifier,
     title: String? = null,
-    titleColor: Color = SuperDialogDefaults.titleColor(),
+    titleColor: Color = OverlayDialogDefaults.titleColor(),
     summary: String? = null,
-    summaryColor: Color = SuperDialogDefaults.summaryColor(),
-    backgroundColor: Color = SuperDialogDefaults.backgroundColor(),
+    summaryColor: Color = OverlayDialogDefaults.summaryColor(),
+    backgroundColor: Color = OverlayDialogDefaults.backgroundColor(),
     onFocus: () -> Unit = {},
     onDismissRequest: (() -> Unit)? = null,
-    outsideMargin: DpSize = SuperDialogDefaults.outsideMargin,
-    insideMargin: DpSize = SuperDialogDefaults.insideMargin,
+    outsideMargin: DpSize = OverlayDialogDefaults.outsideMargin,
+    insideMargin: DpSize = OverlayDialogDefaults.insideMargin,
     navigationBarsPadding: Boolean = true,
     imePadding:Boolean = true,
     content: @Composable () -> Unit
@@ -114,12 +114,12 @@ fun SuperDialog(
                     }
                     .align(contentAlignment.invoke().value)
                     .graphicsLayer(
-                        shape = RoundedRectangle(bottomCornerRadius),
+                        shape = SmoothRoundedCornerShape(bottomCornerRadius),
                         clip = false
                     )
                     .background(
                         color = backgroundColor,
-                        shape = RoundedRectangle(bottomCornerRadius)
+                        shape = SmoothRoundedCornerShape(bottomCornerRadius)
                     )
                     .padding(
                         horizontal = insideMargin.width,
@@ -157,18 +157,18 @@ fun SuperDialog(
 }
 
 @Composable
-fun SuperDialogs(
+fun OverlayDialogs(
     show: MutableState<Boolean>,
     modifier: Modifier = Modifier,
     title: String? = null,
-    titleColor: Color = SuperDialogDefaults.titleColor(),
+    titleColor: Color = OverlayDialogDefaults.titleColor(),
     summary: String? = null,
-    summaryColor: Color = SuperDialogDefaults.summaryColor(),
-    backgroundColor: Color = SuperDialogDefaults.backgroundColor(),
+    summaryColor: Color = OverlayDialogDefaults.summaryColor(),
+    backgroundColor: Color = OverlayDialogDefaults.backgroundColor(),
     onFocus: () -> Unit = {},
     onDismissRequest: (() -> Unit)? = null,
-    outsideMargin: DpSize = SuperDialogDefaults.outsideMargin,
-    insideMargin: DpSize = SuperDialogDefaults.insideMargin,
+    outsideMargin: DpSize = OverlayDialogDefaults.outsideMargin,
+    insideMargin: DpSize = OverlayDialogDefaults.insideMargin,
     defaultWindowInsetsPadding: Boolean = true,
     content: @Composable () -> Unit
 ) {
@@ -221,12 +221,12 @@ fun SuperDialogs(
                     }
                     .align(contentAlignment.invoke().value)
                     .graphicsLayer(
-                        shape = RoundedRectangle(bottomCornerRadius),
+                        shape = SmoothRoundedCornerShape(bottomCornerRadius),
                         clip = false
                     )
                     .background(
                         color = backgroundColor,
-                        shape = RoundedRectangle(bottomCornerRadius)
+                        shape = SmoothRoundedCornerShape(bottomCornerRadius)
                     )
                     .padding(
                         horizontal = insideMargin.width,
@@ -264,7 +264,7 @@ fun SuperDialogs(
 
 }
 
-object SuperDialogDefaults {
+object OverlayDialogDefaults {
 
     /**
      * The default color of the title.
@@ -279,18 +279,18 @@ object SuperDialogDefaults {
     fun summaryColor() = MiuixTheme.colorScheme.onSurfaceSecondary
 
     /**
-     * The default background color of the [SuperDialog].
+     * The default background color of the [OverlayDialog].
      */
     @Composable
     fun backgroundColor() = MiuixTheme.colorScheme.surfaceVariant
 
     /**
-     * The default margin outside the [SuperDialog].
+     * The default margin outside the [OverlayDialog].
      */
     val outsideMargin = DpSize(12.dp, 12.dp)
 
     /**
-     * The default margin inside the [SuperDialog].
+     * The default margin inside the [OverlayDialog].
      */
     val insideMargin = DpSize(24.dp, 24.dp)
 }

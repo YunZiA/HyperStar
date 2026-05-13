@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.FrameLayout
 import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
-import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.hook.core.helper.getLongField
 import com.yunzia.hyperstar.hook.core.helper.getObjectField
@@ -45,21 +44,17 @@ object QSTileAutoCollapse : BasePluginHook() {
                 if (elapsedRealtime > lastTriggeredTime + 200) {
                     val clickAction = qSTileItemView.getObjectField("clickAction")
                     if (clickAction == null) {
-                        logE("clickAction == null")
                         return@afterHookMethod
                     }
 
                     val enumConstants: Array<out Any>? = MainPanelModeController?.enumConstants
                     if (enumConstants == null) {
-                        logE("enumConstants == null")
                         return@afterHookMethod
                     }
 
                     val mainPanelMode = qSTileItemView.getObjectField("mode")
                     if (mainPanelMode != enumConstants[2]) {
                         collapseStatusBar(qSTileItemView.context)
-                    } else {
-                        logE("mainPanelMode == edit")
                     }
                 }
             }

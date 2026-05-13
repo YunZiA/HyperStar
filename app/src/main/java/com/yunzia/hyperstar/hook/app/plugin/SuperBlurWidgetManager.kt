@@ -11,25 +11,16 @@ object SuperBlurWidgetManager : BasePluginHook() {
     val superBlurWidget = XSPUtils.getInt("is_super_blur_Widget",0)
 
     override fun init() {
-        if (superBlurWidget != 0){
-            startMethodsHook()
-
-        }
-    }
-
-    private fun startMethodsHook() {
-        val controlCenterUtils  = findClass("miui.systemui.controlcenter.utils.ControlCenterUtils",pluginClassLoader)
-        controlCenterUtils.afterHookMethod("getBackgroundBlurOpenedInDefaultTheme",Context::class.java) { args, result ->
-
-            if (superBlurWidget == 1){
+        if (superBlurWidget == 0) return
+        findClass(
+            "miui.systemui.controlcenter.utils.ControlCenterUtils",
+            pluginClassLoader
+        ).afterHookMethod("getBackgroundBlurOpenedInDefaultTheme", Context::class.java) { args, result ->
+            if (superBlurWidget == 1) {
                 result.replace(false)
-
-            }else if (superBlurWidget == 2){
+            } else if (superBlurWidget == 2) {
                 result.replace(true)
-
             }
         }
-
-
     }
 }

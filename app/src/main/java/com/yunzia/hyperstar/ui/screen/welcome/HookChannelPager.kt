@@ -44,10 +44,10 @@ import com.yunzia.hyperstar.utils.getSettingChannel
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.extra.CheckboxLocation
-import top.yukonga.miuix.kmp.extra.SuperCheckbox
+import top.yukonga.miuix.kmp.preference.CheckboxLocation
+import top.yukonga.miuix.kmp.preference.CheckboxPreference
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import com.kyant.shapes.RoundedRectangle
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.basic.Icon
 
 @Composable
@@ -140,7 +140,7 @@ private fun LazyListScope.channelItem(
     val isSelected = index == selectedItem.intValue
 
     item(channel) {
-        SuperCheckbox(
+        CheckboxPreference(
             title = "Xiaomi HyperOS $index.0",
             titleColor = titleColor(isSelected),
             checked = isSelected,
@@ -155,7 +155,7 @@ private fun LazyListScope.channelItem(
                         SPUtils.putInt("is_Hook_Channel", selectedItem.intValue)
                     }
                 }
-                .clip(RoundedRectangle(CardDefaults.CornerRadius))
+                .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
                 .background(if (isSelected) colorScheme.tertiaryContainer else colorScheme.surfaceVariant),
             checkboxLocation = CheckboxLocation.End,
             insideMargin = PaddingValues(20.dp),

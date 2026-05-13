@@ -49,14 +49,17 @@ import top.yukonga.miuix.kmp.basic.ListPopupColumn
 import top.yukonga.miuix.kmp.basic.ListPopupDefaults
 import top.yukonga.miuix.kmp.basic.PopupPositionProvider
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import com.kyant.shapes.RoundedRectangle
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import com.yunzia.hyperstar.ui.navigation.Navigator
+import com.yunzia.hyperstar.ui.navigation.SystemUIRoutes
 import com.yunzia.hyperstar.ui.screen.module.systemui.other.notification.AppNotifItem
 import top.yukonga.miuix.kmp.basic.DropdownImpl
-import top.yukonga.miuix.kmp.extra.WindowListPopup
+import SearchRoute
+import top.yukonga.miuix.kmp.window.WindowListPopup
 
 @OptIn(ExperimentalSharedTransitionApi::class)
+@SearchRoute(route = SystemUIRoutes.NotificationOfIm::class)
 @Composable
 fun NotificationOfImScreen() {
     val navController = LocalNavigator.current
@@ -75,7 +78,6 @@ fun NotificationOfImScreen() {
     val searchApps = viewModel.searchApp
     val selectedApps = viewModel.selectedApps
     val unselectedApps = viewModel.unselectedApps
-    val searchTransition = searchStatus.value.transition()
 
     LaunchedEffect(loadStatus.value.isLoading()) {
         if (loadStatus.value.isLoading()) {
@@ -88,14 +90,9 @@ fun NotificationOfImScreen() {
     LaunchedEffect(activity.isGranted.value) {
         viewModel.onPermissionGranted(activity.isGranted.value)
     }
-    // 搜索文本更新
-    LaunchedEffect(searchStatus.value.searchText) {
-        viewModel.onSearchTextChanged(searchStatus.value.searchText)
-    }
-
     searchStatus.value.SearchModuleNavPager(
+        onQueryChange = { viewModel.onSearchTextChanged(it) },
         activityTitle = stringResource(R.string.icon_stacking_whitelist),
-        searchTransition = searchTransition,
         navController = navController,
         endClick = {
             Helper.rootShell("killall com.android.systemui")
@@ -123,8 +120,7 @@ fun NotificationOfImScreen() {
         },
         result = {
             searchApps.value.forEach { app ->
-
-                item(app.appName) {
+                item(app.packageName) {
                     AppNotifItem(
                         notificationInfo = app,
                         navController = navController,
@@ -147,7 +143,7 @@ fun NotificationOfImScreen() {
                 )
             ) {
                 selectedApps.forEach { app ->
-                    item {
+                    item(key = app.packageName) {
                         AppNotifItem(
                             notificationInfo = app,
                             navController = navController,
@@ -190,7 +186,7 @@ private fun AppNotifItem(
                         }
                     )
                 }
-                .clip(RoundedRectangle(CardDefaults.CornerRadius))
+                .clip(SmoothRoundedCornerShape(CardDefaults.CornerRadius))
                 .background(
                     if (shouldDelete.value)
                         colorScheme.tertiaryContainer
@@ -205,7 +201,7 @@ private fun AppNotifItem(
                 Box(modifier = Modifier.padding(end = 12.dp)) {
                     Image(
                         modifier = Modifier.size(40.dp),
-                        painter = DrawablePainter(notificationInfo.icon),
+                        painter = remember(notificationInfo.icon) { DrawablePainter(notificationInfo.icon) },
                         contentDescription = notificationInfo.appName
                     )
                 }
@@ -234,7 +230,7 @@ private fun DeletePopup(
     onDismiss: () -> Unit
 ) {
     WindowListPopup(
-        show = shouldDelete,
+        show = shouldDelete.value,
         popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
         alignment = PopupPositionProvider.Align.TopEnd,
         onDismissRequest = onDismiss

@@ -2,7 +2,6 @@ package com.yunzia.hyperstar
 
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
-import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -122,7 +121,6 @@ fun App(){
     Scaffold(
         modifier = Modifier
     ) {
-        Log.d("MainPageContent", "MainPageContent XScaffold: init")
         var showInactivePage by remember { mutableStateOf(false) }
         LaunchedEffect(activity.appViewModel.isActive.value) {
             if (!activity.appViewModel.isActive.value) {
@@ -132,6 +130,7 @@ fun App(){
                 showInactivePage = false
             }
         }
+
         AnimatedVisibility (
             showInactivePage,
             modifier = Modifier.background(colorScheme.surface),
@@ -160,7 +159,6 @@ fun App(){
             ) {
 
                 activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-                Log.d("App", "App: layout")
 
                 val rebootStyle = activity.rebootStyle
                 val rebootDialogState = rememberSaveable { mutableStateOf(false) }

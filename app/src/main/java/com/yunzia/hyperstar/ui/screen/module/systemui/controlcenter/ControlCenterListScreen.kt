@@ -1,5 +1,6 @@
 package com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter
 
+import IgnoreSearchIndex
 import android.app.Application
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,10 +40,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.ui.component.topbar.TopButton
-import com.yunzia.hyperstar.ui.component.XMiuixSlider
-import com.yunzia.hyperstar.ui.component.XDropdown
-import com.yunzia.hyperstar.ui.component.XSuperSwitch
-import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.component.preference.PreferenceScreen
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.item.BrightnessItem
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.item.CardItem
 import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.item.DeviceCenterItem
@@ -53,6 +52,14 @@ import com.yunzia.hyperstar.ui.screen.module.systemui.controlcenter.item.VolumeI
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.prefs.SPUtils
 import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import com.yunzia.hyperstar.ui.navigation.SystemUIRoutes
+import SearchRoute
+import androidx.activity.compose.LocalActivity
+import androidx.compose.runtime.mutableIntStateOf
+import com.yunzia.hyperstar.MainActivity
+import com.yunzia.hyperstar.ui.component.preference.widget.DropdownPreference
+import com.yunzia.hyperstar.ui.component.preference.widget.SliderPreference
+import com.yunzia.hyperstar.ui.component.preference.widget.SwitchPreference
 import com.yunzia.hyperstar.viewmodel.NotificationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -249,6 +256,7 @@ class ControlCenterListViewModel(application: Application) : AndroidViewModel(ap
 }
 
 
+@SearchRoute(route = SystemUIRoutes.LayoutArrangement::class)
 @Composable
 fun ControlCenterListScreen() {
 
@@ -261,13 +269,14 @@ fun ControlCenterListScreen() {
         }
     )
     val navController = LocalNavigator.current
+    val activity = LocalActivity.current as MainActivity
 
     val items by viewModel.items.collectAsState()
     val orderChanged by viewModel.orderChanged.collectAsState()
     val switchEnabled by viewModel.switchEnabled.collectAsState()
 
-    ModuleNavPagers(
-        activityTitle = stringResource(R.string.control_center_edit),
+    PreferenceScreen(
+        title = stringResource(R.string.control_center_edit),
         navController = navController,
         endIcon = {
 
@@ -295,8 +304,10 @@ fun ControlCenterListScreen() {
             //view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             Helper.rootShell("killall com.android.systemui")
         },
-    ){
-        item {
+        scrollToKey = activity.appViewModel.scrollToKey.value,
+        onScrollComplete = { activity.appViewModel.scrollToKey.value = null },
+    ) { _, _ ->
+        list.item {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -409,67 +420,64 @@ fun getHeight(
 val insideMargin  =  PaddingValues(16.dp, 16.dp)
 
 @Composable
+@IgnoreSearchIndex
 fun EnableItemDropdown(
     key: String,
     dfOpt: Int = 0
 ){
-
     val state = remember { mutableStateOf(SPUtils.getBoolean("${key}_enable",false)) }
+    val panel = remember { mutableIntStateOf(SPUtils.getInt(key, dfOpt)) }
+    val options = stringArrayResource(R.array.land_rightOrLeft_entire).toList()
 
-    XSuperSwitch(
+    SwitchPreference(
         title = stringResource(R.string.enable),
-        key = "${key}_enable",
-        state = state,
-        insideMargin = insideMargin
+        checked = state.value,
+        onCheckedChange = {
+            state.value = it
+            SPUtils.putBoolean("${key}_enable", it)
+        }
     )
 
-    XDropdown(
+    DropdownPreference(
         title = stringResource(R.string.land_rightOrLeft),
+        entries = options,
+        selectedIndex = panel.intValue,
         enabled = state.value,
-        insideMargin = insideMargin,
-        key = key,
-        dfOpt = dfOpt,
-        option = R.array.land_rightOrLeft_entire
+        onSelectedIndexChange = {
+            panel.intValue = it
+            SPUtils.putInt(key, it)
+        }
     )
-
-//    XSuperDialogDropdown(
-//        title = stringResource(R.string.land_rightOrLeft),
-//        enabled = state.value,
-//        insideMargin = insideMargin,
-//        key = key,
-//        dfOpt = dfOpt,
-//        option = R.array.land_rightOrLeft_entire
-//    )
-
-
 }
 
 @Composable
+@IgnoreSearchIndex
 fun EnableItemSlider(
     key: String,
     state: MutableState<Boolean>,
     progress : Float,
     progressState: MutableFloatState,
 ){
-
-    XSuperSwitch(
+    SwitchPreference(
         title = stringResource(R.string.enable),
-        key = "${key}_enable",
-        state = state,
-        insideMargin = insideMargin
+        checked = state.value,
+        onCheckedChange = {
+            state.value = it
+            SPUtils.putBoolean("${key}_enable", it)
+        }
     )
 
-    XMiuixSlider(
+    SliderPreference(
         title = stringResource(R.string.span_size),
-        key = key,
-        isDialog = true,
+        value = progressState.floatValue,
         enabled = state.value,
-        paddingValues = insideMargin,
         valueRange = 1f..4f,
-        defValue = progress,
-        value = progressState
+        valueFormatter = { it.toInt().toString() },
+        onValueChange = {
+            progressState.floatValue = it
+            SPUtils.putFloat(key, it)
+        }
     )
-
 }
 
 

@@ -11,7 +11,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
     id ("kotlin-parcelize")
+    alias(libs.plugins.baselineprofile)
 }
 
 val versionInfo: Pair<Int, String> by lazy {
@@ -25,11 +27,16 @@ val versionInfo: Pair<Int, String> by lazy {
 
         val baseVersionCode = "$versionNamePart${createTime.substring(2, 8)}"
         var versionCode = "${baseVersionCode}00".toInt()
-        val versionName = "${appVersionName}_${createTime}"
-        val runTasks = gradle.startParameter.taskNames
-        System.out.println("> Configure project :runTasks = $runTasks")
-        if (":app:assembleDebug" !in runTasks && "" !in runTasks){
-            val lastVersionCode = properties["VERSION_CODE"].toString()
+        val generatedVersionName = "${appVersionName}_${createTime}"
+        val storedVersionCode = props.getProperty("VERSION_CODE")?.toIntOrNull()
+        val storedVersionName = props.getProperty("VERSION_NAME")
+        val shouldUpdateVersionFile = gradle.startParameter.taskNames.any { taskName ->
+            taskName.contains("Release", ignoreCase = true) || taskName.contains("Dev", ignoreCase = true)
+        }
+        val versionName = if (shouldUpdateVersionFile) generatedVersionName else storedVersionName ?: generatedVersionName
+
+        if (shouldUpdateVersionFile) {
+            val lastVersionCode = storedVersionCode?.toString().orEmpty()
             if (lastVersionCode.take(7) == baseVersionCode) {
                 versionCode = lastVersionCode.toInt() + 1
             }
@@ -38,6 +45,8 @@ val versionInfo: Pair<Int, String> by lazy {
             FileOutputStream(versionFile).use { output ->
                 props.store(output, null)
             }
+        } else {
+            versionCode = storedVersionCode ?: versionCode
         }
         System.out.println("> Configure project :{versionCode = $versionCode, versionName = $versionName}")
         Pair(versionCode, versionName)
@@ -48,12 +57,12 @@ val versionInfo: Pair<Int, String> by lazy {
 
 configure<ApplicationExtension> {
     namespace = "com.yunzia.hyperstar"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.yunzia.hyperstar"
         minSdk = 33
-        targetSdk = 36
+        targetSdk = 37
         versionCode = versionInfo.first
         versionName = versionInfo.second
 
@@ -63,28 +72,41 @@ configure<ApplicationExtension> {
         }
     }
 
-    val keystoreFile = System.getenv("KEYSTORE_PATH")
-    signingConfigs {
-        if (keystoreFile != null) {
-            create("ci") {
-                storeFile = file(keystoreFile)
-                storePassword = System.getenv("KEYSTORE_PASSWORD")
-                keyAlias = System.getenv("KEY_ALIAS")
-                keyPassword = System.getenv("KEY_PASSWORD")
-                enableV4Signing = true
-            }
-        }else{
-            create("default"){
-                enableV4Signing = true
+    val localProps = Properties().apply {
+        val localFile = rootProject.file("KEY.properties")
+        if (localFile.exists()) load(FileInputStream(localFile))
+    }
 
+    val keystorePath = System.getenv("KEYSTORE_PATH")
+        ?: localProps.getProperty("KEYSTORE_PATH")
+    val keystorePassword = System.getenv("KEYSTORE_PASSWORD")
+        ?: localProps.getProperty("KEYSTORE_PASSWORD")
+    val keystoreAlias = System.getenv("KEY_ALIAS")
+        ?: localProps.getProperty("KEY_ALIAS")
+    val keystoreKeyPassword = System.getenv("KEY_PASSWORD")
+        ?: localProps.getProperty("KEY_PASSWORD")
+
+    val hasSigning = keystorePath != null && keystorePassword != null
+            && keystoreAlias != null && keystoreKeyPassword != null
+
+    signingConfigs {
+        if (hasSigning) {
+            create("release") {
+                storeFile = file(keystorePath)
+                storePassword = keystorePassword
+                keyAlias = keystoreAlias
+                keyPassword = keystoreKeyPassword
+                enableV4Signing = true
             }
         }
-
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName(if (keystoreFile != null) "ci" else "default")
+            if (hasSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+            optimization.enable = true
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -96,11 +118,13 @@ configure<ApplicationExtension> {
 
         debug {
             // 对于debug版本，可以不使用混和资源压缩
-            isMinifyEnabled = false
-            isShrinkResources = false
+//            optimization.enable = false
         }
         create("dev") {
-            signingConfig = signingConfigs.getByName(if (keystoreFile != null) "ci" else "default")
+            if (hasSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+            optimization.enable = true
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -108,8 +132,7 @@ configure<ApplicationExtension> {
                 "proguard-rules.pro"
             )
             matchingFallbacks.add("dev")
-        }
-        create("cc") {
+            matchingFallbacks += listOf("release")
         }
     }
     compileOptions {
@@ -138,19 +161,24 @@ base {
 }
 
 dependencies {
+    ksp(project(":ksp-processor"))
+    implementation(project(":ksp-processor"))
+    implementation(project(":ksp-annotation"))
+    "baselineProfile"(project(":baselineprofile"))
+//    implementation(libs.androidx.compose.ui.text)
+
     compileOnly(libs.api)
     implementation(libs.service)
-    implementation("io.github.kyant0:backdrop:2.0.0-alpha03")
-
 
     implementation(libs.okhttp)
     implementation(libs.gson)
-    implementation(libs.haze)
-    implementation(libs.kyant.shapes)
+//    implementation(libs.kyant.shapes)
     implementation(libs.miuix)
+    implementation(libs.miuix.preference)
+    implementation(libs.miuix.blur)
+    implementation(libs.miuix.shapes)
     implementation(libs.miuix.icons)
     implementation(libs.miuix.navigation3.ui)
-//    implementation(libs.miuix.navigation3.adaptive)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigationevent.compose)

@@ -1,14 +1,12 @@
 package com.yunzia.hyperstar.hook.app.plugin.os2
 
 import android.content.Context
-import android.provider.Settings
 import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.ViewGroup
 import com.yunzia.hyperstar.R
 import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
-import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.StarLog.logE
 import com.yunzia.hyperstar.hook.core.helper.afterHookAllConstructors
 import com.yunzia.hyperstar.hook.core.helper.callMethod
@@ -24,11 +22,7 @@ object QSHeaderViewListener : BasePluginHook() {
 
     override fun init() {
         if (!is_use_chaos_header) return
-        startMethodsHook()
-    }
 
-
-    private fun startMethodsHook() {
         var qsListController: Any? = null
         val MainPanelModeController = findClass("miui.systemui.controlcenter.panel.main.MainPanelController\$Mode",pluginClassLoader)
         val MainPanelHeaderController  = findClass("miui.systemui.controlcenter.panel.main.header.MainPanelHeaderController",pluginClassLoader)
@@ -50,7 +44,6 @@ object QSHeaderViewListener : BasePluginHook() {
                         return@setOnClickListener
                     }
 
-                    logD(""+mainPanelMode[0])
                     qsListController.callMethod("startQuery", mainPanelMode[2])
                 }
             }
@@ -68,10 +61,7 @@ object QSHeaderViewListener : BasePluginHook() {
             qsListController = qsListControllerProvider.callMethod("get")
 
         }
-
     }
-
-
 }
 
 

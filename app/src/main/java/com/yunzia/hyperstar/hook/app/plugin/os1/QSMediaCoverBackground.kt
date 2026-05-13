@@ -41,13 +41,8 @@ object QSMediaCoverBackground: BasePluginHook() {
     val coverAnciently:Boolean = XSPUtils.getBoolean("cover_anciently",false)
 
     override fun init() {
-        startMethodsHook()
-    }
-
-    private fun startMethodsHook() {
         var foreground: Drawable? = null
         val MediaPlayerMetaData  = findClass("miui.systemui.controlcenter.media.MediaPlayerMetaData",pluginClassLoader)
-        val CommonUtils = findClass("miui.systemui.util.CommonUtils",pluginClassLoader)
 
         findClass(
             "miui.systemui.controlcenter.panel.main.media.MediaPlayerController\$MediaPlayerViewHolder",

@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.yunzia.hyperstar.hook.core.base.BasePluginHook
 import com.yunzia.hyperstar.hook.core.finder.findClass
-import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.helper.afterHookConstructor
 import com.yunzia.hyperstar.hook.core.helper.beforeHookMethod
 import com.yunzia.hyperstar.hook.core.StarLog.logE
@@ -22,25 +21,14 @@ object QSCardTileList : BasePluginHook() {
     private val mCardStyleTiles = XSPUtils.getString("card_tile_list","wifi|cell|")
 
     override fun init() {
-        if (XSPUtils.getBoolean("use_card_tile_list",false)){
-            startMethodsHook()
-        }
-    }
-
-    private fun startMethodsHook() {
+        if (!XSPUtils.getBoolean("use_card_tile_list",false)) return
 
         val cardStyleTiles = getList()
-
-        if (cardStyleTiles.isEmpty()){
-            return
-        }
+        if (cardStyleTiles.isEmpty()) return
 
         var idEnable = -1
         var idDisabled = -1
-
         var idUnavailable = -1
-
-        //var cornerRadiusF = -1f
 
         findClass(
             "miui.systemui.controlcenter.qs.QSController",
@@ -72,7 +60,6 @@ object QSCardTileList : BasePluginHook() {
                         "qs_card_cell_background_unavailable",
                         "drawable", plugin)
                 }
-
             }
             beforeHookMethod("setCornerRadius",Float::class.java) { args, result ->
                 thisObject as LinearLayout
@@ -149,22 +136,18 @@ object QSCardTileList : BasePluginHook() {
         }
     }
 
-    private fun getList():ArrayList<String> {
-        if (mCardStyleTiles.isEmpty()) return ArrayList()
+    private fun getList(): ArrayList<String> {
+        if (mCardStyleTiles.isNullOrEmpty()) return ArrayList()
         val listFromString: List<String> = mCardStyleTiles.split("|")
-        val cardLists =  emptyList<String>().toMutableList()
         val tileList = ArrayList<String>()
 
-        for (tag in listFromString){
-            if (tag.isEmpty()){
+        for (tag in listFromString) {
+            if (tag.isEmpty()) {
                 break
             }
-            cardLists.add(tag)
             tileList.add(tag)
-            logD("ggc",tag)
         }
         return tileList
-
     }
 
 }

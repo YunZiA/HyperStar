@@ -15,10 +15,6 @@ object QSToggleSliderRadius : BasePluginHook() {
 
     override fun init() {
         if (!XSPUtils.getBoolean("is_change_qs_progress_radius",false)) return
-        startMethodsHook()
-    }
-
-    private fun startMethodsHook() {
         findClass(
             "miui.systemui.controlcenter.panel.main.recyclerview.ToggleSliderViewHolder",
             pluginClassLoader
@@ -26,7 +22,6 @@ object QSToggleSliderRadius : BasePluginHook() {
             val mContext = thisObject.callMethodAs<Resources>("getResources")
             thisObject.setFloatField("progressRadius",dpToPx(mContext,progressRadius))
         }
-
     }
 
     fun dpToPx(resources: Resources, dp: Float): Float {

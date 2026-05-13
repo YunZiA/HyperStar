@@ -61,21 +61,27 @@ import com.yunzia.hyperstar.ui.component.SuperGroup
 import com.yunzia.hyperstar.ui.component.SuperGroupPosition
 import com.yunzia.hyperstar.ui.component.topbar.TopButton
 import com.yunzia.hyperstar.ui.component.helper.getSystemCornerRadius
-import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.component.preference.PreferenceScreen
 import com.yunzia.hyperstar.utils.Helper
 import com.yunzia.hyperstar.prefs.SPUtils
 import com.yunzia.hyperstar.utils.rememberWindowSize
 import top.yukonga.miuix.kmp.theme.MiuixTheme.colorScheme
-import com.kyant.shapes.RoundedRectangle
-import com.yunzia.hyperstar.ui.component.SuperNavHostArrow
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
+import com.yunzia.hyperstar.ui.component.preference.impl.NavPreferenceImpl
 import com.yunzia.hyperstar.ui.navigation.LocalNavigator
 import com.yunzia.hyperstar.ui.navigation.PowerMenuRoutes
+import com.yunzia.hyperstar.ui.navigation.SystemUIRoutes
+import SearchRoute
+import androidx.activity.compose.LocalActivity
+import com.yunzia.hyperstar.MainActivity
 import kotlin.math.absoluteValue
 
+@SearchRoute(route = SystemUIRoutes.PowerMenu::class)
 @Composable
 fun PowerMenuStyleScreen() {
 
     val navController = LocalNavigator.current
+    val activity = LocalActivity.current as MainActivity
     val style = remember { mutableIntStateOf( SPUtils.getInt("is_power_menu_style",0) ) }
     val pagerState = rememberPagerState(initialPage = style.intValue,pageCount = { 3 })
     val funTypes = stringArrayResource(R.array.power_fun_types).toList()
@@ -92,8 +98,8 @@ fun PowerMenuStyleScreen() {
     )
     val titleSize = remember { mutableStateOf(16.sp) }
 
-    ModuleNavPagers(
-        activityTitle = stringResource(R.string.power_menu_extra),
+    PreferenceScreen(
+        title = stringResource(R.string.power_menu_extra),
         navController = navController,
         endIcon = {
 
@@ -118,9 +124,11 @@ fun PowerMenuStyleScreen() {
         endClick = {
             Helper.rootShell("killall com.android.systemui")
         },
-    ) {
+        scrollToKey = activity.appViewModel.scrollToKey.value,
+        onScrollComplete = { activity.appViewModel.scrollToKey.value = null },
+    ) { _, _ ->
 
-        item {
+        list.item {
             Spacer(Modifier.height(20.dp))
 
             HorizontalPager(
@@ -178,7 +186,7 @@ fun PowerMenuStyleScreen() {
             }
         }
 
-        item {
+        list.item {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -233,7 +241,7 @@ fun PowerMenuStyleScreen() {
 
         }
 
-        item {
+        list.item {
             when(pagerState.currentPage){
                 1->{
 //                    Classes{
@@ -258,53 +266,45 @@ fun PowerMenuStyleScreen() {
                     SuperGroup(
                         position = SuperGroupPosition.LAST
                     ){
-                        SuperNavHostArrow(
+                        NavPreferenceImpl(
                             title = stringResource(R.string.button)+0,
-                            navController = navController,
-                            route = PowerMenuRoutes.FunSelect(0, "power_menu_style_b_0"),
-                            endText = getFunTitle("power_menu_style_b_0", funTypes, funTitles)
+                            endText = getFunTitle("power_menu_style_b_0", funTypes, funTitles),
+                            onClick = { navController.navigate(PowerMenuRoutes.FunSelect(0, "power_menu_style_b_0")) }
                         )
-                        SuperNavHostArrow(
+                        NavPreferenceImpl(
                             title = stringResource(R.string.button)+ 1,
-                            navController = navController,
-                            route = PowerMenuRoutes.FunSelect(1, "power_menu_style_b_1"),
-                            endText = getFunTitle("power_menu_style_b_1", funTypes, funTitles)
+                            endText = getFunTitle("power_menu_style_b_1", funTypes, funTitles),
+                            onClick = { navController.navigate(PowerMenuRoutes.FunSelect(1, "power_menu_style_b_1")) }
                         )
-                        SuperNavHostArrow(
+                        NavPreferenceImpl(
                             title = stringResource(R.string.button) + 2,
-                            navController = navController,
-                            route = PowerMenuRoutes.FunSelect(2, "power_menu_style_b_2"),
-                            endText = getFunTitle("power_menu_style_b_2", funTypes, funTitles)
+                            endText = getFunTitle("power_menu_style_b_2", funTypes, funTitles),
+                            onClick = { navController.navigate(PowerMenuRoutes.FunSelect(2, "power_menu_style_b_2")) }
                         )
-                        SuperNavHostArrow(
+                        NavPreferenceImpl(
                             title = stringResource(R.string.button) + 3,
-                            navController = navController,
-                            route = PowerMenuRoutes.FunSelect(3, "power_menu_style_b_3"),
-                            endText = getFunTitle("power_menu_style_b_3", funTypes, funTitles)
+                            endText = getFunTitle("power_menu_style_b_3", funTypes, funTitles),
+                            onClick = { navController.navigate(PowerMenuRoutes.FunSelect(3, "power_menu_style_b_3")) }
                         )
-                        SuperNavHostArrow(
+                        NavPreferenceImpl(
                             title = stringResource(R.string.button) + 4,
-                            navController = navController,
-                            route = PowerMenuRoutes.FunSelect(4, "power_menu_style_b_4"),
-                            endText = getFunTitle("power_menu_style_b_4", funTypes, funTitles)
+                            endText = getFunTitle("power_menu_style_b_4", funTypes, funTitles),
+                            onClick = { navController.navigate(PowerMenuRoutes.FunSelect(4, "power_menu_style_b_4")) }
                         )
-                        SuperNavHostArrow(
+                        NavPreferenceImpl(
                             title = stringResource(R.string.button) + 5,
-                            navController = navController,
-                            route = PowerMenuRoutes.FunSelect(5, "power_menu_style_b_5"),
-                            endText = getFunTitle("power_menu_style_b_5", funTypes, funTitles)
+                            endText = getFunTitle("power_menu_style_b_5", funTypes, funTitles),
+                            onClick = { navController.navigate(PowerMenuRoutes.FunSelect(5, "power_menu_style_b_5")) }
                         )
-                        SuperNavHostArrow(
+                        NavPreferenceImpl(
                             title = stringResource(R.string.button) + 6,
-                            navController = navController,
-                            route = PowerMenuRoutes.FunSelect(6, "power_menu_style_b_6"),
-                            endText = getFunTitle("power_menu_style_b_6", funTypes, funTitles)
+                            endText = getFunTitle("power_menu_style_b_6", funTypes, funTitles),
+                            onClick = { navController.navigate(PowerMenuRoutes.FunSelect(6, "power_menu_style_b_6")) }
                         )
-                        SuperNavHostArrow(
+                        NavPreferenceImpl(
                             title = stringResource(R.string.button) + 7,
-                            navController = navController,
-                            route = PowerMenuRoutes.FunSelect(7, "power_menu_style_b_7"),
                             endText = getFunTitle("power_menu_style_b_7", funTypes, funTitles),
+                            onClick = { navController.navigate(PowerMenuRoutes.FunSelect(7, "power_menu_style_b_7")) }
                         )
                     }
 
@@ -370,7 +370,7 @@ fun AnimPager(
             .border(
                 3.dp,
                 Color(0xff3988FF).copy(alpha = selectAlpha),
-                RoundedRectangle(roundedCorner)
+                SmoothRoundedCornerShape(roundedCorner)
             )
             .width(width.value),
         contentAlignment = Alignment.Center,
@@ -378,7 +378,7 @@ fun AnimPager(
         BoxWithConstraints(
             Modifier
                 .padding(6.dp)
-                .clip(RoundedRectangle(roundedCorner / 5 * 4))
+                .clip(SmoothRoundedCornerShape(roundedCorner / 5 * 4))
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(Color(0xFF5470CB), Color(0xFF62B1D0)),

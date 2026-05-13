@@ -2,39 +2,38 @@ package com.yunzia.hyperstar.ui.screen.module.screenshot
 
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.res.stringResource
 import com.yunzia.hyperstar.MainActivity
 import com.yunzia.hyperstar.R
-import com.yunzia.hyperstar.ui.component.SuperGroupPosition
-import com.yunzia.hyperstar.ui.component.XSuperSwitch
-import com.yunzia.hyperstar.ui.component.itemGroup
-import com.yunzia.hyperstar.ui.component.pager.ModuleNavPagers
+import com.yunzia.hyperstar.ui.component.preference.PreferenceScreen
+import com.yunzia.hyperstar.ui.component.preference.preferenceGroup
+import com.yunzia.hyperstar.ui.component.preference.sp.SpSwitchPreference
 import com.yunzia.hyperstar.ui.navigation.LocalNavigator
+import com.yunzia.hyperstar.ui.navigation.MainRoutes
+import com.yunzia.hyperstar.ui.navigation.displayName
 import com.yunzia.hyperstar.utils.Helper
+import SearchRoute
 
+@SearchRoute(route = MainRoutes.Screenshot::class)
 @Composable
 fun ScreenshotScreen() {
     val navController = LocalNavigator.current
     val activity = LocalActivity.current as MainActivity
-    ModuleNavPagers(
-        activityTitle = activity.appViewModel.visibleEntryMap["com.android.mms"]!!.appName,
+    PreferenceScreen(
+        title = activity.appViewModel.visibleEntryMap["com.miui.screenshot"]?.appName
+            ?: MainRoutes.Screenshot.displayName(),
         navController = navController,
         endClick = {
             Helper.rootShell("killall com.miui.screenshot")
         },
-    ){
-        itemGroup(
-            title = R.string.basics,
-            position = SuperGroupPosition.FIRST
-        ) {
-            XSuperSwitch(
+        scrollToKey = activity.appViewModel.scrollToKey.value,
+        onScrollComplete = { activity.appViewModel.scrollToKey.value = null },
+    ) { _, _ ->
+        preferenceGroup(R.string.basics) {
+            SpSwitchPreference(
                 title = stringResource(R.string.enable_clipboard_write_on_screenshot),
                 key = "enable_clipboard_write_on_screenshot"
             )
-
         }
     }
-
 }

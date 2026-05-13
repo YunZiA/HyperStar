@@ -64,6 +64,7 @@ fun getDefaultColor(
 
 @Composable
 fun ColorPickerTool(
+    modifier: Modifier = Modifier,
     title:String,
     dfColor:Color = Color.Transparent,
     key : String
@@ -106,7 +107,7 @@ fun ColorPickerTool(
     }
 
     Box(
-        Modifier
+        modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Max)
     ) {

@@ -24,11 +24,6 @@ object VolumeBarLayoutParams: BasePluginHook() {
     val ShadowHeightL = XSPUtils.getFloat("volume_shadow_height_collapsed_l",-1f)
 
     override fun init() {
-        startCollpasedColumn()
-    }
-
-    private fun startCollpasedColumn() {
-
         dimenReplaceByValue(
             "miui_volume_dialog_shadow_height_no_footer",plugin
         ) {
@@ -89,7 +84,6 @@ object VolumeBarLayoutParams: BasePluginHook() {
                 DensityUtil.Companion.dpToPx(displayMetrics, VolumeHeightCollapsedL)
             }
         }
-
     }
 
 }

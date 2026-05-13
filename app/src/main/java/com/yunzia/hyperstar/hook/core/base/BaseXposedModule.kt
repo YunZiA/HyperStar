@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import com.yunzia.hyperstar.hook.core.StarLog
 import com.yunzia.hyperstar.hook.core.StarLog.TAG
+import com.yunzia.hyperstar.hook.core.StarLog.logD
 import com.yunzia.hyperstar.hook.core.helper.ResourcesHelper.loadResAboveApi30
 import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
 import com.yunzia.hyperstar.hook.core.XposedCore
@@ -69,7 +70,7 @@ abstract class BaseXposedModule : XposedModule() {
             val versionMatch = hook.maxVersion == -1 || (currentHookChannel >= hook.minVersion && currentHookChannel <= hook.maxVersion)
 
             if (!versionMatch && hook.isInit) {
-                StarLog.log(
+                logD(
                     buildString {
                         append("Skip init hook: ${hook.className}\n")
                         append("packageMatch=$packageMatch ")

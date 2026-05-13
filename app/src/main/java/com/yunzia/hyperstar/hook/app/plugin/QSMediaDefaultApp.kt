@@ -10,12 +10,7 @@ object QSMediaDefaultApp : BasePluginHook() {
     val apps = XSPUtils.getString("media_default_app_package","")
 
     override fun init() {
-        if (apps != ""){
-            startMethodsHook()
-        }
-    }
-
-    private fun startMethodsHook() {
+        if (apps.isNullOrEmpty()) return
         findClass(
             "com.android.systemui.QSControlMiPlayDetailHeader\$Companion\$getLastPlayingAppPackageName\$2",
             pluginClassLoader

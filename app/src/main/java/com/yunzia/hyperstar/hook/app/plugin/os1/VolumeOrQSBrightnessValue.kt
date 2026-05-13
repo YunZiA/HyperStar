@@ -33,10 +33,6 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
 
     override fun init() {
         if (!brightnessShow && !volumeShow) return
-        startMethodsHook()
-    }
-
-    private fun startMethodsHook() {
 
         if (volumeShow){
             findClass(
@@ -98,7 +94,6 @@ object VolumeOrQSBrightnessValue : BasePluginHook() {
                 miBlurCompat.clearMiBackgroundBlendColorCompat(topValue)
                 return@afterHookMethod
             }
-            //Color.WHITE Color.parseColor("#959595")
             topValue.setTextColor(Color.WHITE)
             miBlurCompat.setMiViewBlurModeCompat(topValue,3)
             if (colorArray == null){

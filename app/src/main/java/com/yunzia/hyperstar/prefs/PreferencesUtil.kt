@@ -27,13 +27,9 @@ object PreferencesUtil : PrefUtils() {
     // === 获取所有配置项 ===
     fun getAllPreferences(preferencesList: ArrayList<SP>) {
         val allEntries = sp?.all ?: return
-        allEntries.entries.stream()
-            .filter { entry -> entry.key != "is_first_use" }
-            .filter { entry -> entry.key != "isFold" }
-            .filter { entry -> entry.key != "isPad" }
-            .forEach { entry ->
-                val key = entry.key
-                val value = entry.value
+        allEntries.asSequence()
+            .filter { (key, _) -> key != "is_first_use" && key != "isFold" && key != "isPad" }
+            .forEach { (key, value) ->
                 Log.d(TAG, "Key: $key, Value: $value")
                 when (value) {
                     is String -> preferencesList.add(SP(TAG, key, SP.type_string, value))

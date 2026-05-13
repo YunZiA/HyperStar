@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringArrayResource
 import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
 import com.yunzia.hyperstar.prefs.SPUtils
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
-import top.yukonga.miuix.kmp.extra.WindowDropdown
+import top.yukonga.miuix.kmp.preference.WindowDropdownPreference
 
 @Composable
 fun XDropdown(
@@ -34,7 +34,7 @@ fun XDropdown(
 
     val dropdownOptions = stringArrayResource(id = option).toList()
 
-    WindowDropdown(
+    WindowDropdownPreference(
         modifier = Modifier.bounceAnim(enabled),
         title = title,
         summary = summary,
@@ -63,7 +63,7 @@ fun XDialogDropdown(
 
     val dropdownOptions = stringArrayResource(id = option).toList()
 
-    WindowDropdown(
+    WindowDropdownPreference(
         modifier = Modifier.bounceAnim(enabled),
         title = title,
         summary = summary,
@@ -94,7 +94,7 @@ fun XContentDropdown(
     val dropdownSelectedOption = remember { mutableStateOf(SPUtils.getInt(key,0)) }
 
 
-    WindowDropdown(
+    WindowDropdownPreference(
         modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
@@ -135,7 +135,7 @@ fun XContentDropdown(
     val dropdownSelectedOption = remember { mutableStateOf(SPUtils.getInt(key,0)) }
 
 
-    WindowDropdown(
+    WindowDropdownPreference(
         modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
@@ -155,7 +155,6 @@ fun XContentDropdown(
     ) {
         Column{
             contents()
-
         }
     }
 
@@ -184,7 +183,7 @@ fun ContentDropdown(
     val dropdownOptions = stringArrayResource(id = option).toList()
     val dropdownSelectedOption = remember { mutableStateOf(SPUtils.getInt(key,0)) }
 //    popupHorizontalPadding+insideMargin.width/2
-    WindowDropdown(
+    WindowDropdownPreference(
         modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,
@@ -222,7 +221,7 @@ fun PDropdown(
 
     val dropdownOptions = stringArrayResource(id = option).toList()
 
-    WindowDropdown(
+    WindowDropdownPreference(
         modifier = Modifier.bounceAnim(),
         title = title,
         summary = summary,

@@ -1,7 +1,5 @@
 package com.yunzia.hyperstar.hook.init
 
-import android.content.Context
-import android.content.ContextWrapper
 import com.yunzia.hyperstar.hook.app.plugin.HideVolumeCollpasedFootButton
 import com.yunzia.hyperstar.hook.app.plugin.QSCardAutoCollapse
 import com.yunzia.hyperstar.hook.app.plugin.QSCardTileList
@@ -11,7 +9,6 @@ import com.yunzia.hyperstar.hook.app.plugin.QSMediaDefaultApp
 import com.yunzia.hyperstar.hook.app.plugin.QSMediaNoPlayTitle
 import com.yunzia.hyperstar.hook.app.plugin.QSMiplayDetailVolumeBar
 import com.yunzia.hyperstar.hook.app.plugin.QSToggleSliderRadius
-import com.yunzia.hyperstar.hook.app.plugin.QSVolumeMute
 import com.yunzia.hyperstar.hook.app.plugin.SuperBlurWidgetManager
 import com.yunzia.hyperstar.hook.app.plugin.VolumeBarLayoutParams
 import com.yunzia.hyperstar.hook.app.plugin.os2.DeviceCenterRow
@@ -27,33 +24,18 @@ import com.yunzia.hyperstar.hook.app.plugin.os2.QSMediaCoverBackground
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMediaDeviceName
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMediaView
 import com.yunzia.hyperstar.hook.app.plugin.os2.QSMiplayAppIconRadius
+import com.yunzia.hyperstar.hook.app.plugin.os2.QSTileAutoCollapse
 import com.yunzia.hyperstar.hook.app.plugin.os2.SuperBlurVolumeManager
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeColumnProgressRadius
 import com.yunzia.hyperstar.hook.app.plugin.os2.VolumeOrQSBrightnessValue
-import com.yunzia.hyperstar.hook.app.plugin.os2.QSTileAutoCollapse
 import com.yunzia.hyperstar.hook.app.plugin.powermenu.PowerMenuHook
-import com.yunzia.hyperstar.hook.core.helper.replaceHookMethod
 import com.yunzia.hyperstar.hook.core.base.BasePluginHooks
-import com.yunzia.hyperstar.hook.core.StarLog.logD
-import com.yunzia.hyperstar.hook.core.provider.PluginClassLoaderProvider
-import com.yunzia.hyperstar.hook.core.finder.findClass
-import com.yunzia.hyperstar.hook.core.finder.loadClass
-import com.yunzia.hyperstar.hook.core.helper.afterHookMethod
-
 
 object PluginHooksForOS2 : BasePluginHooks() {
 
     override fun init() {
-        "com.android.systemui.shared.plugins.PluginInstance\$PluginFactory".loadClass().afterHookMethod("createPluginContext") { args, result ->
-            val mPluginContext = result.value as ContextWrapper
-            if (mPluginContext.packageName != plugin){
-                logD("检测到非目标应用包名: 当前包名为 " + mPluginContext.packageName + ", 目标插件包名为 " + plugin)
-                return@afterHookMethod
-            }
-            initPlugin(mPluginContext)
-        }
+        hookPluginContext()
     }
-
 
     override fun onPluginLoaded() {
         initHooks(
@@ -72,7 +54,6 @@ object PluginHooksForOS2 : BasePluginHooks() {
             QSListView,
             VolumeOrQSBrightnessValue,
             QSCardTileList,
-            QSVolumeMute,
             QSCardAutoCollapse,
             QSToggleSliderRadius,
             QSHeaderMessage,
@@ -86,40 +67,7 @@ object PluginHooksForOS2 : BasePluginHooks() {
             DeviceCenterRow,
             QSMiplayDetailVolumeBar,
             QSEditText,
-            QSMediaNoPlayTitle
+            QSMediaNoPlayTitle,
         )
     }
-
-    fun flipCard(){
-        findClass(
-            "miui.systemui.util.CommonUtils",
-            PluginClassLoaderProvider.classLoader
-        ).apply {
-            replaceHookMethod(
-                "isFlipDevice"
-            ){
-                return@replaceHookMethod true
-            }
-            replaceHookMethod(
-                "isTinyScreen",
-                Context::class .java
-            ) { args ->
-                return@replaceHookMethod true
-            }
-        }
-
-        //折叠屏卡片
-        findClass(
-            "miui.systemui.controlcenter.panel.main.qs.CompactQSCardController",
-            PluginClassLoaderProvider.classLoader
-        ).apply {
-            replaceHookMethod(
-                "onCreate",
-            ) {
-                return@replaceHookMethod null
-            }
-        }
-    }
-
-
 }

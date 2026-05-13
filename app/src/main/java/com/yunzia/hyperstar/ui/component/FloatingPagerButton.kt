@@ -50,7 +50,7 @@ import com.yunzia.hyperstar.ui.component.modifier.bounceAnim
 import kotlinx.coroutines.delay
 import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import com.kyant.shapes.RoundedRectangle
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 
 @Composable
 fun FloatingPagerButton(
@@ -165,7 +165,7 @@ fun FloatingPagerButton(
                         alpha = if (alpha >= 0.2f) alpha else 0f,
                         scaleX = width/this@BoxWithConstraints.maxWidth,
                         scaleY = height/this@BoxWithConstraints.maxHeight,
-                        shape = RoundedRectangle(if (complete.value) 0.dp else radius),
+                        shape = SmoothRoundedCornerShape(if (complete.value) 0.dp else radius),
                         clip = true,
                         transformOrigin = TransformOrigin(1f, 1f)
                     )
@@ -184,7 +184,7 @@ fun FloatingPagerButton(
 
                 Surface(
                     modifier = Modifier.semantics { role = Role.Button },
-                    shape = RoundedRectangle(if (complete.value) 0.dp else radius),
+                    shape = SmoothRoundedCornerShape(if (complete.value) 0.dp else radius),
                     color = containerColor,
                     shadowElevation = if (expand.value) 0.dp else shadowElevation,
                     enabled = !expand.value,

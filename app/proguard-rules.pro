@@ -1,61 +1,83 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# ==========================================
+# HyperStar ProGuard Rules
+# ==========================================
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
-
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
-
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
-
-#保持泛型
+# --- 基础属性保留 ---
 -keepattributes Signature
-
-#保持反射不被混淆
 -keepattributes EnclosingMethod
-
-
-#-keep class * extends com.yunzia.hyperstar.hook.base.BaseHookHelper
-#
-#-keep class com.yunzia.hyperstar.hook.util.**{*;}
-#-keep class com.yunzia.hyperstar.utils.Helper
-#-keep class com.yunzia.hyperstar.init
-#-keep class com.yunzia.hyperstar.ui.**{*;}
-#
-#
-## 这指定了继承Serizalizable的类的如下成员不被移除混淆
-#-keepclassmembers class * implements java.io.Serializable {
-#    static final long serialVersionUID;
-#    private static final java.io.ObjectStreamField[] serialPersistentFields;
-#    private void writeObject(java.io.ObjectOutputStream);
-#    private void readObject(java.io.ObjectInputStream);
-#    java.lang.Object writeReplace();
-#    java.lang.Object readResolve();
-#}
--keep class com.yunzia.hyperstar.** { *; }
-
-# 保留所有 Xposed 相关注解
 -keepattributes *Annotation*
+-keepattributes InnerClasses
+-keepattributes SourceFile,LineNumberTable
 
-# 保留 LibXposed / LSPosed 的注解类
+# --- Xposed / LSPosed 模块入口 ---
+-keep class com.yunzia.hyperstar.hook.ModuleMain { *; }
+-keep class com.yunzia.hyperstar.hook.core.base.BaseXposedModule { *; }
+
+# --- LibXposed API ---
 -keep class io.github.libxposed.** { *; }
-
+-keep class io.github.libxposed.api.** { *; }
+-keep class io.github.libxposed.service.** { *; }
 -keepclassmembers class * {
     @io.github.libxposed.api.annotations.BeforeInvocation <methods>;
     @io.github.libxposed.api.annotations.AfterInvocation <methods>;
-    @io.github.libxposed.api.annotations.XposedBaseHook <methods>;
 }
 
+# --- Hook 系统：保留所有 hook 类（反射调用） ---
+-keep class com.yunzia.hyperstar.hook.** { *; }
 
+# --- Xposed 注解 ---
+-keep @com.yunzia.hyperstar.hook.core.annotation.Init class * { *; }
+
+# --- Activity 入口 ---
+-keep class com.yunzia.hyperstar.MainActivity { *; }
+-keep class com.yunzia.hyperstar.MainActivityAlias { *; }
+
+# --- Kotlin Serialization ---
+-keepattributes RuntimeVisibleAnnotations
+-keep class kotlinx.serialization.** { *; }
+-keepclassmembers @kotlinx.serialization.Serializable class ** {
+    *** Companion;
+    kotlinx.serialization.KSerializer serializer(...);
+}
+-keepclasseswithmembers class **$$serializer {
+    *** INSTANCE;
+}
+
+# --- Parcelize ---
+-keepclassmembers class * implements android.os.Parcelable {
+    public static final ** CREATOR;
+}
+
+# --- OkHttp ---
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
+
+# --- Gson ---
+-keep class com.google.gson.** { *; }
+-keepclassmembers class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+
+# --- Compose / AndroidX ---
+-dontwarn androidx.**
+-keep class androidx.compose.** { *; }
+
+# --- miuix KMP 组件 ---
+-dontwarn top.yukonga.miuix.**
+
+# --- 生成的搜索索引 ---
+-keep class generated.SearchIndex { *; }
+-keep class generated.SearchEntry { *; }
+
+# --- 通用：枚举 ---
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+# --- 通用：native 方法 ---
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
